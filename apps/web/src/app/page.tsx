@@ -5,6 +5,7 @@ import { AIInsights } from "@/components/ai-insights"
 import { ContactFooter } from "@/components/contact-footer"
 import { ScrollIndicator } from "@/components/scroll-indicator"
 import { SectionDivider } from "@/components/section-divider"
+import { Suspense } from "react"
 
 export default function Home() {
   return (
@@ -18,7 +19,9 @@ export default function Home() {
       <BusinessOverview />
       <SectionDivider />
       
-      <AIInsights />
+      <Suspense fallback={null}>
+        <AIInsights />
+</Suspense>
       <SectionDivider />
       
       <ContactFooter />
