@@ -6,6 +6,7 @@ import { AIInsights } from "@/components/ai-insights"
 import { InsightsNav } from "@/components/insights/insights-nav"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { Suspense } from "react"
 
 export default function InsightsItPage() {
   const { t } = useLanguage()
@@ -49,9 +50,9 @@ export default function InsightsItPage() {
       </section>
 
       <InsightsNav />
-
-      <AIInsights isFullPage={true} category="IT" id="it" />
-
+      <Suspense fallback={null}>
+        <AIInsights isFullPage={true} category="IT" id="it" />
+      </Suspense>
       <Footer />
     </main>
   )

@@ -6,6 +6,7 @@ import { AIInsights } from "@/components/ai-insights"
 import { InsightsNav } from "@/components/insights/insights-nav"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { Suspense } from "react"
 
 export default function InsightsOdaPage() {
   const { t } = useLanguage()
@@ -50,7 +51,9 @@ export default function InsightsOdaPage() {
 
       <InsightsNav />
 
-      <AIInsights isFullPage={true} category="ODA" id="oda" />
+      <Suspense fallback={null}>
+        <AIInsights isFullPage={true} category="ODA" id="oda" />
+      </Suspense>
 
       <Footer />
     </main>
