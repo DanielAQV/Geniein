@@ -19,8 +19,10 @@ from pathlib import Path
 def main():
     print("🚀 Geniein Strategic AI Worker Started!")
     
-    # 이미지 저장 폴더 생성
-    upload_dir = Path("apps/web/public/uploads/insights")
+    # 이미지 저장 폴더 설정 (프로젝트 루트 기준 절대 경로)
+    current_file = Path(__file__).resolve()
+    project_root = current_file.parent.parent.parent
+    upload_dir = project_root / "apps" / "web" / "public" / "uploads" / "insights"
     upload_dir.mkdir(parents=True, exist_ok=True)
     
     # API 키 확인

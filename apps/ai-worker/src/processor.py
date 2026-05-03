@@ -73,31 +73,63 @@ class AIProcessor:
             return None
 
     def generate_image(self, title, category="it"):
-        print(f"🎨 Generating {category.upper()} Realistic Image for: {title[:30]}...")
+        print(f"🎨 Generating {category.upper()} Realistic Image (FLUX.1) for: {title[:30]}...")
+        
+        together_api_key = os.getenv('TOGETHER_API_KEY')
+        if not together_api_key:
+            print("⚠️ TOGETHER_API_KEY not found in .env. Falling back to DALL-E 3 or skipping.")
+            # Fallback logic or just return None
+            # Here we'll try to use Together AI via a new client instance
+        
         try:
-            # 현실적인 비주얼 전략 (Cinematic Realism)
-            if category.lower() == "oda":
-                visual_concept = "Modern urban architecture, a strategic global logistics hub, or a large-scale sustainable energy infrastructure. Realistic world-class development scenes."
-                style_hint = "Architectural photography, wide-angle lens, cinematic natural lighting, realistic textures of glass and steel."
-            else:
-                visual_concept = "A clean, high-tech data center interior, a macro shot of advanced semiconductor hardware, or smart city digital infrastructure in a real urban setting."
-                style_hint = "Industrial macro photography, shallow depth of field, realistic metallic and glass reflections, precise technical detail."
+            # 1. GPT를 사용하여 뉴스 제목에 최적화된 사실적인 사진 프롬프트 생성
+            prompt_gen_msg = f"""
+            Create a highly realistic, professional photography prompt for an AI image generator based on this news title: '{title}'
+            Category: {category}
 
-            abstract_prompt = f"""
-            A professional, high-end cinematic photograph representing the theme: '{title}'. 
-            Subject: {visual_concept}
-            Style: {style_hint}
-            Atmosphere: Sophisticated, state-of-the-art, and clean. 
-            NO robots, NO humanoids, NO faces, NO text, NO cheesy stock photo elements. 
-            Focus on the beauty of modern engineering, architecture, and technology.
-            High-quality, 4k resolution, hyper-realistic textures.
-            """
+            [Rules]
+            1. Style: Realistic documentary photography, natural business environment, or authentic industrial detail.
+            2. Realism: Must look like a natural, unedited photo (Natural lighting, no dramatic filters, realistic everyday textures). 
+            3. Subject: Focus strictly on the core keywords and themes of the news title.
+               - Create a scene that feels like a real-life observation, not a staged or epic cinematic shot.
+               - Avoid overreliance on common electronics like laptops or computer monitors as the primary subject. 
+               - Instead, find more creative and diverse visual metaphors: a clean architectural corner, specialized industrial equipment, a sophisticated data visualization on a wall (no text), or a high-quality close-up of a relevant material or object.
+               - Aim for an authentic, grounded, and practical visual representation.
+            4. No-Go: ABSOLUTELY NO PEOPLE, NO HUMANS, NO HANDS, NO FACES.
+               - The scene must be a still-life, an empty environment, or a close-up of objects. 
+               - ABSOLUTELY NO TEXT, NO LETTERS, NO NUMBERS, NO SYMBOLS, NO LOGOS. 
+               - NO robots, NO humanoids, NO cheesy 3D renders.
+            5. Atmosphere: Authentic, clean, and grounded. 
             
-            response = self.client.images.generate(
-                model="dall-e-3",
-                prompt=abstract_prompt.strip(),
+            IMPORTANT: Do not use laptops or desktops as a 'default' for tech news. Explore more diverse and sophisticated imagery.
+            IMPORTANT: Do not include any human figures or parts of people. Focus on objects and professional environments.
+            IMPORTANT: Avoid dramatic, epic, or cinematic 'movie-like' visuals. Keep it realistic and natural.
+            IMPORTANT: The image must be completely free of any text or alphabet characters.
+            Output ONLY the final English prompt.
+            """
+
+            prompt_response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a professional commercial photographer and prompt engineer."},
+                    {"role": "user", "content": prompt_gen_msg}
+                ]
+            )
+            
+            optimized_prompt = prompt_response.choices[0].message.content.strip()
+            print(f"📝 Optimized Prompt: {optimized_prompt[:100]}...")
+
+            # 2. Together AI (FLUX.1 [schnell])를 사용하여 이미지 생성
+            # Together AI는 OpenAI SDK와 호환되므로 base_url만 바꿔서 사용 가능합니다.
+            together_client = OpenAI(
+                api_key=together_api_key,
+                base_url="https://api.together.xyz/v1",
+            )
+
+            response = together_client.images.generate(
+                model="black-forest-labs/FLUX.1-schnell",
+                prompt=optimized_prompt,
                 size="1024x1024",
-                quality="standard",
                 n=1,
             )
             
