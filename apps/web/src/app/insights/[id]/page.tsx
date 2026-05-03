@@ -63,7 +63,7 @@ export default function InsightDetailPage() {
               <div className="h-1 w-1 rounded-full bg-foreground/20" />
               <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
                 <Calendar className="h-4 w-4" />
-                {new Date(insight.published_at || insight.created_at).toLocaleDateString()}
+                {(() => { const d = new Date(insight.published_at || insight.created_at); return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`; })()}
               </div>
             </div>
 

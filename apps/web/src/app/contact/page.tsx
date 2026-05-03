@@ -15,7 +15,7 @@ export default function ContactPage() {
       <Header />
       
       {/* Contact Hero */}
-      <section className="relative pt-48 pb-40 overflow-hidden border-b border-border/50">
+      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -66,9 +66,27 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
       </div>
 
-      <section className="py-24">
+      <section className="py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-stretch mb-24">
+          {/* Section Header: Added to match Business/Insights structure */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-4 block">
+              {t('contact.section.label')}
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+              {t('contact.section.title')}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line">
+              {t('contact.section.desc')}
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-10 items-stretch mb-24">
             {/* Top Left: Form */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

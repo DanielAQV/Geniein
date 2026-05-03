@@ -118,7 +118,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.name')}</label>
+            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.name')}</label>
             <input
               name="name"
               value={formData.name}
@@ -140,7 +140,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
             </AnimatePresence>
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.email')}</label>
+            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.email')}</label>
             <input
               name="email"
               type="email"
@@ -166,7 +166,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
 
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.phone')}</label>
+            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.phone')}</label>
             <input
               name="phone"
               type="tel"
@@ -189,7 +189,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
             </AnimatePresence>
           </div>
           <div className="space-y-1">
-            <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.org')}</label>
+            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.org')}</label>
             <input
               name="org"
               value={formData.org}
@@ -213,7 +213,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
         </div>
 
         <div className="space-y-1 relative">
-          <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.type')}</label>
+          <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.type')}</label>
           <div 
             onClick={() => setIsOpen(!isOpen)}
             className={`w-full h-12 px-4 rounded-xl bg-card/50 border ${isOpen ? 'border-primary ring-4 ring-primary/10 bg-card' : 'border-border hover:border-primary/40 hover:bg-card/70'} flex items-center justify-between cursor-pointer transition-all`}
@@ -254,7 +254,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.message')}</label>
+          <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.message')}</label>
           <textarea
             name="message"
             rows={4}

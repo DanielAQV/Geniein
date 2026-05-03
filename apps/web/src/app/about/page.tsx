@@ -18,7 +18,7 @@ export default function AboutPage() {
       <Header />
       
       {/* About Hero Section: The Manifesto */}
-      <section className="relative pt-48 pb-40 overflow-hidden border-b border-white/5">
+      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -56,7 +56,7 @@ export default function AboutPage() {
                 {t('about.hero.title_1')} {t('about.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
               {t('about.hero.description')}
             </p>
           </motion.div>

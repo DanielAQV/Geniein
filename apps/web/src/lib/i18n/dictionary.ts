@@ -13,7 +13,9 @@ export const dictionary = {
     consulting_btn: { kr: "상담 문의", en: "Consult", vn: "Tư vấn" },
     language: { kr: "언어", en: "Language", vn: "Ngôn ngữ" },
     copyright: { kr: "© 2026 Geniein Co., Ltd. All rights reserved.", en: "© 2026 Geniein Co., Ltd. All rights reserved.", vn: "© 2026 Geniein Co., Ltd. All rights reserved." },
-    more: { kr: "자세히 보기", en: "Read More", vn: "Xem thêm" }
+    more: { kr: "자세히 보기", en: "Read More", vn: "Xem thêm" },
+    prev: { kr: "이전", en: "Previous", vn: "Trước" },
+    next: { kr: "다음", en: "Next", vn: "Tiếp" }
   },
   hero: {
     badge: { kr: "미래를 설계하는 디지털 파트너", en: "Architecting the Digital Future", vn: "Đối tác thiết lập tương lai số" },
@@ -55,9 +57,12 @@ export const dictionary = {
       ]
     },
     insights: {
-      label: { kr: "Business\nInsights", en: "Business\nInsights", vn: "Góc nhìn\nKinh doanh" },
-      title: { kr: "STRATEGIC AI INSIGHTS", en: "Strategic Business Insights", vn: "Phân tích kinh doanh chiến lược" },
-      desc: { kr: "실시간 글로벌 비즈니스 데이터와 AI 기술을 결합하여,\n전략적 의사결정을 위한 핵심 인사이트를 도출합니다.", en: "Combining real-time global business data with AI technology,\nwe derive core insights for strategic decision-making.", vn: "Kết hợp dữ liệu kinh doanh toàn cầu theo thời gian thực với công nghệ AI,\nchúng tôi đưa ra các thông tin cốt lõi cho việc ra quyết định chiến lược." },
+      label: { kr: "Business Insights", en: "Business Insights", vn: "Góc nhìn Kinh doanh" },
+      hero_title: { kr: "AI STRATEGIC INSIGHTS", en: "AI STRATEGIC INSIGHTS", vn: "AI STRATEGIC INSIGHTS" },
+      section_title: { kr: "비즈니스 인사이트", en: "BUSINESS INSIGHTS", vn: "GOC NHIN KINH DOANH" },
+      hero_desc: { kr: "실시간 글로벌 비즈니스 데이터와 AI 기술을 결합하여,\n전략적 의사결정을 위한 핵심 인사이트를 도출합니다.", en: "Combining real-time global business data with AI technology,\nwe derive core insights for strategic decision-making.", vn: "Kết hợp dữ liệu kinh doanh toàn cầu theo thời gian thực với công nghệ AI,\nchúng tôi đưa ra các thông tin cốt lõi cho việc ra quyết định chiến lược." },
+      title: { kr: "글로벌 인사이트 라우팅", en: "GLOBAL INSIGHT ROUTING", vn: "ĐỊNH HƯỚNG GÓC NHÌN TOÀN CẦU" },
+      desc: { kr: "지니인만의 고도화된 AI 분석 기술로\n글로벌 시장의 미래 기회를 가장 먼저 포착합니다.", en: "With Geniein's advanced AI analysis technology,\nbe the first to capture future opportunities in the global market.", vn: "Với công nghệ phân tích AI tiên tiến của Geniein,\nhãy là người đầu tiên nắm bắt các cơ hội tương lai trên thị trường toàn cầu." },
       desc_oda: { kr: "글로벌 디지털 전환 트렌드와 ODA 전략의 융합을 통해,\n국가 간 협력을 넘어 새로운 글로벌 비즈니스 시장의 가능성을 분석합니다.", en: "Through the convergence of global DX trends and ODA strategies,\nwe analyze new global business market possibilities beyond inter-country cooperation.", vn: "Thông qua sự hội tụ của các xu hướng DX toàn cầu và chiến lược ODA,\nchúng tôi phân tích các khả năng thị trường kinh doanh toàn cầu mới vượt ra ngoài hợp tác giữa các quốc gia." },
       desc_it: { kr: "지니인만의 독보적인 AI 기술 인사이트를 비즈니스 전략과 결합하여,\n디지털 전환 그 이상의 실질적인 사업적 도약과 성과를 실현합니다.", en: "By combining Geniein's unique AI technology insights with business strategy,\nwe realize practical business leaps and results beyond digital transformation.", vn: "Bằng cách kết hợp những hiểu biết sâu sắc về công nghệ AI độc đáo của Geniein với chiến lược kinh doanh,\nchúng tôi hiện thực hóa những bước nhảy vọt và kết quả kinh doanh thực tế vượt ra ngoài chuyển đổi kỹ thuật số." },
       items: [
@@ -92,7 +97,7 @@ export const dictionary = {
       title: { kr: "성공적인 글로벌 협력,\n지니인이 최적의 해답을 제시합니다", en: "Successful Global Cooperation,\nGeniein provides the optimal answer.", vn: "Hợp tác toàn cầu thành công,\nGeniein đưa ra câu trả lời tối ưu." },
       desc: { kr: "현장 중심의 전략과 탄탄한 기술력으로 실질적인 비즈니스 가치를 창출합니다.\n글로벌 비즈니스의 성공을 위한 최적의 파트너십, 지니인과 함께 시작하세요.", en: "We create tangible business value through field-oriented strategies and solid technology.\nThe optimal partnership for your global business success starts with Geniein.", vn: "Chúng tôi tạo ra giá trị kinh doanh hữu hình thông qua các chiến lược hướng tới thực tế và công nghệ vững chắc.\nMối quan hệ đối tác tối ưu cho sự thành công trong kinh doanh toàn cầu của bạn bắt đầu với Geniein." },
       seoul: { kr: "한국 본사 (주)지니인", en: "Korea HQ (Geniein Inc.)", vn: "Trụ sở chính Hàn Quốc (Geniein Inc.)" },
-      seoul_addr: { kr: "경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Room 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Phòng 302-179, Tầng 3, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" },
+      seoul_addr: { kr: "경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Room 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" },
       hanoi: { kr: "하노이 지사 (GENIE VINA)", en: "Hanoi Branch (GENIE VINA)", vn: "Chi nhánh Hà Nội (GENIE VINA)" },
       hanoi_addr: { kr: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", en: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", vn: "Tầng 21, tòa nhà Capital Tower, 109 Trần Hưng Đạo, Hà Nội" },
       form_name_ph: { kr: "성함 또는 기관명을 입력해주세요", en: "Enter your name or organization", vn: "Nhập tên hoặc tổ chức của bạn" },
@@ -104,7 +109,10 @@ export const dictionary = {
       success_desc: { kr: "문의가 접수되었습니다. 담당자가 확인 후 24시간 이내에 회신해 드립니다.", en: "Your inquiry has been received. Our representative will respond within 24 hours after review.", vn: "Yêu cầu của bạn đã được tiếp nhận. Đại diện của chúng tôi sẽ phản hồi trong vòng 24 giờ sau khi xem xét." }
     },
     footer: {
-      desc: { kr: "디지털 ODA 컨설팅 및 혁신적인 IT 플랫폼 분야의 글로벌 리더. 전 세계 국가들을 디지털로 하나 되게 연결하고, 모두의 지속 가능한 성장을 위한 인프라 구축을 주도합니다.", en: "A global leader in digital ODA consulting and innovative IT platforms. Connecting countries worldwide through digital and leading the building of infrastructure for sustainable growth for all.", vn: "Nhà lãnh đạo toàn cầu trong lĩnh vực tư vấn ODA kỹ thuật số và các nền tảng CNTT đổi mới. Kết nối các quốc gia trên toàn thế giới thông qua kỹ thuật số và dẫn đầu việc xây dựng cơ sở hạ tầng để tăng trưởng bền vững cho tất cả mọi người." }
+      desc: { kr: "디지털 ODA 컨설팅 및 혁신적인 IT 플랫폼 분야의 글로벌 리더. 전 세계 국가들을 디지털로 하나 되게 연결하고, 모두의 지속 가능한 성장을 위한 인프라 구축을 주도합니다.", en: "A global leader in digital ODA consulting and innovative IT platforms. Connecting countries worldwide through digital and leading the building of infrastructure for sustainable growth for all.", vn: "Nhà lãnh đạo toàn cầu trong lĩnh vực tư vấn ODA kỹ thuật số và các nền tảng CNTT đổi mới. Kết nối các quốc gia trên toàn thế giới thông qua kỹ thuật số và dẫn đầu việc xây dựng cơ sở hạ tầng để tăng trưởng bền vững cho tất cả mọi người." },
+      reg_no: { kr: "사업자등록번호: 645-81-03508", en: "Registration No: 645-81-03508", vn: "Mã số thuế: 645-81-03508" },
+      ceo: { kr: "대표: 이은주", en: "CEO: Lee Eun Joo", vn: "Đại diện: Lee Eun Joo" },
+      address: { kr: "주소: 경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Address: 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Địa chỉ: 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" }
     }
   },
   about: {
@@ -131,7 +139,7 @@ export const dictionary = {
         },
         {
           title: { kr: "MISSION", en: "MISSION", vn: "SỨ MỆNH" },
-          label: { kr: "초연결 시대의 리더", en: "Hyper-connectivity Leader", vn: "Lãnh đạo siêu kết nối" },
+          label: { kr: "새로운 연결의 설계", en: "Architecting New Connections", vn: "Thiết kế các kết nối mới" },
           desc: { kr: "전통적인 통신을 넘어 지능형 상호작용이 조화를 이루는 새로운 디지털 패러다임을 선도합니다.", en: "Beyond traditional telecommunications, leading a new digital paradigm where intelligent interaction harmonizes.", vn: "Vượt ra ngoài viễn thông truyền thống, dẫn đầu một mô hình kỹ thuật số mới nơi tương tác thông minh hài hòa." }
         },
         {
@@ -143,12 +151,12 @@ export const dictionary = {
     },
     organization: {
       label: { kr: "Global Network", en: "Global Network", vn: "Mạng lưới toàn cầu" },
-      title: { kr: "Synergy Across Borders", en: "Synergy Across Borders", vn: "Sự hiệp lực xuyên biên giới" },
+      title: { kr: "국경을 넘는 시너지", en: "Synergy Across Borders", vn: "Sự hiệp lực xuyên biên giới" },
       desc: { kr: "전략적 인사이트와 강력한 엔지니어링 역량이 결합된 글로벌 협업 네트워크", en: "A global collaboration network combining strategic insights and strong engineering capabilities.", vn: "Một mạng lưới hợp tác toàn cầu kết hợp giữa cái nhìn chiến lược và năng lực kỹ thuật mạnh mẽ." },
       expertise_label: { kr: "핵심 역량", en: "CORE CAPABILITIES", vn: "Năng lực cốt lõi" },
       hubs: [
         {
-          city: { kr: "한국 본사 (Geniein Co., Ltd)", en: "KOREA HQ (Geniein Co., Ltd)", vn: "Trụ sở chính Hàn Quốc\n(Geniein Co., Ltd)" },
+          city: { kr: "한국 본사\nGeniein Co., Ltd", en: "KOREA HQ\nGeniein Co., Ltd", vn: "Trụ sở chính Hàn Quốc\nGeniein Co., Ltd" },
           role: { kr: "전략 및 서비스 디자인 허브", en: "Strategy & Service Design Hub", vn: "Trung tâm Chiến lược & Thiết kế Dịch vụ" },
           address: { kr: "경기도 용인시 수지구 용구대로2790번길 7, 3층", en: "3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Tầng 3, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" },
           specialization: [
@@ -158,7 +166,7 @@ export const dictionary = {
           ]
         },
         {
-          city: { kr: "하노이 지사 (GENIE VINA)", en: "HANOI BRANCH (GENIE VINA)", vn: "Chi nhánh Hà Nội\n(GENIE VINA)" },
+          city: { kr: "하노이 지사\nGENIE VINA", en: "HANOI BRANCH\nGENIE VINA", vn: "Chi nhánh Hà Nội\nGENIE VINA" },
           role: { kr: "R&D 및 엔지니어링 허브", en: "R&D & Engineering Hub", vn: "Trung tâm R&D & Kỹ thuật" },
           address: { kr: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", en: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", vn: "Tầng 21, tòa nhà Capital Tower, 109 Trần Hưng Đạo, Hà Nội" },
           specialization: [
@@ -190,8 +198,8 @@ export const dictionary = {
   business: {
     hero: {
       label: { kr: "Business Areas", en: "Business Areas", vn: "Lĩnh vực kinh doanh" },
-      title_1: { kr: "STRATEGIC", en: "STRATEGIC", vn: "CHIẾN LƯỢC" },
-      title_2: { kr: "VALUE", en: "VALUE", vn: "GIÁ TRỊ" },
+      title_1: { kr: "BEYOND", en: "BEYOND", vn: "VƯỢT TRÊN" },
+      title_2: { kr: "INNOVATION", en: "INNOVATION", vn: "ĐỔI MỚI" },
       description: {
         kr: "현장 중심의 전문 기획과 혁신적인 기술력을 결합하여\n지속 가능한 디지털 성장의 새로운 길을 제시합니다.",
         en: "Combining field-oriented professional planning with innovative technology\nto present new paths for sustainable digital growth.",
@@ -200,7 +208,7 @@ export const dictionary = {
     },
     oda: {
       label: { kr: "ODA Service Scope", en: "ODA Service Scope", vn: "Phạm vi dịch vụ ODA" },
-      title: { kr: "Integrated Business Capability", en: "Integrated Business Capability", vn: "Khả năng kinh doanh tích hợp" },
+      title: { kr: "ODA 통합 기획 및 수행", en: "Integrated ODA Planning & Execution", vn: "Thiết kế & Triển khai tích hợp ODA" },
       description: {
         kr: "기획조사부터 시스템 구축, 운영 관리까지 프로젝트의 전 과정을 통합적으로 수행합니다. 단순한 인프라 공급을 넘어, 수원국의 자립을 지원하는 최적의 시스템 환경을 구축합니다.",
         en: "We integratedly perform the entire process of a project, from planning and research to system construction and operational management. Beyond simple infrastructure supply, we build an optimal system environment that supports the self-reliance of partner countries.",
@@ -218,7 +226,7 @@ export const dictionary = {
           desc: { kr: "현지 파트너 및 이해관계자와의 긴밀한 소통을 전담합니다. 현지 밀착형 코디네이션을 통해 사업의 실질적인 현지화와 성공적인 안착을 이끕니다.", en: "Dedicated to close communication with local partners and stakeholders. Leading real-world localization and successful project settlement through localized coordination.", vn: "Chuyên tâm giao tiếp chặt chẽ với các đối tác và các bên liên quan tại địa phương. Dẫn dắt quá trình nội địa hóa thực tế và ổn định dự án thành công thông qua điều phối cục bộ." }
         },
         {
-          title: { kr: "Consulting", en: "Consulting", vn: "Tư vấn" },
+          title: { kr: "컨설팅", en: "Consulting", vn: "Tư vấn" },
           label: { kr: "Strategy & DX Consulting", en: "Strategy & DX Consulting", vn: "Tư vấn chiến lược & DX" },
           desc: { kr: "타당성 조사(F/S)부터 디지털 전환(DX) 전략 수립까지 최적의 비즈니스 로드맵을 제시합니다. 현장 중심의 정책 자문과 제도 개선을 통해 사업의 안정적인 안착과 지속 가능한 성장을 지원합니다.", en: "Presenting the optimal business roadmap from Feasibility Studies (F/S) to Digital Transformation (DX) strategy. Supporting stable project settlement and sustainable growth through field-oriented policy advisory and institutional improvement.", vn: "Trình bày lộ trình kinh doanh tối ưu từ Nghiên cứu khả thi (F/S) đến chiến lược Chuyển đổi số (DX). Hỗ trợ dự án ổn định và tăng trưởng bền vững thông qua tư vấn chính sách hướng tới thực địa và cải thiện thể chế." }
         }
@@ -234,36 +242,41 @@ export const dictionary = {
       },
       capabilities: [
         {
-          title: { kr: "AI-Powered Software Estimation", en: "AI-Powered Software Estimation", vn: "Ước tính phần mềm bằng AI" },
+          title: { kr: "AI 기반 소프트웨어 가치 산정", en: "AI-Powered Software Estimation", vn: "Ước tính phần mềm bằng AI" },
           desc: { kr: "지능형 AI 엔진과 국제 표준 기능점수(FP) 산정 방식을 결합하여 소프트웨어의 실질적 규모를 객관적으로 측정합니다. 데이터 기반의 정교한 지표를 통해 개발 공수 산정의 표준화를 지향합니다.", en: "Combining intelligent AI engines with International Standard Function Point (FP) estimation to objectively measure the actual scale of software. We aim for the standardization of development effort estimation through sophisticated data-driven metrics.", vn: "Kết hợp các công cụ AI thông minh với phương pháp ước tính Điểm chức năng (FP) Tiêu chuẩn Quốc tế để đo lường khách quan quy mô thực tế của phần mềm. Chúng tôi hướng tới việc tiêu chuẩn hóa việc ước tính nỗ lực phát triển thông qua các số liệu tinh vi dựa trên dữ liệu." }
         },
         {
-          title: { kr: "AI-Driven Development Intelligence", en: "AI-Driven Development Intelligence", vn: "Trí tuệ phát triển dựa trên AI" },
+          title: { kr: "AI 기반 지능형 개발 플랫폼", en: "AI-Driven Development Intelligence", vn: "Nền tảng phát triển bằng AI" },
           desc: { kr: "자연어 기반의 지능형 개발 환경인 AI Studio를 통해 혁신적인 아이디어를 기술로 구체화합니다. AI 기술을 활용하여 소프트웨어 개발 생산성을 획기적으로 높입니다.", en: "Materializing innovative ideas into technology through AI Studio, a natural language-based intelligent development environment. Drastically increasing software development productivity using AI technology.", vn: "Hiện thực hóa các ý tưởng đổi mới thành công nghệ thông qua AI Studio, một môi trường phát triển thông minh dựa trên ngôn ngữ tự nhiên. Tăng đáng kể năng suất phát triển phần mềm bằng công nghệ AI." }
         },
         {
-          title: { kr: "Reliable Technical Operations", en: "Reliable Technical Operations", vn: "Vận hành kỹ thuật đáng tin cậy" },
+          title: { kr: "안정적 기술 운영 및 호스팅", en: "Reliable Technical Operations", vn: "Vận hành kỹ thuật đáng tin cậy" },
           desc: { kr: "소프트웨어가 안정적으로 서비스될 수 있도록 최적의 호스팅과 기술 지원을 제공합니다. 개발부터 운영까지 프로젝트의 전 과정을 신뢰할 수 있는 기술력으로 뒷받침합니다.", en: "Providing optimal hosting and technical support for stable software services. Supporting the entire project process from development to operation with reliable technical expertise.", vn: "Cung cấp dịch vụ hosting và hỗ trợ kỹ thuật tối ưu để dịch vụ phần mềm ổn định. Hỗ trợ toàn bộ quy trình dự án từ phát triển đến vận hành với chuyên môn kỹ thuật đáng tin cậy." }
         }
       ],
-      vision_title: { kr: "Sustainable Tech Growth", en: "Sustainable Tech Growth", vn: "Tăng trưởng công nghệ bền vững" },
+      vision_title: { kr: "지속 가능한 기술 생태계", en: "Sustainable Tech Ecosystem", vn: "Hệ sinh thái acông nghệ bền vững" },
       vision_desc: {
-        kr: "지니인은 기술의 발전이 모두의 혜택으로 돌아가는 지속 가능한 생태계를 꿈꿉니다. 인류와 기술이 조화롭게 공존하며, 새로운 가치를 지속적으로 창출하는 미래를 향해 나아갑니다.",
-        en: "Geniein dreams of a sustainable ecosystem where technological advancement benefits everyone. We move toward a future where humanity and technology coexist harmoniously and create new value.",
-        vn: "Geniein mơ về một hệ sinh thái bền vững nơi sự tiến bộ công nghệ mang lại lợi ích cho tất cả mọi người. Chúng tôi hướng tới một tương lai nơi nhân loại và công nghệ cùng tồn tại hài hòa và tạo ra giá trị mới."
+        kr: "지니인은 기술의 발전이 모두의 혜택으로 돌아가는 지속 가능한 생태계를 꿈꿉니다. 인류와 기술이 조화롭게 공존하며, 새로운 가치를 지속적으로 창출하는 미래를 향해 나아가겠습니다.",
+        en: "Geniein dreams of a sustainable ecosystem where technological advancement benefits everyone. We will move toward a future where humanity and technology coexist harmoniously and create new value.",
+        vn: "Geniein mơ về một hệ sinh thái bền vững nơi sự tiến bộ công nghệ mang lại lợi ích cho tất cả mọi người. Chúng tôi sẽ hướng tới một tương lai nơi nhân loại và công nghệ cùng tồn tại hài hòa và tạo ra giá trị mới."
       }
     }
   },
   contact: {
     hero: {
-      label: { kr: "Global Cooperation", en: "Global Cooperation", vn: "Hợp tác toàn cầu" },
-      title_1: { kr: "LET'S BUILD", en: "LET'S BUILD", vn: "CÙNG NHAU" },
-      title_2: { kr: "TOGETHER", en: "TOGETHER", vn: "XÂY DỰNG" },
+      label: { kr: "Contact Us", en: "Contact Us", vn: "Liên hệ với chúng tôi" },
+      title_1: { kr: "GROW", en: "GROW", vn: "CÙNG NHAU" },
+      title_2: { kr: "TOGETHER", en: "TOGETHER", vn: "PHÁT TRIỂN" },
       description: {
-        kr: "기회를 현실로 만드는 지니인\n어떠한 질문이나 제안도 환영합니다.",
-        en: "Geniein turns opportunities into reality.\nAny questions or suggestions are welcome.",
-        vn: "Geniein biến cơ hội thành hiện thực.\nMọi câu hỏi hoặc đề xuất đều được chào đón."
+        kr: "글로벌 시장의 가능성을 현실로 연결하는 지니인\n새로운 비즈니스의 시작을 위한 최적의 파트너십을 제안합니다.",
+        en: "Geniein connects global market possibilities to reality.\nWe propose the optimal partnership for your new business journey.",
+        vn: "Geniein kết nối các khả năng của thị trường toàn cầu với thực tế.\nChúng tôi đề xuất mối quan hệ đối tác tối ưu cho hành trình kinh doanh mới của bạn."
       }
+    },
+    section: {
+      label: { kr: "Global Partnership", en: "Global Partnership", vn: "Hợp tác toàn cầu" },
+      title: { kr: "데이터로 설계하는 새로운 비즈니스 라우팅", en: "New Business Routing Designed with Data", vn: "Định hướng kinh doanh mới được thiết kế bằng dữ liệu" },
+      desc: { kr: "데이터 기반의 깊이 있는 분석과 통찰을 통해\n비즈니스 성장을 위한 최적의 솔루션을 설계합니다.", en: "We design optimal solutions for business growth\nthrough in-depth data-based analysis and insights.", vn: "Chúng tôi thiết kế các giải pháp tối ưu cho sự phát triển kinh doanh\nthông qua phân tích chuyên sâu và hiểu biết dựa trên dữ liệu." }
     },
     form: {
       label: { kr: "Inquiry Form", en: "Inquiry Form", vn: "Mẫu yêu cầu" },
@@ -286,7 +299,7 @@ export const dictionary = {
       success_title: { kr: "문의가 성공적으로 접수되었습니다.", en: "Inquiry submitted successfully.", vn: "Yêu cầu đã được gửi thành công." },
       success_desc: { kr: "담당자가 확인 후 최대한 빠르게 답변 드리겠습니다.", en: "Our representative will review and respond as soon as possible.", vn: "Đại diện của chúng tôi sẽ xem xét 및 phản hồi sớm nhất có thể." },
       new_btn: { kr: "새로운 문의하기", en: "New Inquiry", vn: "Yêu cầu mới" },
-      intro: { kr: "성공적인 글로벌 협력,\n지니인이 최적의 해답을 제시합니다.", en: "Successful global cooperation,\nGeniein presents the optimal answer.", vn: "Hợp tác toàn cầu thành công,\nGeniein đưa ra câu trả lời tối ưu." },
+      intro: { kr: "글로벌 비즈니스 협력,\n지니인이 함께하겠습니다.", en: "Global business cooperation,\nGeniein will be with you.", vn: "Hợp tác kinh doanh toàn cầu,\nGeniein sẽ luôn đồng hành." },
       errors: {
         name: { kr: "이름을 입력해주세요", en: "Please enter your name", vn: "Vui lòng nhập tên của bạn" },
         email: { kr: "올바른 이메일 주소를 입력해주세요", en: "Please enter a valid email address", vn: "Vui lòng nhập địa chỉ email hợp lệ" },

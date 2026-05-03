@@ -18,7 +18,7 @@ export function OdaServices() {
   const phases = ["Planning & F/S", "Procurement", "Implementation", "Monitoring & Evaluation"]
 
   return (
-    <section id="oda" className="py-40 relative overflow-hidden border-t border-border/50 bg-background">
+    <section id="oda" className="py-28 relative overflow-hidden bg-background">
       {/* Blueprint Grid Background */}
       <div className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none">
         <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
@@ -32,8 +32,7 @@ export function OdaServices() {
         </svg>
       </div>
       
-      {/* Gradient Top Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+
       
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-12 gap-16 items-start">

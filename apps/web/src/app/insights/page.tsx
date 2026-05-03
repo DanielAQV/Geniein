@@ -45,6 +45,29 @@ function InsightsContent() {
       <div ref={navRef}>
         <InsightsNav />
       </div>
+      
+      <section className="pt-28 pb-16 bg-background">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
+            >
+              <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
+                {t('landing.insights.label')}
+              </span>
+            </motion.div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8 tracking-tighter">
+              {t('landing.insights.title')}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
+              {t('landing.insights.desc')}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <div className="relative min-h-[800px] scroll-mt-20">
         <AnimatePresence mode="wait">
@@ -85,7 +108,7 @@ export default function InsightsPage() {
       <Header />
       
       {/* Insights Hero */}
-      <section className="relative pt-48 pb-40 overflow-hidden border-b border-white/5">
+      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/heroes/insights.png" 
@@ -117,20 +140,20 @@ export default function InsightsPage() {
               <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
                 {t('landing.insights.label')}
               </span>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto uppercase text-balance">
-                {t('landing.insights.title')}
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto text-balance">
+                {t('landing.insights.hero_title')}
               </h1>
             </div>
             <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
-              {t('landing.insights.desc')}
+              {t('landing.insights.hero_desc')}
             </p>
           </motion.div>
         </div>
       </section>
       
-      <div className="relative h-px w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
-      </div>
+
+
+
 
       <Suspense fallback={<div className="h-96" />}>
         <InsightsContent />

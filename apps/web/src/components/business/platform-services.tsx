@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Cpu, Database, LayoutPanelTop, BarChart3, ShieldCheck, Share2 } from "lucide-react"
+import { Database, LayoutPanelTop, BarChart3, ShieldCheck, Share2 } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -17,7 +17,19 @@ export function PlatformServices() {
   const capabilities = dictionary.business.platform.capabilities
 
   return (
-    <section id="platforms" className="py-40 bg-background border-t border-border/50 relative overflow-hidden">
+    <section id="platforms" className="py-28 bg-background relative overflow-hidden">
+      {/* Blueprint Grid Background */}
+      <div className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none">
+        <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="platform-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+              <circle cx="0" cy="0" r="1" fill="currentColor" className="text-primary" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#platform-grid)" />
+        </svg>
+      </div>
       {/* Futuristic Background Decor */}
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
         {/* Large Gradient Orbs */}
@@ -43,7 +55,7 @@ export function PlatformServices() {
             viewport={{ once: true }}
             className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
           >
-            <Cpu className="h-4 w-4 text-primary" />
+
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
               {t('business.platform.label')}
             </span>

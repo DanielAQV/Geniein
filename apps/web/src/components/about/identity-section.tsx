@@ -17,7 +17,7 @@ export function IdentitySection() {
   const steps = dictionary.about.identity.steps
 
   return (
-    <section id="identity" className="py-32 relative bg-background">
+    <section id="identity" className="py-28 relative bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-16">
           {/* Left Side: Philosophy Narrative */}
@@ -29,6 +29,7 @@ export function IdentitySection() {
               className="sticky top-32"
             >
               <div className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5">
+
                 <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
                   {t('about.identity.label')}
                 </span>

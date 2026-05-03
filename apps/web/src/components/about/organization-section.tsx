@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Globe, MapPin, Laptop, Briefcase } from "lucide-react"
+import { MapPin, Laptop, Briefcase } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -23,7 +23,7 @@ export function OrganizationSection() {
   ]
 
   return (
-    <section id="organization" className="py-32 bg-background/50 border-y border-border/50 relative overflow-hidden">
+    <section id="organization" className="py-28 bg-background/50 border-y border-border/50 relative overflow-hidden">
       {/* Decorative Network Lines */}
       <div className="absolute inset-0 -z-10 opacity-10 pointer-events-none">
         <svg className="h-full w-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
@@ -41,7 +41,7 @@ export function OrganizationSection() {
             viewport={{ once: true }}
             className="mb-6 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
           >
-            <Globe className="h-4 w-4 text-primary" />
+
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
               {t('about.organization.label')}
             </span>

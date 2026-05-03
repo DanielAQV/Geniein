@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const sections = [
-  { id: "hero", label: "01", title: "Innovation" },
+  { id: "hero", label: "01", title: "Geniein" },
   { id: "business", label: "02", title: "Business" },
   { id: "insights", label: "03", title: "AI Insights" },
   { id: "contact", label: "04", title: "Contact" },

@@ -50,9 +50,9 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
         thumbnail_url: item.thumbnail_url,
         category: item.category,
         date: { 
-          kr: item.published_at ? new Date(item.published_at).toLocaleDateString('ko-KR') : "최근", 
-          en: item.published_at ? new Date(item.published_at).toLocaleDateString('en-US') : "Recent", 
-          vn: item.published_at ? new Date(item.published_at).toLocaleDateString('vi-VN') : "Gần đây" 
+          kr: item.published_at ? (() => { const d = new Date(item.published_at); return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`; })() : "최근", 
+          en: item.published_at ? (() => { const d = new Date(item.published_at); return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`; })() : "Recent", 
+          vn: item.published_at ? (() => { const d = new Date(item.published_at); return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`; })() : "Gần đây" 
         }
       }))
     : []
@@ -64,65 +64,64 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
   ]
 
   return (
-    <section id={id} className="py-24 relative overflow-hidden bg-[var(--page-bg)] transition-colors duration-300">
+    <section id={id} className={`${isFullPage ? 'pt-0 pb-28' : 'py-28'} relative overflow-hidden bg-background transition-colors duration-300`}>
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col items-center text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
-          >
-            <Sparkles className="h-4 w-4 text-primary relative z-10" />
-            <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">
-              {t('landing.insights.label')}
-            </span>
-          </motion.div>
-          
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line"
-          >
-            {category ? (
-              <>
-                <span className="text-primary italic">{category}</span> Insights
-              </>
-            ) : (
-              <>
-                Strategic <br />
-                <span className="text-primary italic">Business Insights</span>
-              </>
-            )}
-          </motion.h2>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
-          >
-            {category === 'ODA' 
-              ? t('landing.insights.desc_oda')
-              : (category === 'IT' 
-                ? t('landing.insights.desc_it')
-                : t('landing.insights.desc'))}
-          </motion.p>
-        </div>
+        {!isFullPage && (
+          <div className="flex flex-col items-center text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
+            >
+              <Sparkles className="h-4 w-4 text-primary relative z-10" />
+              <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">
+                {t('landing.insights.label')}
+              </span>
+            </motion.div>
+            
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line"
+            >
+              {category ? (
+                <>
+                  <span className="text-primary italic">{category}</span> Insights
+                </>
+              ) : (
+                t('landing.insights.section_title')
+              )}
+            </motion.h2>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
+            >
+              {category === 'ODA' 
+                ? t('landing.insights.desc_oda')
+                : (category === 'IT' 
+                  ? t('landing.insights.desc_it')
+                  : t('landing.insights.desc'))}
+            </motion.p>
+          </div>
+        )}
 
         {/* Active Tag Filter Indicator */}
         {activeTag && (
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex justify-center mb-10"
+            className="flex justify-center mb-4"
           >
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary">
               <Tag className="h-4 w-4" />
@@ -225,7 +224,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
               disabled={page === 1 || isLoading}
               className="h-12 px-8 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] text-sm font-bold hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 text-foreground"
             >
-              <ArrowRight className="h-4 w-4 rotate-180" /> Previous
+              <ArrowRight className="h-4 w-4 rotate-180" /> {t('common.prev')}
             </button>
             
             <div className="h-12 w-12 rounded-full border border-primary/20 bg-primary/5 flex items-center justify-center font-bold text-primary">
@@ -237,7 +236,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
               disabled={(insights && insights.length < limit) || isLoading}
               className="h-12 px-8 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] text-sm font-bold hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 text-foreground"
             >
-              Next <ArrowRight className="h-4 w-4" />
+              {t('common.next')} <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         ) : (

@@ -27,7 +27,7 @@ function InsightsNavContent() {
   ]
 
   return (
-    <div className="sticky top-[64px] z-40 w-full border-t border-border/40 border-b border-border bg-card/60 backdrop-blur-xl shadow-sm">
+    <div className="sticky top-[64px] z-40 w-full border-t border-border/40 border-b border-border bg-card/60 backdrop-blur-xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-center sm:justify-start gap-8 h-14">
           {tabs.map((tab) => (

@@ -87,7 +87,7 @@ export default function BusinessPage() {
       <Header />
       
       {/* Business Hero */}
-      <section className="relative pt-48 pb-40 overflow-hidden border-b border-white/5">
+      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/heroes/business.png" 
@@ -129,12 +129,9 @@ export default function BusinessPage() {
           </motion.div>
         </div>
         
-        {/* Removed stroke-text style */}
       </section>
 
-      <div className="relative h-px w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
-      </div>
+
 
       <Suspense fallback={<div className="h-96" />}>
         <BusinessContent />

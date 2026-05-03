@@ -37,7 +37,7 @@ export function OfficeInfo() {
             <div className="text-[11px] font-bold text-primary tracking-[0.2em] uppercase mb-2">
               {office.role}
             </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-tight break-keep">
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-tight break-keep whitespace-pre-line">
               {office.title}
             </h3>
           </div>

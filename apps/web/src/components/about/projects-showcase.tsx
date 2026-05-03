@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { BarChart3, Globe, Zap, Layout, Shield } from "lucide-react"
+import { Globe, Zap, Layout, Shield } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -17,7 +17,7 @@ export function ProjectsShowcase() {
   }))
 
   return (
-    <section id="projects" className="py-32 relative bg-background">
+    <section id="projects" className="py-28 relative bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-24 gap-8">
           <div className="max-w-2xl">
@@ -27,7 +27,7 @@ export function ProjectsShowcase() {
               viewport={{ once: true }}
               className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
             >
-              <BarChart3 className="h-4 w-4 text-primary" />
+
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
                 {t('about.projects.label')}
               </span>
