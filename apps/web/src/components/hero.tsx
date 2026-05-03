@@ -3,10 +3,9 @@
 import Link from "next/link"
 import { ArrowRight, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { ParticleBackground } from "./particle-background"
-import { TechMap } from "./tech-map"
 
 export function Hero() {
   const { t } = useLanguage()
@@ -14,7 +13,7 @@ export function Hero() {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-32">
       {/* Premium Dynamic Background */}
-      <div className="absolute inset-0 -z-10 bg-[#02040a]">
+      <div className="absolute inset-0 -z-10 bg-[var(--page-bg)] transition-colors duration-300">
         <ParticleBackground />
         
         {/* Deep Atmosphere Glows */}
@@ -35,76 +34,47 @@ export function Hero() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left: Content */}
-          <div className="text-left">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              {/* Premium Shimmering Badge */}
-              <div className="mb-8 inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl relative overflow-hidden group shadow-2xl">
-                <motion.div
-                  animate={{ left: ["-100%", "200%"] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12"
-                />
-                <Zap className="h-4 w-4 text-primary relative z-10" />
-                <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">
-                  {t('hero.badge')}
-                </span>
-              </div>
-
-              {/* Headline */}
-              <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-foreground leading-[1.1] mb-8">
-                <span className="block">{t('hero.title_main')}</span>
-                <span className="text-transparent stroke-text">{t('hero.title_accent')}</span>
-              </h1>
-
-              {/* Sub-headline */}
-              <p className="text-xl text-muted-foreground max-w-xl font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line">
-                {t('hero.description')}
-              </p>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <Button asChild size="lg" className="w-full sm:w-auto rounded-full px-10 text-base h-14 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-1">
-                  <Link href="/business" className="flex items-center justify-center">
-                    {t('hero.btn_projects')}
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full sm:w-auto rounded-full px-10 text-base h-14 bg-white/5 backdrop-blur-md hover:bg-white/10 border border-white/10 transition-all hover:-translate-y-1 text-white"
-                >
-                  <Link href="/contact" className="flex items-center justify-center">
-                    {t('hero.btn_contact')}
-                  </Link>
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Right: Strategic Tech Map */}
+        <div className="text-center max-w-4xl mx-auto flex flex-col items-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block relative"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="w-full"
           >
-            <TechMap />
+
+            {/* Headline */}
+            <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-foreground leading-[1.1] mb-8">
+              <span className="block">{t('hero.title_main')}</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-primary inline-block pb-2">{t('hero.title_accent')}</span>
+            </h1>
+
+            {/* Sub-headline */}
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line">
+              {t('hero.description')}
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button asChild size="lg" className="w-full sm:w-auto rounded-full px-10 text-base h-14 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-1">
+                <Link href="/business" className="flex items-center justify-center">
+                  {t('hero.btn_projects')}
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                className="w-full sm:w-auto rounded-full px-10 text-base h-14 bg-[var(--glass-bg)] backdrop-blur-md hover:bg-muted border border-[var(--glass-border)] transition-all hover:-translate-y-1 text-foreground"
+              >
+                <Link href="/contact" className="flex items-center justify-center">
+                  {t('hero.btn_contact')}
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>
 
-      <style jsx>{`
-        .stroke-text {
-          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-        }
-      `}</style>
     </section>
   )
 }

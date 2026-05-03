@@ -49,12 +49,12 @@ export function ProjectsShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
-              className="group relative grid lg:grid-cols-12 gap-0 border border-white/10 bg-white/[0.05] backdrop-blur-md hover:bg-white/[0.08] transition-all overflow-hidden rounded-3xl shadow-2xl"
+              className="group relative grid lg:grid-cols-12 gap-0 border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 transition-all overflow-hidden rounded-3xl shadow-2xl"
             >
               {/* Project Info */}
-              <div className="lg:col-span-8 p-10 lg:p-16 border-b lg:border-b-0 lg:border-r border-white/10">
+              <div className="lg:col-span-8 p-10 lg:p-16 border-b lg:border-b-0 lg:border-r border-border/50">
                 <div className="flex items-center gap-5 mb-10">
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 shadow-inner">
+                  <div className="p-4 rounded-xl bg-card/30 border border-border/50 shadow-inner">
                     {project.icon}
                   </div>
                   <div>
@@ -68,12 +68,12 @@ export function ProjectsShowcase() {
               </div>
 
               {/* Project Metrics */}
-              <div className="lg:col-span-4 p-10 lg:p-12 bg-primary/[0.04] flex flex-col justify-center relative overflow-hidden border-l border-white/5">
+              <div className="lg:col-span-4 p-10 lg:p-12 bg-primary/[0.04] flex flex-col justify-center relative overflow-hidden border-l border-border/30">
                 <div className="space-y-6 relative z-10">
                   {project.metrics.map((metric, mIdx) => (
                     <div 
                       key={mIdx} 
-                      className="group/metric p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-all duration-300"
+                      className="group/metric p-6 rounded-2xl bg-card/20 border border-border/30 hover:bg-card/40 transition-all duration-300"
                     >
                       <div className="flex items-center gap-4 mb-3">
                         <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover/metric:bg-primary group-hover/metric:text-white transition-colors duration-300">

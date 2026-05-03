@@ -63,7 +63,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
   ]
 
   return (
-    <section id={id} className="py-24 relative overflow-hidden bg-[#02040a]">
+    <section id={id} className="py-24 relative overflow-hidden bg-[var(--page-bg)] transition-colors duration-300">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
@@ -74,7 +74,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md relative overflow-hidden group shadow-lg"
+            className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
           >
             <Sparkles className="h-4 w-4 text-primary relative z-10" />
             <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">
@@ -143,12 +143,12 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
               ODA: { color: "bg-blue-500/10 text-blue-500", label: "ODA" },
               IT: { color: "bg-emerald-500/10 text-emerald-500", label: "IT" },
               POLICY: { color: "bg-purple-500/10 text-purple-500", label: "Policy" },
-            }[insight.category?.toUpperCase()] || { color: "bg-white/10 text-white", label: insight.category || "Insight" };
+            }[insight.category?.toUpperCase()] || { color: "bg-muted text-muted-foreground", label: insight.category || "Insight" };
 
             return (
               <div
                 key={index}
-                className="group relative bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-[2rem] p-0 overflow-hidden hover:bg-white/[0.08] transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.1)] flex flex-col"
+                className="group relative bg-card/80 backdrop-blur-md border border-border/50 rounded-[2rem] p-0 overflow-hidden hover:bg-card transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.1)] flex flex-col"
               >
                 {/* Stretched Link for the entire card */}
                 {insight.id && (
@@ -168,7 +168,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
                       <Sparkles className="h-8 w-8 text-primary/40" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#02040a] via-[#02040a]/20 to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--page-bg)] via-[var(--page-bg)]/20 to-transparent opacity-80" />
                   
                   {/* Category Tag on Image */}
                   <div className="absolute top-4 left-4 z-20">
@@ -180,18 +180,18 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
 
                 <div className="p-6 flex flex-col flex-grow">
                   {/* Title */}
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-snug min-h-[3.5rem]">
+                  <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-snug min-h-[3.5rem]">
                     {insight.title[language]}
                   </h3>
 
                   {/* Summary instead of Perspective */}
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-6 font-light">
+                  <p className="text-sm text-[var(--muted-foreground)] leading-relaxed line-clamp-3 mb-6 font-light">
                     {insight.summary[language]}
                   </p>
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between pt-5 border-t border-white/5 mt-auto">
-                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground/60 font-medium uppercase tracking-wider">
+                    <div className="flex items-center justify-between pt-5 border-t border-[var(--border)] mt-auto">
+                    <div className="flex items-center gap-2 text-[11px] text-[var(--muted-foreground)]/60 font-medium uppercase tracking-wider">
                       <Clock className="h-3 w-3" />
                       {insight.date[language]}
                     </div>
@@ -222,7 +222,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
             <button 
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1 || isLoading}
-              className="h-12 px-8 rounded-full border border-white/10 bg-white/5 text-sm font-bold hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 text-white"
+              className="h-12 px-8 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] text-sm font-bold hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 text-foreground"
             >
               <ArrowRight className="h-4 w-4 rotate-180" /> Previous
             </button>
@@ -234,7 +234,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
             <button 
               onClick={() => setPage(p => p + 1)}
               disabled={(insights && insights.length < limit) || isLoading}
-              className="h-12 px-8 rounded-full border border-white/10 bg-white/5 text-sm font-bold hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 text-white"
+              className="h-12 px-8 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] text-sm font-bold hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-2 text-foreground"
             >
               Next <ArrowRight className="h-4 w-4" />
             </button>
@@ -244,7 +244,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
           <div className="flex justify-center mt-16">
             <Link 
               href="/insights"
-              className="group flex items-center gap-3 h-14 px-10 rounded-full bg-white/5 border border-white/10 hover:bg-primary transition-all duration-500 text-white font-bold"
+              className="group flex items-center gap-3 h-14 px-10 rounded-full bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:bg-primary transition-all duration-500 text-foreground hover:text-primary-foreground font-bold"
             >
               {language === 'kr' ? '더 보기' : (language === 'en' ? 'View More' : 'Xem thêm')} 
               <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />

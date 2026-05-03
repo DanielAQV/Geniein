@@ -31,7 +31,7 @@ export function OfficeInfo() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ delay: index * 0.1 }}
-          className="flex-1 p-8 rounded-3xl border border-white/10 bg-white/[0.05] backdrop-blur-md hover:bg-white/[0.08] hover:border-primary/30 transition-all group shadow-xl flex flex-col justify-center"
+          className="flex-1 p-8 rounded-3xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group shadow-xl flex flex-col justify-center"
         >
           <div className="mb-8">
             <div className="text-[11px] font-bold text-primary tracking-[0.2em] uppercase mb-2">
@@ -47,13 +47,13 @@ export function OfficeInfo() {
               <div className="mt-1.5 h-4 w-4 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
               </div>
-              <p className="text-[15px] text-zinc-200 break-keep leading-relaxed font-light">
+              <p className="text-[15px] text-muted-foreground break-keep leading-relaxed font-light">
                 {office.address}
               </p>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
+          <div className="mt-8 pt-6 border-t border-border/30 flex items-center justify-between">
             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
               <div className="h-1 w-1 rounded-full bg-primary/60" />
               {office.location}

@@ -63,7 +63,7 @@ export function IdentitySection() {
                     <div className="absolute -inset-2 bg-primary/5 rounded-full animate-pulse" />
                   </div>
 
-                  <div className="p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.05] backdrop-blur-md hover:bg-white/[0.08] hover:border-primary/30 transition-all group relative overflow-hidden shadow-2xl">
+                  <div className="p-8 md:p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group relative overflow-hidden shadow-2xl">
                     <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                       <span className="text-8xl font-bold tracking-tighter">0{index + 1}</span>
                     </div>

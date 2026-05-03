@@ -16,6 +16,7 @@ import {
   DropdownMenuItem 
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -203,6 +204,8 @@ export function Header() {
                 </DropdownMenuContent>
               </div>
             </DropdownMenu>
+
+            <ThemeToggle />
 
             <Button asChild size="sm" className="rounded-full px-5">
               <Link href="/contact">{t('common.consulting_btn')}</Link>

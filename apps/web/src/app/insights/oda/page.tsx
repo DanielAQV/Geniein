@@ -12,18 +12,18 @@ export default function InsightsOdaPage() {
   const { t } = useLanguage()
 
   return (
-    <main className="min-h-screen bg-[#02040a]">
+    <main className="min-h-screen bg-background">
       <Header />
       
       {/* Insights ODA Hero */}
-      <section className="relative pt-48 pb-32 overflow-hidden border-b border-white/5">
+      <section className="relative pt-48 pb-32 overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/heroes/insights.png" 
             alt="Insights ODA Background" 
             className="w-full h-full object-cover opacity-70"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050810]/40 via-[#02040a]/60 to-[#02040a]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
         </div>
         
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
@@ -32,21 +32,18 @@ export default function InsightsOdaPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
-              AI Insights
-            </span>
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground mb-8 leading-[0.9] text-balance uppercase">
-              ODA <br />
-              <span className="text-transparent stroke-text">INSIGHTS</span>
-            </h1>
+            <div className="flex flex-col items-center">
+              <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
+                AI INSIGHTS
+              </span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+                AI STRATEGY ODA INSIGHTS
+              </h1>
+            </div>
           </motion.div>
         </div>
         
-        <style jsx>{`
-          .stroke-text {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-          }
-        `}</style>
+        {/* Removed stroke-text style */}
       </section>
 
       <InsightsNav />

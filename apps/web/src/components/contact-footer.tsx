@@ -25,7 +25,7 @@ export function ContactFooter() {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md relative overflow-hidden group shadow-lg"
+              className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
             >
               <Users className="h-4 w-4 text-primary relative z-10" />
               <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">

@@ -11,11 +11,11 @@ export default function ContactPage() {
   const { t } = useLanguage()
 
   return (
-    <main className="min-h-screen bg-[#02040a]">
+    <main className="min-h-screen bg-background">
       <Header />
       
       {/* Contact Hero */}
-      <section className="relative pt-48 pb-40 overflow-hidden border-b border-white/5">
+      <section className="relative pt-48 pb-40 overflow-hidden border-b border-border/50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -23,8 +23,8 @@ export default function ContactPage() {
             alt="Contact Background" 
             className="w-full h-full object-cover opacity-70"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050810]/40 via-[#02040a]/60 to-[#02040a]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#02040a] via-transparent to-[#02040a] opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background opacity-40" />
         </div>
 
         <div className="absolute inset-0 z-0 opacity-10">
@@ -44,24 +44,21 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
-              {t('contact.hero.label')}
-            </span>
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground mb-8 leading-[0.9] text-balance">
-              {t('contact.hero.title_1')} <br />
-              <span className="text-transparent stroke-text">{t('contact.hero.title_2')}</span>
-            </h1>
+            <div className="flex flex-col items-center">
+              <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
+                {t('contact.hero.label')}
+              </span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+                {t('contact.hero.title_1')} {t('contact.hero.title_2')}
+              </h1>
+            </div>
             <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line">
               {t('contact.hero.description')}
             </p>
           </motion.div>
         </div>
         
-        <style jsx>{`
-          .stroke-text {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-          }
-        `}</style>
+        {/* Removed stroke-text style */}
       </section>
       
       {/* Signature Gradient Beam Separator */}

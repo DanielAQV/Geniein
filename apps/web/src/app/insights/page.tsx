@@ -81,7 +81,7 @@ export default function InsightsPage() {
   const { t } = useLanguage()
 
   return (
-    <main className="min-h-screen bg-[#02040a]">
+    <main className="min-h-screen bg-background">
       <Header />
       
       {/* Insights Hero */}
@@ -92,8 +92,8 @@ export default function InsightsPage() {
             alt="Insights Background" 
             className="w-full h-full object-cover opacity-70"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#050810]/40 via-[#02040a]/60 to-[#02040a]" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#02040a] via-transparent to-[#02040a] opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background opacity-40" />
         </div>
 
         <div className="absolute inset-0 z-0 opacity-10">
@@ -113,24 +113,21 @@ export default function InsightsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
-              {t('landing.insights.label')}
-            </span>
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground mb-8 leading-[0.9] text-balance uppercase">
-              AI <br />
-              <span className="text-transparent stroke-text">INSIGHTS</span>
-            </h1>
+            <div className="flex flex-col items-center">
+              <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
+                {t('landing.insights.label')}
+              </span>
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+                AI STRATEGY INSIGHTS
+              </h1>
+            </div>
             <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line">
               {t('landing.insights.desc')}
             </p>
           </motion.div>
         </div>
         
-        <style jsx>{`
-          .stroke-text {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-          }
-        `}</style>
+        {/* Removed stroke-text style */}
       </section>
       
       <div className="relative h-px w-full overflow-hidden">

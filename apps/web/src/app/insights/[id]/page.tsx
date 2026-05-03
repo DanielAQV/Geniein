@@ -23,13 +23,13 @@ export default function InsightDetailPage() {
   const { data: insight, error, isLoading } = useSWR(`/insights/${id}`, fetcher)
 
   if (isLoading) return (
-    <div className="min-h-screen bg-[#02040a] flex items-center justify-center">
+    <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="h-8 w-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
     </div>
   )
 
   if (error || !insight) return (
-    <div className="min-h-screen bg-[#02040a] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
       <h1 className="text-2xl font-bold mb-4">Insight not found</h1>
       <button onClick={() => router.back()} className="text-primary flex items-center gap-2">
         <ArrowLeft className="h-4 w-4" /> Go back
@@ -38,7 +38,7 @@ export default function InsightDetailPage() {
   )
 
   return (
-    <div className="min-h-screen bg-[#02040a] text-foreground font-sans">
+    <div className="min-h-screen bg-background text-foreground font-sans">
       <Header />
 
       <main className="pt-32 pb-20 px-4">
@@ -48,7 +48,7 @@ export default function InsightDetailPage() {
             onClick={() => router.back()}
             className="group flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8"
           >
-            <div className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary/50 transition-colors">
+            <div className="h-8 w-8 rounded-full border border-border/50 flex items-center justify-center group-hover:border-primary/50 transition-colors">
               <ArrowLeft className="h-4 w-4" />
             </div>
             <span className="text-sm font-medium">Back to Insights</span>
@@ -60,7 +60,7 @@ export default function InsightDetailPage() {
               <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest border border-primary/20">
                 {insight.category}
               </span>
-              <div className="h-1 w-1 rounded-full bg-white/20" />
+              <div className="h-1 w-1 rounded-full bg-foreground/20" />
               <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
                 <Calendar className="h-4 w-4" />
                 {new Date(insight.published_at || insight.created_at).toLocaleDateString()}
@@ -72,7 +72,7 @@ export default function InsightDetailPage() {
             </h1>
 
             {/* Featured Image (NEW) */}
-            <div className="relative w-full h-[400px] md:h-[500px] rounded-[2.5rem] overflow-hidden mb-12 border border-white/5 shadow-2xl">
+            <div className="relative w-full h-[400px] md:h-[500px] rounded-[2.5rem] overflow-hidden mb-12 border border-border/30 shadow-2xl">
               {insight.thumbnail_url ? (
                 <img 
                   src={insight.thumbnail_url} 
@@ -84,10 +84,10 @@ export default function InsightDetailPage() {
                   <Sparkles className="h-20 w-20 text-primary/30 animate-pulse" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#02040a] via-transparent to-transparent opacity-60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
             </div>
 
-            <div className="flex items-center justify-between py-6 border-y border-white/5">
+            <div className="flex items-center justify-between py-6 border-y border-border/50">
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center font-bold text-white shadow-lg">
                   G

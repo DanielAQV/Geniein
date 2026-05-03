@@ -17,7 +17,7 @@ export function PlatformServices() {
   const capabilities = dictionary.business.platform.capabilities
 
   return (
-    <section id="platforms" className="py-40 bg-[#050b1a] border-t border-white/5 relative overflow-hidden">
+    <section id="platforms" className="py-40 bg-background border-t border-border/50 relative overflow-hidden">
       {/* Futuristic Background Decor */}
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none">
         {/* Large Gradient Orbs */}
@@ -64,7 +64,7 @@ export function PlatformServices() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="p-10 rounded-2xl border border-white/10 bg-white/[0.05] backdrop-blur-md hover:bg-white/[0.08] hover:border-primary/30 transition-all group relative shadow-2xl"
+              className="p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group relative shadow-2xl"
             >
               <div className="mb-8 p-4 w-fit rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
                 {icons[index]}
@@ -82,7 +82,7 @@ export function PlatformServices() {
           ))}
         </div>
 
-        <div className="mt-24 p-12 md:p-16 rounded-3xl border border-primary/20 bg-primary/[0.03] backdrop-blur-sm relative overflow-hidden shadow-2xl">
+        <div className="mt-24 p-12 md:p-16 rounded-3xl border border-primary/20 bg-card/30 backdrop-blur-sm relative overflow-hidden shadow-2xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
             <div>
               <h4 className="text-3xl font-bold text-foreground mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>

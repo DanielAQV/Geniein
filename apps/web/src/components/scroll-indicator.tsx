@@ -60,7 +60,7 @@ export function ScrollIndicator() {
   }, [])
 
   return (
-    <div className="fixed inset-y-0 right-12 z-50 hidden lg:flex items-center pointer-events-none">
+    <div className="fixed inset-y-0 right-6 z-50 hidden lg:flex items-center pointer-events-none">
       <div className="flex flex-col items-center gap-12 w-14 pointer-events-auto">
         {/* Current Number Display with Circular Progress */}
           <div className="flex flex-col items-center gap-3">
@@ -141,7 +141,7 @@ export function ScrollIndicator() {
                   <motion.div
                     animate={{
                       scale: isActive ? 1.2 : 1,
-                      backgroundColor: isActive ? "var(--primary)" : "rgba(255, 255, 255, 0.4)",
+                      backgroundColor: isActive ? "var(--primary)" : "var(--dot-inactive)",
                     }}
                     className="relative z-10 h-1.5 w-1.5 rounded-full transition-colors duration-300"
                   />

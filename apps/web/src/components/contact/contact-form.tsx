@@ -104,15 +104,9 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   }
 
   return (
-    <div className="h-full p-8 md:p-12 rounded-3xl border border-white/10 bg-white/[0.05] backdrop-blur-xl shadow-2xl relative">
-      {/* Form Grid Accent */}
-      <div className="absolute top-0 right-0 w-32 h-32 opacity-10 pointer-events-none overflow-hidden rounded-tr-3xl">
-        <svg viewBox="0 0 100 100" className="w-full h-full fill-primary">
-          <rect width="10" height="10" x="90" y="0" />
-          <rect width="10" height="10" x="70" y="0" />
-          <rect width="10" height="10" x="90" y="20" />
-        </svg>
-      </div>
+    <div className="h-full p-8 md:p-12 rounded-3xl border border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl relative group overflow-hidden">
+      {/* Form Decoration Accent */}
+
 
       <div className="relative z-10">
         {showIntro && (
@@ -130,7 +124,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
               value={formData.name}
               onChange={handleChange}
               placeholder={t('contact.form.name_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-white/[0.03] border ${errors.name ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-white/10'} focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.name ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
             />
             <AnimatePresence>
               {errors.name && (
@@ -153,7 +147,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
               value={formData.email}
               onChange={handleChange}
               placeholder={t('contact.form.email_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-white/[0.03] border ${errors.email ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-white/10'} focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.email ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
             />
             <AnimatePresence>
               {errors.email && (
@@ -179,7 +173,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
               value={formData.phone}
               onChange={handleChange}
               placeholder={t('contact.form.phone_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-white/[0.03] border ${errors.phone ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-white/10'} focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.phone ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
             />
             <AnimatePresence>
               {errors.phone && (
@@ -201,7 +195,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
               value={formData.org}
               onChange={handleChange}
               placeholder={t('contact.form.org_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-white/[0.03] border ${errors.org ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-white/10'} focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.org ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
             />
             <AnimatePresence>
               {errors.org && (
@@ -222,7 +216,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
           <label className="text-sm font-semibold text-primary ml-1 mb-2 block">{t('contact.form.type')}</label>
           <div 
             onClick={() => setIsOpen(!isOpen)}
-            className={`w-full h-12 px-4 rounded-xl bg-white/[0.03] border ${isOpen ? 'border-primary ring-1 ring-primary/20' : 'border-white/10'} flex items-center justify-between cursor-pointer transition-all hover:border-white/20`}
+            className={`w-full h-12 px-4 rounded-xl bg-card/50 border ${isOpen ? 'border-primary ring-4 ring-primary/10 bg-card' : 'border-border hover:border-primary/40 hover:bg-card/70'} flex items-center justify-between cursor-pointer transition-all`}
           >
             <span className={`text-sm ${inquiryType ? 'text-foreground' : 'text-muted-foreground/30'}`}>
               {currentTypeLabel}
@@ -239,7 +233,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 bg-[#050b1a] border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-black/50 backdrop-blur-xl"
+                  className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 bg-card border border-border rounded-xl overflow-hidden shadow-2xl shadow-black/20 backdrop-blur-xl"
                 >
                   {inquiryTypes.map((item) => (
                     <div
@@ -267,7 +261,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
             value={formData.message}
             onChange={handleChange}
             placeholder={t('contact.form.message_ph')}
-            className={`w-full px-4 py-3 rounded-xl bg-white/[0.03] border ${errors.message ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-white/10'} focus:border-primary focus:ring-1 focus:ring-primary/20 focus:outline-none transition-all text-foreground resize-none placeholder:text-muted-foreground/30 text-sm`}
+            className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.message ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground resize-none placeholder:text-muted-foreground/30 text-sm`}
           />
           <AnimatePresence>
             {errors.message && (

@@ -20,7 +20,7 @@ export function BusinessOverview() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md relative overflow-hidden group shadow-lg"
+            className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
           >
             {/* Shimmer Effect */}
             <motion.div
@@ -32,32 +32,52 @@ export function BusinessOverview() {
                 repeat: Infinity,
                 ease: "linear",
               }}
-              className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12"
+              className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-primary/5 to-transparent -skew-x-12"
             />
             <Target className="h-4 w-4 text-primary relative z-10" />
             <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">
               {t('landing.business.label')}
             </span>
           </motion.div>
-          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground text-balance break-keep">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl font-semibold text-foreground text-balance break-keep"
+          >
             {t('landing.business.title')}
-          </h2>
-          <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line">
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line"
+          >
             {t('landing.business.description')}
-          </p>
+          </motion.p>
         </div>
 
         {/* Split Cards */}
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {/* ODA Consulting Card */}
-          <Link
-            href="/business#oda"
-            className="group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-8 lg:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20"
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="h-full"
           >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 transition-transform duration-500 group-hover:scale-150" />
+            <Link
+            href="/business?category=oda"
+            className="block h-full group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-8 lg:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20"
+          >
+
+
             
             <div className="relative">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary mb-6">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-6">
                 <Globe2 className="h-7 w-7" />
               </div>
               
@@ -84,16 +104,25 @@ export function BusinessOverview() {
               </div>
             </div>
           </Link>
+          </motion.div>
 
           {/* IT Platform Card */}
-          <Link
-            href="/business#platforms"
-            className="group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-8 lg:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20"
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="h-full"
           >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-accent/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 transition-transform duration-500 group-hover:scale-150" />
+            <Link
+            href="/business?category=platform"
+            className="block h-full group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-8 lg:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20"
+          >
+
+
             
             <div className="relative">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-accent/10 text-accent mb-6">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 text-accent mb-6">
                 <Layers className="h-7 w-7" />
               </div>
               
@@ -120,6 +149,7 @@ export function BusinessOverview() {
               </div>
             </div>
           </Link>
+          </motion.div>
         </div>
       </div>
     </section>

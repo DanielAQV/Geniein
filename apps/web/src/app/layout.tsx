@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Noto_Sans_KR } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ThemeProvider } from 'next-themes'
 import './globals.css'
 
 const notoSans = Noto_Sans_KR({
@@ -40,13 +41,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${notoSans.variable} dark bg-background scroll-smooth`}>
+    <html lang="en" className={`${notoSans.variable} bg-background scroll-smooth`} suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <LanguageProvider>
-          {children}
-          {process.env.NODE_ENV === 'production' && <Analytics />}
-        </LanguageProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <LanguageProvider>
+            {children}
+            {process.env.NODE_ENV === 'production' && <Analytics />}
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
 }
+

@@ -18,7 +18,7 @@ export function OdaServices() {
   const phases = ["Planning & F/S", "Procurement", "Implementation", "Monitoring & Evaluation"]
 
   return (
-    <section id="oda" className="py-40 relative overflow-hidden border-t border-white/5 bg-[#02040a]">
+    <section id="oda" className="py-40 relative overflow-hidden border-t border-border/50 bg-background">
       {/* Blueprint Grid Background */}
       <div className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none">
         <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
@@ -79,7 +79,7 @@ export function OdaServices() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.05] backdrop-blur-md hover:bg-white/[0.08] hover:border-primary/30 transition-all relative overflow-hidden shadow-2xl"
+                className="group p-8 md:p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all relative overflow-hidden shadow-2xl"
               >
                 <div className="flex gap-8 items-start">
                   <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary shadow-inner">
