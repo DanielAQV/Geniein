@@ -19,9 +19,9 @@ export default function Home() {
       <BusinessOverview />
       <SectionDivider />
       
-      <Suspense fallback={null}>
+      <Suspense fallback={<section id="insights" className="min-h-[100px]" />}>
         <AIInsights />
-</Suspense>
+      </Suspense>
       <SectionDivider />
       
       <ContactFooter />
