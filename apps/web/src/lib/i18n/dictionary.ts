@@ -35,7 +35,7 @@ export const dictionary = {
       description: {
         kr: "현장 중심의 기획과 차별화된 기술력으로 무장한 지니인은\n글로벌 ODA와 AI 플랫폼 시장의 새로운 표준을 제시합니다.",
         en: "Armed with field-oriented planning and differentiated technology,\nGeniein presents new standards for the global ODA and AI platform markets.",
-        vn: "Được trang bị quy hoạch hướng tới thực địa và công nghệ khác biệt,\nGeniein đưa ra các tiêu chuẩn mới cho thị trường ODA và nền tảng AI toàn cầu."
+        vn: "Được trang bị quy hoạch hướng tới thực địa và công nghệ khác biệt,\nGeniein đưa ra các tiêu chuẩn mới cho ODA toàn cầu và nền tảng AI."
       },
       oda_title: { kr: "글로벌 ODA 컨설팅", en: "Global ODA Consulting", vn: "Tư vấn ODA Toàn cầu" },
       oda_desc: { kr: "글로벌 균형 발전을 위한 파트너로서, IT 인프라와 전자정부, 사이버 보안 등 전 분야에 걸친 포괄적인 ODA 서비스를 제공합니다.", en: "As a partner for global balanced development, we provide comprehensive ODA services across various fields including IT infrastructure, e-government, and cybersecurity.", vn: "Với tư cách là đối tác vì sự phát triển cân bằng toàn cầu, chúng tôi cung cấp các dịch vụ ODA toàn diện trong nhiều lĩnh vực bao gồm hạ tầng CNTT, chính phủ điện tử và an ninh mạng." },
@@ -56,7 +56,7 @@ export const dictionary = {
     },
     insights: {
       label: { kr: "Business\nInsights", en: "Business\nInsights", vn: "Góc nhìn\nKinh doanh" },
-      title: { kr: "전략적 비즈니스 분석", en: "Strategic Business Insights", vn: "Phân tích kinh doanh chiến lược" },
+      title: { kr: "STRATEGIC AI INSIGHTS", en: "Strategic Business Insights", vn: "Phân tích kinh doanh chiến lược" },
       desc: { kr: "실시간 글로벌 비즈니스 데이터와 AI 기술을 결합하여,\n전략적 의사결정을 위한 핵심 인사이트를 도출합니다.", en: "Combining real-time global business data with AI technology,\nwe derive core insights for strategic decision-making.", vn: "Kết hợp dữ liệu kinh doanh toàn cầu theo thời gian thực với công nghệ AI,\nchúng tôi đưa ra các thông tin cốt lõi cho việc ra quyết định chiến lược." },
       desc_oda: { kr: "글로벌 디지털 전환 트렌드와 ODA 전략의 융합을 통해,\n국가 간 협력을 넘어 새로운 글로벌 비즈니스 시장의 가능성을 분석합니다.", en: "Through the convergence of global DX trends and ODA strategies,\nwe analyze new global business market possibilities beyond inter-country cooperation.", vn: "Thông qua sự hội tụ của các xu hướng DX toàn cầu và chiến lược ODA,\nchúng tôi phân tích các khả năng thị trường kinh doanh toàn cầu mới vượt ra ngoài hợp tác giữa các quốc gia." },
       desc_it: { kr: "지니인만의 독보적인 AI 기술 인사이트를 비즈니스 전략과 결합하여,\n디지털 전환 그 이상의 실질적인 사업적 도약과 성과를 실현합니다.", en: "By combining Geniein's unique AI technology insights with business strategy,\nwe realize practical business leaps and results beyond digital transformation.", vn: "Bằng cách kết hợp những hiểu biết sâu sắc về công nghệ AI độc đáo của Geniein với chiến lược kinh doanh,\nchúng tôi hiện thực hóa những bước nhảy vọt và kết quả kinh doanh thực tế vượt ra ngoài chuyển đổi kỹ thuật số." },
@@ -257,8 +257,8 @@ export const dictionary = {
   contact: {
     hero: {
       label: { kr: "Global Cooperation", en: "Global Cooperation", vn: "Hợp tác toàn cầu" },
-      title_1: { kr: "LET'S BUILD", en: "LET'S BUILD", vn: "HÃY CÙNG XÂY DỰNG" },
-      title_2: { kr: "TOGETHER", en: "TOGETHER", vn: "VỚI NHAU" },
+      title_1: { kr: "LET'S BUILD", en: "LET'S BUILD", vn: "CÙNG NHAU" },
+      title_2: { kr: "TOGETHER", en: "TOGETHER", vn: "XÂY DỰNG" },
       description: {
         kr: "기회를 현실로 만드는 지니인\n어떠한 질문이나 제안도 환영합니다.",
         en: "Geniein turns opportunities into reality.\nAny questions or suggestions are welcome.",

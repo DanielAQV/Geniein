@@ -119,11 +119,11 @@ export default function BusinessPage() {
               <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
                 {t('business.hero.label')}
               </span>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto text-balance">
                 {t('business.hero.title_1')} {t('business.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
               {t('business.hero.description')}
             </p>
           </motion.div>

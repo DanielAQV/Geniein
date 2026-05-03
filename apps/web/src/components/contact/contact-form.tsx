@@ -279,14 +279,12 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
 
         <Button
           disabled={isSubmitting}
-          className="w-full h-14 rounded-xl text-base font-bold uppercase bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
+          className="w-full h-14 rounded-xl text-base font-bold uppercase bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 active:translate-y-0"
         >
           {isSubmitting ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            <div className="flex items-center gap-2">
-              {t('contact.form.submit')} <Send className="h-4 w-4" />
-            </div>
+            t('contact.form.submit')
           )}
         </Button>
       </form>

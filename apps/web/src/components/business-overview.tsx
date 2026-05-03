@@ -44,7 +44,7 @@ export function BusinessOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-semibold text-foreground text-balance break-keep"
+            className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line text-balance break-keep"
           >
             {t('landing.business.title')}
           </motion.h2>
@@ -53,7 +53,7 @@ export function BusinessOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line"
+            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light whitespace-pre-line text-balance break-keep"
           >
             {t('landing.business.description')}
           </motion.p>
@@ -74,7 +74,6 @@ export function BusinessOverview() {
             className="block h-full group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-8 lg:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20"
           >
 
-
             
             <div className="relative">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-6">
@@ -85,7 +84,7 @@ export function BusinessOverview() {
                 {t('landing.business.oda_title')}
               </h3>
               
-              <p className="text-muted-foreground leading-relaxed mb-6 break-keep">
+              <p className="text-muted-foreground leading-relaxed mb-6 break-keep text-balance">
                 {t('landing.business.oda_desc')}
               </p>
 
@@ -98,7 +97,7 @@ export function BusinessOverview() {
                 ))}
               </ul>
 
-              <div className="inline-flex items-center gap-2 text-base font-medium text-primary group-hover:gap-3 transition-all">
+              <div className="inline-flex items-center gap-1.5 text-base font-medium text-primary group-hover:gap-3 transition-all">
                 {t('common.more')}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>
@@ -119,7 +118,6 @@ export function BusinessOverview() {
             className="block h-full group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-8 lg:p-10 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20"
           >
 
-
             
             <div className="relative">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 text-accent mb-6">
@@ -130,7 +128,7 @@ export function BusinessOverview() {
                 {t('landing.business.platform_title')}
               </h3>
               
-              <p className="text-muted-foreground leading-relaxed mb-6 break-keep">
+              <p className="text-muted-foreground leading-relaxed mb-6 break-keep text-balance">
                 {t('landing.business.platform_desc')}
               </p>
 
@@ -143,7 +141,7 @@ export function BusinessOverview() {
                 ))}
               </ul>
 
-              <div className="inline-flex items-center gap-2 text-base font-medium text-accent group-hover:gap-3 transition-all">
+              <div className="inline-flex items-center gap-1.5 text-base font-medium text-accent group-hover:gap-3 transition-all">
                 {t('common.more')}
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>

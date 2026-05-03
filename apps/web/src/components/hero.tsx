@@ -5,6 +5,7 @@ import { ArrowRight, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { GlassButton } from "./ui/glass-button"
 import { ParticleBackground } from "./particle-background"
 
 export function Hero() {
@@ -49,7 +50,7 @@ export function Hero() {
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line">
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line text-balance">
               {t('hero.description')}
             </p>
 
@@ -58,18 +59,12 @@ export function Hero() {
               <Button asChild size="lg" className="w-full sm:w-auto rounded-full px-10 text-base h-14 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-1">
                 <Link href="/business" className="flex items-center justify-center">
                   {t('hero.btn_projects')}
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-1.5 h-5 w-5" />
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                className="w-full sm:w-auto rounded-full px-10 text-base h-14 bg-[var(--glass-bg)] backdrop-blur-md hover:bg-muted border border-[var(--glass-border)] transition-all hover:-translate-y-1 text-foreground"
-              >
-                <Link href="/contact" className="flex items-center justify-center">
-                  {t('hero.btn_contact')}
-                </Link>
-              </Button>
+              <GlassButton href="/contact">
+                {t('hero.btn_contact')}
+              </GlassButton>
             </div>
           </motion.div>
         </div>

@@ -52,7 +52,7 @@ export default function ContactPage() {
                 {t('contact.hero.title_1')} {t('contact.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
               {t('contact.hero.description')}
             </p>
           </motion.div>

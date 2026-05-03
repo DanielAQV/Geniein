@@ -12,25 +12,12 @@ const sections = [
 
 export function ScrollIndicator() {
   const [activeSection, setActiveSection] = useState("hero")
-  const [scrollProgress, setScrollProgress] = useState(0)
+
+  const activeIndex = sections.findIndex((s) => s.id === activeSection)
+  const scrollProgress = ((activeIndex + 1) / sections.length) * 100
 
   useEffect(() => {
-    const handleScroll = () => {
-      const lastSection = document.getElementById(sections[sections.length - 1].id)
-      if (!lastSection) return
-
-      // 스크롤이 도달해야 할 최종 지점 (마지막 섹션의 하단 = 푸터 시작점)
-      const contentEnd = lastSection.offsetTop + lastSection.offsetHeight
-      // 뷰포트 하단이 contentEnd에 닿았을 때가 100%가 되는 스크롤 위치
-      const targetScroll = contentEnd - window.innerHeight
-      
-      const scrollPos = window.scrollY
-      
-      // 0에서 100 사이로 계산 (푸터 영역으로 넘어가도 100% 유지)
-      const progress = Math.max(0, Math.min((scrollPos / targetScroll) * 100, 100))
-      setScrollProgress(progress)
-    }
-
+    // 1. IntersectionObserver Setup
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -40,27 +27,48 @@ export function ScrollIndicator() {
         })
       },
       { 
-        threshold: 0.3,
-        rootMargin: "-20% 0px -20% 0px" // More natural triggering
+        threshold: 0.1,
+        rootMargin: "-20% 0px -20% 0px"
       }
     )
 
-    sections.forEach((section) => {
-      const el = document.getElementById(section.id)
-      if (el) observer.observe(el)
-    })
+    // 2. Fallback Scroll Handler (더 확실한 감지를 위해)
+    const handleScrollFallback = () => {
+      const scrollPos = window.scrollY + window.innerHeight / 3
+      
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i].id)
+        if (el && scrollPos >= el.offsetTop) {
+          setActiveSection(sections[i].id)
+          break
+        }
+      }
+    }
 
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll() // Initialize
+    // 초기 관찰 대상 등록
+    const registerObservers = () => {
+      sections.forEach((section) => {
+        const el = document.getElementById(section.id)
+        if (el) observer.observe(el)
+      })
+    }
+
+    registerObservers()
+    
+    // 서스펜스 등으로 늦게 마운트되는 요소들을 위해 약간의 지연 후 재등록
+    const timer = setTimeout(registerObservers, 1000)
+
+    window.addEventListener("scroll", handleScrollFallback, { passive: true })
 
     return () => {
       observer.disconnect()
-      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("scroll", handleScrollFallback)
+      clearTimeout(timer)
     }
   }, [])
 
   return (
-    <div className="fixed inset-y-0 right-6 z-50 hidden lg:flex items-center pointer-events-none">
+    <div className="fixed inset-y-0 right-10 z-50 hidden lg:flex items-center pointer-events-none">
       <div className="flex flex-col items-center gap-12 w-14 pointer-events-auto">
         {/* Current Number Display with Circular Progress */}
           <div className="flex flex-col items-center gap-3">

@@ -1,13 +1,14 @@
 "use client"
 import React, { useState } from "react"
 
-import { ArrowUpRight, Rss, Clock, Sparkles, ArrowRight, Tag } from "lucide-react"
+import { ArrowUpRight, Rss, Clock, Sparkles, ArrowRight, Tag, Globe, Cpu, Zap } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
 import { useSearchParams } from "next/navigation"
+import { GlassButton } from "./ui/glass-button"
 import useSWR from "swr"
 import { fetcher } from "@/lib/api"
 
@@ -139,12 +140,6 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
         {/* Insights Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {insightItems.map((insight: any, index: number) => {
-            const categoryData = {
-              ODA: { color: "bg-blue-500/10 text-blue-500", label: "ODA" },
-              IT: { color: "bg-emerald-500/10 text-emerald-500", label: "IT" },
-              POLICY: { color: "bg-purple-500/10 text-purple-500", label: "Policy" },
-            }[insight.category?.toUpperCase()] || { color: "bg-muted text-muted-foreground", label: insight.category || "Insight" };
-
             return (
               <div
                 key={index}
@@ -169,16 +164,22 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--page-bg)] via-[var(--page-bg)]/20 to-transparent opacity-80" />
-                  
-                  {/* Category Tag on Image */}
-                  <div className="absolute top-4 left-4 z-20">
-                    <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest ${categoryData.color} backdrop-blur-md border border-white/5 shadow-xl`}>
-                      {categoryData.label}
-                    </span>
-                  </div>
                 </div>
 
                 <div className="p-6 flex flex-col flex-grow">
+                  {/* AI Tags - Minimal Hashtags */}
+                  <div className="flex flex-wrap gap-2 mb-3 relative z-40">
+                    {insight.tags?.slice(0, 2).map((tag: string) => (
+                      <Link 
+                        key={tag}
+                        href={`/insights?tag=${encodeURIComponent(tag)}`}
+                        className="text-[10px] font-bold text-primary/60 hover:text-primary transition-colors uppercase tracking-widest"
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+
                   {/* Title */}
                   <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-snug min-h-[3.5rem]">
                     {insight.title[language]}
@@ -242,13 +243,9 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
         ) : (
           /* View More Button for Home */
           <div className="flex justify-center mt-16">
-            <Link 
-              href="/insights"
-              className="group flex items-center gap-3 h-14 px-10 rounded-full bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:bg-primary transition-all duration-500 text-foreground hover:text-primary-foreground font-bold"
-            >
+            <GlassButton href="/insights">
               {language === 'kr' ? '더 보기' : (language === 'en' ? 'View More' : 'Xem thêm')} 
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
-            </Link>
+            </GlassButton>
           </div>
         )}
       </div>

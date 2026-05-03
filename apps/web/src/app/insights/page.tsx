@@ -85,7 +85,7 @@ export default function InsightsPage() {
       <Header />
       
       {/* Insights Hero */}
-      <section className="relative pt-48 pb-32 overflow-hidden border-b border-white/5">
+      <section className="relative pt-48 pb-40 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/heroes/insights.png" 
@@ -117,17 +117,15 @@ export default function InsightsPage() {
               <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
                 {t('landing.insights.label')}
               </span>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
-                AI STRATEGY INSIGHTS
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto uppercase text-balance">
+                {t('landing.insights.title')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
               {t('landing.insights.desc')}
             </p>
           </motion.div>
         </div>
-        
-        {/* Removed stroke-text style */}
       </section>
       
       <div className="relative h-px w-full overflow-hidden">

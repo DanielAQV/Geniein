@@ -24,9 +24,10 @@ export function Footer() {
                 Geniein
               </span>
             </Link>
-            <div className="space-y-3 text-base text-muted-foreground font-light tracking-wide">
-              <p>사업자등록번호: 645-81-03508 | 대표: 변범준</p>
-              <p>주소: 경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호</p>
+            <div className="space-y-1 text-sm text-muted-foreground/80 font-light tracking-wide leading-relaxed">
+              <p>{t('landing.footer.reg_no')}</p>
+              <p>{t('landing.footer.ceo')}</p>
+              <p>{t('landing.footer.address')}</p>
             </div>
           </div>
 
