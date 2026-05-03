@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-dynamic'
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { AIInsights } from "@/components/ai-insights"
