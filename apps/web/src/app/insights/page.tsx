@@ -17,35 +17,26 @@ function InsightsContent() {
   const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const updateTabFromHash = () => {
-      const hash = window.location.hash.replace("#", "")
-      
-      if (hash === "it") {
-        setActiveTab("it")
-      } else if (hash === "oda") {
-        setActiveTab("oda")
-      }
-
-      if (hash) {
-        setTimeout(() => {
-          if (navRef.current) {
-            const navTop = navRef.current.getBoundingClientRect().top + window.pageYOffset
-            window.scrollTo({
-              top: navTop - 64,
-              behavior: "smooth"
-            })
-          }
-        }, 100)
-      }
-    }
-
-    updateTabFromHash()
-    window.addEventListener("hashchange", updateTabFromHash)
+    const category = searchParams.get('category')
     
-    return () => {
-      window.removeEventListener("hashchange", updateTabFromHash)
+    if (category === "it") {
+      setActiveTab("it")
+    } else {
+      setActiveTab("oda")
     }
-  }, [pathname, searchParams])
+
+    if (category) {
+      setTimeout(() => {
+        if (navRef.current) {
+          const navTop = navRef.current.getBoundingClientRect().top + window.pageYOffset
+          window.scrollTo({
+            top: navTop - 64,
+            behavior: "smooth"
+          })
+        }
+      }, 100)
+    }
+  }, [searchParams])
 
   return (
     <>

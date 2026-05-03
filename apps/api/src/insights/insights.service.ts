@@ -16,12 +16,25 @@ export class InsightsService {
     });
   }
 
-  async findPublished(limit: number = 6, page: number = 1, category?: string) {
+  async findPublished(limit: number = 6, page: number = 1, category?: string, tag?: string) {
     const skip = (page - 1) * limit;
     const where: any = { publish_status: PublishStatus.PUBLISHED };
     
     if (category) {
       where.category = category.toLowerCase();
+    }
+
+    if (tag) {
+      // Postgres-specific tag array overlap check
+      // For TypeORM, we can use raw where or specific operators
+      return this.insightRepository.createQueryBuilder('insight')
+        .where('insight.publish_status = :status', { status: PublishStatus.PUBLISHED })
+        .andWhere(category ? 'insight.category = :category' : '1=1', { category: category?.toLowerCase() })
+        .andWhere(':tag = ANY(insight.tags)', { tag })
+        .orderBy('insight.published_at', 'DESC')
+        .take(limit)
+        .skip(skip)
+        .getMany();
     }
 
     return this.insightRepository.find({

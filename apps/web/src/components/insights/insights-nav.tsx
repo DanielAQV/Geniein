@@ -13,29 +13,17 @@ function InsightsNavContent() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "")
-      if (hash === "it") {
-        setActiveTab("it")
-      } else {
-        setActiveTab("oda")
-      }
+    const category = searchParams.get('category')
+    if (category === "it") {
+      setActiveTab("it")
+    } else {
+      setActiveTab("oda")
     }
-
-    handleHashChange()
-    window.addEventListener("hashchange", handleHashChange)
-    
-    const interval = setInterval(handleHashChange, 500)
-    
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange)
-      clearInterval(interval)
-    }
-  }, [pathname, searchParams])
+  }, [searchParams])
 
   const tabs = [
-    { id: "oda", label: t('common.insights_oda'), href: "/insights#oda" },
-    { id: "it", label: t('common.insights_it'), href: "/insights#it" }
+    { id: "oda", label: t('common.insights_oda'), href: "/insights?category=oda" },
+    { id: "it", label: t('common.insights_it'), href: "/insights?category=it" }
   ]
 
   return (

@@ -10,11 +10,13 @@ export class InsightsController {
     @Query('limit') limit?: number,
     @Query('page') page?: number,
     @Query('category') category?: string,
+    @Query('tag') tag?: string,
   ) {
     return this.insightsService.findPublished(
       Number(limit) || 6, 
       Number(page) || 1,
-      category
+      category,
+      tag
     );
   }
 

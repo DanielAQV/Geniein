@@ -13,29 +13,17 @@ function BusinessNavContent() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "")
-      if (hash === "platform" || hash === "platforms") {
-        setActiveTab("platform")
-      } else {
-        setActiveTab("oda")
-      }
+    const category = searchParams.get('category')
+    if (category === "platform" || category === "platforms") {
+      setActiveTab("platform")
+    } else {
+      setActiveTab("oda")
     }
-
-    handleHashChange()
-    window.addEventListener("hashchange", handleHashChange)
-    
-    const interval = setInterval(handleHashChange, 500)
-    
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange)
-      clearInterval(interval)
-    }
-  }, [pathname, searchParams])
+  }, [searchParams])
 
   const tabs = [
-    { id: "oda", label: t('common.oda'), href: "#oda" },
-    { id: "platform", label: t('common.platform'), href: "#platforms" }
+    { id: "oda", label: t('common.oda'), href: "/business?category=oda" },
+    { id: "platform", label: t('common.platform'), href: "/business?category=platform" }
   ]
 
   return (

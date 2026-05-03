@@ -76,7 +76,7 @@ export function Header() {
                 >
                   <DropdownMenuItem asChild className="focus:bg-transparent p-0">
                     <Link 
-                      href="/business#oda" 
+                      href="/business?category=oda" 
                       scroll={false}
                       className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
                     >
@@ -87,7 +87,7 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="focus:bg-transparent p-0">
                     <Link 
-                      href="/business#platforms" 
+                      href="/business?category=platform" 
                       scroll={false}
                       className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
                     >
@@ -124,7 +124,7 @@ export function Header() {
                 >
                   <DropdownMenuItem asChild className="focus:bg-transparent p-0">
                     <Link 
-                      href="/insights#oda" 
+                      href="/insights?category=oda" 
                       scroll={false}
                       className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
                     >
@@ -135,7 +135,7 @@ export function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="focus:bg-transparent p-0">
                     <Link 
-                      href="/insights#it" 
+                      href="/insights?category=it" 
                       scroll={false}
                       className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
                     >
@@ -240,7 +240,7 @@ export function Header() {
                   {t('common.business')}
                 </Link>
                 <Link
-                  href="/business#oda"
+                  href="/business?category=oda"
                   scroll={false}
                   className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
                   onClick={() => setMobileMenuOpen(false)}
@@ -248,7 +248,7 @@ export function Header() {
                   {t('common.oda')}
                 </Link>
                 <Link
-                  href="/business#platforms"
+                  href="/business?category=platform"
                   scroll={false}
                   className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
                   onClick={() => setMobileMenuOpen(false)}
@@ -267,7 +267,7 @@ export function Header() {
                   {t('common.insights')}
                 </Link>
                 <Link
-                  href="/insights#oda"
+                  href="/insights?category=oda"
                   scroll={false}
                   className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
                   onClick={() => setMobileMenuOpen(false)}
@@ -275,7 +275,7 @@ export function Header() {
                   {t('common.insights_oda')}
                 </Link>
                 <Link
-                  href="/insights#it"
+                  href="/insights?category=it"
                   scroll={false}
                   className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
                   onClick={() => setMobileMenuOpen(false)}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import useSWR from "swr"
 import { fetcher } from "@/lib/api"
 import { useLanguage } from "@/lib/i18n/language-context"
@@ -123,7 +124,7 @@ export default function InsightDetailPage() {
               </div>
             </section>
 
-            {/* Geniein Perspective Highlight */}
+            {/* Geniein Perspective Highlight - Commented out as requested
             {(insight[`perspective_${language}`] || insight.perspective_kr) && (
               <motion.section 
                 initial={{ opacity: 0, y: 20 }}
@@ -149,14 +150,19 @@ export default function InsightDetailPage() {
                 </div>
               </motion.section>
             )}
+            */}
 
             {/* Tags */}
             {insight.tags && insight.tags.length > 0 && (
               <div className="pt-8 flex flex-wrap gap-2">
                 {insight.tags.map((tag: string) => (
-                  <span key={tag} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-muted-foreground hover:bg-white/10 transition-colors cursor-default">
-                    <Tag className="h-3 w-3" /> {tag}
-                  </span>
+                  <Link 
+                    key={tag} 
+                    href={`/insights?tag=${encodeURIComponent(tag)}`}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-muted-foreground hover:bg-primary/20 hover:border-primary/30 hover:text-primary transition-all group/tag"
+                  >
+                    <Tag className="h-3 w-3 group-hover/tag:scale-110 transition-transform" /> {tag}
+                  </Link>
                 ))}
               </div>
             )}

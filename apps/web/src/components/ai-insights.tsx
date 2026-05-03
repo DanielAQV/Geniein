@@ -1,12 +1,13 @@
 "use client"
 import React, { useState } from "react"
 
-import { ArrowUpRight, Rss, Clock, Sparkles, ArrowRight } from "lucide-react"
+import { ArrowUpRight, Rss, Clock, Sparkles, ArrowRight, Tag } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
+import { useSearchParams } from "next/navigation"
 import useSWR from "swr"
 import { fetcher } from "@/lib/api"
 
@@ -18,17 +19,19 @@ interface AIInsightsProps {
 
 export function AIInsights({ isFullPage = false, category, id = "insights" }: AIInsightsProps) {
   const { t, language } = useLanguage()
+  const searchParams = useSearchParams()
+  const activeTag = searchParams.get('tag')
   const [page, setPage] = useState(1)
   const limit = isFullPage ? 6 : 3
   
-  // Update API URL based on category if provided
-  const apiUrl = category 
-    ? `/insights?limit=${limit}&page=${page}&category=${category}`
-    : `/insights?limit=${limit}&page=${page}`
+  // Update API URL based on category and tag
+  let apiUrl = `/insights?limit=${limit}&page=${page}`
+  if (category) apiUrl += `&category=${category}`
+  if (activeTag) apiUrl += `&tag=${encodeURIComponent(activeTag)}`
     
   const { data: insights, isLoading } = useSWR(apiUrl, fetcher)
   
-  // Use API data if available, otherwise fallback to dictionary and filter manually for static demo
+  // Use API data if available, otherwise return empty array (remove static demo fallback)
   const insightItems = insights && insights.length > 0 
     ? insights.map((item: any) => ({
         id: item.id,
@@ -51,9 +54,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
           vn: item.published_at ? new Date(item.published_at).toLocaleDateString('vi-VN') : "Gần đây" 
         }
       }))
-    : (dictionary.landing.insights.items as any[]).filter((item: any) => 
-        !category || (item.tag && item.tag.toUpperCase() === category.toUpperCase())
-      )
+    : []
 
   const categories = [
     { tag: "ODA", tagColor: "bg-blue-500/10 text-blue-500" },
@@ -114,6 +115,26 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
                 : t('landing.insights.desc'))}
           </motion.p>
         </div>
+
+        {/* Active Tag Filter Indicator */}
+        {activeTag && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex justify-center mb-10"
+          >
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary">
+              <Tag className="h-4 w-4" />
+              <span className="text-sm font-bold">Tag: {activeTag}</span>
+              <Link 
+                href={category ? `/insights?category=${category}` : '/insights'}
+                className="ml-2 h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center hover:bg-primary/40 transition-colors"
+              >
+                <span className="text-xs">✕</span>
+              </Link>
+            </div>
+          </motion.div>
+        )}
 
         {/* Insights Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

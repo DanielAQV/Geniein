@@ -37,19 +37,19 @@ export function Footer() {
             </Link>
             <div className="flex flex-col gap-3">
               <span className="text-white">{t('common.business')}</span>
-              <Link href="/business#oda" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
+              <Link href="/business?category=oda" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
                 {t('common.oda')}
               </Link>
-              <Link href="/business#platforms" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
+              <Link href="/business?category=platform" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
                 {t('common.platform')}
               </Link>
             </div>
             <div className="flex flex-col gap-3">
               <span className="text-white">{t('common.insights')}</span>
-              <Link href="/insights#oda" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
+              <Link href="/insights?category=oda" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
                 {t('common.insights_oda')}
               </Link>
-              <Link href="/insights#it" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
+              <Link href="/insights?category=it" scroll={false} className="hover:text-white transition-colors text-zinc-500 font-normal">
                 {t('common.insights_it')}
               </Link>
             </div>

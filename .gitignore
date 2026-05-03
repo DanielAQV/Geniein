@@ -28,7 +28,7 @@ dist/
 __pycache__/
 *.pyc
 .venv/
-apps/web/public/uploads/insights/*.png
+apps/web/public/uploads/
 **/__pycache__/
 *.pyc
 .DS_Store

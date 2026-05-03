@@ -18,40 +18,28 @@ function BusinessContent() {
   const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const updateTabFromHash = () => {
-      const hash = window.location.hash.replace("#", "")
-      
-      // Determine active tab
-      if (hash === "platform" || hash === "platforms") {
-        setActiveTab("platform")
-      } else if (hash === "oda") {
-        setActiveTab("oda")
-      }
-
-      // Handle scrolling if there's a hash
-      if (hash) {
-        // We need a small timeout to let the tab switch and render if needed
-        setTimeout(() => {
-          if (navRef.current) {
-            const navTop = navRef.current.getBoundingClientRect().top + window.pageYOffset
-            // Header is roughly 72px, so we scroll to navTop minus header height
-            // Actually, since nav is sticky top-[72px], scrolling to navTop - 72 puts it exactly at the top
-            window.scrollTo({
-              top: navTop - 72,
-              behavior: "smooth"
-            })
-          }
-        }, 100)
-      }
-    }
-
-    updateTabFromHash()
-    window.addEventListener("hashchange", updateTabFromHash)
+    const category = searchParams.get('category')
     
-    return () => {
-      window.removeEventListener("hashchange", updateTabFromHash)
+    // Determine active tab
+    if (category === "platform" || category === "platforms") {
+      setActiveTab("platform")
+    } else {
+      setActiveTab("oda")
     }
-  }, [pathname, searchParams])
+
+    // Handle scrolling if there's a category
+    if (category) {
+      setTimeout(() => {
+        if (navRef.current) {
+          const navTop = navRef.current.getBoundingClientRect().top + window.pageYOffset
+          window.scrollTo({
+            top: navTop - 72,
+            behavior: "smooth"
+          })
+        }
+      }, 100)
+    }
+  }, [searchParams])
 
   return (
     <>

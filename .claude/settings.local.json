@@ -5,7 +5,9 @@
       "PowerShell(Start-Process \"http://localhost:3000/about#figmacapture=fcdd0d93-5b17-47cf-af4a-0ace811e0041&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Ffcdd0d93-5b17-47cf-af4a-0ace811e0041%2Fsubmit&figmadelay=3000\")",
       "PowerShell(Start-Process \"http://localhost:3000/business#figmacapture=339131c7-a75e-4e40-9bc1-49e6350fc31c&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F339131c7-a75e-4e40-9bc1-49e6350fc31c%2Fsubmit&figmadelay=3000\")",
       "PowerShell(Start-Process \"http://localhost:3000/insights#figmacapture=7fbfdaf7-dca9-487e-8c43-74160e2b18b5&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F7fbfdaf7-dca9-487e-8c43-74160e2b18b5%2Fsubmit&figmadelay=3000\")",
-      "mcp__figma__use_figma"
+      "mcp__figma__use_figma",
+      "mcp__figma__whoami",
+      "mcp__figma__generate_diagram"
     ]
   }
 }
