@@ -1,0 +1,76 @@
+"use client"
+
+import { motion } from "framer-motion"
+import Link from "next/link"
+import { useEffect, useState, Suspense } from "react"
+import { useLanguage } from "@/lib/i18n/language-context"
+import { usePathname, useSearchParams } from "next/navigation"
+
+function BusinessNavContent() {
+  const { t } = useLanguage()
+  const [activeTab, setActiveTab] = useState("oda")
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "")
+      if (hash === "platform" || hash === "platforms") {
+        setActiveTab("platform")
+      } else {
+        setActiveTab("oda")
+      }
+    }
+
+    handleHashChange()
+    window.addEventListener("hashchange", handleHashChange)
+    
+    const interval = setInterval(handleHashChange, 500)
+    
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange)
+      clearInterval(interval)
+    }
+  }, [pathname, searchParams])
+
+  const tabs = [
+    { id: "oda", label: t('common.oda'), href: "#oda" },
+    { id: "platform", label: t('common.platform'), href: "#platforms" }
+  ]
+
+  return (
+    <div className="sticky top-[72px] z-40 w-full border-b border-white/5 bg-background/80 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center sm:justify-start gap-8 h-14">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.id}
+              href={tab.href}
+              scroll={false}
+              className="relative h-full flex items-center text-sm font-bold tracking-widest uppercase transition-colors"
+            >
+              <span className={activeTab === tab.id ? "text-primary" : "text-muted-foreground hover:text-foreground"}>
+                {tab.label}
+              </span>
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeBusinessTab"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function BusinessNav() {
+  return (
+    <Suspense fallback={<div className="h-14 w-full bg-background" />}>
+      <BusinessNavContent />
+    </Suspense>
+  )
+}
