@@ -11,12 +11,18 @@ const notoSans = Noto_Sans_KR({
 })
 
 export const metadata: Metadata = {
-  title: 'geniein | Digital ODA Consulting & IT Platforms',
+  title: 'Geniein | Digital ODA Consulting & IT Platforms',
   description: 'Global Digital ODA Consulting & Innovative IT Platforms. Connect the world, innovate the future with Connext and Gnom solutions.',
-  generator: 'v0.app',
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-icon.png',
+    icon: [
+      { url: '/favicon.ico?v=1' },
+      { url: '/icon.svg?v=1', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-icon.png?v=1',
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 }
 

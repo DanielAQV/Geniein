@@ -185,7 +185,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
                   </h3>
 
                   {/* Summary instead of Perspective */}
-                  <p className="text-sm text-[var(--muted-foreground)] leading-relaxed line-clamp-3 mb-6 font-light">
+                  <p className="text-sm text-[var(--muted-foreground)] leading-relaxed line-clamp-3 mb-6 font-light whitespace-pre-line">
                     {insight.summary[language]}
                   </p>
 

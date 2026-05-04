@@ -55,15 +55,30 @@ export function OdaServices() {
                 {t('business.oda.description')}
               </p>
 
-              {/* Lifecycle Diagram (Small Version) */}
-              <div className="flex flex-wrap gap-4">
+              {/* Lifecycle Diagram (Vertical Version) */}
+              <div className="relative space-y-6 pl-2">
                 {phases.map((phase, idx) => (
-                  <div key={phase} className="flex items-center gap-2">
-                    <div className="text-[10px] font-bold text-primary border border-primary/30 px-2 py-1 rounded-sm uppercase tracking-widest">
+                  <motion.div 
+                    key={phase} 
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 + (idx * 0.1) }}
+                    className="relative flex items-center gap-6 group/phase"
+                  >
+                    <div className="relative flex-shrink-0">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full border border-primary/30 bg-background text-primary text-[10px] font-bold relative z-10 transition-all duration-300 group-hover/phase:border-primary group-hover/phase:scale-110 shadow-sm">
+                        {idx + 1}
+                      </div>
+                      {/* Connector Line Segment (Center to Center) */}
+                      {idx < phases.length - 1 && (
+                        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[1px] h-[56px] bg-gradient-to-b from-primary/40 via-primary/30 to-primary/20" />
+                      )}
+                    </div>
+                    <div className="text-[10px] font-bold text-muted-foreground group-hover/phase:text-primary transition-colors uppercase tracking-[0.2em]">
                       {phase}
                     </div>
-                    {idx < phases.length - 1 && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>

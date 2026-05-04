@@ -32,8 +32,8 @@ class AIProcessor:
         내용: {content}
 
         [요구사항]
-        - 지니인 사업(특히 GNOM)과의 관련도를 0~100점으로 평가하세요.
-        - 모든 문장은 신뢰감 있는 **전문 뉴스/보고서체(~다, ~이다)**로 통일하세요. (~임, ~함, ~습니다, ~해요 등 절대 금지)
+        - 지니인 사업과의 관련도를 0~100점으로 평가하세요.
+        - 모든 문장은 신뢰감 있는 전문 뉴스/보고서체(~다, ~이다)로 통일하세요.
         - 결과는 반드시 아래 JSON 형식으로만 답변하세요.
         - 카테고리('category') 분류 기준:
           * 'oda': 정부 예산이 투입되거나 공공 기관(KOICA, EDCF, UN, World Bank, 정부 부처 등)이 직접 참여하는 공적 개발 원조/협력 사업인 경우.
@@ -41,7 +41,7 @@ class AIProcessor:
 
         {{
             "title_kr": "전문적이고 전략적인 국문 제목",
-            "summary_kr": "7-10문장 분량의 딥다이브 요약 (기사의 핵심 맥락, 주요 데이터, 시사점을 명확한 서술형 문장(~다)으로 상세히 포함)",
+            "summary_kr": "7-10문장 분량의 딥다이브 요약 (기사의 핵심 맥락, 주요 데이터, 시사점 포함). 가독성을 위해 2-3개의 문단으로 나누어 작성하고, 문단 사이에는 줄바꿈(빈 줄)을 반드시 포함하세요.",
             "category": "oda 또는 it",
             "tags": ["카테고리에 특화된 태그 3-4개"],
             "relevance_score": 점수(숫자)
@@ -50,7 +50,7 @@ class AIProcessor:
 
         try:
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-5.4-nano",
                 messages=[
                     {"role": "system", "content": "당신은 유능한 기술/정책 전문 에디터입니다."},
                     {"role": "user", "content": prompt}
@@ -108,7 +108,7 @@ class AIProcessor:
             """
 
             prompt_response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-5.4-nano",
                 messages=[
                     {"role": "system", "content": "You are a professional commercial photographer and prompt engineer."},
                     {"role": "user", "content": prompt_gen_msg}

@@ -84,7 +84,7 @@ export function BusinessOverview() {
                 {t('landing.business.oda_title')}
               </h3>
               
-              <p className="text-muted-foreground leading-relaxed mb-6 break-keep text-balance">
+              <p className="text-muted-foreground leading-relaxed mb-6 break-keep">
                 {t('landing.business.oda_desc')}
               </p>
 
@@ -128,7 +128,7 @@ export function BusinessOverview() {
                 {t('landing.business.platform_title')}
               </h3>
               
-              <p className="text-muted-foreground leading-relaxed mb-6 break-keep text-balance">
+              <p className="text-muted-foreground leading-relaxed mb-6 break-keep">
                 {t('landing.business.platform_desc')}
               </p>
 

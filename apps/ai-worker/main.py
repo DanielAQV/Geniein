@@ -60,7 +60,7 @@ def main():
                 continue
             
             # 6. 자동 발행 결정 및 이미지 생성
-            if relevance >= 85:
+            if relevance >= 75:
                 processed_data['publish_status'] = 'published'
                 processed_data['published_at'] = 'NOW()'
                 print(f"🚀 High relevance ({relevance}) - Auto Publishing!")

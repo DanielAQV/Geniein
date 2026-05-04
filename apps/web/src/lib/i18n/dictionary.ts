@@ -10,7 +10,7 @@ export const dictionary = {
     insights_oda: { kr: "글로벌 ODA", en: "Global ODA", vn: "ODA Toàn cầu" },
     insights_it: { kr: "IT 트렌드", en: "IT Trends", vn: "Xu hướng CNTT" },
     contact: { kr: "문의하기", en: "Contact Us", vn: "Liên hệ" },
-    consulting_btn: { kr: "상담 문의", en: "Consult", vn: "Tư vấn" },
+    consulting_btn: { kr: "파트너십 상담", en: "Partnership", vn: "Tư vấn" },
     language: { kr: "언어", en: "Language", vn: "Ngôn ngữ" },
     copyright: { kr: "© 2026 Geniein Co., Ltd. All rights reserved.", en: "© 2026 Geniein Co., Ltd. All rights reserved.", vn: "© 2026 Geniein Co., Ltd. All rights reserved." },
     more: { kr: "자세히 보기", en: "Read More", vn: "Xem thêm" },
@@ -18,7 +18,7 @@ export const dictionary = {
     next: { kr: "다음", en: "Next", vn: "Tiếp" }
   },
   hero: {
-    badge: { kr: "미래를 설계하는 디지털 파트너", en: "Architecting the Digital Future", vn: "Đối tác thiết lập tương lai số" },
+    badge: { kr: "글로벌 성장을 가속하는 지능형 디지털 아키텍트", en: "Intelligent Digital Architect Accelerating Global Growth", vn: "Đối tác thiết lập tương lai số" },
     title_main: { kr: "Beyond", en: "Beyond", vn: "Vượt trên cả" },
     title_accent: { kr: "Communication", en: "Communication", vn: "Giao tiếp" },
     description: {
@@ -35,11 +35,11 @@ export const dictionary = {
       label: { kr: "Business Focus", en: "Business Focus", vn: "Trọng tâm kinh doanh" },
       title: { kr: "사업 분야", en: "Business Areas", vn: "Lĩnh vực kinh doanh" },
       description: {
-        kr: "현장 중심의 기획과 차별화된 기술력으로 무장한 지니인은\n글로벌 ODA와 AI 플랫폼 시장의 새로운 표준을 제시합니다.",
-        en: "Armed with field-oriented planning and differentiated technology,\nGeniein presents new standards for the global ODA and AI platform markets.",
-        vn: "Được trang bị quy hoạch hướng tới thực địa và công nghệ khác biệt,\nGeniein đưa ra các tiêu chuẩn mới cho ODA toàn cầu và nền tảng AI."
+        kr: "현장 중심의 기획과 차별화된 기술력으로,\n지니인은 글로벌 ODA와 AI 플랫폼 시장의 새로운 표준을 제시합니다.",
+        en: "With field-oriented planning and differentiated technology,\nGeniein presents new standards for the global ODA and AI platform markets.",
+        vn: "Với quy hoạch hướng tới thực địa và công nghệ khác biệt,\nGeniein đưa ra các tiêu chuẩn mới cho ODA toàn cầu và nền tảng AI."
       },
-      oda_title: { kr: "글로벌 ODA 컨설팅", en: "Global ODA Consulting", vn: "Tư vấn ODA Toàn cầu" },
+      oda_title: { kr: "글로벌 공공 가치를 창출하는 ODA 전략 파트너", en: "ODA Strategic Partner Creating Global Public Value", vn: "Tư vấn ODA Toàn cầu" },
       oda_desc: { kr: "글로벌 균형 발전을 위한 파트너로서, IT 인프라와 전자정부, 사이버 보안 등 전 분야에 걸친 포괄적인 ODA 서비스를 제공합니다.", en: "As a partner for global balanced development, we provide comprehensive ODA services across various fields including IT infrastructure, e-government, and cybersecurity.", vn: "Với tư cách là đối tác vì sự phát triển cân bằng toàn cầu, chúng tôi cung cấp các dịch vụ ODA toàn diện trong nhiều lĩnh vực bao gồm hạ tầng CNTT, chính phủ điện tử và an ninh mạng." },
       oda_items: [
         { kr: "비즈니스 기획 및 컨설팅", en: "Business Planning & Consulting", vn: "Quy hoạch & Tư vấn kinh doanh" },
@@ -47,7 +47,7 @@ export const dictionary = {
         { kr: "사이버 보안 및 네트워크 구축", en: "Cybersecurity & Network", vn: "An ninh mạng & Xây dựng mạng lưới" },
         { kr: "프로젝트 수행 및 사후 평가", en: "Implementation & Evaluation", vn: "Triển khai & Đánh giá dự án" }
       ],
-      platform_title: { kr: "AI 기반 소프트웨어 가치 혁신", en: "AI-Powered Software Value Innovation", vn: "Đổi mới giá trị phần mềm dựa trên AI" },
+      platform_title: { kr: "AI 기반 소프트웨어 생태계의 표준", en: "The Standard for AI-Based Software Ecosystems", vn: "Đổi mới giá trị phần mềm dựa trên AI" },
       platform_desc: { kr: "AI 기반의 지능형 소프트웨어 FP 가치 산정과 더불어, 자연어 기반 개발과 안정적인 호스팅을 지원하는 AI Studio를 통해 혁신적인 아이디어를 기술로 완성합니다.", en: "Beyond intelligent AI-based Software FP value estimation, we turn innovative ideas into technical reality through AI Studio, supporting natural language development and stable hosting.", vn: "Ngoài việc ước tính giá trị FP phần mềm dựa trên AI thông minh, chúng tôi hiện thực hóa các ý tưởng đổi mới thông qua AI Studio, hỗ trợ phát triển ngôn ngữ tự nhiên và hosting ổn định." },
       platform_items: [
         { kr: "AI 기반 지능형 FP 산정", en: "AI-based Intelligent FP Estimation", vn: "Ước tính FP thông minh dựa trên AI" },
@@ -208,7 +208,7 @@ export const dictionary = {
     },
     oda: {
       label: { kr: "ODA Service Scope", en: "ODA Service Scope", vn: "Phạm vi dịch vụ ODA" },
-      title: { kr: "ODA 통합 기획 및 수행", en: "Integrated ODA Planning & Execution", vn: "Thiết kế & Triển khai tích hợp ODA" },
+      title: { kr: "글로벌 공공 가치를 창출하는 ODA 전략 파트너", en: "ODA Strategic Partner Creating Global Public Value", vn: "Thiết kế & Triển khai tích hợp ODA" },
       description: {
         kr: "기획조사부터 시스템 구축, 운영 관리까지 프로젝트의 전 과정을 통합적으로 수행합니다. 단순한 인프라 공급을 넘어, 수원국의 자립을 지원하는 최적의 시스템 환경을 구축합니다.",
         en: "We integratedly perform the entire process of a project, from planning and research to system construction and operational management. Beyond simple infrastructure supply, we build an optimal system environment that supports the self-reliance of partner countries.",
@@ -234,11 +234,11 @@ export const dictionary = {
     },
     platform: {
       label: { kr: "Platform Innovation", en: "Platform Innovation", vn: "Đổi mới nền tảng" },
-      title: { kr: "AI 기반 기술 가치 혁신", en: "AI-Driven Value Innovation", vn: "Đổi mới giá trị dựa trên AI" },
+      title: { kr: "AI 기반 소프트웨어 생태계의 표준", en: "The Standard for AI-Based Software Ecosystems", vn: "Đổi mới giá trị phần mềm b AI" },
       description: {
-        kr: "단순한 개발을 넘어 기술의 가치를 정량화하고 효율을 극대화합니다.\n지니인은 지능형 엔지니어링을 통해 소프트웨어 시장의 새로운 표준을 제시합니다.",
-        en: "Beyond simple development, we quantify technology value and maximize efficiency.\nGeniein presents new standards in the software market through intelligent engineering.",
-        vn: "Hơn cả việc phát triển đơn thuần, chúng tôi định lượng giá trị công nghệ và tối đa hóa hiệu quả.\nGeniein trình bày các tiêu chuẩn mới trong thị trường phần mềm thông qua kỹ thuật thông minh."
+        kr: "단순한 개발을 넘어 기술의 가치를 표준화하고 효율을 극대화합니다.\n지니인은 지능형 엔지니어링을 통해 소프트웨어 시장의 새로운 표준을 제시합니다.",
+        en: "Beyond simple development, we standardize technology value and maximize efficiency.\nGeniein presents new standards in the software market through intelligent engineering.",
+        vn: "Hơn cả việc phát triển đơn thuần, chúng tôi tiêu chuẩn hóa giá trị công nghệ và tối đa hóa hiệu quả.\nGeniein trình bày các tiêu chuẩn mới trong thị trường phần mềm thông qua kỹ thuật thông minh."
       },
       capabilities: [
         {
