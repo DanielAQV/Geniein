@@ -8,7 +8,9 @@
       "mcp__figma__use_figma",
       "mcp__figma__whoami",
       "mcp__figma__generate_diagram",
-      "Bash(dir D:geniein *)"
+      "Bash(dir D:geniein *)",
+      "PowerShell(Get-ChildItem apps\\\\web\\\\src\\\\app -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize -Wrap)",
+      "PowerShell(Get-ChildItem apps\\\\web\\\\src\\\\components -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize -Wrap)"
     ]
   }
 }
