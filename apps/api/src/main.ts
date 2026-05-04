@@ -6,6 +6,15 @@ async function bootstrap() {
   
   // Enable CORS for frontend integration
   app.enableCors();
+
+  // Security headers
+  const helmet = await import('helmet');
+  app.use(
+    helmet.default({
+      xXssProtection: true,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    }),
+  );
   
   const port = process.env.PORT || 3001;
   await app.listen(port);

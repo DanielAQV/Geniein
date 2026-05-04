@@ -7,7 +7,8 @@
       "PowerShell(Start-Process \"http://localhost:3000/insights#figmacapture=7fbfdaf7-dca9-487e-8c43-74160e2b18b5&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F7fbfdaf7-dca9-487e-8c43-74160e2b18b5%2Fsubmit&figmadelay=3000\")",
       "mcp__figma__use_figma",
       "mcp__figma__whoami",
-      "mcp__figma__generate_diagram"
+      "mcp__figma__generate_diagram",
+      "Bash(dir D:geniein *)"
     ]
   }
 }
