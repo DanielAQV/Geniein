@@ -10,7 +10,19 @@
       "mcp__figma__generate_diagram",
       "Bash(dir D:geniein *)",
       "PowerShell(Get-ChildItem apps\\\\web\\\\src\\\\app -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize -Wrap)",
-      "PowerShell(Get-ChildItem apps\\\\web\\\\src\\\\components -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize -Wrap)"
+      "PowerShell(Get-ChildItem apps\\\\web\\\\src\\\\components -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize -Wrap)",
+      "mcp__figma__get_metadata",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 5; \"OK status=$\\($r.StatusCode\\) length=$\\($r.Content.Length\\)\" } catch { \"FAIL: $_\" })",
+      "mcp__figma__get_screenshot",
+      "Bash(curl -s -o D:/geniein/.claude/existing-components.png \"https://www.figma.com/api/mcp/asset/c74c1129-d41e-41cb-a60f-023340b44cd4\")",
+      "PowerShell(Start-Sleep -Seconds 2; Start-Process \"http://localhost:3000/#figmacapture=3737ebaf-8c16-4c53-93b1-229442022125&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F3737ebaf-8c16-4c53-93b1-229442022125%2Fsubmit&figmadelay=2500\")",
+      "PowerShell($r = Invoke-WebRequest \"http://localhost:3000/\" -UseBasicParsing -TimeoutSec 5; if \\($r.Content -match 'capture\\\\.js'\\) { 'SCRIPT PRESENT' } else { 'SCRIPT MISSING' }; $r.Content.Length)",
+      "PowerShell(Start-Process \"http://localhost:3000/?_=fresh#figmacapture=3737ebaf-8c16-4c53-93b1-229442022125&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F3737ebaf-8c16-4c53-93b1-229442022125%2Fsubmit&figmadelay=3000\")",
+      "PowerShell(Get-Process *)",
+      "PowerShell($r = Invoke-WebRequest \"http://localhost:3000/\" -UseBasicParsing; $r.Headers.GetEnumerator\\(\\) | Where-Object { $_.Key -match 'security|csp|cors' } | Format-List)",
+      "PowerShell(try { $r = Invoke-WebRequest \"https://mcp.figma.com/mcp/html-to-design/capture.js\" -UseBasicParsing -TimeoutSec 8; \"OK $\\($r.StatusCode\\) $\\($r.Content.Length\\)b\" } catch { \"FAIL $_\" })",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(curl *)"
     ]
   }
 }

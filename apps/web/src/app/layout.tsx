@@ -35,6 +35,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${notoSans.variable} bg-background scroll-smooth`} suppressHydrationWarning>
+      <head>
+        {process.env.NODE_ENV !== 'production' && (
+          <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
+        )}
+      </head>
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
