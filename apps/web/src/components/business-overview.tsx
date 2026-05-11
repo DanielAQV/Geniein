@@ -44,7 +44,7 @@ export function BusinessOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line text-balance break-keep"
+            className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line text-balance break-keep"
           >
             {t('landing.business.title')}
           </motion.h2>
@@ -53,7 +53,7 @@ export function BusinessOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light whitespace-pre-line text-balance break-keep"
+            className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light whitespace-pre-line text-balance break-keep"
           >
             {t('landing.business.description')}
           </motion.p>

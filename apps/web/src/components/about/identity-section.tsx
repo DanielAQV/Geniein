@@ -34,10 +34,10 @@ export function IdentitySection() {
                   {t('about.identity.label')}
                 </span>
               </div>
-              <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8 leading-tight tracking-tighter">
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 leading-tight tracking-tighter">
                 {t('about.identity.title')}
               </h2>
-              <div className="space-y-6 text-lg text-muted-foreground font-light leading-relaxed break-keep">
+              <div className="space-y-6 text-base text-muted-foreground font-light leading-relaxed break-keep">
                 <p>{t('about.identity.p1')}</p>
                 <p>{t('about.identity.p2')}</p>
               </div>
@@ -71,8 +71,8 @@ export function IdentitySection() {
                     
                     <div className="relative z-10">
                       <div className="text-xs font-bold tracking-widest text-primary mb-3 uppercase">{step.title[language]}</div>
-                      <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">{step.label[language]}</h3>
-                      <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed max-w-md break-keep">
+                      <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4">{step.label[language]}</h3>
+                      <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed max-w-md break-keep">
                         {step.desc[language]}
                       </p>
                     </div>

@@ -89,7 +89,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line"
+              className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tight leading-[1.2] whitespace-pre-line"
             >
               {category ? (
                 <>
@@ -105,7 +105,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
+              className="text-lg text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
             >
               {category === 'ODA' 
                 ? t('landing.insights.desc_oda')

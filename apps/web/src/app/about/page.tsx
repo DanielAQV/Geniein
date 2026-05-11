@@ -52,11 +52,11 @@ export default function AboutPage() {
               <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
                 {t('about.hero.label')}
               </span>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
                 {t('about.hero.title_1')} {t('about.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
               {t('about.hero.description')}
             </p>
           </motion.div>

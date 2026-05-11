@@ -44,13 +44,13 @@ export function Hero() {
           >
 
             {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-foreground leading-[1.1] mb-8">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1] mb-8">
               <span className="block">{t('hero.title_main')}</span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-primary inline-block pb-2">{t('hero.title_accent')}</span>
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-xl text-muted-foreground max-w-4xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line text-balance">
+            <p className="text-lg text-muted-foreground max-w-4xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line text-balance">
               {t('hero.description')}
             </p>
 

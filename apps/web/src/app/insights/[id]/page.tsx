@@ -67,7 +67,7 @@ export default function InsightDetailPage() {
               </div>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8 leading-[1.1]">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-8 leading-[1.1]">
               {insight[`title_${language}`] || insight.title_kr}
             </h1>
 
@@ -106,7 +106,7 @@ export default function InsightDetailPage() {
             <section className="relative">
               <div className="absolute -left-4 top-0 bottom-0 w-1 bg-primary/50 rounded-full" />
               <div className="pl-6 space-y-6">
-                <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed whitespace-pre-line">
+                <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed whitespace-pre-line">
                   {insight[`summary_${language}`] || insight.summary_kr}
                 </p>
                 

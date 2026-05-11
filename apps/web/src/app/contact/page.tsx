@@ -48,11 +48,11 @@ export default function ContactPage() {
               <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
                 {t('contact.hero.label')}
               </span>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
                 {t('contact.hero.title_1')} {t('contact.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
               {t('contact.hero.description')}
             </p>
           </motion.div>
@@ -78,10 +78,10 @@ export default function ContactPage() {
             <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-4 block">
               {t('contact.section.label')}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-6">
               {t('contact.section.title')}
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line">
               {t('contact.section.desc')}
             </p>
           </motion.div>

@@ -38,7 +38,7 @@ export function ContactFooter() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tight whitespace-pre-line leading-[1.2]"
+              className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tight whitespace-pre-line leading-[1.2]"
             >
               {t('landing.contact.title')}
             </motion.h2>
@@ -48,7 +48,7 @@ export function ContactFooter() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
+              className="text-lg text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
             >
               {t('landing.contact.desc')}
             </motion.p>

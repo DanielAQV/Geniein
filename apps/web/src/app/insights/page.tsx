@@ -59,10 +59,10 @@ function InsightsContent() {
                 {t('landing.insights.label')}
               </span>
             </motion.div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8 tracking-tighter">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tighter">
               {t('landing.insights.title')}
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
               {t('landing.insights.desc')}
             </p>
           </div>
@@ -140,11 +140,11 @@ export default function InsightsPage() {
               <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
                 {t('landing.insights.label')}
               </span>
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto text-balance">
+               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto text-balance">
                 {t('landing.insights.hero_title')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
               {t('landing.insights.hero_desc')}
             </p>
           </motion.div>

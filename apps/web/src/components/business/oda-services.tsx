@@ -48,10 +48,10 @@ export function OdaServices() {
                   {t('business.oda.label')}
                 </span>
               </div>
-              <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-8 tracking-tighter leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tighter leading-tight">
                 {t('business.oda.title')}
               </h2>
-              <p className="text-lg text-muted-foreground font-light leading-relaxed mb-10 break-keep">
+              <p className="text-base text-muted-foreground font-light leading-relaxed mb-10 break-keep">
                 {t('business.oda.description')}
               </p>
 
@@ -101,10 +101,10 @@ export function OdaServices() {
                   </div>
                   <div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
-                      <span className="text-2xl md:text-3xl font-bold text-foreground tracking-tight">{pillar.title[language]}</span>
+                      <span className="text-xl md:text-2xl font-bold text-foreground tracking-tight">{pillar.title[language]}</span>
                       <span className="inline-block text-[10px] font-bold text-primary tracking-widest uppercase px-2 py-0.5 rounded-full bg-primary/5 border border-primary/20">{pillar.label[language]}</span>
                     </div>
-                    <p className="text-base md:text-lg text-muted-foreground font-light leading-relaxed break-keep max-w-lg">
+                    <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed break-keep max-w-lg">
                       {pillar.desc[language]}
                     </p>
                   </div>

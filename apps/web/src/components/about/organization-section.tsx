@@ -46,10 +46,10 @@ export function OrganizationSection() {
               {t('about.organization.label')}
             </span>
           </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tighter">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tighter">
             {t('about.organization.title')}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
             {t('about.organization.desc')}
           </p>
         </div>
@@ -67,7 +67,7 @@ export function OrganizationSection() {
               <div className="flex items-start justify-between mb-8">
                 <div>
                   <div className="text-xs font-bold text-primary mb-2 tracking-widest uppercase">{hub.role[language]}</div>
-                  <h3 className="text-3xl font-bold text-foreground whitespace-pre-line">{hub.city[language]}</h3>
+                  <h3 className="text-2xl font-bold text-foreground whitespace-pre-line">{hub.city[language]}</h3>
                 </div>
                 <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
                   {hub.icon}

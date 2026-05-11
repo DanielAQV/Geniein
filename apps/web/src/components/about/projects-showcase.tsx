@@ -32,10 +32,10 @@ export function ProjectsShowcase() {
                 {t('about.projects.label')}
               </span>
             </motion.div>
-            <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tighter">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tighter">
               {t('about.projects.title')}
             </h2>
-            <p className="text-lg text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
+            <p className="text-base text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
               {t('about.projects.desc')}
             </p>
           </div>
@@ -54,15 +54,15 @@ export function ProjectsShowcase() {
               {/* Project Info */}
               <div className="lg:col-span-8 p-10 lg:p-16 border-b lg:border-b-0 lg:border-r border-border/50">
                 <div className="flex items-center gap-5 mb-10">
-                  <div className="p-4 rounded-xl bg-card/30 border border-border/50 shadow-inner">
+                  <div className="hidden sm:block p-4 rounded-xl bg-card/30 border border-border/50 shadow-inner">
                     {project.icon}
                   </div>
                   <div>
                     <div className="text-xs font-bold text-primary tracking-widest uppercase mb-1">{project.category[language]}</div>
-                    <h3 className="text-3xl lg:text-4xl font-bold text-foreground leading-snug tracking-tight">{project.title[language]}</h3>
+                    <h3 className="text-2xl lg:text-3xl font-bold text-foreground leading-snug tracking-tight">{project.title[language]}</h3>
                   </div>
                 </div>
-                <p className="text-lg lg:text-xl text-muted-foreground font-light leading-relaxed mb-12 break-keep">
+                <p className="text-base lg:text-lg text-muted-foreground font-light leading-relaxed mb-12 break-keep">
                   {project.description[language]}
                 </p>
               </div>
@@ -83,7 +83,7 @@ export function ProjectsShowcase() {
                           {metric.label[language]}
                         </div>
                       </div>
-                      <div className="text-xl lg:text-2xl font-bold text-foreground leading-tight">
+                      <div className="text-lg lg:text-xl font-bold text-foreground leading-tight">
                         {typeof metric.value === 'string' ? metric.value : metric.value[language]}
                       </div>
                     </div>

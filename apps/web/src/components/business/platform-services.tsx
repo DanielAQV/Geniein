@@ -60,10 +60,10 @@ export function PlatformServices() {
               {t('business.platform.label')}
             </span>
           </motion.div>
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 tracking-tighter">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tighter">
             {t('business.platform.title')}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep">
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep">
             {t('business.platform.description')}
           </p>
         </div>
@@ -81,10 +81,10 @@ export function PlatformServices() {
               <div className="mb-8 p-4 w-fit rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
                 {icons[index]}
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors uppercase tracking-tight">
+              <h3 className="text-lg md:text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors uppercase tracking-tight">
                 {item.title[language]}
               </h3>
-              <p className="text-base text-muted-foreground font-light leading-relaxed break-keep">
+              <p className="text-sm text-muted-foreground font-light leading-relaxed break-keep">
                 {item.desc[language]}
               </p>
               
@@ -97,8 +97,8 @@ export function PlatformServices() {
         <div className="mt-24 p-12 md:p-16 rounded-3xl border border-primary/20 bg-card/30 backdrop-blur-sm relative overflow-hidden shadow-2xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
             <div>
-              <h4 className="text-3xl font-bold text-foreground mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
-              <p className="text-lg text-muted-foreground font-light leading-relaxed break-keep">
+              <h4 className="text-2xl font-bold text-foreground mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
+              <p className="text-base text-muted-foreground font-light leading-relaxed break-keep">
                 {t('business.platform.vision_desc')}
               </p>
             </div>
