@@ -22,8 +22,8 @@ function InsightsNavContent() {
   }, [searchParams])
 
   const tabs = [
-    { id: "oda", label: t('common.insights_oda'), href: "/insights?category=oda" },
-    { id: "it", label: t('common.insights_it'), href: "/insights?category=it" }
+    { id: "it", label: t('common.insights_it'), href: "/insights?category=it" },
+    { id: "oda", label: t('common.insights_oda'), href: "/insights?category=oda" }
   ]
 
   return (

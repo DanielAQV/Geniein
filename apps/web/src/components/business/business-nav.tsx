@@ -22,8 +22,8 @@ function BusinessNavContent() {
   }, [searchParams])
 
   const tabs = [
-    { id: "oda", label: t('common.oda'), href: "/business?category=oda" },
-    { id: "platform", label: t('common.platform'), href: "/business?category=platform" }
+    { id: "platform", label: t('common.platform'), href: "/business?category=platform" },
+    { id: "oda", label: t('common.oda'), href: "/business?category=oda" }
   ]
 
   return (

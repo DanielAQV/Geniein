@@ -38,20 +38,20 @@ export function Footer() {
             </Link>
             <div className="flex flex-col gap-3">
               <span className="text-foreground">{t('common.business')}</span>
-              <Link href="/business?category=oda" scroll={false} className="hover:text-foreground transition-colors text-muted-foreground/60 font-normal">
-                {t('common.oda')}
-              </Link>
               <Link href="/business?category=platform" scroll={false} className="hover:text-foreground transition-colors text-muted-foreground/60 font-normal">
                 {t('common.platform')}
+              </Link>
+              <Link href="/business?category=oda" scroll={false} className="hover:text-foreground transition-colors text-muted-foreground/60 font-normal">
+                {t('common.oda')}
               </Link>
             </div>
             <div className="flex flex-col gap-3">
               <span className="text-foreground">{t('common.insights')}</span>
-              <Link href="/insights?category=oda" scroll={false} className="hover:text-foreground transition-colors text-muted-foreground/60 font-normal">
-                {t('common.insights_oda')}
-              </Link>
               <Link href="/insights?category=it" scroll={false} className="hover:text-foreground transition-colors text-muted-foreground/60 font-normal">
                 {t('common.insights_it')}
+              </Link>
+              <Link href="/insights?category=oda" scroll={false} className="hover:text-foreground transition-colors text-muted-foreground/60 font-normal">
+                {t('common.insights_oda')}
               </Link>
             </div>
             <Link href="/contact" className="hover:text-foreground transition-colors">

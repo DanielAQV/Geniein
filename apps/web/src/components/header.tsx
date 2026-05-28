@@ -77,23 +77,23 @@ export function Header() {
                 >
                   <DropdownMenuItem asChild className="focus:bg-transparent p-0">
                     <Link 
-                      href="/business?category=oda" 
-                      scroll={false}
-                      className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
-                    >
-                      <span className="relative group-hover/item:text-foreground transition-colors">
-                        {t('common.oda')}
-                      </span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="focus:bg-transparent p-0">
-                    <Link 
                       href="/business?category=platform" 
                       scroll={false}
                       className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
                     >
                       <span className="relative group-hover/item:text-foreground transition-colors">
                         {t('common.platform')}
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="focus:bg-transparent p-0">
+                    <Link 
+                      href="/business?category=oda" 
+                      scroll={false}
+                      className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
+                    >
+                      <span className="relative group-hover/item:text-foreground transition-colors">
+                        {t('common.oda')}
                       </span>
                     </Link>
                   </DropdownMenuItem>
@@ -125,23 +125,23 @@ export function Header() {
                 >
                   <DropdownMenuItem asChild className="focus:bg-transparent p-0">
                     <Link 
-                      href="/insights?category=oda" 
-                      scroll={false}
-                      className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
-                    >
-                      <span className="relative group-hover/item:text-foreground transition-colors">
-                        {t('common.insights_oda')}
-                      </span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="focus:bg-transparent p-0">
-                    <Link 
                       href="/insights?category=it" 
                       scroll={false}
                       className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
                     >
                       <span className="relative group-hover/item:text-foreground transition-colors">
                         {t('common.insights_it')}
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="focus:bg-transparent p-0">
+                    <Link 
+                      href="/insights?category=oda" 
+                      scroll={false}
+                      className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
+                    >
+                      <span className="relative group-hover/item:text-foreground transition-colors">
+                        {t('common.insights_oda')}
                       </span>
                     </Link>
                   </DropdownMenuItem>
@@ -243,20 +243,20 @@ export function Header() {
                   {t('common.business')}
                 </Link>
                 <Link
-                  href="/business?category=oda"
-                  scroll={false}
-                  className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t('common.oda')}
-                </Link>
-                <Link
                   href="/business?category=platform"
                   scroll={false}
                   className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('common.platform')}
+                </Link>
+                <Link
+                  href="/business?category=oda"
+                  scroll={false}
+                  className="text-sm font-medium text-muted-foreground pl-4 border-l border-white/10 ml-1"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('common.oda')}
                 </Link>
               </div>
 

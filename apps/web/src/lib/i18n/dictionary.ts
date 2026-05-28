@@ -39,14 +39,6 @@ export const dictionary = {
         en: "With field-oriented planning and differentiated technology,\nGeniein presents new standards for the global ODA and AI platform markets.",
         vn: "Với quy hoạch hướng tới thực địa và công nghệ khác biệt,\nGeniein đưa ra các tiêu chuẩn mới cho ODA toàn cầu và nền tảng AI."
       },
-      oda_title: { kr: "글로벌 공공 가치를 창출하는 ODA 전략 파트너", en: "ODA Strategic Partner Creating Global Public Value", vn: "Tư vấn ODA Toàn cầu" },
-      oda_desc: { kr: "글로벌 균형 발전을 위한 파트너로서, IT 인프라와 전자정부, 사이버 보안 등 전 분야에 걸친 포괄적인 ODA 서비스를 제공합니다.", en: "As a partner for global balanced development, we provide comprehensive ODA services across various fields including IT infrastructure, e-government, and cybersecurity.", vn: "Với tư cách là đối tác vì sự phát triển cân bằng toàn cầu, chúng tôi cung cấp các dịch vụ ODA toàn diện trong nhiều lĩnh vực bao gồm hạ tầng CNTT, chính phủ điện tử và an ninh mạng." },
-      oda_items: [
-        { kr: "비즈니스 기획 및 컨설팅", en: "Business Planning & Consulting", vn: "Quy hoạch & Tư vấn kinh doanh" },
-        { kr: "IT 인프라 및 시스템 개발", en: "IT Infrastructure & System Dev", vn: "Phát triển hạ tầng & Hệ thống CNTT" },
-        { kr: "사이버 보안 및 네트워크 구축", en: "Cybersecurity & Network", vn: "An ninh mạng & Xây dựng mạng lưới" },
-        { kr: "프로젝트 수행 및 사후 평가", en: "Implementation & Evaluation", vn: "Triển khai & Đánh giá dự án" }
-      ],
       platform_title: { kr: "AI 기반 소프트웨어 생태계의 표준", en: "The Standard for AI-Based Software Ecosystems", vn: "Đổi mới giá trị phần mềm dựa trên AI" },
       platform_desc: { kr: "AI 기반의 지능형 소프트웨어 FP 가치 산정과 더불어, 자연어 기반 개발과 안정적인 호스팅을 지원하는 AI Studio를 통해 혁신적인 아이디어를 기술로 완성합니다.", en: "Beyond intelligent AI-based Software FP value estimation, we turn innovative ideas into technical reality through AI Studio, supporting natural language development and stable hosting.", vn: "Ngoài việc ước tính giá trị FP phần mềm dựa trên AI thông minh, chúng tôi hiện thực hóa các ý tưởng đổi mới thông qua AI Studio, hỗ trợ phát triển ngôn ngữ tự nhiên và hosting ổn định." },
       platform_items: [
@@ -54,6 +46,14 @@ export const dictionary = {
         { kr: "데이터 기반 공수 분석 시스템", en: "Data-driven Effort Analysis", vn: "Hệ thống phân tích nỗ lực dựa trên dữ liệu" },
         { kr: "자연어 기반 앱 개발", en: "Natural Language App Dev", vn: "Phát triển ứng dụng bằng ngôn ngữ tự nhiên" },
         { kr: "호스팅 및 운영관리", en: "Hosting & Operations", vn: "Dịch vụ Hosting & Quản lý" }
+      ],
+      oda_title: { kr: "글로벌 공공 가치를 창출하는 ODA 전략 파트너", en: "ODA Strategic Partner Creating Global Public Value", vn: "Tư vấn ODA Toàn cầu" },
+      oda_desc: { kr: "글로벌 균형 발전을 위한 파트너로서, IT 인프라와 전자정부, 사이버 보안 등 전 분야에 걸친 포괄적인 ODA 서비스를 제공합니다.", en: "As a partner for global balanced development, we provide comprehensive ODA services across various fields including IT infrastructure, e-government, and cybersecurity.", vn: "Với tư cách là đối tác vì sự phát triển cân bằng toàn cầu, chúng tôi cung cấp các dịch vụ ODA toàn diện trong nhiều lĩnh vực bao gồm hạ tầng CNTT, chính phủ điện tử và an ninh mạng." },
+      oda_items: [
+        { kr: "비즈니스 기획 및 컨설팅", en: "Business Planning & Consulting", vn: "Quy hoạch & Tư vấn kinh doanh" },
+        { kr: "IT 인프라 및 시스템 개발", en: "IT Infrastructure & System Dev", vn: "Phát triển hạ tầng & Hệ thống CNTT" },
+        { kr: "사이버 보안 및 네트워크 구축", en: "Cybersecurity & Network", vn: "An ninh mạng & Xây dựng mạng lưới" },
+        { kr: "프로젝트 수행 및 사후 평가", en: "Implementation & Evaluation", vn: "Triển khai & Đánh giá dự án" }
       ]
     },
     insights: {
@@ -111,8 +111,8 @@ export const dictionary = {
     footer: {
       desc: { kr: "디지털 ODA 컨설팅 및 혁신적인 IT 플랫폼 분야의 글로벌 리더. 전 세계 국가들을 디지털로 하나 되게 연결하고, 모두의 지속 가능한 성장을 위한 인프라 구축을 주도합니다.", en: "A global leader in digital ODA consulting and innovative IT platforms. Connecting countries worldwide through digital and leading the building of infrastructure for sustainable growth for all.", vn: "Nhà lãnh đạo toàn cầu trong lĩnh vực tư vấn ODA kỹ thuật số và các nền tảng CNTT đổi mới. Kết nối các quốc gia trên toàn thế giới thông qua kỹ thuật số và dẫn đầu việc xây dựng cơ sở hạ tầng để tăng trưởng bền vững cho tất cả mọi người." },
       reg_no: { kr: "사업자등록번호: 645-81-03508", en: "Registration No: 645-81-03508", vn: "Mã số thuế: 645-81-03508" },
-      ceo: { kr: "대표: 이은주", en: "CEO: Lee Eun Joo", vn: "Đại diện: Lee Eun Joo" },
-      address: { kr: "주소: 경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Address: 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Địa chỉ: 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" }
+      ceo: { kr: "대표: 정은주", en: "CEO: Jung Eun Joo", vn: "Đại diện: Jung Eun Joo" },
+      address: { kr: "주소: 경기도 성남시 분당구 황새울로 319 번길 8-4, 7층 720호", en: "Address: Room 720, 7F, 8-4, Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Địa chỉ: Room 720, 7F, 8-4, Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" }
     }
   },
   about: {
