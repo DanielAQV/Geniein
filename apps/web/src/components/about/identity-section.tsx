@@ -7,7 +7,7 @@ import { dictionary } from "@/lib/i18n/dictionary"
 
 export function IdentitySection() {
   const { t, language } = useLanguage()
-  
+
   const icons = [
     <Eye key="eye" className="h-6 w-6" />,
     <Target key="target" className="h-6 w-6" />,
@@ -34,10 +34,10 @@ export function IdentitySection() {
                   {t('about.identity.label')}
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 leading-tight tracking-tighter">
+              <h2 className="text-5xl font-bold text-foreground mb-8 leading-tight tracking-tighter">
                 {t('about.identity.title')}
               </h2>
-              <div className="space-y-6 text-base text-muted-foreground font-light leading-relaxed break-keep">
+              <div className="space-y-6 text-[18px] text-muted-foreground font-light leading-relaxed break-keep">
                 <p>{t('about.identity.p1')}</p>
                 <p>{t('about.identity.p2')}</p>
               </div>
@@ -46,8 +46,7 @@ export function IdentitySection() {
 
           {/* Right Side: Blueprint Visualization */}
           <div className="lg:col-span-7 relative">
-            <div className="absolute left-[31px] top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-primary/20 to-transparent hidden sm:block" />
-            
+
             <div className="space-y-16">
               {steps.map((step, index) => (
                 <motion.div
@@ -59,20 +58,25 @@ export function IdentitySection() {
                   className="relative pl-0 sm:pl-20"
                 >
                   {/* Connection Node */}
-                  <div className="absolute left-0 top-0 hidden sm:flex items-center justify-center w-16 h-16 rounded-full border border-primary/30 bg-background z-10">
-                    <div className="text-primary">{icons[index]}</div>
-                    <div className="absolute -inset-2 bg-primary/5 rounded-full animate-pulse" />
+                  <div className="absolute left-0 top-0 hidden sm:flex items-center justify-center w-16 h-16 rounded-full border border-[#5874EA]/30 bg-background z-10">
+                    <div className="text-[#5874EA]">{icons[index]}</div>
+                    <div className="absolute -inset-2 bg-[#5874EA]/5 rounded-full animate-pulse" />
                   </div>
+                  
+                  {/* Connection Line to next node */}
+                  {index !== steps.length - 1 && (
+                    <div className="absolute left-[31px] top-16 bottom-[-64px] w-px bg-[#5874EA] hidden sm:block z-0" />
+                  )}
 
-                  <div className="p-8 md:p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group relative overflow-hidden shadow-2xl">
+                  <div className="p-8 md:p-10 rounded-[16px] border border-[#999eab]/60 bg-[#090b0f]/50 backdrop-blur-[6px] shadow-2xl group relative overflow-hidden transition-all hover:bg-[#14172B] hover:border-[#5874EA]">
                     <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                       <span className="text-8xl font-bold tracking-tighter">0{index + 1}</span>
                     </div>
-                    
+
                     <div className="relative z-10">
-                      <div className="text-xs font-bold tracking-widest text-primary mb-3 uppercase">{step.title[language]}</div>
-                      <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4">{step.label[language]}</h3>
-                      <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed max-w-md break-keep">
+                      <div className="inline-flex items-center mb-4 px-2.5 py-1 rounded-sm border border-primary/30 bg-primary/5 text-[11px] font-bold tracking-widest text-primary uppercase">{step.title[language]}</div>
+                      <h3 className="text-[30px] font-bold text-foreground mb-4">{step.label[language]}</h3>
+                      <p className="text-[18px] md:text-base text-muted-foreground font-light leading-relaxed max-w-md break-keep">
                         {step.desc[language]}
                       </p>
                     </div>

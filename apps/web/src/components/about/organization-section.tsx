@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { MapPin, Laptop, Briefcase } from "lucide-react"
+import { MapPin } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -12,12 +12,12 @@ export function OrganizationSection() {
   const hubs = [
     {
       ...hubData[0],
-      icon: <Briefcase className="h-6 w-6" />,
+      image: "/images/about/org-korea.png",
       address: hubData[0].address[language]
     },
     {
       ...hubData[1],
-      icon: <Laptop className="h-6 w-6" />,
+      image: "/images/about/org-hanoi.png",
       address: hubData[1].address[language]
     }
   ]
@@ -46,53 +46,65 @@ export function OrganizationSection() {
               {t('about.organization.label')}
             </span>
           </motion.div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tighter">
+          <h2 className="text-5xl font-bold text-foreground mb-6 tracking-tighter">
             {t('about.organization.title')}
           </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
+          <p className="text-[18px] text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
             {t('about.organization.desc')}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {hubs.map((hub, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="relative p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group shadow-2xl"
-            >
-              <div className="flex items-start justify-between mb-8">
-                <div>
-                  <div className="text-xs font-bold text-primary mb-2 tracking-widest uppercase">{hub.role[language]}</div>
-                  <h3 className="text-2xl font-bold text-foreground whitespace-pre-line">{hub.city[language]}</h3>
+        <div className="grid lg:grid-cols-2 gap-8">
+          {hubs.map((hub, index) => {
+            const cityParts = hub.city[language].split("\n")
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+                className="relative overflow-hidden rounded-[16px] border border-[#999eab]/30 bg-[#14172b] shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)] hover:border-primary/40 transition-all duration-500 group"
+              >
+                {/* Photo with role badge */}
+                <div className="relative h-[259px] w-full overflow-hidden">
+                  <img
+                    src={hub.image}
+                    alt={cityParts[0]}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-[#999eab]/60 bg-[#5874ea] px-[17px] py-[7px] text-xs font-medium text-[#f7f7f7]">
+                    {hub.role[language]}
+                  </span>
                 </div>
-                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
-                  {hub.icon}
-                </div>
-              </div>
 
-              <div className="space-y-4">
-                <div className="text-xs font-bold text-foreground/50 tracking-widest uppercase">{t('about.organization.expertise_label')}</div>
-                <div className="flex flex-wrap gap-2">
-                  {hub.specialization.map((spec, sIdx) => (
-                    <span key={sIdx} className="px-4 py-1.5 text-xs font-medium border border-border/50 rounded-full bg-card/30 text-muted-foreground group-hover:text-foreground transition-colors">
-                      {spec[language]}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                {/* Content */}
+                <div className="flex flex-col gap-6 px-4 py-8">
+                  <div className="flex items-start justify-between gap-4 pt-2">
+                    <h3 className="flex-1 text-xl font-bold tracking-[-0.5px] leading-7 text-[#f6f8ff]">{cityParts[0]}</h3>
+                    {cityParts[1] && (
+                      <span className="flex-1 text-right text-xl font-bold tracking-[-0.5px] leading-7 text-[#f6f8ff]">{cityParts[1]}</span>
+                    )}
+                  </div>
 
-              <div className="mt-8 pt-8 border-t border-border/50">
-                <div className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors cursor-default">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm font-light">{hub.address}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {hub.specialization.map((spec, sIdx) => (
+                      <span key={sIdx} className="rounded-full border border-[#999eab]/60 bg-[#090b0f]/30 px-[17px] py-[7px] text-xs font-medium text-[#f7f7f7]">
+                        {spec[language]}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-[#f6f6f8]/10 pt-8">
+                    <div className="flex items-center gap-2 text-[#f7f7f7]">
+                      <MapPin className="h-4 w-4 shrink-0" />
+                      <span className="text-sm font-light">{hub.address}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </section>

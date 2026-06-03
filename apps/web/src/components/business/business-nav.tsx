@@ -8,16 +8,16 @@ import { usePathname, useSearchParams } from "next/navigation"
 
 function BusinessNavContent() {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState("oda")
+  const [activeTab, setActiveTab] = useState("platform")
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const category = searchParams.get('category')
-    if (category === "platform" || category === "platforms") {
-      setActiveTab("platform")
-    } else {
+    if (category === "oda") {
       setActiveTab("oda")
+    } else {
+      setActiveTab("platform")
     }
   }, [searchParams])
 

@@ -104,13 +104,13 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   }
 
   return (
-    <div className="h-full p-8 md:p-12 rounded-3xl border border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl relative group overflow-hidden">
+    <div className="h-full p-8 md:p-12 rounded-3xl border border-border/50 bg-[#14172B] backdrop-blur-xl shadow-2xl relative group overflow-hidden">
       {/* Form Decoration Accent */}
 
 
       <div className="relative z-10">
         {showIntro && (
-          <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8 leading-tight whitespace-pre-line">
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8 leading-tight whitespace-pre-line text-center">
             {t('contact.form.intro')}
           </h3>
         )}

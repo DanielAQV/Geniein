@@ -1,13 +1,13 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Database, LayoutPanelTop, BarChart3, ShieldCheck, Share2 } from "lucide-react"
+import { Database, BarChart3, ShieldCheck } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
 export function PlatformServices() {
   const { t, language } = useLanguage()
-  
+
   const icons = [
     <BarChart3 key="chart" className="h-6 w-6" />,
     <Database key="db" className="h-6 w-6" />,
@@ -35,7 +35,7 @@ export function PlatformServices() {
         {/* Large Gradient Orbs */}
         <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 -left-20 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]" />
-        
+
         {/* Tech Matrix Visual */}
         <svg className="absolute top-0 right-0 h-full w-1/3 opacity-[0.08]" viewBox="0 0 400 800" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="400" cy="400" r="300" stroke="var(--primary)" strokeWidth="0.5" strokeDasharray="10 10" />
@@ -60,10 +60,10 @@ export function PlatformServices() {
               {t('business.platform.label')}
             </span>
           </motion.div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tighter">
+          <h2 className="text-5xl font-bold text-foreground mb-6 tracking-tighter">
             {t('business.platform.title')}
           </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep">
+          <p className="text-[18px] text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep">
             {t('business.platform.description')}
           </p>
         </div>
@@ -76,39 +76,37 @@ export function PlatformServices() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group relative shadow-2xl"
+              className="px-[16px] py-[32px] rounded-[16px] border border-[#999eab]/30 bg-[#14172b] hover:border-primary/40 transition-all group relative overflow-hidden shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)]"
             >
               <div className="mb-8 p-4 w-fit rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
                 {icons[index]}
               </div>
-              <h3 className="text-lg md:text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors uppercase tracking-tight">
+              <h3 className="text-2xl font-bold text-[#f6f8ff] mb-4 group-hover:text-primary transition-colors tracking-tight">
                 {item.title[language]}
               </h3>
-              <p className="text-sm text-muted-foreground font-light leading-relaxed break-keep">
+              <p className="text-[#999eab] font-light leading-relaxed break-keep">
                 {item.desc[language]}
               </p>
-              
+
               {/* Decorative Line */}
               <div className="absolute bottom-0 left-0 w-0 h-1 bg-primary group-hover:w-full transition-all duration-700" />
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-24 p-12 md:p-16 rounded-3xl border border-primary/20 bg-card/30 backdrop-blur-sm relative overflow-hidden shadow-2xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div>
-              <h4 className="text-2xl font-bold text-foreground mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
-              <p className="text-base text-muted-foreground font-light leading-relaxed break-keep">
-                {t('business.platform.vision_desc')}
-              </p>
-            </div>
-            <div className="flex justify-center lg:justify-end">
-              <Share2 className="h-32 w-32 text-primary opacity-30 animate-pulse" />
-            </div>
+        <div className="mt-24 p-12 md:p-16 rounded-[24px] border border-[#999eab]/30 bg-[#090b0f]/30 shadow-2xl backdrop-blur-[4px] relative overflow-hidden">
+          <img
+            src="/images/business/platform-vision.png"
+            alt=""
+            className="absolute right-0 top-0 h-full w-auto max-w-[65%] object-cover object-left pointer-events-none select-none"
+          />
+          <div className="absolute inset-0 pointer-events-none" />
+          <div className="relative z-10 max-w-xl">
+            <h4 className="text-[30px] font-bold text-[#f6f8ff] mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
+            <p className="text-[18px] text-[#999eab] font-light leading-relaxed break-keep">
+              {t('business.platform.vision_desc')}
+            </p>
           </div>
-          {/* Subtle Glow */}
-          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-[80px] pointer-events-none" />
         </div>
       </div>
     </section>

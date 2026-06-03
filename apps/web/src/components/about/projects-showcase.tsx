@@ -11,34 +11,32 @@ export function ProjectsShowcase() {
 
   const projects = projectData.map((data, idx) => ({
     ...data,
-    icon: idx === 0 
-      ? <Zap className="h-6 w-6 text-yellow-400" /> 
+    icon: idx === 0
+      ? <Zap className="h-6 w-6 text-yellow-400" />
       : <Globe className="h-6 w-6 text-blue-400" />
   }))
 
   return (
     <section id="projects" className="py-28 relative bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-24 gap-8">
-          <div className="max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
-            >
-
-              <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
-                {t('about.projects.label')}
-              </span>
-            </motion.div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tighter">
-              {t('about.projects.title')}
-            </h2>
-            <p className="text-base text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
-              {t('about.projects.desc')}
-            </p>
-          </div>
+        {/* Header — 96px gap to the cards (Figma) */}
+        <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center justify-center rounded-full border border-primary/30 bg-primary/5 px-[17px] py-[5px]"
+          >
+            <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
+              {t('about.projects.label')}
+            </span>
+          </motion.div>
+          <h2 className="mt-6 text-4xl sm:text-5xl font-bold text-foreground tracking-tight leading-tight">
+            {t('about.projects.title')}
+          </h2>
+          <p className="mt-6 text-base sm:text-lg text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
+            {t('about.projects.desc')}
+          </p>
         </div>
 
         <div className="space-y-12">
@@ -49,48 +47,56 @@ export function ProjectsShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
-              className="group relative grid lg:grid-cols-12 gap-0 border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 transition-all overflow-hidden rounded-3xl shadow-2xl"
+              className="group relative grid lg:grid-cols-12 overflow-hidden rounded-[20px] bg-[#090b0f]/50 backdrop-blur-md shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.45)] lg:min-h-[482px]"
             >
-              {/* Project Info */}
-              <div className="lg:col-span-8 p-10 lg:p-16 border-b lg:border-b-0 lg:border-r border-border/50">
-                <div className="flex items-center gap-5 mb-10">
-                  <div className="hidden sm:block p-4 rounded-xl bg-card/30 border border-border/50 shadow-inner">
-                    {project.icon}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-primary tracking-widest uppercase mb-1">{project.category[language]}</div>
-                    <h3 className="text-2xl lg:text-3xl font-bold text-foreground leading-snug tracking-tight">{project.title[language]}</h3>
-                  </div>
-                </div>
-                <p className="text-base lg:text-lg text-muted-foreground font-light leading-relaxed mb-12 break-keep">
-                  {project.description[language]}
-                </p>
-              </div>
-
-              {/* Project Metrics */}
-              <div className="lg:col-span-4 p-10 lg:p-12 bg-primary/[0.04] flex flex-col justify-center relative overflow-hidden border-l border-border/30">
-                <div className="space-y-6 relative z-10">
+              {/* Project Metrics with Background Image */}
+              <div className="relative lg:col-span-4 flex items-center overflow-hidden bg-[#090b0f]">
+                <img
+                  src="/images/about/project.png"
+                  alt="Project Background"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#090b0f]/80 to-transparent" />
+                <div className="relative z-10 flex w-full flex-col gap-6 p-6 sm:p-8 lg:p-10">
                   {project.metrics.map((metric, mIdx) => (
-                    <div 
-                      key={mIdx} 
-                      className="group/metric p-6 rounded-2xl bg-card/20 border border-border/30 hover:bg-card/40 transition-all duration-300"
+                    <div
+                      key={mIdx}
+                      className="rounded-2xl border border-[#12161f]/30 bg-[#090b0f]/20 p-6 backdrop-blur-sm transition-colors duration-300 hover:bg-[#090b0f]/30"
                     >
                       <div className="flex items-center gap-4 mb-3">
-                        <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover/metric:bg-primary group-hover/metric:text-white transition-colors duration-300">
+                        <div className="rounded-xl bg-[#5874ea]/15 p-2 text-[#5874ea]">
                           {mIdx === 0 ? <Layout className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
                         </div>
-                        <div className="text-xs font-bold text-muted-foreground/70 uppercase tracking-wider">
+                        <div className="text-xs font-bold text-[#f6f8ff]/70 uppercase tracking-wider">
                           {metric.label[language]}
                         </div>
                       </div>
-                      <div className="text-lg lg:text-xl font-bold text-foreground leading-tight">
+                      <div className="text-2xl font-bold text-[#f6f8ff] leading-tight">
                         {typeof metric.value === 'string' ? metric.value : metric.value[language]}
                       </div>
                     </div>
                   ))}
                 </div>
-                {/* Subtle Background Glow */}
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+              </div>
+
+              {/* Project Info — dark panel */}
+              <div className="lg:col-span-8 flex flex-col justify-center gap-10 bg-[#14172b] px-8 py-10 lg:px-16 lg:py-8 border-t lg:border-t-0 lg:border-l border-[#12161f]/60">
+                <div className="flex flex-col gap-5">
+                  <div className="w-fit rounded-2xl border border-[#12161f]/60 bg-[#090b0f]/30 p-4 shadow-[inset_0px_2px_4px_0px_rgba(0,0,0,0.05)]">
+                    {project.icon}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-xs font-bold text-[#5874ea] tracking-[0.1em] uppercase">
+                      {project.category[language]}
+                    </div>
+                    <h3 className="text-3xl lg:text-4xl font-bold text-[#f6f8ff] leading-snug tracking-tight">
+                      {project.title[language]}
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-lg lg:text-xl text-[#999eab] font-light leading-relaxed break-keep">
+                  {project.description[language]}
+                </p>
               </div>
             </motion.div>
           ))}

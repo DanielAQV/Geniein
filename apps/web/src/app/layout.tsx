@@ -11,8 +11,8 @@ const notoSans = Noto_Sans_KR({
 })
 
 export const metadata: Metadata = {
-  title: 'Geniein | Digital ODA Consulting & IT Platforms',
-  description: 'Global Digital ODA Consulting & Innovative IT Platforms. Connect the world, innovate the future with Connext and Gnom solutions.',
+  title: 'Geniein | IT Platforms & Digital ODA Consulting',
+  description: 'Innovative IT Platforms & Global Digital ODA Consulting. Connect the world, innovate the future with Connext and Gnom solutions.',
   icons: {
     icon: [
       { url: '/favicon.ico?v=1' }

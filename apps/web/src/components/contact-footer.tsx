@@ -12,12 +12,14 @@ export function ContactFooter() {
   return (
     <>
       {/* Contact Section */}
-      <section id="contact" className="py-24 sm:py-32 bg-muted/30 relative overflow-hidden">
-        {/* Background Accents */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] opacity-50" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] opacity-50" />
-        </div>
+      <section id="contact" className="py-24 sm:py-32 relative overflow-hidden bg-[#03061a]">
+        {/* Figma wave background — full-width mapping keeps the arc locked to the design proportions */}
+        <img
+          src="/main-contact.png"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-0 top-0 w-full h-auto max-w-none select-none"
+        />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col items-center text-center mb-16">
@@ -32,23 +34,23 @@ export function ContactFooter() {
                 {t('landing.contact.label')}
               </span>
             </motion.div>
-            
-            <motion.h2 
+
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-4xl font-bold text-foreground mb-6 tracking-tight whitespace-pre-line leading-[1.2]"
+              className="text-5xl font-bold text-foreground mb-6 tracking-tight whitespace-pre-line leading-[1.2]"
             >
               {t('landing.contact.title')}
             </motion.h2>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-lg text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
+              className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
             >
               {t('landing.contact.desc')}
             </motion.p>

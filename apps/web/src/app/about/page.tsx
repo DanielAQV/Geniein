@@ -56,7 +56,7 @@ export default function AboutPage() {
                 {t('about.hero.title_1')} {t('about.hero.title_2')}
               </h1>
             </div>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
               {t('about.hero.description')}
             </p>
           </motion.div>

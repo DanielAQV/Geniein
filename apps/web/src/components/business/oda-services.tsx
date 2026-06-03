@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ClipboardCheck, Settings, Search, Users, ChevronRight } from "lucide-react"
+import { Settings, Users, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -11,7 +11,7 @@ export function OdaServices() {
   const icons = [
     <Settings key="settings" className="h-6 w-6" />,
     <Users key="users" className="h-6 w-6" />,
-    <Search key="search" className="h-6 w-6" />
+    <Heart key="heart" className="h-6 w-6" />
   ]
 
   const pillars = dictionary.business.oda.pillars
@@ -85,7 +85,7 @@ export function OdaServices() {
           </div>
 
           {/* Right: The Three Pillars */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-12">
             {pillars.map((pillar, index) => (
               <motion.div
                 key={index}
@@ -93,26 +93,31 @@ export function OdaServices() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group p-8 md:p-10 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all relative overflow-hidden shadow-2xl"
+                className="relative pl-0 sm:pl-20"
               >
-                <div className="flex gap-8 items-start">
-                  <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary shadow-inner">
-                    {icons[index]}
+                {/* Connection Node */}
+                <div className="absolute left-0 top-0 hidden sm:flex items-center justify-center w-16 h-16 rounded-full border border-[#5874EA]/30 bg-background z-10">
+                  <div className="text-[#5874EA]">{icons[index]}</div>
+                  <div className="absolute -inset-2 bg-[#5874EA]/5 rounded-full animate-pulse" />
+                </div>
+                
+                {/* Connection Line to next node */}
+                {index !== pillars.length - 1 && (
+                  <div className="absolute left-[31px] top-16 -bottom-12 w-px bg-[#5874EA] hidden sm:block z-0" />
+                )}
+
+                <div className="p-8 md:p-10 rounded-[16px] border border-[#999eab]/60 bg-[#090b0f]/50 backdrop-blur-[6px] shadow-2xl group relative overflow-hidden transition-all hover:bg-[#14172B] hover:border-[#5874EA]">
+                  {/* Number Watermark */}
+                  <div className="absolute top-3 right-6 text-7xl md:text-8xl font-bold text-white/[0.04] tracking-tighter pointer-events-none select-none">
+                    0{index + 1}
                   </div>
-                  <div>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
-                      <span className="text-xl md:text-2xl font-bold text-foreground tracking-tight">{pillar.title[language]}</span>
-                      <span className="inline-block text-[10px] font-bold text-primary tracking-widest uppercase px-2 py-0.5 rounded-full bg-primary/5 border border-primary/20">{pillar.label[language]}</span>
-                    </div>
-                    <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed break-keep max-w-lg">
+                  <div className="relative z-10">
+                    <div className="inline-flex items-center mb-4 px-2.5 py-1 rounded-sm border border-primary/30 bg-primary/5 text-[11px] font-bold tracking-widest text-primary uppercase">{pillar.label[language]}</div>
+                    <h3 className="text-[30px] font-bold text-[#f6f8ff] mb-4 tracking-tight">{pillar.title[language]}</h3>
+                    <p className="text-[18px] md:text-base text-[#999eab] font-light leading-relaxed break-keep max-w-lg">
                       {pillar.desc[language]}
                     </p>
                   </div>
-                </div>
-                
-                {/* Background Decor */}
-                <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity uppercase select-none pointer-events-none">
-                  <span className="text-8xl font-bold tracking-tighter">{pillar.title[language]}</span>
                 </div>
               </motion.div>
             ))}

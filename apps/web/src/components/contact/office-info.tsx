@@ -1,7 +1,6 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { MapPin, Phone, Mail, Clock, Globe } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 export function OfficeInfo() {
@@ -29,6 +28,8 @@ export function OfficeInfo() {
           key={office.title}
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
+          whileHover={{ scale: 1.02, y: -4 }}
+          whileTap={{ scale: 0.98 }}
           viewport={{ once: true }}
           transition={{ delay: index * 0.1 }}
           className="flex-1 p-8 rounded-3xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group shadow-xl flex flex-col justify-center"

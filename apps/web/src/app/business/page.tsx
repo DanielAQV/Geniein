@@ -12,19 +12,19 @@ import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
 function BusinessContent() {
-  const [activeTab, setActiveTab] = useState("oda")
+  const [activeTab, setActiveTab] = useState("platform")
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const category = searchParams.get('category')
-    
-    // Determine active tab
-    if (category === "platform" || category === "platforms") {
-      setActiveTab("platform")
-    } else {
+
+    // Determine active tab (default to platform / IT-first)
+    if (category === "oda") {
       setActiveTab("oda")
+    } else {
+      setActiveTab("platform")
     }
 
     // Handle scrolling if there's a category
@@ -123,7 +123,7 @@ export default function BusinessPage() {
                 {t('business.hero.title_1')} {t('business.hero.title_2')}
               </h1>
             </div>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
               {t('business.hero.description')}
             </p>
           </motion.div>

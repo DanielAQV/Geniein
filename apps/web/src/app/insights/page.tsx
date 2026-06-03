@@ -13,18 +13,18 @@ import { usePathname, useSearchParams } from "next/navigation"
 
 function InsightsContent() {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState("oda")
+  const [activeTab, setActiveTab] = useState("it")
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const category = searchParams.get('category')
-    
-    if (category === "it") {
-      setActiveTab("it")
-    } else {
+
+    if (category === "oda") {
       setActiveTab("oda")
+    } else {
+      setActiveTab("it")
     }
 
     if (category) {
@@ -144,7 +144,7 @@ export default function InsightsPage() {
                 {t('landing.insights.hero_title')}
               </h1>
             </div>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
+            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
               {t('landing.insights.hero_desc')}
             </p>
           </motion.div>

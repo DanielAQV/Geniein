@@ -112,7 +112,7 @@ export const dictionary = {
       desc: { kr: "디지털 ODA 컨설팅 및 혁신적인 IT 플랫폼 분야의 글로벌 리더. 전 세계 국가들을 디지털로 하나 되게 연결하고, 모두의 지속 가능한 성장을 위한 인프라 구축을 주도합니다.", en: "A global leader in digital ODA consulting and innovative IT platforms. Connecting countries worldwide through digital and leading the building of infrastructure for sustainable growth for all.", vn: "Nhà lãnh đạo toàn cầu trong lĩnh vực tư vấn ODA kỹ thuật số và các nền tảng CNTT đổi mới. Kết nối các quốc gia trên toàn thế giới thông qua kỹ thuật số và dẫn đầu việc xây dựng cơ sở hạ tầng để tăng trưởng bền vững cho tất cả mọi người." },
       reg_no: { kr: "사업자등록번호: 645-81-03508", en: "Registration No: 645-81-03508", vn: "Mã số thuế: 645-81-03508" },
       ceo: { kr: "대표: 정은주", en: "CEO: Jung Eun Joo", vn: "Đại diện: Jung Eun Joo" },
-      address: { kr: "주소: 경기도 성남시 분당구 황새울로 319 번길 8-4, 7층 720호", en: "Address: Room 720, 7F, 8-4, Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Địa chỉ: Room 720, 7F, 8-4, Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" }
+      address: { kr: "주소: 경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Address: Room 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Địa chỉ: Phòng 302-179, Tầng 3, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" }
     }
   },
   about: {
@@ -234,7 +234,7 @@ export const dictionary = {
     },
     platform: {
       label: { kr: "Platform Innovation", en: "Platform Innovation", vn: "Đổi mới nền tảng" },
-      title: { kr: "AI 기반 소프트웨어 생태계의 표준", en: "The Standard for AI-Based Software Ecosystems", vn: "Đổi mới giá trị phần mềm b AI" },
+      title: { kr: "AI 기반 소프트웨어 생태계의 표준", en: "The Standard for AI-Based Software Ecosystems", vn: "Đổi mới giá trị phần mềm dựa trên AI" },
       description: {
         kr: "단순한 개발을 넘어 기술의 가치를 표준화하고 효율을 극대화합니다.\n지니인은 지능형 엔지니어링을 통해 소프트웨어 시장의 새로운 표준을 제시합니다.",
         en: "Beyond simple development, we standardize technology value and maximize efficiency.\nGeniein presents new standards in the software market through intelligent engineering.",
@@ -254,7 +254,7 @@ export const dictionary = {
           desc: { kr: "소프트웨어가 안정적으로 서비스될 수 있도록 최적의 호스팅과 기술 지원을 제공합니다. 개발부터 운영까지 프로젝트의 전 과정을 신뢰할 수 있는 기술력으로 뒷받침합니다.", en: "Providing optimal hosting and technical support for stable software services. Supporting the entire project process from development to operation with reliable technical expertise.", vn: "Cung cấp dịch vụ hosting và hỗ trợ kỹ thuật tối ưu để dịch vụ phần mềm ổn định. Hỗ trợ toàn bộ quy trình dự án từ phát triển đến vận hành với chuyên môn kỹ thuật đáng tin cậy." }
         }
       ],
-      vision_title: { kr: "지속 가능한 기술 생태계", en: "Sustainable Tech Ecosystem", vn: "Hệ sinh thái acông nghệ bền vững" },
+      vision_title: { kr: "지속 가능한 기술 생태계", en: "Sustainable Tech Ecosystem", vn: "Hệ sinh thái công nghệ bền vững" },
       vision_desc: {
         kr: "지니인은 기술의 발전이 모두의 혜택으로 돌아가는 지속 가능한 생태계를 꿈꿉니다. 인류와 기술이 조화롭게 공존하며, 새로운 가치를 지속적으로 창출하는 미래를 향해 나아가겠습니다.",
         en: "Geniein dreams of a sustainable ecosystem where technological advancement benefits everyone. We will move toward a future where humanity and technology coexist harmoniously and create new value.",

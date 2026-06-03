@@ -8,16 +8,16 @@ import { usePathname, useSearchParams } from "next/navigation"
 
 function InsightsNavContent() {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState("oda")
+  const [activeTab, setActiveTab] = useState("it")
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const category = searchParams.get('category')
-    if (category === "it") {
-      setActiveTab("it")
-    } else {
+    if (category === "oda") {
       setActiveTab("oda")
+    } else {
+      setActiveTab("it")
     }
   }, [searchParams])
 

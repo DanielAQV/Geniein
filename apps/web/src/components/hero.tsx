@@ -10,17 +10,20 @@ import { ParticleBackground } from "./particle-background"
 
 export function Hero() {
   const { t } = useLanguage()
-  
+
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-32">
+    <section id="hero" className="relative isolate min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-32">
       {/* Premium Dynamic Background */}
       <div className="absolute inset-0 -z-10 bg-[var(--page-bg)] transition-colors duration-300">
+        {/* Figma wave background — full-width mapping keeps the wave spacing locked to the 1440 design */}
+        <img src="/main-hero.png" alt="" aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 w-full h-auto max-w-none select-none" />
+
         <ParticleBackground />
-        
+
         {/* Deep Atmosphere Glows */}
         <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 -left-20 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px]" />
-        
+
         {/* Subtle Grid */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
           <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
@@ -44,13 +47,13 @@ export function Hero() {
           >
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1] mb-8">
+            <h1 className="text-4xl sm:text-5xl lg:text-[96px] font-bold tracking-tight text-foreground leading-[1.1] mb-8">
               <span className="block">{t('hero.title_main')}</span>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-primary inline-block pb-2">{t('hero.title_accent')}</span>
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-lg text-muted-foreground max-w-4xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line text-balance">
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto font-light tracking-wide break-keep mb-10 leading-relaxed whitespace-pre-line text-balance">
               {t('hero.description')}
             </p>
 

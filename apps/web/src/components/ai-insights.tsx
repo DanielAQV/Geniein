@@ -5,10 +5,8 @@ import { ArrowUpRight, Rss, Clock, Sparkles, ArrowRight, Tag, Globe, Cpu, Zap } 
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { dictionary } from "@/lib/i18n/dictionary"
 
 import { useSearchParams } from "next/navigation"
-import { GlassButton } from "./ui/glass-button"
 import useSWR from "swr"
 import { fetcher } from "@/lib/api"
 
@@ -142,7 +140,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
             return (
               <div
                 key={index}
-                className="group relative bg-card/80 backdrop-blur-md border border-border/50 rounded-[2rem] p-0 overflow-hidden hover:bg-card transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_50px_rgba(var(--primary-rgb),0.1)] flex flex-col"
+                className="group relative bg-[#14172b] border border-[#999eab]/30 rounded-[16px] overflow-hidden shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)] transition-all duration-500 hover:border-primary/40 hover:shadow-[inset_0_0_0_2px_rgba(190,190,190,0.15),0_0_50px_rgba(var(--primary-rgb),0.1)] flex flex-col"
               >
                 {/* Stretched Link for the entire card */}
                 {insight.id && (
@@ -150,63 +148,37 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
                 )}
 
                 {/* Thumbnail Image */}
-                <div className="relative h-48 w-full overflow-hidden">
+                <div className="relative h-64 w-full overflow-hidden">
                   {insight.thumbnail_url ? (
-                    <img 
-                      src={insight.thumbnail_url} 
-                      alt={insight.title[language]} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    <img
+                      src={insight.thumbnail_url}
+                      alt={insight.title[language]}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                       <Sparkles className="h-8 w-8 text-primary/40" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--page-bg)] via-[var(--page-bg)]/20 to-transparent opacity-80" />
                 </div>
 
-                <div className="p-6 flex flex-col flex-grow">
-                  {/* AI Tags - Minimal Hashtags */}
-                  <div className="flex flex-wrap gap-2 mb-3 relative z-40">
-                    {insight.tags?.slice(0, 2).map((tag: string) => (
-                      <Link 
-                        key={tag}
-                        href={`/insights?tag=${encodeURIComponent(tag)}`}
-                        className="text-[10px] font-bold text-primary/60 hover:text-primary transition-colors uppercase tracking-widest"
-                      >
-                        #{tag}
-                      </Link>
-                    ))}
+                <div className="px-4 py-8 flex flex-col gap-6 flex-grow">
+                  <div className="flex flex-col gap-2">
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-[#f6f8ff] tracking-[-0.5px] line-clamp-2 group-hover:text-primary transition-colors leading-7 min-h-[3.5rem]">
+                      {insight.title[language]}
+                    </h3>
+
+                    {/* Summary */}
+                    <p className="text-sm font-medium text-[#999eab] leading-5 line-clamp-3 whitespace-pre-line">
+                      {insight.summary[language]}
+                    </p>
                   </div>
 
-                  {/* Title */}
-                  <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-snug min-h-[3.5rem]">
-                    {insight.title[language]}
-                  </h3>
-
-                  {/* Summary instead of Perspective */}
-                  <p className="text-sm text-[var(--muted-foreground)] leading-relaxed line-clamp-3 mb-6 font-light whitespace-pre-line">
-                    {insight.summary[language]}
-                  </p>
-
                   {/* Footer */}
-                    <div className="flex items-center justify-between pt-5 border-t border-[var(--border)] mt-auto">
-                    <div className="flex items-center gap-2 text-[11px] text-[var(--muted-foreground)]/60 font-medium uppercase tracking-wider">
-                      <Clock className="h-3 w-3" />
-                      {insight.date[language]}
-                    </div>
-                    
-                    {insight.id ? (
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-primary group-hover:text-primary/80 transition-colors group/btn">
-                        {dictionary.landing.insights.viewDetails}
-                        <ArrowUpRight className="h-3.5 w-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-primary opacity-30 cursor-not-allowed">
-                        {dictionary.landing.insights.viewDetails}
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </div>
-                    )}
+                  <div className="flex items-center gap-1 text-xs font-medium text-[#999eab] mt-auto">
+                    <Clock className="h-4 w-4" />
+                    {insight.date[language]}
                   </div>
                 </div>
               </div>
@@ -242,9 +214,13 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
         ) : (
           /* View More Button for Home */
           <div className="flex justify-center mt-16">
-            <GlassButton href="/insights">
-              {language === 'kr' ? '더 보기' : (language === 'en' ? 'View More' : 'Xem thêm')} 
-            </GlassButton>
+            <Link
+              href="/insights"
+              className="group inline-flex h-14 items-center gap-2 rounded-full border border-white/10 bg-white pl-6 pr-5 text-base font-bold text-[#12161f] backdrop-blur-[6px] transition-all hover:gap-3"
+            >
+              {t('common.more')}
+              <ArrowUpRight className="h-5 w-5" />
+            </Link>
           </div>
         )}
       </div>
