@@ -216,7 +216,7 @@ export function AIInsights({ isFullPage = false, category, id = "insights" }: AI
           <div className="flex justify-center mt-16">
             <Link
               href="/insights"
-              className="group inline-flex h-14 items-center gap-2 rounded-full border border-white/10 bg-white pl-6 pr-5 text-base font-bold text-[#12161f] backdrop-blur-[6px] transition-all hover:gap-3"
+              className="group inline-flex h-14 items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 pl-6 pr-5 text-base font-bold text-[var(--text-heading)] shadow-sm transition-all hover:gap-3 hover:bg-slate-50 dark:hover:bg-white/10"
             >
               {t('common.more')}
               <ArrowUpRight className="h-5 w-5" />

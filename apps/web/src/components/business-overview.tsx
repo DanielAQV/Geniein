@@ -73,12 +73,18 @@ export function BusinessOverview() {
               className="group block relative overflow-hidden rounded-[20px] border border-[var(--border-card)] bg-[var(--card-dark)] p-8 shadow-md transition-all duration-500 hover:border-primary/40 hover:shadow-lg"
             >
               <div className="flex flex-col md:flex-row items-center md:items-stretch justify-center gap-8 lg:gap-[46px]">
-                <img
-                  src="/images/business/ai-cube.png"
-                  alt=""
-                  className="w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
-                  style={{ opacity: 'var(--hero-img-opacity)' }}
-                />
+                <>
+                  <img
+                    src="/images/business/ai-cube.png"
+                    alt=""
+                    className="hidden dark:block w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
+                  />
+                  <img
+                    src="/images/business/ai-cube-light.png"
+                    alt=""
+                    className="block dark:hidden w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
+                  />
+                </>
                 <div className="flex flex-1 flex-col gap-8 lg:gap-[46px] self-stretch">
                   <div className="flex flex-col gap-3">
                     <h3 className="pt-2 text-xl font-bold leading-7 tracking-[-0.5px] text-[var(--text-heading)]">
@@ -93,7 +99,7 @@ export function BusinessOverview() {
                       ))}
                     </ul>
                   </div>
-                  <span className="inline-flex h-14 w-fit items-center gap-2 self-start rounded-full border border-white/10 bg-white pl-6 pr-5 text-base font-bold text-[#12161f] backdrop-blur-[6px] transition-all group-hover:gap-3">
+                  <span className="inline-flex h-14 w-fit items-center gap-2 self-start rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 pl-6 pr-5 text-base font-bold text-[var(--text-heading)] shadow-sm transition-all group-hover:gap-3 hover:bg-slate-50 dark:hover:bg-white/10">
                     {t('common.more')}
                     <ArrowUpRight className="h-5 w-5" />
                   </span>
@@ -114,12 +120,18 @@ export function BusinessOverview() {
               className="group block relative overflow-hidden rounded-[20px] border border-[var(--border-card)] bg-[var(--card-dark)] p-8 shadow-md transition-all duration-500 hover:border-primary/40 hover:shadow-lg"
             >
               <div className="flex flex-col md:flex-row items-center md:items-stretch justify-center gap-8 lg:gap-[46px]">
-                <img
-                  src="/images/business/oda-orbit.png"
-                  alt=""
-                  className="w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
-                  style={{ opacity: 'var(--hero-img-opacity)' }}
-                />
+                <>
+                  <img
+                    src="/images/business/oda-orbit.png"
+                    alt=""
+                    className="hidden dark:block w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
+                  />
+                  <img
+                    src="/images/business/oda-orbit-light.png"
+                    alt=""
+                    className="block dark:hidden w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
+                  />
+                </>
                 <div className="flex flex-1 flex-col gap-8 lg:gap-[46px] self-stretch">
                   <div className="flex flex-col gap-3">
                     <h3 className="pt-2 text-xl font-bold leading-7 tracking-[-0.5px] text-[var(--text-heading)]">
@@ -134,7 +146,7 @@ export function BusinessOverview() {
                       ))}
                     </ul>
                   </div>
-                  <span className="inline-flex h-14 w-fit items-center gap-2 self-start rounded-full border border-white/10 bg-white pl-6 pr-5 text-base font-bold text-[#12161f] backdrop-blur-[6px] transition-all group-hover:gap-3">
+                  <span className="inline-flex h-14 w-fit items-center gap-2 self-start rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 pl-6 pr-5 text-base font-bold text-[var(--text-heading)] shadow-sm transition-all group-hover:gap-3 hover:bg-slate-50 dark:hover:bg-white/10">
                     {t('common.more')}
                     <ArrowUpRight className="h-5 w-5" />
                   </span>
