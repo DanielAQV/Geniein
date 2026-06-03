@@ -16,7 +16,7 @@ export function Hero() {
       {/* Premium Dynamic Background */}
       <div className="absolute inset-0 -z-10 bg-[var(--page-bg)] transition-colors duration-300">
         {/* Figma wave background — full-width mapping keeps the wave spacing locked to the 1440 design */}
-        <img src="/main-hero.png" alt="" aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 w-full h-auto max-w-none select-none" />
+        <img src="/main-hero.png" alt="" aria-hidden className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 w-full h-auto max-w-none select-none transition-opacity duration-300" style={{ opacity: 'var(--hero-img-opacity)' }} />
 
         <ParticleBackground />
 

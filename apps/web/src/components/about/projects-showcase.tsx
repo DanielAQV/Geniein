@@ -47,31 +47,32 @@ export function ProjectsShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.2 }}
-              className="group relative grid lg:grid-cols-12 overflow-hidden rounded-[20px] bg-[#090b0f]/50 backdrop-blur-md shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.45)] lg:min-h-[482px]"
+              className="group relative grid lg:grid-cols-12 overflow-hidden rounded-[20px] bg-[var(--card-glass)] backdrop-blur-md shadow-md hover:shadow-lg transition-shadow duration-500 lg:min-h-[482px]"
             >
               {/* Project Metrics with Background Image */}
-              <div className="relative lg:col-span-4 flex items-center overflow-hidden bg-[#090b0f]">
+              <div className="relative lg:col-span-4 flex items-center overflow-hidden bg-[var(--card-dark)]">
                 <img
                   src="/images/about/project.png"
                   alt="Project Background"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                  style={{ opacity: 'var(--hero-img-opacity)' }}
                 />
-                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#090b0f]/80 to-transparent" />
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[var(--card-dark)]/80 to-transparent" />
                 <div className="relative z-10 flex w-full flex-col gap-6 p-6 sm:p-8 lg:p-10">
                   {project.metrics.map((metric, mIdx) => (
                     <div
                       key={mIdx}
-                      className="rounded-2xl border border-[#12161f]/30 bg-[#090b0f]/20 p-6 backdrop-blur-sm transition-colors duration-300 hover:bg-[#090b0f]/30"
+                      className="rounded-2xl border border-[var(--border-card-strong)] bg-[var(--card-glass)] p-6 backdrop-blur-sm transition-colors duration-300 hover:bg-[var(--card-glass-hover)]"
                     >
                       <div className="flex items-center gap-4 mb-3">
                         <div className="rounded-xl bg-[#5874ea]/15 p-2 text-[#5874ea]">
                           {mIdx === 0 ? <Layout className="w-4 h-4" /> : <Shield className="w-4 h-4" />}
                         </div>
-                        <div className="text-xs font-bold text-[#f6f8ff]/70 uppercase tracking-wider">
+                        <div className="text-xs font-bold text-[var(--text-heading)]/70 uppercase tracking-wider">
                           {metric.label[language]}
                         </div>
                       </div>
-                      <div className="text-2xl font-bold text-[#f6f8ff] leading-tight">
+                      <div className="text-2xl font-bold text-[var(--text-heading)] leading-tight">
                         {typeof metric.value === 'string' ? metric.value : metric.value[language]}
                       </div>
                     </div>
@@ -80,21 +81,21 @@ export function ProjectsShowcase() {
               </div>
 
               {/* Project Info — dark panel */}
-              <div className="lg:col-span-8 flex flex-col justify-center gap-10 bg-[#14172b] px-8 py-10 lg:px-16 lg:py-8 border-t lg:border-t-0 lg:border-l border-[#12161f]/60">
+              <div className="lg:col-span-8 flex flex-col justify-center gap-10 bg-[var(--card-dark)] px-8 py-10 lg:px-16 lg:py-8 border-t lg:border-t-0 lg:border-l border-border/30">
                 <div className="flex flex-col gap-5">
-                  <div className="w-fit rounded-2xl border border-[#12161f]/60 bg-[#090b0f]/30 p-4 shadow-[inset_0px_2px_4px_0px_rgba(0,0,0,0.05)]">
+                  <div className="w-fit rounded-2xl border border-[var(--border-card-strong)] bg-[var(--card-glass)] p-4 shadow-[inset_0px_2px_4px_0px_rgba(0,0,0,0.05)]">
                     {project.icon}
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="text-xs font-bold text-[#5874ea] tracking-[0.1em] uppercase">
                       {project.category[language]}
                     </div>
-                    <h3 className="text-3xl lg:text-4xl font-bold text-[#f6f8ff] leading-snug tracking-tight">
+                    <h3 className="text-3xl lg:text-4xl font-bold text-[var(--text-heading)] leading-snug tracking-tight">
                       {project.title[language]}
                     </h3>
                   </div>
                 </div>
-                <p className="text-lg lg:text-xl text-[#999eab] font-light leading-relaxed break-keep">
+                <p className="text-lg lg:text-xl text-[var(--text-sub)] font-light leading-relaxed break-keep">
                   {project.description[language]}
                 </p>
               </div>

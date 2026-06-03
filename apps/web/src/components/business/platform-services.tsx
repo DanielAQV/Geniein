@@ -76,15 +76,15 @@ export function PlatformServices() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="px-[16px] py-[32px] rounded-[16px] border border-[#999eab]/30 bg-[#14172b] hover:border-primary/40 transition-all group relative overflow-hidden shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)]"
+              className="px-[16px] py-[32px] rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] hover:border-primary/40 transition-all group relative overflow-hidden shadow-md hover:shadow-lg"
             >
               <div className="mb-8 p-4 w-fit rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
                 {icons[index]}
               </div>
-              <h3 className="text-2xl font-bold text-[#f6f8ff] mb-4 group-hover:text-primary transition-colors tracking-tight">
+              <h3 className="text-2xl font-bold text-[var(--text-heading)] mb-4 group-hover:text-primary transition-colors tracking-tight">
                 {item.title[language]}
               </h3>
-              <p className="text-[#999eab] font-light leading-relaxed break-keep">
+              <p className="text-[var(--text-sub)] font-light leading-relaxed break-keep">
                 {item.desc[language]}
               </p>
 
@@ -94,16 +94,17 @@ export function PlatformServices() {
           ))}
         </div>
 
-        <div className="mt-24 p-12 md:p-16 rounded-[24px] border border-[#999eab]/30 bg-[#090b0f]/30 shadow-2xl backdrop-blur-[4px] relative overflow-hidden">
+        <div className="mt-24 p-12 md:p-16 rounded-[24px] border border-[var(--border-card)] bg-[var(--card-dark)] shadow-md backdrop-blur-[4px] relative overflow-hidden">
           <img
             src="/images/business/platform-vision.png"
             alt=""
-            className="absolute right-0 top-0 h-full w-auto max-w-[65%] object-cover object-left pointer-events-none select-none"
+            className="absolute right-0 top-0 h-full w-auto max-w-[65%] object-cover object-left pointer-events-none select-none transition-opacity duration-300"
+            style={{ opacity: 'var(--hero-img-opacity)' }}
           />
           <div className="absolute inset-0 pointer-events-none" />
           <div className="relative z-10 max-w-xl">
-            <h4 className="text-[30px] font-bold text-[#f6f8ff] mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
-            <p className="text-[18px] text-[#999eab] font-light leading-relaxed break-keep">
+            <h4 className="text-[30px] font-bold text-[var(--text-heading)] mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
+            <p className="text-[18px] text-[var(--text-sub)] font-light leading-relaxed break-keep">
               {t('business.platform.vision_desc')}
             </p>
           </div>

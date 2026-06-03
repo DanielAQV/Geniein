@@ -12,7 +12,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   const [isSuccess, setIsSuccess] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [inquiryType, setInquiryType] = useState("oda")
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,7 +20,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
     org: "",
     message: ""
   })
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const inquiryTypes = [
@@ -34,7 +34,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
-    
+
     if (!formData.name.trim()) newErrors.name = t('contact.form.errors.name')
     if (!formData.email.trim()) {
       newErrors.email = t('contact.form.errors.email')
@@ -44,7 +44,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
     if (!formData.phone.trim()) newErrors.phone = t('contact.form.errors.phone')
     if (!formData.org.trim()) newErrors.org = t('contact.form.errors.org')
     if (!formData.message.trim()) newErrors.message = t('contact.form.errors.message')
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -64,7 +64,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validate()) return
 
     setIsSubmitting(true)
@@ -80,7 +80,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="p-10 md:p-16 text-center rounded-3xl border border-primary/30 bg-primary/[0.05] backdrop-blur-2xl shadow-2xl"
+        className="p-10 md:p-16 text-center rounded-3xl border border-primary/30 bg-primary/[0.05] backdrop-blur-2xl shadow-md"
       >
         <div className="mb-6 flex justify-center">
           <div className="p-3 rounded-full bg-primary/10 border border-primary/20">
@@ -89,12 +89,12 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
         </div>
         <h3 className="text-2xl font-bold text-foreground mb-3 tracking-tight">{t('contact.form.success_title')}</h3>
         <p className="text-base text-muted-foreground mb-8 max-w-sm mx-auto font-light">{t('contact.form.success_desc')}</p>
-        <Button 
+        <Button
           onClick={() => {
             setIsSuccess(false)
             setFormData({ name: "", email: "", phone: "", org: "", message: "" })
-          }} 
-          variant="outline" 
+          }}
+          variant="outline"
           className="px-6 rounded-full h-10 border-primary/30 hover:bg-primary/5 text-sm"
         >
           {t('contact.form.new_btn')}
@@ -104,7 +104,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   }
 
   return (
-    <div className="h-full p-8 md:p-12 rounded-3xl border border-border/50 bg-[#14172B] backdrop-blur-xl shadow-2xl relative group overflow-hidden">
+    <div className="h-full p-8 md:p-12 rounded-3xl border border-border/50 bg-[var(--card-dark)] backdrop-blur-xl shadow-md relative group overflow-hidden">
       {/* Form Decoration Accent */}
 
 
@@ -116,179 +116,179 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
         )}
 
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
-        <div className="grid sm:grid-cols-2 gap-6">
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.name')}</label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder={t('contact.form.name_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.name ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
-            />
-            <AnimatePresence>
-              {errors.name && (
-                <motion.p 
-                  initial={{ opacity: 0, height: 0 }} 
-                  animate={{ opacity: 1, height: 'auto' }} 
-                  exit={{ opacity: 0, height: 0 }}
-                  className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
-                >
-                  <AlertCircle className="h-3.5 w-3.5" /> {errors.name}
-                </motion.p>
-              )}
-            </AnimatePresence>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.name')}</label>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder={t('contact.form.name_ph')}
+                className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.name ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              />
+              <AnimatePresence>
+                {errors.name && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.name}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.email')}</label>
+              <input
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder={t('contact.form.email_ph')}
+                className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.email ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              />
+              <AnimatePresence>
+                {errors.email && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.email}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.email')}</label>
-            <input
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder={t('contact.form.email_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.email ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
-            />
-            <AnimatePresence>
-              {errors.email && (
-                <motion.p 
-                  initial={{ opacity: 0, height: 0 }} 
-                  animate={{ opacity: 1, height: 'auto' }} 
-                  exit={{ opacity: 0, height: 0 }}
-                  className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
-                >
-                  <AlertCircle className="h-3.5 w-3.5" /> {errors.email}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
 
-        <div className="grid sm:grid-cols-2 gap-6">
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.phone')}</label>
-            <input
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder={t('contact.form.phone_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.phone ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
-            />
-            <AnimatePresence>
-              {errors.phone && (
-                <motion.p 
-                  initial={{ opacity: 0, height: 0 }} 
-                  animate={{ opacity: 1, height: 'auto' }} 
-                  exit={{ opacity: 0, height: 0 }}
-                  className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
-                >
-                  <AlertCircle className="h-3.5 w-3.5" /> {errors.phone}
-                </motion.p>
-              )}
-            </AnimatePresence>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.phone')}</label>
+              <input
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder={t('contact.form.phone_ph')}
+                className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.phone ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              />
+              <AnimatePresence>
+                {errors.phone && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.phone}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.org')}</label>
+              <input
+                name="org"
+                value={formData.org}
+                onChange={handleChange}
+                placeholder={t('contact.form.org_ph')}
+                className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.org ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
+              />
+              <AnimatePresence>
+                {errors.org && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.org}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-          <div className="space-y-1">
-            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.org')}</label>
-            <input
-              name="org"
-              value={formData.org}
-              onChange={handleChange}
-              placeholder={t('contact.form.org_ph')}
-              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.org ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground placeholder:text-muted-foreground/30 text-sm`}
-            />
-            <AnimatePresence>
-              {errors.org && (
-                <motion.p 
-                  initial={{ opacity: 0, height: 0 }} 
-                  animate={{ opacity: 1, height: 'auto' }} 
-                  exit={{ opacity: 0, height: 0 }}
-                  className="text-[11px] text-red-400/80 flex items-center gap-1 mt-0.5 ml-1 font-medium"
-                >
-                  <AlertCircle className="h-3.5 w-3.5" /> {errors.org}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
 
-        <div className="space-y-1 relative">
-          <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.type')}</label>
-          <div 
-            onClick={() => setIsOpen(!isOpen)}
-            className={`w-full h-12 px-4 rounded-xl bg-card/50 border ${isOpen ? 'border-primary ring-4 ring-primary/10 bg-card' : 'border-border hover:border-primary/40 hover:bg-card/70'} flex items-center justify-between cursor-pointer transition-all`}
+          <div className="space-y-1 relative">
+            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.type')}</label>
+            <div
+              onClick={() => setIsOpen(!isOpen)}
+              className={`w-full h-12 px-4 rounded-xl bg-card/50 border ${isOpen ? 'border-primary ring-4 ring-primary/10 bg-card' : 'border-border hover:border-primary/40 hover:bg-card/70'} flex items-center justify-between cursor-pointer transition-all`}
+            >
+              <span className={`text-sm ${inquiryType ? 'text-foreground' : 'text-muted-foreground/30'}`}>
+                {currentTypeLabel}
+              </span>
+              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
+            </div>
+
+            <AnimatePresence>
+              {isOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 bg-card border border-border rounded-xl overflow-hidden shadow-2xl shadow-black/20 backdrop-blur-xl"
+                  >
+                    {inquiryTypes.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => {
+                          setInquiryType(item.id)
+                          setIsOpen(false)
+                        }}
+                        className="px-4 py-3 text-sm text-foreground hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors"
+                      >
+                        {item.label}
+                      </div>
+                    ))}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.message')}</label>
+            <textarea
+              name="message"
+              rows={4}
+              value={formData.message}
+              onChange={handleChange}
+              placeholder={t('contact.form.message_ph')}
+              className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.message ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground resize-none placeholder:text-muted-foreground/30 text-sm`}
+            />
+            <AnimatePresence>
+              {errors.message && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="text-[11px] text-red-400/80 flex items-center gap-1 -mt-0.5 ml-1 font-medium"
+                >
+                  <AlertCircle className="h-3.5 w-3.5" /> {errors.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <Button
+            disabled={isSubmitting}
+            className="w-full h-14 rounded-xl text-base font-bold uppercase bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 active:translate-y-0"
           >
-            <span className={`text-sm ${inquiryType ? 'text-foreground' : 'text-muted-foreground/30'}`}>
-              {currentTypeLabel}
-            </span>
-            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform duration-300 ${isOpen ? 'rotate-180 text-primary' : ''}`} />
-          </div>
-
-          <AnimatePresence>
-            {isOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 bg-card border border-border rounded-xl overflow-hidden shadow-2xl shadow-black/20 backdrop-blur-xl"
-                >
-                  {inquiryTypes.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => {
-                        setInquiryType(item.id)
-                        setIsOpen(false)
-                      }}
-                      className="px-4 py-3 text-sm text-foreground hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors"
-                    >
-                      {item.label}
-                    </div>
-                  ))}
-                </motion.div>
-              </>
+            {isSubmitting ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              t('contact.form.submit')
             )}
-          </AnimatePresence>
-        </div>
-
-        <div className="space-y-1">
-          <label className="text-sm font-semibold text-foreground/70 ml-1 mb-2 block">{t('contact.form.message')}</label>
-          <textarea
-            name="message"
-            rows={4}
-            value={formData.message}
-            onChange={handleChange}
-            placeholder={t('contact.form.message_ph')}
-            className={`w-full px-4 py-3 rounded-xl bg-card/50 border ${errors.message ? 'border-red-500/30 ring-1 ring-red-500/10' : 'border-border hover:border-primary/40 hover:bg-card/70'} focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-card focus:outline-none transition-all text-foreground resize-none placeholder:text-muted-foreground/30 text-sm`}
-          />
-          <AnimatePresence>
-            {errors.message && (
-              <motion.p 
-                initial={{ opacity: 0, height: 0 }} 
-                animate={{ opacity: 1, height: 'auto' }} 
-                exit={{ opacity: 0, height: 0 }}
-                className="text-[11px] text-red-400/80 flex items-center gap-1 -mt-0.5 ml-1 font-medium"
-              >
-                <AlertCircle className="h-3.5 w-3.5" /> {errors.message}
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <Button
-          disabled={isSubmitting}
-          className="w-full h-14 rounded-xl text-base font-bold uppercase bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 active:translate-y-0"
-        >
-          {isSubmitting ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            t('contact.form.submit')
-          )}
-        </Button>
-      </form>
+          </Button>
+        </form>
+      </div>
     </div>
-  </div>
-)
+  )
 }

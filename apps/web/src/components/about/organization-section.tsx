@@ -64,7 +64,7 @@ export function OrganizationSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className="relative overflow-hidden rounded-[16px] border border-[#999eab]/30 bg-[#14172b] shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)] hover:border-primary/40 transition-all duration-500 group"
+                className="relative overflow-hidden rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] shadow-md hover:shadow-lg hover:border-primary/40 transition-all duration-500 group"
               >
                 {/* Photo with role badge */}
                 <div className="relative h-[259px] w-full overflow-hidden">
@@ -73,7 +73,7 @@ export function OrganizationSection() {
                     alt={cityParts[0]}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-[#999eab]/60 bg-[#5874ea] px-[17px] py-[7px] text-xs font-medium text-[#f7f7f7]">
+                  <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-[var(--border-card-strong)] bg-[#5874ea] px-[17px] py-[7px] text-xs font-medium text-white">
                     {hub.role[language]}
                   </span>
                 </div>
@@ -81,22 +81,22 @@ export function OrganizationSection() {
                 {/* Content */}
                 <div className="flex flex-col gap-6 px-4 py-8">
                   <div className="flex items-start justify-between gap-4 pt-2">
-                    <h3 className="flex-1 text-xl font-bold tracking-[-0.5px] leading-7 text-[#f6f8ff]">{cityParts[0]}</h3>
+                    <h3 className="flex-1 text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[0]}</h3>
                     {cityParts[1] && (
-                      <span className="flex-1 text-right text-xl font-bold tracking-[-0.5px] leading-7 text-[#f6f8ff]">{cityParts[1]}</span>
+                      <span className="flex-1 text-right text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[1]}</span>
                     )}
                   </div>
 
                   <div className="flex flex-wrap gap-2">
                     {hub.specialization.map((spec, sIdx) => (
-                      <span key={sIdx} className="rounded-full border border-[#999eab]/60 bg-[#090b0f]/30 px-[17px] py-[7px] text-xs font-medium text-[#f7f7f7]">
+                      <span key={sIdx} className="rounded-full border border-[var(--border-card-strong)] bg-[var(--card-glass)] px-[17px] py-[7px] text-xs font-medium text-[var(--text-heading)]">
                         {spec[language]}
                       </span>
                     ))}
                   </div>
 
-                  <div className="border-t border-[#f6f6f8]/10 pt-8">
-                    <div className="flex items-center gap-2 text-[#f7f7f7]">
+                  <div className="border-t border-border/30 pt-8">
+                    <div className="flex items-center gap-2 text-[var(--text-heading)]">
                       <MapPin className="h-4 w-4 shrink-0" />
                       <span className="text-sm font-light">{hub.address}</span>
                     </div>

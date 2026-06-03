@@ -70,23 +70,24 @@ export function BusinessOverview() {
           >
             <Link
               href="/business?category=platform"
-              className="group block relative overflow-hidden rounded-[20px] border border-[#999eab]/30 bg-[#14172b] p-8 shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)] transition-all duration-500 hover:border-primary/40 hover:shadow-[inset_0_0_0_2px_rgba(190,190,190,0.15),0_20px_50px_-12px_rgba(0,0,0,0.5)]"
+              className="group block relative overflow-hidden rounded-[20px] border border-[var(--border-card)] bg-[var(--card-dark)] p-8 shadow-md transition-all duration-500 hover:border-primary/40 hover:shadow-lg"
             >
               <div className="flex flex-col md:flex-row items-center md:items-stretch justify-center gap-8 lg:gap-[46px]">
                 <img
                   src="/images/business/ai-cube.png"
                   alt=""
-                  className="w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
+                  style={{ opacity: 'var(--hero-img-opacity)' }}
                 />
                 <div className="flex flex-1 flex-col gap-8 lg:gap-[46px] self-stretch">
                   <div className="flex flex-col gap-3">
-                    <h3 className="pt-2 text-xl font-bold leading-7 tracking-[-0.5px] text-[#f6f8ff]">
+                    <h3 className="pt-2 text-xl font-bold leading-7 tracking-[-0.5px] text-[var(--text-heading)]">
                       {t('landing.business.platform_title')}
                     </h3>
-                    <p className="text-sm font-medium leading-[25px] tracking-[1.4px] uppercase text-[#999eab] break-keep">
+                    <p className="text-sm font-medium leading-[25px] tracking-[1.4px] uppercase text-[var(--text-sub)] break-keep">
                       {t('landing.business.platform_desc')}
                     </p>
-                    <ul className="list-disc pl-5 text-sm font-medium text-[#999eab] marker:text-[#999eab]">
+                    <ul className="list-disc pl-5 text-sm font-medium text-[var(--text-sub)] marker:text-[var(--text-sub)]">
                       {platformItems.map((item, idx) => (
                         <li key={idx} className="leading-[25px]">{item[language]}</li>
                       ))}
@@ -110,23 +111,24 @@ export function BusinessOverview() {
           >
             <Link
               href="/business?category=oda"
-              className="group block relative overflow-hidden rounded-[20px] border border-[#999eab]/30 bg-[#14172b] p-8 shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)] transition-all duration-500 hover:border-primary/40 hover:shadow-[inset_0_0_0_2px_rgba(190,190,190,0.15),0_20px_50px_-12px_rgba(0,0,0,0.5)]"
+              className="group block relative overflow-hidden rounded-[20px] border border-[var(--border-card)] bg-[var(--card-dark)] p-8 shadow-md transition-all duration-500 hover:border-primary/40 hover:shadow-lg"
             >
               <div className="flex flex-col md:flex-row items-center md:items-stretch justify-center gap-8 lg:gap-[46px]">
                 <img
                   src="/images/business/oda-orbit.png"
                   alt=""
-                  className="w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="w-full max-w-[335px] md:w-[335px] h-[300px] md:h-[334px] shrink-0 rounded-[20px] object-cover transition-all duration-500 group-hover:scale-[1.02]"
+                  style={{ opacity: 'var(--hero-img-opacity)' }}
                 />
                 <div className="flex flex-1 flex-col gap-8 lg:gap-[46px] self-stretch">
                   <div className="flex flex-col gap-3">
-                    <h3 className="pt-2 text-xl font-bold leading-7 tracking-[-0.5px] text-[#f6f8ff]">
+                    <h3 className="pt-2 text-xl font-bold leading-7 tracking-[-0.5px] text-[var(--text-heading)]">
                       {t('landing.business.oda_title')}
                     </h3>
-                    <p className="text-sm font-medium leading-[25px] tracking-[1.4px] uppercase text-[#999eab] break-keep">
+                    <p className="text-sm font-medium leading-[25px] tracking-[1.4px] uppercase text-[var(--text-sub)] break-keep">
                       {t('landing.business.oda_desc')}
                     </p>
-                    <ul className="list-disc pl-5 text-sm font-medium text-[#999eab] marker:text-[#999eab]">
+                    <ul className="list-disc pl-5 text-sm font-medium text-[var(--text-sub)] marker:text-[var(--text-sub)]">
                       {odaItems.map((item, idx) => (
                         <li key={idx} className="leading-[25px]">{item[language]}</li>
                       ))}

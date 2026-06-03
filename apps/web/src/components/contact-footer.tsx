@@ -12,13 +12,14 @@ export function ContactFooter() {
   return (
     <>
       {/* Contact Section */}
-      <section id="contact" className="py-24 sm:py-32 relative overflow-hidden bg-[#03061a]">
+      <section id="contact" className="py-24 sm:py-32 relative overflow-hidden bg-[var(--section-contact-bg)] transition-colors duration-300">
         {/* Figma wave background — full-width mapping keeps the arc locked to the design proportions */}
         <img
           src="/main-contact.png"
           alt=""
           aria-hidden
-          className="pointer-events-none absolute left-0 top-0 w-full h-auto max-w-none select-none"
+          className="pointer-events-none absolute left-0 top-0 w-full h-auto max-w-none select-none transition-opacity duration-300"
+          style={{ opacity: 'var(--hero-img-opacity)' }}
         />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">

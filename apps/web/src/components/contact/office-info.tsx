@@ -32,7 +32,7 @@ export function OfficeInfo() {
           whileTap={{ scale: 0.98 }}
           viewport={{ once: true }}
           transition={{ delay: index * 0.1 }}
-          className="flex-1 p-8 rounded-3xl border border-border/50 bg-card/50 backdrop-blur-md hover:bg-card/80 hover:border-primary/30 transition-all group shadow-xl flex flex-col justify-center"
+          className="flex-1 p-8 rounded-3xl border border-[var(--border-card)] bg-[var(--card-dark)] backdrop-blur-md hover:bg-[var(--card-dark-hover)] hover:border-primary/30 transition-all group shadow-md hover:shadow-lg flex flex-col justify-center"
         >
           <div className="mb-8">
             <div className="text-[11px] font-bold text-primary tracking-[0.2em] uppercase mb-2">

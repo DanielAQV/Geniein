@@ -128,7 +128,7 @@ export default function ContactPage() {
                 transition={{ delay: 0.2 }}
                 className="h-full min-h-[400px]"
               >
-                <div className="h-full min-h-[450px] w-full overflow-hidden rounded-3xl border border-[#999eab]/30 shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)]">
+                <div className="h-full min-h-[450px] w-full overflow-hidden rounded-3xl border border-[var(--border-card)] shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)]">
                   <iframe
                     key={maps[activeOffice].src}
                     title={maps[activeOffice].title}

@@ -62,13 +62,13 @@ export function IdentitySection() {
                     <div className="text-[#5874EA]">{icons[index]}</div>
                     <div className="absolute -inset-2 bg-[#5874EA]/5 rounded-full animate-pulse" />
                   </div>
-                  
+
                   {/* Connection Line to next node */}
                   {index !== steps.length - 1 && (
                     <div className="absolute left-[31px] top-16 bottom-[-64px] w-px bg-[#5874EA] hidden sm:block z-0" />
                   )}
 
-                  <div className="p-8 md:p-10 rounded-[16px] border border-[#999eab]/60 bg-[#090b0f]/50 backdrop-blur-[6px] shadow-2xl group relative overflow-hidden transition-all hover:bg-[#14172B] hover:border-[#5874EA]">
+                  <div className="p-8 md:p-10 rounded-[16px] border border-[var(--border-card-strong)] bg-[var(--card-glass)] backdrop-blur-[6px] shadow-md group relative overflow-hidden transition-all hover:bg-[var(--card-dark-hover)] hover:border-[#5874EA] hover:shadow-lg">
                     <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                       <span className="text-8xl font-bold tracking-tighter">0{index + 1}</span>
                     </div>

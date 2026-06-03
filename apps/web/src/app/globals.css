@@ -4,8 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.96 0.005 270); /* Softer off-white */
-  --foreground: oklch(0.20 0.02 270); /* Softer dark text */
+  --background: oklch(0.96 0.005 270);
+  /* Softer off-white */
+  --foreground: oklch(0.20 0.02 270);
+  /* Softer dark text */
   --card: oklch(0.98 0.002 270);
   --card-foreground: oklch(0.20 0.02 270);
   --popover: oklch(0.98 0.002 270);
@@ -38,12 +40,23 @@
   --sidebar-border: oklch(0.9 0.01 270);
   --sidebar-ring: oklch(0.50 0.20 270);
   /* Theme-aware custom properties */
-  --page-bg: #F1F5F9; /* Slate 100 - much softer on the eyes than Slate 50 */
+  --page-bg: #F1F5F9;
   --glass-bg: rgba(255, 255, 255, 0.5);
   --glass-border: rgba(0, 0, 0, 0.06);
   --stroke-color: rgba(0, 0, 0, 0.15);
   --glow-opacity: 0.08;
   --dot-inactive: rgba(0, 0, 0, 0.25);
+  /* Card & Section colors */
+  --card-dark: #ffffff;
+  --card-dark-hover: #f8f9fc;
+  --card-glass: rgba(255, 255, 255, 0.7);
+  --card-glass-hover: rgba(255, 255, 255, 0.9);
+  --text-heading: #12161f;
+  --text-sub: #64748b;
+  --border-card: rgba(0, 0, 0, 0.08);
+  --border-card-strong: rgba(0, 0, 0, 0.12);
+  --section-contact-bg: #f1f5f9;
+  --hero-img-opacity: 0;
 }
 
 .dark {
@@ -86,6 +99,17 @@
   --stroke-color: rgba(255, 255, 255, 0.4);
   --glow-opacity: 0.5;
   --dot-inactive: rgba(255, 255, 255, 0.4);
+  /* Card & Section colors */
+  --card-dark: #14172b;
+  --card-dark-hover: #1a1e35;
+  --card-glass: rgba(9, 11, 15, 0.5);
+  --card-glass-hover: rgba(9, 11, 15, 0.7);
+  --text-heading: #f6f8ff;
+  --text-sub: #999eab;
+  --border-card: rgba(153, 158, 171, 0.3);
+  --border-card-strong: rgba(153, 158, 171, 0.6);
+  --section-contact-bg: #03061a;
+  --hero-img-opacity: 1;
 }
 
 @theme inline {
@@ -133,15 +157,22 @@
   html {
     scrollbar-gutter: stable;
   }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground font-sans;
   }
-  a, button, [role="button"], select, input[type="submit"], input[type="button"], input[type="reset"] {
+
+  a,
+  button,
+  [role="button"],
+  select,
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"] {
     cursor: pointer;
   }
 }
-
-

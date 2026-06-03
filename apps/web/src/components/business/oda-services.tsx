@@ -7,7 +7,7 @@ import { dictionary } from "@/lib/i18n/dictionary"
 
 export function OdaServices() {
   const { t, language } = useLanguage()
-  
+
   const icons = [
     <Settings key="settings" className="h-6 w-6" />,
     <Users key="users" className="h-6 w-6" />,
@@ -31,9 +31,9 @@ export function OdaServices() {
           <rect width="100%" height="100%" fill="url(#oda-grid)" />
         </svg>
       </div>
-      
 
-      
+
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           {/* Left: ODA Strategy Narrative */}
@@ -58,8 +58,8 @@ export function OdaServices() {
               {/* Lifecycle Diagram (Vertical Version) */}
               <div className="relative space-y-6 pl-2">
                 {phases.map((phase, idx) => (
-                  <motion.div 
-                    key={phase} 
+                  <motion.div
+                    key={phase}
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -100,21 +100,21 @@ export function OdaServices() {
                   <div className="text-[#5874EA]">{icons[index]}</div>
                   <div className="absolute -inset-2 bg-[#5874EA]/5 rounded-full animate-pulse" />
                 </div>
-                
+
                 {/* Connection Line to next node */}
                 {index !== pillars.length - 1 && (
                   <div className="absolute left-[31px] top-16 -bottom-12 w-px bg-[#5874EA] hidden sm:block z-0" />
                 )}
 
-                <div className="p-8 md:p-10 rounded-[16px] border border-[#999eab]/60 bg-[#090b0f]/50 backdrop-blur-[6px] shadow-2xl group relative overflow-hidden transition-all hover:bg-[#14172B] hover:border-[#5874EA]">
+                <div className="p-8 md:p-10 rounded-[16px] border border-[var(--border-card-strong)] bg-[var(--card-glass)] backdrop-blur-[6px] shadow-md group relative overflow-hidden transition-all hover:bg-[var(--card-dark-hover)] hover:border-[#5874EA] hover:shadow-lg">
                   {/* Number Watermark */}
                   <div className="absolute top-3 right-6 text-7xl md:text-8xl font-bold text-white/[0.04] tracking-tighter pointer-events-none select-none">
                     0{index + 1}
                   </div>
                   <div className="relative z-10">
                     <div className="inline-flex items-center mb-4 px-2.5 py-1 rounded-sm border border-primary/30 bg-primary/5 text-[11px] font-bold tracking-widest text-primary uppercase">{pillar.label[language]}</div>
-                    <h3 className="text-[30px] font-bold text-[#f6f8ff] mb-4 tracking-tight">{pillar.title[language]}</h3>
-                    <p className="text-[18px] md:text-base text-[#999eab] font-light leading-relaxed break-keep max-w-lg">
+                    <h3 className="text-[30px] font-bold text-[var(--text-heading)] mb-4 tracking-tight">{pillar.title[language]}</h3>
+                    <p className="text-[18px] md:text-base text-[var(--text-sub)] font-light leading-relaxed break-keep max-w-lg">
                       {pillar.desc[language]}
                     </p>
                   </div>
