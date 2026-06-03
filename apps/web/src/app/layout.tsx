@@ -15,8 +15,7 @@ export const metadata: Metadata = {
   description: 'Global Digital ODA Consulting & Innovative IT Platforms. Connect the world, innovate the future with Connext and Gnom solutions.',
   icons: {
     icon: [
-      { url: '/favicon.ico?v=1' },
-      { url: '/icon.svg?v=1', type: 'image/svg+xml' },
+      { url: '/favicon.ico?v=1' }
     ],
     apple: '/apple-icon.png?v=1',
   },
