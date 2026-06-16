@@ -11,10 +11,9 @@ import {
   Clock,
   Plus
 } from "lucide-react"
-import { motion } from "framer-motion"
 
 export default function AdminInsightsPage() {
-  const { data: insights, error, isLoading, mutate } = useSWR('/insights/admin', fetcher)
+  const { data: insights, isLoading } = useSWR('/insights/admin', fetcher)
 
   const getStatusBadge = (status: string) => {
     switch (status) {

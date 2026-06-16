@@ -23,7 +23,7 @@ export function OrganizationSection() {
   ]
 
   return (
-    <section id="organization" className="py-28 bg-background/50 border-y border-border/50 relative overflow-hidden">
+    <section id="organization" className="py-14 md:py-20 lg:py-28 bg-background/50 border-y border-border/50 relative overflow-hidden">
       {/* Decorative Network Lines */}
       <div className="absolute inset-0 -z-10 opacity-10 pointer-events-none">
         <svg className="h-full w-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
@@ -34,7 +34,7 @@ export function OrganizationSection() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
+        <div className="text-center mb-8 md:mb-12 lg:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -46,15 +46,15 @@ export function OrganizationSection() {
               {t('about.organization.label')}
             </span>
           </motion.div>
-          <h2 className="text-5xl font-bold text-foreground mb-6 tracking-tighter">
+          <h2 className="text-[28px] tracking-[-0.6px] md:text-4xl lg:text-5xl lg:tracking-tighter font-bold text-foreground mb-3 md:mb-6">
             {t('about.organization.title')}
           </h2>
-          <p className="text-[18px] text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
+          <p className="text-sm leading-[23px] md:text-base lg:text-[18px] text-muted-foreground max-w-2xl mx-auto font-light lg:leading-relaxed break-keep whitespace-pre-line">
             {t('about.organization.desc')}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
           {hubs.map((hub, index) => {
             const cityParts = hub.city[language].split("\n")
             return (
@@ -67,7 +67,7 @@ export function OrganizationSection() {
                 className="relative overflow-hidden rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] shadow-md hover:shadow-lg hover:border-primary/40 transition-all duration-500 group"
               >
                 {/* Photo with role badge */}
-                <div className="relative h-[259px] w-full overflow-hidden">
+                <div className="relative h-40 md:h-[259px] w-full overflow-hidden">
                   <img
                     src={hub.image}
                     alt={cityParts[0]}
@@ -81,9 +81,9 @@ export function OrganizationSection() {
                 {/* Content */}
                 <div className="flex flex-col gap-6 px-4 py-8">
                   <div className="flex items-start justify-between gap-4 pt-2">
-                    <h3 className="flex-1 text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[0]}</h3>
+                    <h3 className="flex-1 text-lg md:text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[0]}</h3>
                     {cityParts[1] && (
-                      <span className="flex-1 text-right text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[1]}</span>
+                      <span className="flex-1 text-right text-lg md:text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[1]}</span>
                     )}
                   </div>
 

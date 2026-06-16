@@ -17,10 +17,10 @@ export function ProjectsShowcase() {
   }))
 
   return (
-    <section id="projects" className="py-28 relative bg-background">
+    <section id="projects" className="py-14 md:py-20 lg:py-28 relative bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header — 96px gap to the cards (Figma) */}
-        <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-24">
+        <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-8 md:mb-12 lg:mb-24">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -31,10 +31,10 @@ export function ProjectsShowcase() {
               {t('about.projects.label')}
             </span>
           </motion.div>
-          <h2 className="mt-6 text-4xl sm:text-5xl font-bold text-foreground tracking-tight leading-tight">
+          <h2 className="mt-4 md:mt-6 text-[28px] tracking-[-0.6px] md:text-4xl lg:text-5xl md:tracking-tight font-bold text-foreground leading-tight">
             {t('about.projects.title')}
           </h2>
-          <p className="mt-6 text-base sm:text-lg text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
+          <p className="mt-4 md:mt-6 text-sm md:text-base lg:text-lg text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
             {t('about.projects.desc')}
           </p>
         </div>
@@ -90,12 +90,12 @@ export function ProjectsShowcase() {
                     <div className="text-xs font-bold text-[#5874ea] tracking-[0.1em] uppercase">
                       {project.category[language]}
                     </div>
-                    <h3 className="text-3xl lg:text-4xl font-bold text-[var(--text-heading)] leading-snug tracking-tight">
+                    <h3 className="text-[22px] md:text-3xl lg:text-4xl font-bold text-[var(--text-heading)] leading-snug tracking-tight">
                       {project.title[language]}
                     </h3>
                   </div>
                 </div>
-                <p className="text-lg lg:text-xl text-[var(--text-sub)] font-light leading-relaxed break-keep">
+                <p className="text-sm md:text-lg lg:text-xl text-[var(--text-sub)] font-light leading-relaxed break-keep">
                   {project.description[language]}
                 </p>
               </div>

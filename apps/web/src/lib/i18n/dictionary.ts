@@ -2,6 +2,7 @@ export type Language = "kr" | "en" | "vn"
 
 export const dictionary = {
   common: {
+    home: { kr: "홈", en: "Home", vn: "Trang chủ" },
     about: { kr: "회사 소개", en: "About", vn: "Giới thiệu" },
     business: { kr: "사업 분야", en: "Business", vn: "Lĩnh vực" },
     oda: { kr: "ODA 컨설팅", en: "ODA Consulting", vn: "Tư vấn ODA" },
@@ -26,7 +27,7 @@ export const dictionary = {
       en: "Combining field-oriented professional planning with innovative platform technology\nto lead sustainable digital growth in the global market.",
       vn: "Kết hợp quy hoạch chuyên nghiệp hướng tới thực địa với công nghệ nền tảng đổi mới\nđể dẫn đầu sự phát triển kỹ thuật số bền vững trên thị trường toàn cầu."
     },
-    btn_projects: { kr: "수행 프로젝트", en: "Projects", vn: "Dự án" },
+    btn_projects: { kr: "지니인 소개", en: "About Us", vn: "Về chúng tôi" },
     btn_contact: { kr: "문의하기", en: "Contact", vn: "Liên hệ" },
     scroll: { kr: "Scroll", en: "Scroll", vn: "Scroll" }
   },
@@ -299,6 +300,9 @@ export const dictionary = {
       success_title: { kr: "문의가 성공적으로 접수되었습니다.", en: "Inquiry submitted successfully.", vn: "Yêu cầu đã được gửi thành công." },
       success_desc: { kr: "담당자가 확인 후 최대한 빠르게 답변 드리겠습니다.", en: "Our representative will review and respond as soon as possible.", vn: "Đại diện của chúng tôi sẽ xem xét 및 phản hồi sớm nhất có thể." },
       new_btn: { kr: "새로운 문의하기", en: "New Inquiry", vn: "Yêu cầu mới" },
+      error_title: { kr: "전송에 실패했습니다.", en: "Failed to send.", vn: "Gửi không thành công." },
+      error_desc: { kr: "일시적인 오류로 문의가 전송되지 않았습니다. 잠시 후 다시 시도해 주세요.", en: "Your inquiry could not be sent due to a temporary error. Please try again in a moment.", vn: "Không thể gửi yêu cầu do lỗi tạm thời. Vui lòng thử lại sau giây lát." },
+      retry_btn: { kr: "다시 시도", en: "Try Again", vn: "Thử lại" },
       intro: { kr: "글로벌 비즈니스 협력,\n지니인이 함께하겠습니다.", en: "Global business cooperation,\nGeniein will be with you.", vn: "Hợp tác kinh doanh toàn cầu,\nGeniein sẽ luôn đồng hành." },
       errors: {
         name: { kr: "이름을 입력해주세요", en: "Please enter your name", vn: "Vui lòng nhập tên của bạn" },

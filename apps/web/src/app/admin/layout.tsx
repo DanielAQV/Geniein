@@ -6,8 +6,7 @@ import {
   FileText, 
   Settings, 
   Search, 
-  Bell, 
-  User,
+  Bell,
   LogOut,
   Sparkles
 } from "lucide-react"

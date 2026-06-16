@@ -14,7 +14,6 @@ import {
   Tag,
   Sparkles
 } from "lucide-react"
-import { motion } from "framer-motion"
 
 export default function InsightDetailPage() {
   const { id } = useParams()

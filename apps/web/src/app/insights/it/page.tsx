@@ -5,12 +5,9 @@ import { Footer } from "@/components/footer"
 import { AIInsights } from "@/components/ai-insights"
 import { InsightsNav } from "@/components/insights/insights-nav"
 import { motion } from "framer-motion"
-import { useLanguage } from "@/lib/i18n/language-context"
 import { Suspense } from "react"
 
 export default function InsightsItPage() {
-  const { t } = useLanguage()
-
   return (
     <main className="min-h-screen bg-background">
       <Header />
@@ -42,8 +39,6 @@ export default function InsightsItPage() {
             </div>
           </motion.div>
         </div>
-        
-        {/* Removed stroke-text style */}
       </section>
 
       <InsightsNav />

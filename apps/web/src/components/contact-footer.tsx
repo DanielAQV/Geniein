@@ -1,25 +1,28 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useLanguage } from "@/lib/i18n/language-context"
-import { Footer } from "@/components/footer"
-import { ContactForm } from "@/components/contact/contact-form"
-import { Users } from "lucide-react"
+import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { Footer } from "@/components/footer";
+import { ContactForm } from "@/components/contact/contact-form";
+import { Users } from "lucide-react";
 
 export function ContactFooter() {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
 
   return (
     <>
       {/* Contact Section */}
-      <section id="contact" className="py-24 sm:py-32 relative overflow-hidden bg-[var(--section-contact-bg)] transition-colors duration-300">
+      <section
+        id="contact"
+        className="py-16 md:py-20 lg:py-32 relative overflow-hidden bg-[var(--section-contact-bg)] transition-colors duration-300"
+      >
         {/* Figma wave background — full-width mapping keeps the arc locked to the design proportions */}
         <img
           src="/main-contact.png"
           alt=""
           aria-hidden
           className="pointer-events-none absolute left-0 top-0 w-full h-auto max-w-none select-none transition-opacity duration-300"
-          style={{ opacity: 'var(--hero-img-opacity)' }}
+          style={{ opacity: "var(--hero-img-opacity)" }}
         />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
@@ -28,11 +31,11 @@ export function ContactFooter() {
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-6 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
+              className="mb-3 inline-flex items-center gap-2 px-5 py-1.5 rounded-full border border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md relative overflow-hidden group shadow-lg"
             >
               <Users className="h-4 w-4 text-primary relative z-10" />
               <span className="text-sm font-bold tracking-widest uppercase text-primary relative z-10">
-                {t('landing.contact.label')}
+                {t("landing.contact.label")}
               </span>
             </motion.div>
 
@@ -41,9 +44,9 @@ export function ContactFooter() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-5xl font-bold text-foreground mb-6 tracking-tight whitespace-pre-line leading-[1.2]"
+              className="text-[25px] leading-[34px] tracking-[-0.6px] md:text-[30px] md:leading-[42px] md:tracking-[-0.8px] lg:text-5xl lg:leading-[1.2] lg:tracking-tight font-bold text-foreground mb-3 whitespace-pre-line"
             >
-              {t('landing.contact.title')}
+              {t("landing.contact.title")}
             </motion.h2>
 
             <motion.p
@@ -51,9 +54,9 @@ export function ContactFooter() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-muted-foreground max-w-2xl leading-relaxed font-light whitespace-pre-line"
+              className="leading-[24px] md:leading-[26px] lg:text-xl lg:leading-relaxed text-muted-foreground max-w-2xl font-light whitespace-pre-line"
             >
-              {t('landing.contact.desc')}
+              {t("landing.contact.desc")}
             </motion.p>
           </div>
 
@@ -71,5 +74,5 @@ export function ContactFooter() {
 
       <Footer />
     </>
-  )
+  );
 }

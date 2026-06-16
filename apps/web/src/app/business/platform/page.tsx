@@ -5,11 +5,8 @@ import { Footer } from "@/components/footer"
 import { BusinessNav } from "@/components/business/business-nav"
 import { PlatformServices } from "@/components/business/platform-services"
 import { motion } from "framer-motion"
-import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function PlatformPage() {
-  const { t } = useLanguage()
-
   return (
     <main className="min-h-screen bg-[#02040a]">
       <Header />

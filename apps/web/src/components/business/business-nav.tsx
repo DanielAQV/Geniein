@@ -4,12 +4,11 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { useEffect, useState, Suspense } from "react"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 function BusinessNavContent() {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("platform")
-  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   useEffect(() => {

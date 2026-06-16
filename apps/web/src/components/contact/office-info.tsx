@@ -27,7 +27,7 @@ export function OfficeInfo({ activeOffice = 0, onOfficeSelect = () => {} }: Offi
   ]
 
   return (
-    <div className="h-full flex flex-col gap-6">
+    <div className="h-full flex flex-col md:flex-row lg:flex-col gap-6">
       {offices.map((office, index) => (
         <motion.div
           key={office.title}
@@ -38,7 +38,7 @@ export function OfficeInfo({ activeOffice = 0, onOfficeSelect = () => {} }: Offi
           viewport={{ once: true }}
           transition={{ delay: index * 0.1 }}
           onClick={() => onOfficeSelect(index)}
-          className={`flex-1 p-8 rounded-3xl border backdrop-blur-md transition-all group shadow-md hover:shadow-lg flex flex-col justify-center cursor-pointer ${
+          className={`flex-1 p-8 rounded-[20px] border backdrop-blur-md transition-all group shadow-md hover:shadow-lg flex flex-col justify-center cursor-pointer ${
             activeOffice === index 
               ? "border-primary bg-[var(--card-dark-hover)]" 
               : "border-[var(--border-card)] bg-[var(--card-dark)] hover:bg-[var(--card-dark-hover)] hover:border-primary/30"

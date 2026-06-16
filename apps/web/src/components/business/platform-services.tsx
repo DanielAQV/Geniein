@@ -17,7 +17,7 @@ export function PlatformServices() {
   const capabilities = dictionary.business.platform.capabilities
 
   return (
-    <section id="platforms" className="py-28 bg-background relative overflow-hidden">
+    <section id="platforms" className="py-16 md:py-20 lg:py-28 bg-background relative overflow-hidden">
       {/* Blueprint Grid Background */}
       <div className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none">
         <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
@@ -48,27 +48,27 @@ export function PlatformServices() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-24">
+        <div className="text-center mb-8 md:mb-12 lg:mb-24">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
+            className="mb-4 md:mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
           >
 
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
               {t('business.platform.label')}
             </span>
           </motion.div>
-          <h2 className="text-5xl font-bold text-foreground mb-6 tracking-tighter">
+          <h2 className="text-[28px] tracking-[-0.6px] md:text-4xl lg:text-5xl lg:tracking-tighter font-bold text-foreground mb-3 md:mb-6">
             {t('business.platform.title')}
           </h2>
-          <p className="text-[18px] text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep">
+          <p className="text-sm leading-[23px] md:text-base lg:text-[18px] text-muted-foreground max-w-2xl mx-auto font-light lg:leading-relaxed break-keep">
             {t('business.platform.description')}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {capabilities.map((item, index) => (
             <motion.div
               key={index}
@@ -78,13 +78,13 @@ export function PlatformServices() {
               transition={{ delay: index * 0.1 }}
               className="px-[16px] py-[32px] rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] hover:border-primary/40 transition-all group relative overflow-hidden shadow-md hover:shadow-lg"
             >
-              <div className="mb-8 p-4 w-fit rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
+              <div className="mb-6 md:mb-8 p-4 w-fit rounded-xl bg-primary/10 border border-primary/20 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-inner">
                 {icons[index]}
               </div>
-              <h3 className="text-2xl font-bold text-[var(--text-heading)] mb-4 group-hover:text-primary transition-colors tracking-tight">
+              <h3 className="text-xl md:text-2xl font-bold text-[var(--text-heading)] mb-4 group-hover:text-primary transition-colors tracking-tight">
                 {item.title[language]}
               </h3>
-              <p className="text-[var(--text-sub)] font-light leading-relaxed break-keep">
+              <p className="text-sm md:text-base text-[var(--text-sub)] font-light leading-relaxed break-keep">
                 {item.desc[language]}
               </p>
 
@@ -94,20 +94,21 @@ export function PlatformServices() {
           ))}
         </div>
 
-        <div className="mt-24 p-12 md:p-16 rounded-[24px] border border-[var(--border-card)] bg-[var(--card-dark)] shadow-md backdrop-blur-[4px] relative overflow-hidden">
-          <img
-            src="/images/business/platform-vision.png"
-            alt=""
-            className="absolute right-0 top-0 h-full w-auto max-w-[65%] object-cover object-left pointer-events-none select-none transition-opacity duration-300"
-            style={{ opacity: 'var(--hero-img-opacity)' }}
-          />
-          <div className="absolute inset-0 pointer-events-none" />
-          <div className="relative z-10 max-w-xl">
-            <h4 className="text-[30px] font-bold text-[var(--text-heading)] mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
-            <p className="text-[18px] text-[var(--text-sub)] font-light leading-relaxed break-keep">
+        <div className="mt-12 md:mt-16 lg:mt-24 rounded-[20px] lg:rounded-[24px] border border-[var(--border-card)] bg-[var(--card-dark)] dark:bg-[#030010] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] backdrop-blur-[4px] relative overflow-hidden flex flex-col lg:block">
+          {/* Copy — stacked on top for mobile/tablet, left column on desktop */}
+          <div className="relative z-10 order-1 max-w-xl px-4 py-7 md:px-10 md:py-9 lg:p-16">
+            <h4 className="text-[22px] md:text-[26px] lg:text-[30px] font-bold text-[var(--text-heading)] mb-4 md:mb-6 tracking-tight">{t('business.platform.vision_title')}</h4>
+            <p className="text-[15px] leading-[25px] md:text-base lg:text-[18px] lg:leading-relaxed text-[var(--text-sub)] font-light break-keep">
               {t('business.platform.vision_desc')}
             </p>
           </div>
+          {/* Visual — full-width at the bottom on mobile/tablet, absolute right on desktop (Figma) */}
+          <img
+            src="/images/business/platform-vision.png"
+            alt=""
+            className="order-2 w-full h-[200px] sm:h-[240px] object-cover object-center lg:order-none lg:absolute lg:right-0 lg:top-0 lg:h-full lg:w-auto lg:max-w-[65%] lg:object-left pointer-events-none select-none transition-opacity duration-300"
+            style={{ opacity: 'var(--hero-img-opacity)' }}
+          />
         </div>
       </div>
     </section>

@@ -60,7 +60,7 @@
 }
 
 .dark {
-  --background: oklch(0.12 0.01 270);
+  --background: #03081c;
   --foreground: oklch(0.98 0.01 270);
   --card: oklch(0.15 0.01 270);
   --card-foreground: oklch(0.98 0.01 270);
@@ -93,7 +93,7 @@
   --sidebar-border: oklch(0.20 0.02 270);
   --sidebar-ring: oklch(0.60 0.18 270);
   /* Theme-aware custom properties */
-  --page-bg: #02040a;
+  --page-bg: #03081c;
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --stroke-color: rgba(255, 255, 255, 0.4);
@@ -108,7 +108,7 @@
   --text-sub: #999eab;
   --border-card: rgba(153, 158, 171, 0.3);
   --border-card-strong: rgba(153, 158, 171, 0.6);
-  --section-contact-bg: #03061a;
+  --section-contact-bg: #03081c;
   --hero-img-opacity: 1;
 }
 

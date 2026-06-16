@@ -6,8 +6,6 @@ import { IdentitySection } from "@/components/about/identity-section"
 import { OrganizationSection } from "@/components/about/organization-section"
 import { ProjectsShowcase } from "@/components/about/projects-showcase"
 import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 export default function AboutPage() {
@@ -18,7 +16,7 @@ export default function AboutPage() {
       <Header />
       
       {/* About Hero Section: The Manifesto */}
-      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
+      <section className="relative pt-28 pb-16 min-h-[320px] md:pt-32 md:pb-24 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -49,20 +47,18 @@ export default function AboutPage() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex flex-col items-center">
-              <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
+              <span className="text-xs md:text-sm font-bold tracking-[0.2em] uppercase text-primary mb-4 md:mb-8 block">
                 {t('about.hero.label')}
               </span>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto">
+              <h1 className="text-[32px] tracking-[-0.5px] leading-[1.18] md:text-5xl md:tracking-tight md:leading-[1.1] lg:text-7xl font-bold text-foreground mb-6 md:mb-10 max-w-4xl mx-auto">
                 {t('about.hero.title_1')} {t('about.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
+            <p className="text-sm leading-[22px] md:text-xl md:leading-relaxed lg:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep font-light whitespace-pre-line text-balance">
               {t('about.hero.description')}
             </p>
           </motion.div>
         </div>
-        
-        {/* Removed stroke-text style */}
       </section>
       
       {/* Signature Gradient Beam Separator */}

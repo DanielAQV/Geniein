@@ -9,12 +9,11 @@ import { InsightsNav } from "@/components/insights/insights-nav"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState, Suspense, useRef } from "react"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 function InsightsContent() {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("it")
-  const pathname = usePathname()
   const searchParams = useSearchParams()
   const navRef = useRef<HTMLDivElement>(null)
 
@@ -46,23 +45,23 @@ function InsightsContent() {
         <InsightsNav />
       </div>
       
-      <section className="pt-28 pb-16 bg-background">
+      <section className="pt-14 pb-10 md:pt-20 md:pb-12 lg:pt-28 lg:pb-16 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center text-center">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
+              className="mb-4 md:mb-8 inline-flex items-center gap-2 px-4 py-1 rounded-sm border border-primary/30 bg-primary/5"
             >
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
                 {t('landing.insights.label')}
               </span>
             </motion.div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tighter">
+            <h2 className="text-3xl tracking-[-0.8px] md:text-4xl lg:tracking-tighter font-bold text-foreground mb-4 md:mb-8">
               {t('landing.insights.title')}
             </h2>
-            <p className="text-base text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed break-keep whitespace-pre-line">
+            <p className="text-[15px] leading-[24px] md:text-base md:leading-relaxed text-muted-foreground max-w-2xl mx-auto font-light break-keep whitespace-pre-line">
               {t('landing.insights.desc')}
             </p>
           </div>
@@ -108,10 +107,10 @@ export default function InsightsPage() {
       <Header />
       
       {/* Insights Hero */}
-      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
+      <section className="relative pt-28 pb-16 min-h-[320px] md:pt-32 md:pb-24 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/heroes/insights.png" 
+          <img
+            src="/images/heroes/insights.png"
             alt="Insights Background" 
             className="w-full h-full object-cover opacity-70"
           />
@@ -137,14 +136,14 @@ export default function InsightsPage() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex flex-col items-center">
-              <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-8 block">
+              <span className="text-xs md:text-sm font-bold tracking-[0.2em] uppercase text-primary mb-4 md:mb-8 block">
                 {t('landing.insights.label')}
               </span>
-               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground mb-10 leading-[1.1] max-w-4xl mx-auto text-balance">
+               <h1 className="text-[30px] tracking-[-0.6px] leading-[1.2] md:text-5xl md:tracking-tight md:leading-[1.1] lg:text-7xl font-bold text-foreground mb-6 md:mb-10 max-w-4xl mx-auto text-balance">
                 {t('landing.insights.hero_title')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light text-balance break-keep whitespace-pre-line">
+            <p className="text-[15px] leading-[24px] md:text-xl md:leading-relaxed lg:text-2xl text-muted-foreground max-w-4xl mx-auto font-light text-balance break-keep whitespace-pre-line">
               {t('landing.insights.hero_desc')}
             </p>
           </motion.div>

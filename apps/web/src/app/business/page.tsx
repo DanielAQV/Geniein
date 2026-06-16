@@ -7,13 +7,11 @@ import { OdaServices } from "@/components/business/oda-services"
 import { PlatformServices } from "@/components/business/platform-services"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState, Suspense, useRef } from "react"
-import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { dictionary } from "@/lib/i18n/dictionary"
 
 function BusinessContent() {
   const [activeTab, setActiveTab] = useState("platform")
-  const pathname = usePathname()
   const searchParams = useSearchParams()
   const navRef = useRef<HTMLDivElement>(null)
 

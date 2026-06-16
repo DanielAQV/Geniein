@@ -65,13 +65,11 @@ export default function ContactPage() {
                 {t('contact.hero.title_1')} {t('contact.hero.title_2')}
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto break-keep leading-relaxed font-light whitespace-pre-line text-balance">
               {t('contact.hero.description')}
             </p>
           </motion.div>
         </div>
-
-        {/* Removed stroke-text style */}
       </section>
 
       {/* Signature Gradient Beam Separator */}
@@ -79,7 +77,7 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
       </div>
 
-      <section className="py-28">
+      <section className="pt-28 pb-52">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Section Header: Added to match Business/Insights structure */}
           <motion.div
@@ -91,7 +89,7 @@ export default function ContactPage() {
             <span className="text-sm font-bold tracking-[0.3em] uppercase text-primary mb-4 block">
               {t('contact.section.label')}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-6">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground mb-6 break-keep text-balance">
               {t('contact.section.title')}
             </h2>
             <p className="text-base text-muted-foreground max-w-2xl mx-auto break-keep whitespace-pre-line">
@@ -99,7 +97,7 @@ export default function ContactPage() {
             </p>
           </motion.div>
 
-          <div className="flex flex-col gap-10 mb-24">
+          <div className="flex flex-col gap-16">
             {/* Full-width Inquiry Form */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -110,7 +108,7 @@ export default function ContactPage() {
             </motion.div>
 
             {/* Office Info + Map */}
-            <div className="grid lg:grid-cols-2 gap-10 items-stretch">
+            <div className="grid lg:grid-cols-2 gap-6 items-stretch">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -128,7 +126,7 @@ export default function ContactPage() {
                 transition={{ delay: 0.2 }}
                 className="h-full min-h-[400px]"
               >
-                <div className="h-full min-h-[450px] w-full overflow-hidden rounded-3xl border border-[var(--border-card)] shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)]">
+                <div className="h-full min-h-[450px] w-full overflow-hidden rounded-[20px] border border-[var(--border-card)] shadow-[inset_0_0_0_2px_rgba(190,190,190,0.1)]">
                   <iframe
                     key={maps[activeOffice].src}
                     title={maps[activeOffice].title}

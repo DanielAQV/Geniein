@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Eye, Target, Heart, ChevronRight } from "lucide-react"
+import { Eye, Target, Heart } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -17,9 +17,9 @@ export function IdentitySection() {
   const steps = dictionary.about.identity.steps
 
   return (
-    <section id="identity" className="py-28 relative bg-background">
+    <section id="identity" className="py-14 md:py-20 lg:py-28 relative bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-12 gap-16">
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-16">
           {/* Left Side: Philosophy Narrative */}
           <div className="lg:col-span-5">
             <motion.div
@@ -34,10 +34,10 @@ export function IdentitySection() {
                   {t('about.identity.label')}
                 </span>
               </div>
-              <h2 className="text-5xl font-bold text-foreground mb-8 leading-tight tracking-tighter">
+              <h2 className="text-[30px] tracking-[-0.6px] md:text-4xl lg:text-5xl lg:tracking-tighter font-bold text-foreground mb-4 md:mb-8 leading-tight">
                 {t('about.identity.title')}
               </h2>
-              <div className="space-y-6 text-[18px] text-muted-foreground font-light leading-relaxed break-keep">
+              <div className="space-y-4 md:space-y-6 text-sm leading-[23px] md:text-base lg:text-[18px] text-muted-foreground font-light lg:leading-relaxed break-keep">
                 <p>{t('about.identity.p1')}</p>
                 <p>{t('about.identity.p2')}</p>
               </div>
@@ -47,7 +47,7 @@ export function IdentitySection() {
           {/* Right Side: Blueprint Visualization */}
           <div className="lg:col-span-7 relative">
 
-            <div className="space-y-16">
+            <div className="space-y-4 sm:space-y-16">
               {steps.map((step, index) => (
                 <motion.div
                   key={index}
@@ -68,15 +68,15 @@ export function IdentitySection() {
                     <div className="absolute left-[31px] top-16 bottom-[-64px] w-px bg-[#5874EA] hidden sm:block z-0" />
                   )}
 
-                  <div className="p-8 md:p-10 rounded-[16px] border border-[var(--border-card-strong)] bg-[var(--card-glass)] backdrop-blur-[6px] shadow-md group relative overflow-hidden transition-all hover:bg-[var(--card-dark-hover)] hover:border-[#5874EA] hover:shadow-lg">
+                  <div className="p-6 md:p-8 lg:p-10 rounded-[16px] border border-[var(--border-card-strong)] bg-[var(--card-glass)] backdrop-blur-[6px] shadow-md group relative overflow-hidden transition-all hover:bg-[var(--card-dark-hover)] hover:border-[#5874EA] hover:shadow-lg">
                     <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                       <span className="text-8xl font-bold tracking-tighter">0{index + 1}</span>
                     </div>
 
                     <div className="relative z-10">
                       <div className="inline-flex items-center mb-4 px-2.5 py-1 rounded-sm border border-primary/30 bg-primary/5 text-[11px] font-bold tracking-widest text-primary uppercase">{step.title[language]}</div>
-                      <h3 className="text-[30px] font-bold text-foreground mb-4">{step.label[language]}</h3>
-                      <p className="text-[18px] md:text-base text-muted-foreground font-light leading-relaxed max-w-md break-keep">
+                      <h3 className="text-xl md:text-2xl lg:text-[30px] font-bold text-foreground mb-4">{step.label[language]}</h3>
+                      <p className="text-sm md:text-base text-muted-foreground font-light leading-relaxed max-w-md break-keep">
                         {step.desc[language]}
                       </p>
                     </div>
