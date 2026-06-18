@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  CheckCircle2,
-  XCircle,
-  Loader2,
-  ChevronDown,
-  AlertCircle,
-} from "lucide-react";
+import { XCircle, Loader2, ChevronDown, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/i18n/language-context";
+
+const EMPTY_FORM = {
+  name: "",
+  email: "",
+  phone: "",
+  org: "",
+  message: "",
+};
 
 export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   const { t } = useLanguage();
@@ -20,15 +24,14 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState("oda");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    org: "",
-    message: "",
-  });
+  const [formData, setFormData] = useState({ ...EMPTY_FORM });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Portal target — modal/toast must escape the form's stacking context
+  // (the card's backdrop-blur creates one), otherwise the header (z-50) covers them.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const inquiryTypes = [
     { id: "oda", label: t("contact.form.type_oda") },
@@ -91,88 +94,39 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
 
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
 
+      // Success: show the modal and clear the form.
       setIsSuccess(true);
+      setFormData({ ...EMPTY_FORM });
+      setInquiryType("oda");
+      setErrors({});
     } catch {
+      // Failure: show the toast but keep the user's input.
       setIsError(true);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isSuccess) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="p-10 md:p-16 text-center rounded-2xl border border-primary/30 bg-primary/[0.05] backdrop-blur-2xl shadow-md"
-      >
-        <div className="mb-6 flex justify-center">
-          <div className="p-3 rounded-full bg-primary/10 border border-primary/20">
-            <CheckCircle2 className="h-12 w-12 text-primary" />
-          </div>
-        </div>
-        <h3 className="text-2xl font-bold text-foreground mb-3 tracking-tight">
-          {t("contact.form.success_title")}
-        </h3>
-        <p className="text-base text-muted-foreground mb-8 max-w-sm mx-auto font-light">
-          {t("contact.form.success_desc")}
-        </p>
-        <Button
-          onClick={() => {
-            setIsSuccess(false);
-            setFormData({
-              name: "",
-              email: "",
-              phone: "",
-              org: "",
-              message: "",
-            });
-          }}
-          variant="outline"
-          className="px-6 rounded-full h-10 border-primary/30 hover:bg-primary/5 text-sm"
-        >
-          {t("contact.form.new_btn")}
-        </Button>
-      </motion.div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="p-10 md:p-16 text-center rounded-2xl border border-red-500/30 bg-red-500/[0.05] backdrop-blur-2xl shadow-md"
-      >
-        <div className="mb-6 flex justify-center">
-          <div className="p-3 rounded-full bg-red-500/10 border border-red-500/20">
-            <XCircle className="h-12 w-12 text-red-500" />
-          </div>
-        </div>
-        <h3 className="text-2xl font-bold text-foreground mb-3 tracking-tight">
-          {t("contact.form.error_title")}
-        </h3>
-        <p className="text-base text-muted-foreground mb-8 max-w-sm mx-auto font-light">
-          {t("contact.form.error_desc")}
-        </p>
-        <Button
-          onClick={() => setIsError(false)}
-          variant="outline"
-          className="px-6 rounded-full h-10 border-red-500/30 hover:bg-red-500/5 text-sm"
-        >
-          {t("contact.form.retry_btn")}
-        </Button>
-      </motion.div>
-    );
-  }
+  // Dismiss the failure toast after 6s, or on any click (toast or anywhere on screen).
+  useEffect(() => {
+    if (!isError) return;
+    const dismiss = () => setIsError(false);
+    const timer = setTimeout(dismiss, 6000);
+    window.addEventListener("click", dismiss);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("click", dismiss);
+    };
+  }, [isError]);
 
   return (
+    <>
     <div className="h-full p-6 md:p-8 rounded-2xl border border-[var(--border-card)] bg-[var(--card-dark)] backdrop-blur-xl shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] relative group overflow-hidden">
       {/* Form Decoration Accent */}
 
       <div className="relative z-10">
         {showIntro && (
-          <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8 leading-tight whitespace-pre-line text-left">
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-8 leading-tight whitespace-pre-line text-center">
             {t("contact.form.intro")}
           </h3>
         )}
@@ -371,5 +325,90 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
         </form>
       </div>
     </div>
+
+    {mounted &&
+      createPortal(
+        <>
+    {/* Success modal — dismissed by overlay or button click */}
+    <AnimatePresence>
+      {isSuccess && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setIsSuccess(false)}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[rgba(15,23,42,0.5)] backdrop-blur-[7.5px]"
+          role="dialog"
+          aria-modal="true"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8, transition: { duration: 0.18 } }}
+            transition={{ type: "spring", stiffness: 360, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[400px] overflow-hidden rounded-[20px] bg-white shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.5)]"
+          >
+            <div className="flex flex-col items-center gap-4 p-4">
+              <div className="w-full overflow-hidden rounded-[10px] bg-[#ebeef4]">
+                <Image
+                  src="/contact-success.png"
+                  alt=""
+                  width={368}
+                  height={240}
+                  className="aspect-[368/240] w-full object-cover"
+                  priority
+                />
+              </div>
+              <div className="flex flex-col items-center gap-3 px-2 text-center">
+                <h3 className="text-[20px] font-bold leading-7 tracking-[-0.2px] text-[#090d14]">
+                  {t("contact.form.success_title")}
+                </h3>
+                <p className="whitespace-pre-line text-sm leading-5 text-[#6b7280]">
+                  {t("contact.form.success_desc")}
+                </p>
+              </div>
+            </div>
+            <div className="border-t border-[#e5e7eb] p-4">
+              <button
+                type="button"
+                onClick={() => setIsSuccess(false)}
+                className="w-full rounded-[10px] bg-[#4a6df2] px-4 py-3 text-base font-medium text-white transition-colors hover:bg-[#3f5fe0] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#4a6df2]/30"
+              >
+                {t("contact.form.close_btn")}
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    {/* Failure toast — auto-dismisses after 3s, keeps form input */}
+    <AnimatePresence>
+      {isError && (
+        <div className="fixed inset-x-0 top-6 z-[110] flex justify-center px-4">
+          <motion.div
+            initial={{ opacity: 0, y: -24, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.97, transition: { duration: 0.2 } }}
+            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+            role="alert"
+            className="flex w-full max-w-[430px] cursor-pointer items-center gap-4 rounded-xl border border-l-4 border-[#fda29b] bg-[#e40014] py-4 pl-4 pr-4 shadow-[0px_2px_8px_rgba(0,0,0,0.12)]"
+          >
+            <div className="shrink-0 rounded-full bg-[#ffaea8] p-1">
+              <XCircle className="h-6 w-6 text-white" />
+            </div>
+            <p className="text-sm leading-5 text-[#f8f8fa]">
+              {t("contact.form.error_desc")}
+            </p>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+        </>,
+        document.body,
+      )}
+    </>
   );
 }
