@@ -7,7 +7,7 @@ export function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-card dark:bg-[#07080c] text-muted-foreground border-t border-border/50 px-5 pt-10 pb-8 sm:px-6 md:px-8 md:pt-12 md:pb-10 lg:px-8 lg:pt-16 lg:pb-16 transition-colors duration-300">
+    <footer className="bg-card dark:bg-[#03081c] text-muted-foreground border-t border-border/50 dark:border-[#090b0f]/50 px-5 pt-10 pb-8 sm:px-6 md:px-8 md:pt-12 md:pb-10 lg:px-8 lg:pt-16 lg:pb-16 transition-colors duration-300">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 md:gap-12">
         {/* Company info + navigation */}
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-8">
