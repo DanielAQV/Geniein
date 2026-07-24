@@ -101,7 +101,7 @@ const buildEmailHtml = ({
             <td style="padding:44px 48px;">
               <div style="border-top:1px solid #ededee;padding-top:22px;">
                 <p style="margin:0;font-family:${FONT_STACK};font-size:12px;font-weight:600;letter-spacing:0.5px;color:#15181f;">Geniein Co., Ltd.</p>
-                <p style="margin:7px 0 0;font-family:${FONT_STACK};font-size:11px;font-weight:400;line-height:1.7;color:#a2a6b0;">경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호<br/>본 메일은 Geniein 웹사이트 문의 폼을 통해 자동 발송되었습니다.</p>
+                <p style="margin:7px 0 0;font-family:${FONT_STACK};font-size:11px;font-weight:400;line-height:1.7;color:#a2a6b0;">경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호<br/>본 메일은 Geniein 웹사이트 문의 폼을 통해 자동 발송되었습니다.</p>
                 <p style="margin:14px 0 0;font-family:${FONT_STACK};font-size:11px;font-weight:400;letter-spacing:0.3px;color:#c7cad2;">© 2026 Geniein Co., Ltd. All rights reserved.</p>
               </div>
             </td>
@@ -138,7 +138,7 @@ const buildEmailText = ({
     message,
     "──────────────────────────────",
     "Geniein Co., Ltd.",
-    "경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호",
+    "경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호",
     "본 메일은 Geniein 웹사이트 문의 폼을 통해 자동 발송되었습니다.",
     "© 2026 Geniein Co., Ltd. All rights reserved.",
   ].join("\n")

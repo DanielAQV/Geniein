@@ -98,7 +98,7 @@ export const dictionary = {
       title: { kr: "성공적인 글로벌 협력,\n지니인이 최적의 해답을 제시합니다", en: "Successful Global Cooperation,\nGeniein provides the optimal answer.", vn: "Hợp tác toàn cầu thành công,\nGeniein đưa ra câu trả lời tối ưu." },
       desc: { kr: "현장 중심의 전략과 탄탄한 기술력으로 실질적인 비즈니스 가치를 창출합니다.\n글로벌 비즈니스의 성공을 위한 최적의 파트너십, 지니인과 함께 시작하세요.", en: "We create tangible business value through field-oriented strategies and solid technology.\nThe optimal partnership for your global business success starts with Geniein.", vn: "Chúng tôi tạo ra giá trị kinh doanh hữu hình thông qua các chiến lược hướng tới thực tế và công nghệ vững chắc.\nMối quan hệ đối tác tối ưu cho sự thành công trong kinh doanh toàn cầu của bạn bắt đầu với Geniein." },
       seoul: { kr: "한국 본사 (주)지니인", en: "Korea HQ (Geniein Inc.)", vn: "Trụ sở chính Hàn Quốc (Geniein Inc.)" },
-      seoul_addr: { kr: "경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Room 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" },
+      seoul_addr: { kr: "경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호", en: "720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
       hanoi: { kr: "하노이 지사 (GENIE VINA)", en: "Hanoi Branch (GENIE VINA)", vn: "Chi nhánh Hà Nội (GENIE VINA)" },
       hanoi_addr: { kr: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", en: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", vn: "Tầng 21, tòa nhà Capital Tower, 109 Trần Hưng Đạo, Hà Nội" },
       form_name_ph: { kr: "성함 또는 기관명을 입력해주세요", en: "Enter your name or organization", vn: "Nhập tên hoặc tổ chức của bạn" },
@@ -112,8 +112,8 @@ export const dictionary = {
     footer: {
       desc: { kr: "디지털 ODA 컨설팅 및 혁신적인 IT 플랫폼 분야의 글로벌 리더. 전 세계 국가들을 디지털로 하나 되게 연결하고, 모두의 지속 가능한 성장을 위한 인프라 구축을 주도합니다.", en: "A global leader in digital ODA consulting and innovative IT platforms. Connecting countries worldwide through digital and leading the building of infrastructure for sustainable growth for all.", vn: "Nhà lãnh đạo toàn cầu trong lĩnh vực tư vấn ODA kỹ thuật số và các nền tảng CNTT đổi mới. Kết nối các quốc gia trên toàn thế giới thông qua kỹ thuật số và dẫn đầu việc xây dựng cơ sở hạ tầng để tăng trưởng bền vững cho tất cả mọi người." },
       reg_no: { kr: "사업자등록번호: 645-81-03508", en: "Registration No: 645-81-03508", vn: "Mã số thuế: 645-81-03508" },
-      ceo: { kr: "대표: 정은주", en: "CEO: Jung Eun Joo", vn: "Đại diện: Jung Eun Joo" },
-      address: { kr: "주소: 경기도 용인시 수지구 용구대로2790번길 7, 3층 302-179호", en: "Address: Room 302-179, 3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Địa chỉ: Phòng 302-179, Tầng 3, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" }
+      ceo: { kr: "대표: 변범준", en: "CEO: Byun Beom Joon", vn: "Đại diện: Byun Beom Joon" },
+      address: { kr: "주소: 경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호", en: "Address: 720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Địa chỉ: Phòng 720, Tầng 7, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" }
     }
   },
   about: {
@@ -159,7 +159,7 @@ export const dictionary = {
         {
           city: { kr: "한국 본사\nGeniein Co., Ltd", en: "KOREA HQ\nGeniein Co., Ltd", vn: "Trụ sở chính Hàn Quốc\nGeniein Co., Ltd" },
           role: { kr: "전략 및 서비스 디자인 허브", en: "Strategy & Service Design Hub", vn: "Trung tâm Chiến lược & Thiết kế Dịch vụ" },
-          address: { kr: "경기도 용인시 수지구 용구대로2790번길 7, 3층", en: "3F, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do", vn: "Tầng 3, 7, Yonggu-daero 2790beon-gil, Suji-gu, Yongin-si, Gyeonggi-do" },
+          address: { kr: "경기도 성남시 분당구 황새울로319번길 8-4, 7층", en: "7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Tầng 7, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
           specialization: [
             { kr: "프로젝트 전략", en: "Project Strategy", vn: "Chiển lược dự án" },
             { kr: "글로벌 파트너십", en: "Global Partnership", vn: "Hợp tác toàn cầu" },

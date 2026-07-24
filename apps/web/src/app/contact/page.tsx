@@ -14,8 +14,8 @@ export default function ContactPage() {
 
   const maps = [
     {
-      title: "Geniein HQ Location (경기도 용인시 수지구 용구대로2790번길 7)",
-      src: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3172.330034051294!2d127.10734961103846!3d37.33469457198325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b59ee0ae659eb%3A0xb7b90d257ba118d9!2z64yA7ZWc66-86rWtIOqyveq4sOuPhCDsmqnsnbjsi5wg7IiY7KeA6rWsIOyaqeq1rOuMgOuhnDI3OTDrsojquLggNw!5e0!3m2!1sko!2s!4v1780469110451!5m2!1sko!2s",
+      title: "Geniein HQ Location (경기도 성남시 분당구 황새울로319번길 8-4)",
+      src: "https://www.google.com/maps?q=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%99%A9%EC%83%88%EC%9A%B8%EB%A1%9C319%EB%B2%88%EA%B8%B8%208-4&hl=ko&z=17&output=embed",
     },
     {
       title: "Geniein Hanoi Location (Capital Tower)",
