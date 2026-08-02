@@ -1,0 +1,21 @@
+# 임베딩 스택 (BGE-M3, 1024차원 — kb_chunks.embedding 과 일치해야 한다)
+#
+# requirements.txt 와 분리한 이유:
+#   torch + nvidia CUDA 휠이 합쳐서 3GB 대다. API 컨테이너 이미지에 넣으면 안 된다.
+#   임베딩은 색인 경로에서만 필요하고, 대화 경로(/agent/message)는 쓰지 않는다.
+#
+# torch 는 여기 고정하지 않는다 — 환경마다 인덱스가 다르기 때문이다.
+#
+#   GPU (로컬 개발, 드라이버 561.00 -> CUDA 12.6):
+#     TMPDIR=/var/tmp/pip pip install torch --index-url https://download.pytorch.org/whl/cu126
+#
+#   CPU (GPU 없는 배포 환경):
+#     TMPDIR=/var/tmp/pip pip install torch --index-url https://download.pytorch.org/whl/cpu
+#
+#   ★ TMPDIR 을 반드시 디스크로 돌린다. WSL 의 /tmp 는 tmpfs 2GB 라
+#     "No space left on device" 로 죽는다 (docs/DEV_SETUP.md 참조).
+#
+# 그 다음:
+#     pip install -r requirements-embed.txt
+
+sentence-transformers>=5.6,<6.0

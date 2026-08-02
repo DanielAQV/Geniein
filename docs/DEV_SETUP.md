@@ -44,6 +44,7 @@ GPU         WSL2 CUDA 패스스루 — 추가 설치 없음
 | Postgres | WSL 내부 `localhost:5432`, DB `geniein_db` |
 | 환경변수 | 저장소 루트 `.env` — `src/config.py` 가 파일 위치 기준으로 찾는다 |
 | WSL 설정 | `C:\Users\<user>\.wslconfig` (NAT 모드, 메모리 4GB 상한) |
+| 임베딩 모델 | `~/.cache/huggingface` (BGE-M3, 2.2GB) |
 
 `src/config.py` 의 `SERVICE_ROOT` / `REPO_ROOT` 는 `__file__` 기준이라
 **실행 위치(CWD)와 무관**하고, 컨테이너(`/app`)에서도 같은 상대 구조라 그대로 맞는다.
@@ -66,7 +67,47 @@ curl -s -X POST http://127.0.0.1:8000/agent/message \
 
 ---
 
+## 임베딩 스택 (GPU)
+
+설치는 `apps/agent-service/requirements-embed.txt` 상단 주석 참조.
+`requirements.txt` 와 분리한 이유는 torch + CUDA 휠이 3GB 대라 API 이미지에
+넣을 수 없기 때문이다.
+
+**GPU 는 WSL2 에서 그대로 잡힌다.** Windows 드라이버(561.00)가 있으면
+CUDA Toolkit 을 따로 설치할 필요가 없다 — `nvidia-smi` 가 WSL 안에서 바로 동작하고,
+PyTorch 는 pip 휠 안에 CUDA 런타임을 포함한다.
+
+실측 (RTX 3050 6GB Laptop):
+
+| 항목 | 값 |
+|---|---|
+| torch | 2.13.0+cu126 / CUDA 12.6 |
+| BGE-M3 차원 | 1024 (`kb_chunks.embedding` 과 일치) |
+| VRAM 사용 | 2.12 GB / 6.00 GB |
+| 모델 최초 로드 | 743s (2.3GB 다운로드 포함) |
+| 캐시 후 로드 | 10.4s |
+| 임베딩 처리량 | 101건/초 (GPU) — CPU 대비 **10.9배** |
+
+`regulations/` 전체가 청크 120~160건 규모이므로 **전체 재색인이 2초 미만**이다.
+설계문서 5.1 이 우려한 "초기 전체 색인이 CPU 에서 느리다"는 이 코퍼스 규모에서는
+문제가 되지 않는다.
+
+> sentence-transformers 5.x 에서 `get_sentence_embedding_dimension()` 은
+> `get_embedding_dimension()` 으로 이름이 바뀌었다 (구 이름은 경고 후 동작).
+
+---
+
 ## 알려진 함정
+
+### 0. `/tmp` 이 tmpfs 2GB — 큰 pip 설치가 죽는다
+
+`.wslconfig` 의 `memory=4GB` 에서 파생되어 `/tmp` 가 **RAM 기반 2GB** 다.
+torch + nvidia 휠은 이걸 넘어서 `OSError: [Errno 28] No space left on device` 로 죽는다.
+`/` 에는 900GB 넘게 남아 있어도 그렇다.
+
+```bash
+export TMPDIR=/var/tmp/pip && mkdir -p "$TMPDIR"     # 디스크 기반
+```
 
 ### 1. Windows → WSL 포트 접근이 안 된다
 
