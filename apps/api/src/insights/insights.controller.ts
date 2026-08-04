@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { InsightsService } from './insights.service';
+import { ServiceTokenGuard } from '../common/guards/service-token.guard';
 
 @Controller('insights')
 export class InsightsController {
@@ -20,7 +21,10 @@ export class InsightsController {
     );
   }
 
+  // 초안까지 전부 반환한다. 공개 목록(findPublished)과 달리 인가가 필수다.
+  // 호출자는 Next.js BFF(/api/admin/insights)뿐이고, 사용자 세션은 거기서 확인된다.
   @Get('admin')
+  @UseGuards(ServiceTokenGuard)
   findAllAdmin() {
     return this.insightsService.findAll();
   }

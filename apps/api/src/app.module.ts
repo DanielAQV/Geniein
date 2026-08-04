@@ -20,7 +20,13 @@ import { InsightsModule } from './insights/insights.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // Set to false in production
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        // ★ 켜지 말 것. synchronize 는 엔티티에 없는 컬럼을 drop 하려 든다 —
+        // kb_chunks.embedding(pgvector) 처럼 raw SQL 로 만든 스키마가 사라진다.
+        // 스키마 변경은 `pnpm migration:generate` → `pnpm migration:run` 으로만 한다.
+        synchronize: false,
+        // 마이그레이션도 자동 실행하지 않는다. 배포 파이프라인의 명시적 단계여야 한다.
+        migrationsRun: false,
       }),
       inject: [ConfigService],
     }),
