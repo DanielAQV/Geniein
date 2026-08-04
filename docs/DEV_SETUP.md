@@ -97,6 +97,53 @@ PyTorch 는 pip 휠 안에 CUDA 런타임을 포함한다.
 
 ---
 
+## 관리자 인증 (apps/web)
+
+설계문서 Phase 0 의 하드코딩 자격증명 제거에 따라 **환경변수 없이는 admin 로그인이 동작하지 않는다.**
+기본 계정을 만들어주지 않는 게 의도다 — 설정을 안 했을 때 열려 있는 것이 원래의 취약점이었다.
+
+```bash
+# 인자 없이 실행하면 비밀번호를 숨겨서 입력받는다 (셸 기록에 남지 않는다).
+# ADMIN_PASSWORD_HASH / AUTH_SECRET / ADMIN_SERVICE_TOKEN 을 한 번에 출력한다.
+node apps/web/scripts/hash-password.mjs
+```
+
+```
+비밀번호: ********
+비밀번호 확인: ********
+```
+
+비밀번호는 12자 이상이어야 하고, 화면에 안 보이므로 확인 입력으로 오타를 잡는다.
+CI 처럼 대화형 입력이 불가능한 환경에서만 인자로 넘긴다 — 그 경우 셸 기록에 남는다.
+
+전체 변수 목록은 `apps/web/.env.example` / `apps/api/.env.example` 참조.
+
+| 변수 | 어디에 | 역할 |
+|---|---|---|
+| `AUTH_SECRET` | web | 세션 쿠키 서명. 바꾸면 기존 세션 전부 무효 |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD_HASH` | web | 관리자 계정. 평문은 저장하지 않는다 |
+| `ADMIN_SERVICE_TOKEN` | web + api | BFF → NestJS 서비스 간 인증. **양쪽 값이 같아야 한다** |
+| `CORS_ORIGINS` | api | 허용 오리진. 비우면 CORS 비활성 |
+
+> **로컬에서 `next start`(프로덕션 모드)로 테스트하면 로그인이 안 풀린다.**
+> 세션 쿠키가 `Secure` 로 발급되는데 `http://localhost` 는 평문이라 브라우저가 되돌려 보내지 않는다.
+> 로컬 검증은 `next dev` 로 한다 (개발 모드에서는 `Secure` 가 꺼진다).
+
+### DB 마이그레이션
+
+`synchronize` 를 껐으므로 스키마는 마이그레이션으로만 바뀐다.
+
+```bash
+cd apps/api
+pnpm migration:show      # 적용 상태 확인
+pnpm migration:run       # 적용
+pnpm migration:generate src/migrations/<이름>   # 엔티티 변경 후 diff 생성
+```
+
+`kb_documents` / `kb_chunks` 는 여기 포함되지 않는다 — agent-service 소유이고 `db/init/*.sql` 이 관리한다.
+
+---
+
 ## 알려진 함정
 
 ### 0. `/tmp` 이 tmpfs 2GB — 큰 pip 설치가 죽는다
@@ -134,6 +181,54 @@ Windows 쪽에서 붙어야 할 일이 생기면 `systemctl restart postgresql@1
 
 `wsl --install` 이 계정 생성 단계에서 중단되어 **root 만 있다.**
 Postgres 와 개발 용도로는 문제없다. 필요해지면 그때 만든다.
+
+### 4. ★ 기본 WSL 배포판이 Ubuntu 가 아니다
+
+Docker Desktop 이 자기 배포판을 설치하면서 **기본값을 가져갔다.**
+
+```
+$ wsl -l -v
+*  docker-desktop    Running    2      ← 기본. sh 이고 psql 이 없다
+   Ubuntu            Stopped    2      ← 우리가 쓰는 쪽
+```
+
+그냥 `wsl` 을 치면 docker-desktop 으로 들어가고, 거기서 `psql` 을 부르면
+`-sh: psql: not found` 가 난다. **설치가 안 된 게 아니라 다른 리눅스에 있는 것이다.**
+
+```powershell
+wsl -d Ubuntu -u root          # 항상 -d 를 붙인다
+wsl --set-default Ubuntu       # 또는 기본값을 바꾼다 (Docker Desktop 은 영향 없음)
+```
+
+프롬프트로 구분한다 — `root@LAPTOP-...` 면 Ubuntu, `LAPTOP-...` 만 있으면 docker-desktop.
+그리고 `wsl` 은 Windows 명령이므로 **WSL 안에서는 부를 수 없다** (`-sh: wsl: not found`).
+먼저 `exit` 로 PowerShell 로 나와야 한다.
+
+### 5. 비밀번호에 `!` 가 있으면 bash 가 먼저 가로챈다
+
+```bash
+psql "postgresql://postgres:pw!@localhost:5432/geniein_db"
+# -bash: !@localhost: event not found     ← psql 이 실행조차 안 된다
+```
+
+큰따옴표 안에서 `!` 는 히스토리 확장으로 해석된다. 작은따옴표를 쓰거나,
+**아예 비밀번호를 명령줄에 적지 않는 게 낫다** — 셸 히스토리에도 남지 않는다.
+
+```bash
+psql -h localhost -U postgres -d geniein_db -c 'select 1'   # 프롬프트로 입력받는다
+```
+
+역할 비밀번호 변경도 같은 이유로 `\password` 를 쓴다. `ALTER ROLE ... PASSWORD '...'`
+는 따옴표 문제에 더해 비밀번호가 셸 히스토리와 Postgres 로그에 남는다.
+
+```bash
+sudo -u postgres psql
+postgres=# \password postgres      # 가려서 두 번 입력받는다
+```
+
+> **`.env` 를 바꿔도 DB 는 안 바뀐다.** 둘은 별개다 —
+> `.env` 3곳(루트 / `apps/api` / `apps/ai-worker`)과 Postgres 역할을 **같이** 바꿔야 한다.
+> 한쪽만 하면 `password authentication failed` 가 난다.
 
 ---
 

@@ -30,6 +30,10 @@ AI_ALLOWED_IPS=                          ← 내부 서비스 IP 화이트리스
 4. **`next.config.mjs:40-43` 프로덕션 CSP에 `connect-src` 없음** → `default-src 'self'` 적용. 브라우저에서 크로스오리진 API/스트리밍 호출이 프로덕션에서 막힘. → 챗봇은 **반드시 Next.js route handler(BFF) 경유**.
 5. **`synchronize: true` + 마이그레이션 없음.** pgvector 컬럼을 추가하면 synchronize가 이를 "미지의 컬럼"으로 보고 drop을 시도함. **먼저 마이그레이션으로 전환**해야 함.
 
+> **해결 현황 (2026-08-04)** — 위 진단은 2026-07-30 기준이다.
+> **1·2·4·5 해결됨.** 1은 Entra ID 가 아니라 서버 세션 브리지로 (9장 Phase 0 참조 — 교체 경계는 `session.ts` 에 고정).
+> **3(키 로테이션)만 남아 있다.** `.env` 4개 파일의 실키는 여전히 유효하므로 전량 교체가 필요하다.
+
 ---
 
 ## 2. 핵심 설계 통찰
@@ -1147,13 +1151,21 @@ class AgentHandler(Protocol):
 ## 9. 로드맵
 
 ### Phase 0 — 선결 (약 1주) · 건너뛸 수 없음
-- [ ] Entra ID SSO 도입, 하드코딩 자격증명 제거, `middleware.ts` 추가
-- [ ] `synchronize: false` + TypeORM 마이그레이션 인프라 구축
-- [ ] CORS origin 제한, `/insights/admin`에 가드 추가, CSP `connect-src` 추가
-- [ ] API 키 전량 로테이션
-- [ ] `apps/agent-service` (FastAPI) 스켈레톤 + `/health`
-- [ ] **LLM 어댑터 경계 확정** (3.5) — 유스케이스 단위 함수. 최소공통분모 `generate()` 금지
-- [ ] 배포 코드화 — geniein.com은 AWS에서 돌지만 저장소에 Dockerfile/CI/IaC가 없다. 뇌를 올리기 전 컨테이너화 + 재현 가능한 배포 경로 확보
+- [x] ~~하드코딩 자격증명 제거~~, ~~`middleware.ts` 추가~~ / **Entra ID SSO 는 미도입**
+  - 서버 세션 브리지로 대체 (2026-08-04). httpOnly 서명 쿠키 + scrypt 해시 + `apps/web/src/middleware.ts` 서버사이드 게이팅
+  - `apps/web/src/lib/auth/session.ts` 가 **신원 발급자 경계**다. Entra 전환 시 `createSessionToken` 호출부만 바뀌고 `verifySessionToken` 소비자(middleware / BFF)는 그대로다
+  - 남은 것: Azure AD 앱 등록(테넌트 관리자 권한) → Auth.js + Entra provider
+- [x] `synchronize: false` + TypeORM 마이그레이션 인프라 구축
+  - `apps/api/src/data-source.ts` + `src/migrations/` + `pnpm migration:run|generate|revert|show`
+  - 베이스라인 마이그레이션은 멱등(`CREATE TABLE IF NOT EXISTS`) — 기존 DB 에서는 no-op
+- [x] CORS origin 제한(`CORS_ORIGINS`), `/insights/admin`에 가드 추가(`ServiceTokenGuard`), CSP `connect-src` 추가
+  - 관리자 데이터를 브라우저 직접 호출에서 **Next.js BFF(`/api/admin/*`) 경유**로 전환. 3.6 의 얇은 BFF 가 여기서 처음 실체화됐다
+- [ ] API 키 전량 로테이션 ← **사용자 작업. 남아 있는 유일한 Phase 0 보안 항목**
+- [x] `apps/agent-service` (FastAPI) 스켈레톤 + `/health`
+- [x] **LLM 어댑터 경계 확정** (3.5) — 유스케이스 단위 함수. 최소공통분모 `generate()` 금지
+  - `src/llm/base.py` + `anthropic_llm.py`. `run_agent_turn` 안에서 `cache_control` · adaptive effort · refusal 선체크를 유지
+- [ ] 배포 코드화 — geniein.com은 AWS에서 돌지만 저장소에 CI/IaC가 없다. 뇌를 올리기 전 재현 가능한 배포 경로 확보
+  - Dockerfile / docker-compose 는 있음. **CI·IaC 는 여전히 부재**
 
 ### Phase 1 — 유나 코어 + 첫 도구 (2~3주)
 "챗봇을 만든다"가 아니라 **유나의 뇌를 만들고 도구 하나를 꽂는다**로 읽을 것 (3.2). 이 단계에서 만든 루프에 이후 모든 기능이 도구로 등록된다.
