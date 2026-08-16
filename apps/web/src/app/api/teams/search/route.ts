@@ -36,17 +36,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'missing_token' }, { status: 401 })
   }
 
-  let text: unknown
+  let body: { text?: unknown; history?: unknown }
   try {
-    text = (await request.json())?.text
+    body = (await request.json()) ?? {}
   } catch {
     return NextResponse.json({ error: 'invalid_body' }, { status: 400 })
   }
 
-  const question = typeof text === 'string' ? text.trim() : ''
+  const question = typeof body.text === 'string' ? body.text.trim() : ''
   if (!question || question.length > MAX_QUESTION_LENGTH) {
     return NextResponse.json({ error: 'invalid_text' }, { status: 400 })
   }
+
+  // 이력은 모양만 보고 넘긴다 — 실제 검증은 NestJS 가 한다. 여기서 규칙을 한 벌 더
+  // 두면 두 곳이 어긋날 때 원인을 찾기 어려워진다. BFF 의 일은 통과시키는 것이다.
+  const history = Array.isArray(body.history) ? body.history : []
 
   const serviceToken = process.env.ADMIN_SERVICE_TOKEN
   if (!serviceToken) {
@@ -65,7 +69,7 @@ export async function POST(request: Request) {
         // 호출자 신원 — 이 요청이 우리 BFF 에서 왔음을 NestJS 에 증명한다
         'x-service-token': serviceToken,
       },
-      body: JSON.stringify({ text: question }),
+      body: JSON.stringify({ text: question, history }),
       cache: 'no-store',
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     })

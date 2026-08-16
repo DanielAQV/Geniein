@@ -13,7 +13,7 @@ from __future__ import annotations
 import hmac
 import logging
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -83,8 +83,48 @@ def require_service_token(x_service_token: str = Header(default="")) -> None:
         raise HTTPException(status_code=401, detail="unauthorized")
 
 
+class HistoryTurn(BaseModel):
+    """이전 대화 한 마디. 클라이언트가 들고 있다가 다시 보낸다."""
+
+    role: Literal["user", "assistant"]
+    text: str = Field(min_length=1, max_length=8000)
+
+
+def _to_provider_messages(turns: list[HistoryTurn]) -> list[dict[str, str]]:
+    """대화 이력을 모델이 받는 메시지로 옮긴다.
+
+    ★ **평문 발언만 주고받는다.** 내부 표현(thinking 블록, tool_use/tool_result)을
+      브라우저까지 왕복시키면 두 가지가 동시에 깨진다 — 검색해 온 문서 원문이
+      클라이언트로 새고, 클라이언트가 도구 결과를 위조해 넣을 수 있게 된다.
+      모델은 자기가 이전에 한 **답변**만 기억하고, 근거가 다시 필요하면 도구를
+      다시 부른다. 맥락은 이어지면서 경계는 그대로다.
+
+    ★ 순서를 여기서 바로잡는다. Anthropic 은 user 로 시작하는 교대 배열을 요구하고
+      어긋나면 400 이 난다. 클라이언트가 보낸 배열을 그대로 믿으면 사용자 입력만으로
+      API 를 깨뜨릴 수 있다 — 앞쪽 assistant 는 버리고, 같은 역할이 연달아 오면
+      뒤엣것을 버린다.
+    """
+    messages: list[dict[str, str]] = []
+    for turn in turns:
+        if not messages and turn.role != "user":
+            continue
+        if messages and messages[-1]["role"] == turn.role:
+            continue
+        messages.append({"role": turn.role, "content": turn.text})
+
+    # 이력의 끝은 assistant 여야 한다 — 뒤에 이번 사용자 발언이 붙기 때문이다.
+    if messages and messages[-1]["role"] == "user":
+        messages.pop()
+
+    return messages
+
+
 class MessageRequest(BaseModel):
     text: str = Field(min_length=1, max_length=8000)
+
+    # 대화 이력. 상한을 두는 이유는 비용이다 — 매 턴마다 전체가 다시 청구되므로
+    # 길이를 클라이언트에 맡기면 한 사람이 요금을 무한정 늘릴 수 있다.
+    history: list[HistoryTurn] = Field(default_factory=list, max_length=20)
 
     # 신원은 게이트웨이가 Entra 토큰을 검증해서 넘긴다. 클라이언트의 주장이 아니다.
     #
@@ -161,6 +201,7 @@ def agent_message(req: MessageRequest) -> MessageResponse:
             org_id=req.org_id,
             roles=tuple(req.roles),
         ),
+        history=_to_provider_messages(req.history),
     )
 
     return MessageResponse(

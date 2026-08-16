@@ -28,9 +28,19 @@ interface BrainResponse {
 }
 
 /** 브라우저가 보는 모양. 비용·토큰 수치는 넘기지 않는다. */
+/**
+ * 대화 이력 한 마디. **평문만 오간다** — thinking 블록이나 도구 결과 같은 내부
+ * 표현은 브라우저까지 왕복시키지 않는다. 검색해 온 문서 원문이 클라이언트로 새고,
+ * 클라이언트가 도구 결과를 위조해 넣을 수 있게 되기 때문이다.
+ */
+export interface ChatTurn {
+  role: 'user' | 'assistant';
+  text: string;
+}
+
 export interface AgentSearchResult {
   text: string;
-  /** 유나가 답변을 거절했는가 (인격 규칙에 따른 거절) */
+  /** Genie 가 답변을 거절했는가 (인격 규칙에 따른 거절) */
   refused: boolean;
   /** 어떤 도구가 쓰였는가. 근거 표시와 "검색이 돌긴 했나" 확인용 */
   tools: { name: string; outcome: string }[];
@@ -48,7 +58,11 @@ export class AgentService {
 
   constructor(private readonly config: ConfigService) {}
 
-  async search(question: string, user: EntraUser): Promise<AgentSearchResult> {
+  async search(
+    question: string,
+    user: EntraUser,
+    history: ChatTurn[] = [],
+  ): Promise<AgentSearchResult> {
     const { baseUrl, token, timeoutMs } = this.requireConfig();
     const startedAt = Date.now();
 
@@ -58,6 +72,9 @@ export class AgentService {
       timeoutMs,
       {
         text: question,
+        // 이력은 클라이언트가 들고 있다가 다시 보낸 값이다. 맥락에만 쓰이고,
+        // 신원·권한 판단에는 관여하지 않는다 — 그 출처는 아래 두 줄뿐이다.
+        history,
         // ★ 서버가 확정한 신원. 클라이언트가 주장한 값이 아니다.
         internal_user_id: user.internalUserId,
         org_id: user.tenantId,
