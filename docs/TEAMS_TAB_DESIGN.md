@@ -404,7 +404,7 @@ CREATE UNIQUE INDEX kb_documents_org_source_url_uniq
 **조치.** `next.config.mjs` 에 `allowedDevOrigins` 추가 (터널 도메인 와일드카드 +
 `DEV_TUNNEL_HOST`). 운영 빌드에는 없는 문제다 — dev 리소스 자체가 없다.
 
-### 4.6 ★★ Teams SSO 는 App ID URI **도메인**과 iframe 오리진이 같아야 한다
+### 4.6 ★★ Teams SSO 는 App ID URI **도메인**과 iframe 오리진이 같아야 한다 — **해결 (2026-08-16)**
 
 **증상.** 탭은 정상 렌더되는데 `authentication.getAuthToken()` 이 거절한다:
 
@@ -436,6 +436,17 @@ ID URI)의 **호스트 부분**과 탭을 서빙하는 **오리진**이 일치�
 
 > Entra 규칙: `api://<string>/<appId>` 형식이 허용되고 `<string>` 은 임의 문자열이어도
 > 된다 (현재 값이 그 형태다). App ID URI 는 테넌트 내 유일해야 하고 `/` 로 끝나면 안 된다.
+
+**해결.** 1안으로 갔다 — `genie.geniein.com` 을 회사 홈페이지가 이미 떠 있는 EC2 에
+별도 nginx 블록·별도 프로세스로 올렸다. 절차는 [TEAMS_DEPLOY.md](TEAMS_DEPLOY.md).
+
+★ 마지막에 한 번 더 막혔다. 매니페스트를 새로 올렸는데도 **설치된 탭이 옛 정의를
+붙들고 있어서** iframe 이 계속 죽은 터널 주소를 가리켰다. 카탈로그의 앱은 갱신돼도
+이미 설치된 인스턴스는 재설치 전까지 옛 `contentUrl` 을 쓴다. 하드 리로드로는 안 되고
+**앱을 제거했다가 다시 설치**해야 한다.
+
+이때 터널이 아직 살아 있으면 탭이 멀쩡히 뜨면서 SSO 만 실패해 — 원인이 매니페스트라는
+걸 알 수 없다. **옛 호스트를 먼저 죽여 놓으면** 로드 실패로 드러나 진단이 쉬워진다.
 
 ---
 

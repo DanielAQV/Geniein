@@ -86,8 +86,8 @@ Teams 탭 때문에 홈페이지를 feature 브랜치로 갈아엎을 이유는 
 | 무엇 | 브랜치 | 주소 | nginx 로 노출? |
 |---|---|---|---|
 | 회사 홈페이지 | `main` (기존 `/var/www/Geniein`) | `127.0.0.1:3000` | `geniein.com` — **손대지 않음** |
-| 유나 Teams 탭 | `feat/teams-tab` (새 `/var/www/yuna`) | `127.0.0.1:3100` | `genie.geniein.com` (새 블록) |
-| 유나 NestJS | 〃 | `127.0.0.1:3101` | **안 함** |
+| Genie Teams 탭 | `feat/teams-tab` (새 `/var/www/genie`) | `127.0.0.1:3100` | `genie.geniein.com` (새 블록) |
+| Genie NestJS | 〃 | `127.0.0.1:3101` | **안 함** |
 | 뇌 (FastAPI) | 〃 | `127.0.0.1:8001` | **절대 안 함** |
 
 > ★ NestJS 도 새로 띄운다. 3001 에 떠 있는 것은 옛 main 이라 `/agent/search` 도,
@@ -178,15 +178,23 @@ curl -sSI https://genie.geniein.com | head -1        # HTTP/2 200
 홈페이지가 쓰는 체크아웃과 **별도 디렉터리**에 받는다. 같은 작업트리에서 브랜치를 바꾸면
 홈페이지까지 같이 바뀐다.
 
+> ★ 클론은 **`sudo` 없이 `ubuntu` 로** 돌린다. 비공개 저장소라 root 에는 자격증명이
+> 없어 인증에서 막힌다. 디렉터리만 미리 만들고 소유권을 넘긴 뒤 받는다.
+> 원격 URL 은 기존 체크아웃의 것을 그대로 쓴다 (SSH/HTTPS 어느 쪽이든 맞춰진다).
+
 ```bash
-sudo git clone -b feat/teams-tab <저장소> /var/www/yuna
-sudo chown -R ubuntu:ubuntu /var/www/yuna
-cd /var/www/yuna
+sudo mkdir -p /var/www/genie
+sudo chown ubuntu:ubuntu /var/www/genie
+
+REPO=$(git -C /var/www/Geniein remote get-url origin)
+git clone -b feat/teams-tab "$REPO" /var/www/genie
+
+cd /var/www/genie
 pnpm install --frozen-lockfile
 pnpm --filter web build
 
 cd apps/web
-PORT=3100 pm2 start pnpm --name yuna-web -- start
+PORT=3100 pm2 start pnpm --name genie-web -- start
 pm2 save
 ```
 

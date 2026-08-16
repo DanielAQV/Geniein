@@ -36,6 +36,12 @@ const OID = '0a1b2c3d-4e5f-6789-abcd-ef0123456789';
 const issuerOf = (tid: string) =>
   `https://login.microsoftonline.com/${tid}/v2.0`;
 
+/** v1 토큰의 발급자. Entra 앱이 v1 을 받도록 설정돼 있으면 이쪽이 온다. */
+const v1IssuerOf = (tid: string) => `https://sts.windows.net/${tid}/`;
+
+/** AUDIENCE 끝의 clientId. v2 토큰은 `aud` 에 이것만 담아 보낸다. */
+const CLIENT_ID = '62a46191-3dcb-406e-a779-7411bf059611';
+
 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
   modulusLength: 2048,
 });
@@ -206,6 +212,61 @@ describe('EntraAuthGuard', () => {
       const guard = guardWith(CONFIGURED);
       const { ctx } = contextWith(
         bearer(goodToken({ aud: 'api://someone-else.example.com/abc' })),
+      );
+
+      await expect(guard.canActivate(ctx)).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+  });
+
+  /**
+   * 토큰이 v1 이냐 v2 냐는 Entra 앱 등록의 `accessTokenAcceptedVersion` 이 정한다.
+   * 한쪽만 받으면 조용히 401 이 나고 화면에는 "로그인이 만료되었습니다"로만 보인다 —
+   * 실제로 첫 배포가 이걸로 막혔다. 양쪽을 받되 **경계는 좁혀둔 채**여야 한다.
+   */
+  describe('토큰 버전 (v1 / v2)', () => {
+    it('v1 발급자(sts.windows.net)를 통과시킨다', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx, request } = contextWith(
+        bearer(goodToken({ tid: TENANT_A, iss: v1IssuerOf(TENANT_A) })),
+      );
+
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+      expect(request.entraUser?.tenantId).toBe(TENANT_A);
+    });
+
+    it('v2 발급자(login.microsoftonline.com)도 통과시킨다', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx } = contextWith(
+        bearer(goodToken({ tid: TENANT_B, iss: issuerOf(TENANT_B) })),
+      );
+
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    });
+
+    it('v1 형식이어도 발급 테넌트가 다르면 거부한다', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx } = contextWith(
+        bearer(goodToken({ tid: TENANT_A, iss: v1IssuerOf(OUTSIDER) })),
+      );
+
+      await expect(guard.canActivate(ctx)).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+
+    it('aud 가 clientId GUID 단독이어도 통과시킨다 (v2 토큰)', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx } = contextWith(bearer(goodToken({ aud: CLIENT_ID })));
+
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    });
+
+    it('남의 clientId GUID 는 거부한다', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx } = contextWith(
+        bearer(goodToken({ aud: '11111111-2222-3333-4444-555555555555' })),
       );
 
       await expect(guard.canActivate(ctx)).rejects.toThrow(

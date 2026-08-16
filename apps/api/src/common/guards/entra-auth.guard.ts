@@ -43,6 +43,44 @@ const REQUIRED_SCOPE = 'access_as_user';
 const CLOCK_TOLERANCE_SEC = 60;
 
 /**
+ * 한 테넌트가 낼 수 있는 발급자는 두 가지다. 앱이 v1 토큰을 받도록 설정돼 있으면
+ * `sts.windows.net`, v2 면 `login.microsoftonline.com/.../v2.0` 이 온다
+ * (`accessTokenAcceptedVersion`). 어느 쪽인지는 테넌트가 아니라 **Entra 앱 등록
+ * 설정**이 정한다.
+ *
+ * ★ 한쪽만 기대하면 조용히 401 이 난다. 실제로 첫 배포에서 `jwt issuer invalid` 로
+ *   막혔는데, 화면에는 "로그인이 만료되었습니다"로만 보여 원인이 드러나지 않았다.
+ *
+ * 둘 다 받아도 테넌트 격리는 그대로다 — 두 값 모두 **검증된 `tid` 로 조립**하므로
+ * 다른 테넌트의 발급자는 여전히 통과하지 못한다.
+ */
+function issuersFor(tenantId: string): string[] {
+  return [
+    `https://login.microsoftonline.com/${tenantId}/v2.0`,
+    `https://sts.windows.net/${tenantId}/`,
+  ];
+}
+
+/** Application ID URI 끝에 붙는 clientId 를 알아보기 위한 형식 검사. */
+const GUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * `aud` 도 토큰 버전에 따라 갈린다.
+ *   v1 → Application ID URI (`api://genie.geniein.com/<clientId>`)
+ *   v2 → 클라이언트 ID (GUID) 단독
+ *
+ * 설정값에서 clientId 를 유도해 둘 다 허용한다. 새 환경변수를 만들지 않는 편이
+ * 값의 출처가 하나로 유지된다. 유도에 실패하면 설정값만 쓴다 — 조용히 넓어지지 않는다.
+ */
+function audiencesFor(audience: string): string[] {
+  const lastSegment = audience.split('/').pop() ?? '';
+  return GUID_PATTERN.test(lastSegment) && lastSegment !== audience
+    ? [audience, lastSegment]
+    : [audience];
+}
+
+/**
  * 서버가 확정한 호출자. 모델도, 클라이언트도 이 값을 지정할 수 없다 —
  * 오직 검증된 토큰에서만 나온다 (설계문서 원칙③과 같은 성격).
  */
@@ -221,9 +259,10 @@ export class EntraAuthGuard implements CanActivate {
           // ★ 알고리즘을 고정한다. 지정하지 않으면 토큰이 스스로 알고리즘을 고를 수
           //   있게 되고, 그게 JWT 의 고전적인 취약점이다 (alg=none / HS256 혼동).
           algorithms: ['RS256'],
-          audience,
+          // v1/v2 토큰 양쪽을 받는다 (audiencesFor / issuersFor 주석 참조)
+          audience: audiencesFor(audience),
           // ★ 고정 문자열이 아니라 tid 로 조립한다. 고정하면 두 번째 테넌트가 통째로 막힌다.
-          issuer: `https://login.microsoftonline.com/${tenantId}/v2.0`,
+          issuer: issuersFor(tenantId),
           clockTolerance: CLOCK_TOLERANCE_SEC,
         },
         (err, payload) => {
