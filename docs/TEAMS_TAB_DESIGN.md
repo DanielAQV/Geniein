@@ -413,14 +413,12 @@ inject_context:
 
 ## 9. 확정되지 않은 것 / 확인 필요
 
-1. **운영 도메인.** `geniein.com`에 붙이나, 별도 서브도메인(`yuna.geniein.com`)인가?
-   서브도메인이면 CSP·CORS·매니페스트 세 곳이 같이 바뀐다.
-2. **앱 배포 방식.** 조직 앱 카탈로그 업로드(전사) vs 개별 사이드로드. 어느 쪽이든
+1. **앱 배포 방식.** 조직 앱 카탈로그 업로드(전사) vs 개별 사이드로드. 어느 쪽이든
    **두 테넌트에 각각** 올려야 한다 — Teams 앱 카탈로그는 테넌트 경계를 넘지 않는다.
    앱 등록이 하나여도 이건 두 번 해야 한다.
-3. **검색 결과 UI.** 출처 표시 형식(문서명·조항·개정일)은 RAG 세션의 반환 스키마가
+2. **검색 결과 UI.** 출처 표시 형식(문서명·조항·개정일)은 RAG 세션의 반환 스키마가
    확정된 뒤에 맞춘다. 그 전까지 BFF는 통과만 시킨다.
-4. 레이트 리밋. `apps/web/src/lib/auth/rate-limit.ts`를 재사용할지, NestJS 단에서 걸지.
+3. 레이트 리밋. `apps/web/src/lib/auth/rate-limit.ts`를 재사용할지, NestJS 단에서 걸지.
 
 ---
 
@@ -436,3 +434,4 @@ inject_context:
 | 2026-08-16 | `internal_user_id = {tid}:{oid}` 복합키 | `oid` 는 테넌트 내에서만 유일 (3.4) |
 | 2026-08-16 | 사규 격리는 **완전 분리**로 시작 (`org_id` 일치만) | 나중에 넓히는 건 안전, 좁히는 건 이미 샌 뒤 (4.4) |
 | 2026-08-16 | Phase 2 SharePoint 는 위임 권한 + OBO | 앱 권한으로 가면 ACL 을 우리가 재판하게 됨 (8.2) |
+| 2026-08-16 | 운영 도메인 = **`genie.geniein.com`** | Application ID URI 에 이미 박혀 있음 (`api://genie.geniein.com/{clientId}`). 사실상 고정값이며 `contentUrl`·`validDomains` 가 여기서 따라온다. 브라우저는 BFF 만 부르므로 `CORS_ORIGINS` 는 늘지 않는다 |
