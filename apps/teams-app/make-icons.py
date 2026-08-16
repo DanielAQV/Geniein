@@ -33,7 +33,9 @@ BACKGROUND_HEX = (3, 8, 28)  # #03081c
 BIG = (0.41, 0.57, 0.33)
 SMALL = (0.685, 0.305, 0.20)
 PINCH = 3.4  # 허리가 잘록한 정도. 3 이면 아스트로이드, 클수록 뾰족하다
-GAP = 0.05  # outline 에서 두 모양 사이 틈 (반지름 비율)
+GAP = 0.045  # 겹치는 자리에서 큰 쪽 선을 끊는 폭 (반지름 비율)
+STROKE = 0.055  # 선 굵기 (캔버스 크기 비율) — 192px 기준
+STROKE_SMALL = 0.085  # 32px 용. 비례로 줄이면 선이 사라져서 따로 둔다
 
 
 def oklch_to_rgb(L: float, C: float, hue_deg: float) -> tuple[int, int, int]:
@@ -71,25 +73,32 @@ def sparkle(cx: float, cy: float, r: float, steps: int = 240) -> list[tuple[floa
     return points
 
 
-def render(size: int, *, transparent: bool) -> Image.Image:
+def render(size: int, color: tuple[int, int, int], stroke_ratio: float) -> Image.Image:
+    """배경도 면도 없이 **선으로만** 그린다.
+
+    Teams 앱 아이콘의 일반적인 결이 픽토그램이라 면을 채우지 않는다. 채도 높은
+    사각형 하나가 앱 목록에서 유독 튀는 것도 피한다.
+    """
     s = size * SS
+    width = max(2, round(stroke_ratio * s))
+
     big = sparkle(BIG[0] * s, BIG[1] * s, BIG[2] * s)
     small = sparkle(SMALL[0] * s, SMALL[1] * s, SMALL[2] * s)
 
-    if transparent:
-        mask = Image.new("L", (s, s), 0)
-        drawer = ImageDraw.Draw(mask)
-        drawer.polygon(big, fill=255)
-        drawer.polygon(sparkle(SMALL[0] * s, SMALL[1] * s, (SMALL[2] + GAP) * s), fill=0)
-        drawer.polygon(small, fill=255)
-        white = Image.new("L", (s, s), 255)
-        canvas = Image.merge("RGBA", (white, white, white, mask))
-    else:
-        canvas = Image.new("RGBA", (s, s), (*BACKGROUND_HEX, 255))
-        drawer = ImageDraw.Draw(canvas)
-        drawer.polygon(big, fill=(255, 255, 255, 255))
-        drawer.polygon(small, fill=(*oklch_to_rgb(*PRIMARY_OKLCH), 255))
+    mask = Image.new("L", (s, s), 0)
+    drawer = ImageDraw.Draw(mask)
 
+    # 큰 반짝이 윤곽. joint="curve" 가 없으면 꼭짓점에서 선이 끊겨 보인다.
+    drawer.line([*big, big[0]], fill=255, width=width, joint="curve")
+
+    # ★ 겹치는 자리에서 큰 쪽 선을 끊는다. 두 윤곽이 그냥 교차하면 매듭처럼
+    #   보여서 "반짝이 두 개"가 아니라 정체불명의 도형이 된다.
+    drawer.polygon(sparkle(SMALL[0] * s, SMALL[1] * s, (SMALL[2] + GAP) * s), fill=0)
+
+    drawer.line([*small, small[0]], fill=255, width=width, joint="curve")
+
+    solid = Image.new("RGB", (s, s), color)
+    canvas = Image.merge("RGBA", (*solid.split(), mask))
     return canvas.resize((size, size), Image.LANCZOS)
 
 
@@ -97,8 +106,12 @@ if __name__ == "__main__":
     primary = oklch_to_rgb(*PRIMARY_OKLCH)
     print(f"브랜드 primary = #{'%02X%02X%02X' % primary}")
 
-    render(192, transparent=False).convert("RGB").save(HERE / "color.png")
-    print("color.png   192x192")
+    # color.png 는 라이트·다크 표면 **양쪽**에 놓인다. 무배경으로 가는 이상
+    # 흰 선은 라이트에서 사라지므로 브랜드색으로 그린다.
+    render(192, primary, STROKE).save(HERE / "color.png")
+    print("color.png   192x192 (무배경, 브랜드색 선)")
 
-    render(32, transparent=True).save(HERE / "outline.png")
-    print("outline.png  32x32 (투명)")
+    # outline.png 는 Teams 가 규정한 대로 흰색이어야 한다 (앱 바에서 렌더).
+    # 32px 에서는 비례 굵기가 너무 얇아 사라지므로 굵게 잡는다.
+    render(32, (255, 255, 255), STROKE_SMALL).save(HERE / "outline.png")
+    print("outline.png  32x32 (무배경, 흰 선)")
