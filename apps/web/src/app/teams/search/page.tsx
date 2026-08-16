@@ -26,7 +26,22 @@ type Phase =
   | { kind: 'ready' }
   | { kind: 'searching' }
   | { kind: 'done'; result: SearchResult }
-  | { kind: 'error'; title: string; detail: string; canRetry: boolean }
+  | { kind: 'error'; title: string; detail: string; canRetry: boolean; technical?: string }
+
+/**
+ * 원문 오류를 화면에 남길지. 평소 운영에서는 감춘다 — 사용자가 할 수 있는 일이 없고,
+ * MSAL/Entra 오류에는 테넌트·리소스 식별자가 섞여 나온다.
+ *
+ * 개발에서는 반대로 **반드시 보여야 한다.** 이 화면은 크로스 오리진 iframe 안이라
+ * 바깥에서 콘솔을 읽을 수 없다. 여기 안 띄우면 SSO 실패 원인을 볼 방법이 아예 없다
+ * (실제로 "App resource ... do not match" 를 이걸로 찾았다).
+ *
+ * ★ 그래서 운영에서도 **켤 수 있어야 한다.** 새 호스트에 처음 올릴 때가 정확히
+ *   그 상황이다 — 배포는 운영 빌드인데 확인해야 할 것은 개발 때와 같다.
+ *   `NEXT_PUBLIC_TEAMS_DEBUG=1` 로 한시적으로 켜고, 통과하면 지운다.
+ */
+const SHOW_TECHNICAL_DETAIL =
+  process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_TEAMS_DEBUG === '1'
 
 /** 이 시간을 넘기면 "원래 오래 걸린다"고 알려준다. 그 전에는 잡음이다. */
 const PATIENCE_HINT_SEC = 15
@@ -46,6 +61,7 @@ function describeFailure(error: unknown): { title: string; detail: string; canRe
       detail:
         '앱 권한 설정이 끝나지 않았거나, 계정에 이 앱을 쓸 권한이 없을 수 있습니다. 관리자에게 문의해 주세요.',
       canRetry: true,
+      technical: error.message,
     }
   }
   return {
@@ -202,6 +218,11 @@ export default function TeamsSearchPage() {
           <div className="flex-1">
             <p className="text-sm font-medium text-red-300">{phase.title}</p>
             <p className="mt-1 text-sm text-muted-foreground">{phase.detail}</p>
+            {SHOW_TECHNICAL_DETAIL && phase.technical && (
+              <pre className="mt-2 whitespace-pre-wrap break-all rounded-lg bg-black/30 p-2 text-[11px] leading-relaxed text-muted-foreground/80">
+                {phase.technical}
+              </pre>
+            )}
             {phase.canRetry && (
               <button
                 onClick={() => void runSearch()}

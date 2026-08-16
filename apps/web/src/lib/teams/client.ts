@@ -50,12 +50,31 @@ function withTimeout<T>(promise: Promise<T>, ms: number, onTimeout: () => Error)
  * 마운트 시 한 번 불러 **환경 문제를 먼저 드러낸다** — 그래야 사용자가
  * 질문을 입력하고 기다린 뒤에야 "Teams 가 아니다"를 보는 일이 없다.
  */
+/**
+ * teams-js 가 "호스트가 없다"는 뜻으로 던지는 오류인지 본다.
+ *
+ * 밖에서 열면 SDK 는 **매달리지 않고 즉시** 부모 프레임이 없다며 거절한다.
+ * 그 원문("Initialization Failed. No Parent window found.")을 그대로 화면에
+ * 띄우면 사용자는 무엇을 해야 하는지 알 수 없으므로 우리 오류로 바꾼다.
+ * 문구 매칭이라 SDK 가 표현을 바꾸면 놓치는데, 그때는 타임아웃이 같은 결론을
+ * 내주므로 안내가 틀리지는 않는다.
+ */
+function meansNoTeamsHost(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  return /no parent window|initialization failed/i.test(message);
+}
+
 export async function initTeams(): Promise<void> {
   const { app } = await import('@microsoft/teams-js');
 
-  // Teams 밖에서는 initialize 가 응답 없이 매달린다. 그대로 두면 화면이
-  // 영원히 로딩 상태로 남아 "느린 것"처럼 보인다 — 3초에 끊고 원인을 말해준다.
-  await withTimeout(app.initialize(), INIT_TIMEOUT_MS, () => new NotInTeamsError());
+  try {
+    // 호스트가 응답하지 않는 경우까지 대비해 상한을 둔다. 그대로 두면 화면이
+    // 영원히 로딩 상태로 남아 "느린 것"처럼 보인다.
+    await withTimeout(app.initialize(), INIT_TIMEOUT_MS, () => new NotInTeamsError());
+  } catch (error) {
+    if (meansNoTeamsHost(error)) throw new NotInTeamsError();
+    throw error;
+  }
 }
 
 /**
