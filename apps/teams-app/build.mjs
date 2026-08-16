@@ -62,8 +62,18 @@ const contentDomain = contentHost.replace(/^https?:\/\//, '')
  *   "이 업데이트에는 새 앱 버전 번호가 필요합니다."
  *
  * 터널로 반복 업로드하는 동안 이걸 손으로 올리면 매번 걸린다. 그래서 개발
- * 빌드(CONTENT_HOST 를 준 경우)는 패치 번호를 자동으로 만든다 — 2026-01-01
- * 이후 경과 분(分). 상태를 저장하지 않는데도 항상 이전보다 크다.
+ * 빌드(CONTENT_HOST 를 준 경우)는 번호를 자동으로 만든다:
+ *
+ *     1.<2026-01-01 이후 경과 일>.<그날의 경과 분>      예: 1.227.969
+ *
+ * 항상 이전보다 크다 — 하루 안에서는 분이 오르고, 날이 바뀌면 minor 가 오른다
+ * (semver 는 minor 를 patch 보다 먼저 비교하므로 patch 가 0 으로 돌아가도 크다).
+ * 상태를 저장하지 않는다.
+ *
+ * ★ 처음엔 경과 분을 patch 하나에 다 넣어 1.0.327429 같은 값을 썼는데, Teams 가
+ *   그래도 "새 앱 버전 번호가 필요합니다" 를 냈다. 스키마에는 자릿수 제한이 없지만
+ *   (maxLength 256 + semver 가 전부) 업로드 검증기는 별개다. 세 칸으로 나눠
+ *   각 칸을 3~4 자리로 유지한다 — 관례적인 모양이라 걸릴 여지가 없다.
  *
  * 운영 빌드는 RELEASE_VERSION 을 그대로 쓴다. 자동 번호가 운영에 새어 나가면
  * 버전이 시각이 되어 버려 무엇이 배포됐는지 말할 수 없게 된다.
@@ -75,9 +85,13 @@ function resolveVersion() {
   const explicit = get('TEAMS_APP_VERSION')
   if (explicit) return { version: explicit, why: 'TEAMS_APP_VERSION 지정' }
   if (get('CONTENT_HOST')) {
-    const minutes = Math.floor((Date.now() - DEV_EPOCH) / 60_000)
-    const [major, minor] = RELEASE_VERSION.split('.')
-    return { version: `${major}.${minor}.${minutes}`, why: '개발 빌드 — 재업로드마다 자동 증가' }
+    const elapsedMinutes = Math.floor((Date.now() - DEV_EPOCH) / 60_000)
+    const days = Math.floor(elapsedMinutes / 1440)
+    const minutesIntoDay = elapsedMinutes % 1440
+    return {
+      version: `1.${days}.${minutesIntoDay}`,
+      why: '개발 빌드 — 재업로드마다 자동 증가',
+    }
   }
   return { version: RELEASE_VERSION, why: '운영 빌드' }
 }
