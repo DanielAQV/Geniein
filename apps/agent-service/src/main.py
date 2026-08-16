@@ -2,15 +2,20 @@
 
 이 서비스는 인터넷에 직접 노출되지 않는다. NestJS(게이트웨이)가 앞에 서고,
 이쪽은 내부망에서만 호출된다 (RAG_SERVICE_URL / AI_ALLOWED_IPS 의 원래 의도).
+
+★ 그 "내부망에서만"이 오래 배치 설정에만 의존해 있었고, compose 는 8000 을 호스트에
+  퍼블리시한다. Teams 탭이 붙으면서 실제 우회로가 되므로, 여기서도 호출자를 확인한다
+  (docs/TEAMS_TAB_DESIGN.md 4.2). 방어는 한 겹이면 배치 실수 한 번에 무너진다.
 """
 
 from __future__ import annotations
 
+import hmac
 import logging
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
 from .agent import Agent, AgentContext, load_persona
@@ -57,11 +62,40 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Yuna Brain", version="0.1.0", lifespan=lifespan)
 
 
+def require_service_token(x_service_token: str = Header(default="")) -> None:
+    """호출자가 우리 게이트웨이인가.
+
+    apps/api 의 `ServiceTokenGuard` 와 같은 성격이고 규칙도 같게 맞춘다:
+    설정이 없으면 통과시키지 않는다. "설정 안 했으니 열어둔다"가 이 시스템이
+    원래 갖고 있던 문제였다.
+
+    `/health` 에는 걸지 않는다 — compose healthcheck 와 로드밸런서가 토큰 없이
+    불러야 하고, 그 응답에는 모델명과 도구 이름만 있다.
+    """
+    expected = settings.agent_service_token
+    if not expected:
+        logger.error("AGENT_SERVICE_TOKEN 이 설정되지 않아 요청을 차단합니다")
+        raise HTTPException(status_code=503, detail="service token is not configured")
+
+    # bytes 로 비교한다. compare_digest 는 비ASCII str 을 받으면 TypeError 를 내는데,
+    # 그러면 401 이어야 할 것이 500 이 된다.
+    if not hmac.compare_digest(x_service_token.encode("utf-8"), expected.encode("utf-8")):
+        raise HTTPException(status_code=401, detail="unauthorized")
+
+
 class MessageRequest(BaseModel):
     text: str = Field(min_length=1, max_length=8000)
-    # 신원은 게이트웨이가 세션에서 넘긴다. 클라이언트가 자유롭게 주장하는 값이 아니다.
-    # (0단계에서는 인증 전이므로 기본값을 쓴다 — SSO 도입 시 게이트웨이가 채운다)
-    internal_user_id: str = "dev-user"
+
+    # 신원은 게이트웨이가 Entra 토큰을 검증해서 넘긴다. 클라이언트의 주장이 아니다.
+    #
+    # ★ 기본값을 두지 않는다. "dev-user" 가 기본값이던 동안에는 신원을 안 붙인
+    #   호출자도 그냥 통과했고, 그 상태로 Teams 가 붙으면 감사 로그와 org 격리가
+    #   동시에 무의미해진다 (TEAMS_TAB_DESIGN.md 4.3).
+    #   형식은 `{tid}:{oid}` — oid 는 테넌트 안에서만 유일하다 (같은 문서 3.4).
+    internal_user_id: str = Field(min_length=1, max_length=200)
+
+    # 테넌트 식별자(Entra tid). 지금은 검색이 이 값을 쓰지 않지만, org 필터가
+    # 붙고 나면 None 은 "결과 0건"이 된다 — 열리는 쪽이 아니라 닫히는 쪽이다.
     org_id: str | None = None
     roles: list[str] = Field(default_factory=list)
 
@@ -93,7 +127,7 @@ def health() -> dict[str, Any]:
     }
 
 
-@app.get("/tools")
+@app.get("/tools", dependencies=[Depends(require_service_token)])
 def list_tools() -> list[dict[str, Any]]:
     registry: ToolRegistry = _state["registry"]
     return [
@@ -107,7 +141,11 @@ def list_tools() -> list[dict[str, Any]]:
     ]
 
 
-@app.post("/agent/message", response_model=MessageResponse)
+@app.post(
+    "/agent/message",
+    response_model=MessageResponse,
+    dependencies=[Depends(require_service_token)],
+)
 def agent_message(req: MessageRequest) -> MessageResponse:
     agent: Agent | None = _state.get("agent")
     if agent is None:

@@ -36,6 +36,16 @@ class Settings(BaseSettings):
     tools_dir: Path = SERVICE_ROOT / "tools"
     personas_dir: Path = SERVICE_ROOT / "personas"
 
+    # 게이트웨이(NestJS)만 이 서비스를 부를 수 있게 하는 공유 토큰.
+    #
+    # ⚠ 사용자 자격증명이 아니다. 사용자 신원은 게이트웨이가 Entra 토큰을 검증해
+    #   `internal_user_id` 로 넘긴다. 이 값은 "호출자가 우리 게이트웨이인가"만 답한다.
+    #   apps/api 의 ADMIN_SERVICE_TOKEN 과는 **다른 값**을 쓴다 — 경계가 다르면
+    #   토큰도 다르다. 하나가 새도 다른 하나가 남는다.
+    #
+    # 빈 값은 "인증 없음"이 아니라 "설정 오류"로 취급한다 (main.require_service_token).
+    agent_service_token: str = ""
+
     log_level: str = "INFO"
 
     # 에이전트 루프 안전장치. 도구 연쇄가 무한히 돌지 않게.

@@ -60,10 +60,23 @@ wsl -d Ubuntu -u root -- bash -c \
    /opt/geniein/venv/bin/python -m uvicorn src.main:app --host 0.0.0.0 --port 8000"
 
 # 확인 (WSL 안에서)
-curl -s http://127.0.0.1:8000/health
+curl -s http://127.0.0.1:8000/health          # /health 만 토큰 없이 열려 있다
+
+# /agent/message 와 /tools 는 서비스 토큰이 필요하다.
+# 루트 .env 의 AGENT_SERVICE_TOKEN 과 같은 값을 헤더로 넘긴다.
+#   토큰 생성: openssl rand -base64 32
 curl -s -X POST http://127.0.0.1:8000/agent/message \
-  -H 'Content-Type: application/json' -d '{"text":"안녕"}'
+  -H 'Content-Type: application/json' \
+  -H "x-service-token: $AGENT_SERVICE_TOKEN" \
+  -d '{"text":"안녕","internal_user_id":"dev:local"}'
 ```
+
+> `internal_user_id` 는 **필수**다. 예전 기본값 `"dev-user"` 를 없앴다 — 신원을 안 붙인
+> 호출자가 통과하면 감사 로그와 테넌트 격리가 같이 무너진다. 운영에서는 게이트웨이가
+> Entra 토큰을 검증해 `{tid}:{oid}` 를 채운다 (`docs/TEAMS_TAB_DESIGN.md` 3.4).
+>
+> 토큰이 틀리면 `401`, 서버에 `AGENT_SERVICE_TOKEN` 자체가 없으면 `503` 이다.
+> 503 은 "인증이 꺼져 있다"가 아니라 "설정이 빠졌다"는 뜻이며, 그 상태에서도 열리지 않는다.
 
 ---
 
