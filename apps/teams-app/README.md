@@ -46,7 +46,27 @@ node build.mjs && node validate.mjs        # 또는 pnpm package
 | `ENTRA_CLIENT_ID` | `apps/api/.env` | 매니페스트 `id` 와 `webApplicationInfo.id` 에 **둘 다** 쓴다 |
 | `ENTRA_API_AUDIENCE` | `apps/api/.env` | `webApplicationInfo.resource` |
 | `CONTENT_HOST` | 선택 | 기본값은 Application ID URI 의 도메인. 터널 검증 때만 덮는다 |
+| `TEAMS_APP_VERSION` | 선택 | 버전을 직접 지정. 아래 참조 |
 | `TEAMS_PRIVACY_URL` / `TEAMS_TERMS_URL` | 선택 | 기본값 `<호스트>/privacy`, `<호스트>/terms` |
+
+### 버전 — 재업로드하면 반드시 올라가야 한다
+
+Teams 는 **이미 올라간 앱과 같은 버전을 거부한다**:
+
+> 이 업데이트에는 새 앱 버전 번호가 필요합니다.
+
+터널로 반복 업로드하는 동안 이걸 손으로 올리면 매번 걸리므로, `CONTENT_HOST` 를
+준 **개발 빌드는 패치 번호를 자동으로 만든다** — 2026-01-01 이후 경과 분(分).
+상태를 저장하지 않는데도 항상 이전보다 크다.
+
+```
+운영 빌드 (CONTENT_HOST 없음)   1.0.0          build.mjs 의 RELEASE_VERSION
+개발 빌드 (터널)                1.0.327410     자동. 1분마다 오른다
+TEAMS_APP_VERSION=2.1.0         2.1.0          지정한 값 그대로
+```
+
+자동 번호를 운영에 쓰지 않는 것은 의도다 — 버전이 시각이 되어 버리면 무엇이
+배포됐는지 말할 수 없다. 운영 릴리스는 `RELEASE_VERSION` 을 올린다.
 
 > **`id` 에 Application (client) ID 를 그대로 쓴다.** Teams 앱 ID 는 안정적이기만
 > 하면 되는 식별자이고, 새 GUID 를 만들면 **관리 대상이 하나 늘어난다** — 잃어버리면

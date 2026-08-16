@@ -49,7 +49,35 @@ const domainFromAudience = audience.replace(/^api:\/\//, '').split('/')[0]
 const contentHost = (get('CONTENT_HOST') || `https://${domainFromAudience}`).replace(/\/+$/, '')
 const contentDomain = contentHost.replace(/^https?:\/\//, '')
 
+/**
+ * ★ Teams 는 **이미 올라간 앱과 같은 버전**을 거부한다:
+ *   "이 업데이트에는 새 앱 버전 번호가 필요합니다."
+ *
+ * 터널로 반복 업로드하는 동안 이걸 손으로 올리면 매번 걸린다. 그래서 개발
+ * 빌드(CONTENT_HOST 를 준 경우)는 패치 번호를 자동으로 만든다 — 2026-01-01
+ * 이후 경과 분(分). 상태를 저장하지 않는데도 항상 이전보다 크다.
+ *
+ * 운영 빌드는 RELEASE_VERSION 을 그대로 쓴다. 자동 번호가 운영에 새어 나가면
+ * 버전이 시각이 되어 버려 무엇이 배포됐는지 말할 수 없게 된다.
+ */
+const RELEASE_VERSION = '1.0.0'
+const DEV_EPOCH = Date.UTC(2026, 0, 1)
+
+function resolveVersion() {
+  const explicit = get('TEAMS_APP_VERSION')
+  if (explicit) return { version: explicit, why: 'TEAMS_APP_VERSION 지정' }
+  if (get('CONTENT_HOST')) {
+    const minutes = Math.floor((Date.now() - DEV_EPOCH) / 60_000)
+    const [major, minor] = RELEASE_VERSION.split('.')
+    return { version: `${major}.${minor}.${minutes}`, why: '개발 빌드 — 재업로드마다 자동 증가' }
+  }
+  return { version: RELEASE_VERSION, why: '운영 빌드' }
+}
+
+const { version, why } = resolveVersion()
+
 const values = {
+  APP_VERSION: version,
   ENTRA_CLIENT_ID: clientId,
   ENTRA_API_AUDIENCE: audience,
   CONTENT_HOST: contentHost,
@@ -76,6 +104,7 @@ writeFileSync(join(DIST, 'manifest.json'), manifest)
 for (const icon of ['color.png', 'outline.png']) copyFileSync(join(HERE, icon), join(DIST, icon))
 
 console.log('dist/ 생성 완료')
+console.log(`  버전       ${version}   (${why})`)
 console.log(`  앱 ID      ${clientId}`)
 console.log(`  콘텐츠 호스트 ${contentHost}`)
 console.log(`  리소스     ${audience}`)

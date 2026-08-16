@@ -1,10 +1,10 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
   "manifestVersion": "1.17",
-  "version": "1.0.0",
+  "version": "${APP_VERSION}",
   "id": "${ENTRA_CLIENT_ID}",
   "developer": {
-    "name": "Geniein",
+    "name": "AirQuay Vina",
     "websiteUrl": "${CONTENT_HOST}",
     "privacyUrl": "${PRIVACY_URL}",
     "termsOfUseUrl": "${TERMS_URL}"

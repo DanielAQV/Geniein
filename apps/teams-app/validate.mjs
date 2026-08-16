@@ -56,6 +56,27 @@ say(urls.every((u) => u.startsWith('https://')), '모든 URL 이 https')
 say(m.validDomains.every((d) => !d.includes('://')), 'validDomains 에 스킴 없음')
 say(m.validDomains.includes(new URL(m.staticTabs[0].contentUrl).host), 'contentUrl 호스트가 validDomains 에 포함')
 
+// 스키마의 maxLength 를 재귀로 훑는다. 한국어 설명은 자릿수 감이 안 와서 넘기기
+// 쉽고, 넘겨도 Teams 는 "앱 패키지가 올바르지 않습니다" 한 줄만 말한다.
+const overflows = []
+;(function walk(value, spec, path) {
+  if (!spec || value == null) return
+  if (typeof value === 'string' && typeof spec.maxLength === 'number' && value.length > spec.maxLength) {
+    overflows.push(`${path} ${value.length}자 > 최대 ${spec.maxLength}`)
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, i) => walk(item, spec.items, `${path}[${i}]`))
+  } else if (typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) {
+      walk(child, spec.properties?.[key], path ? `${path}.${key}` : key)
+    }
+  }
+})(m, s, '')
+say(overflows.length === 0, '문자열 길이 제한 준수' + (overflows.length ? ` — ${overflows.join(' / ')}` : ''))
+
+// Teams 는 이미 올라간 앱과 같은 버전을 거부한다. 형식부터 틀리면 그 전에 막힌다.
+say(/^\d+\.\d+\.\d+/.test(m.version), `version 이 semver 형식 (${m.version})`)
+
 console.log('')
 console.log(ok ? '결과: 스키마 대조 통과' : '결과: 실패 있음')
 process.exitCode = ok ? 0 : 1
