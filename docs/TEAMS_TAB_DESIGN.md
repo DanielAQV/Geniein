@@ -116,7 +116,7 @@ Teams 경로는 **둘 다** 통과해야 한다.
 1단계가 무의미해진다. 둘 다 흔한 실수다.
 
 ```ini
-ENTRA_ALLOWED_TENANTS=<에어키 tid>,<지니 tid>   # 쉼표 구분. 비면 부팅 실패시킨다
+ENTRA_ALLOWED_TENANTS=<지니 tid>,<에어키 tid>   # 쉼표 구분. 비면 전부 막는다
 ```
 
 값이 없을 때 통과시키지 않는 건 `ServiceTokenGuard` 가 이미 세운 규칙이다 —
@@ -392,7 +392,9 @@ CREATE UNIQUE INDEX kb_documents_org_source_url_uniq
 
 ```ini
 # apps/api/.env
-ENTRA_ALLOWED_TENANTS=      # 에어키,지니 두 tid 를 쉼표로. ★ 비면 부팅 실패 (3.2.1)
+# ★ 순서: 1번째 = 지니, 2번째 = 에어키. 쉼표 구분, 공백·주석 없이.
+# 비면 가드가 503 으로 전부 막는다 (3.2.1)
+ENTRA_ALLOWED_TENANTS=
 ENTRA_CLIENT_ID=            # Application (client) ID
 ENTRA_API_AUDIENCE=         # Application ID URI 1개 (등록이 멀티테넌트 1개이므로)
 AGENT_SERVICE_TOKEN=        # NestJS → FastAPI. openssl rand -base64 32
@@ -552,4 +554,6 @@ inject_context:
 | 2026-08-16 | 검색 경로 모델 = **`claude-sonnet-5`**, effort `medium` | 사규 검색은 청크를 읽고 인용하는 작업이지 난제가 아니다. Opus 5 대비 지연·비용이 낮고 코드 변경이 0 — 어댑터가 지키는 제약이 두 모델에 동일하다. `low` 는 근거를 얕게 읽을 위험이 있어 쓰지 않는다 |
 | 2026-08-16 | thinking 은 끄지 않는다 | Opus 5·Sonnet 5 모두 기본 ON. 끄면 도구 호출이 평문으로 새어 **검색 없이 답이 나가는** 무증상 실패가 있다. 지연은 effort 로만 조절 |
 | 2026-08-16 | Fast mode 미사용 | Opus 전용이고 가격이 2배. 현재 레버로 충분하다고 판단 |
+| 2026-08-16 | Teams SSO 토큰을 **보관하지 않고 요청마다 새로 받는다** | 토큰은 만료된다. 컴포넌트 상태에 두면 만료 처리를 우리가 떠안는데, teams-js 가 내부 캐시를 갖고 있어 반복 호출이 비싸지 않다 |
+| 2026-08-16 | 로딩 표시는 **경과 초 + 정직한 문구**. 가짜 진행률 없음 | 뇌가 진행 이벤트를 주지 않으므로 진행률을 그리면 지어내는 것이 된다. 15초 넘으면 "1분까지 걸릴 수 있다"를 덧붙인다 |
 | 2026-08-16 | 운영 도메인 = **`genie.geniein.com`** | Application ID URI 에 이미 박혀 있음 (`api://genie.geniein.com/{clientId}`). 사실상 고정값이며 `contentUrl`·`validDomains` 가 여기서 따라온다. 브라우저는 BFF 만 부르므로 `CORS_ORIGINS` 는 늘지 않는다 |
