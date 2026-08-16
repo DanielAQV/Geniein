@@ -30,7 +30,12 @@ class Settings(BaseSettings):
     #   우회하지 말고 effort 를 올린다.
     anthropic_model: str = "claude-sonnet-5"
     anthropic_effort: str = "medium"
-    anthropic_max_tokens: int = 8192
+    # ★ 이 값은 thinking + 응답을 **합쳐서** 제한한다. thinking 이 기본 ON 이므로
+    #   사고가 예산을 먹으면 답변이 중간에 잘리고 stop_reason 이 "max_tokens" 가 된다.
+    #   상한이지 예약이 아니라서 올려도 실제로 쓰지 않으면 비용이 늘지 않는다.
+    #   비스트리밍 요청의 권장 기본값이 16000 이다 (그 위는 HTTP 타임아웃 위험이
+    #   있어 스트리밍이 필요해진다).
+    anthropic_max_tokens: int = 16000
 
     # DB
     db_host: str = "localhost"
