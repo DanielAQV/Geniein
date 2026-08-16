@@ -43,7 +43,7 @@ GPU         WSL2 CUDA 패스스루 — 추가 설치 없음
 | Python | 3.14.4 (Ubuntu 26.04 기본) |
 | Postgres | WSL 내부 `localhost:5432`, DB `geniein_db` |
 | 환경변수 | 저장소 루트 `.env` — `src/config.py` 가 파일 위치 기준으로 찾는다 |
-| WSL 설정 | `C:\Users\<user>\.wslconfig` (NAT 모드, 메모리 4GB 상한) |
+| WSL 설정 | `C:\Users\<user>\.wslconfig` (NAT 모드, 메모리 8GB 상한 — 아래 함정 6번) |
 | 임베딩 모델 | `~/.cache/huggingface` (BGE-M3, 2.2GB) |
 
 `src/config.py` 의 `SERVICE_ROOT` / `REPO_ROOT` 는 `__file__` 기준이라
@@ -161,9 +161,9 @@ pnpm migration:generate src/migrations/<이름>   # 엔티티 변경 후 diff �
 
 ### 0. `/tmp` 이 tmpfs 2GB — 큰 pip 설치가 죽는다
 
-`.wslconfig` 의 `memory=4GB` 에서 파생되어 `/tmp` 가 **RAM 기반 2GB** 다.
-torch + nvidia 휠은 이걸 넘어서 `OSError: [Errno 28] No space left on device` 로 죽는다.
-`/` 에는 900GB 넘게 남아 있어도 그렇다.
+`/tmp` 는 `.wslconfig` 의 `memory` 값에서 파생된 **RAM 기반 tmpfs** 다 (4GB 시절 2GB,
+8GB 로 올린 뒤에도 절반이라 넉넉하지 않다). torch + nvidia 휠은 이걸 넘어서
+`OSError: [Errno 28] No space left on device` 로 죽는다. `/` 에 900GB 넘게 남아 있어도 그렇다.
 
 ```bash
 export TMPDIR=/var/tmp/pip && mkdir -p "$TMPDIR"     # 디스크 기반
@@ -242,6 +242,63 @@ postgres=# \password postgres      # 가려서 두 번 입력받는다
 > **`.env` 를 바꿔도 DB 는 안 바뀐다.** 둘은 별개다 —
 > `.env` 3곳(루트 / `apps/api` / `apps/ai-worker`)과 Postgres 역할을 **같이** 바꿔야 한다.
 > 한쪽만 하면 `password authentication failed` 가 난다.
+
+### 6. ★ 메모리 4GB 로는 BGE-M3 를 못 올린다 — 그리고 WSL 전체가 멎는다
+
+`.wslconfig` 의 `memory=4GB` 는 **"이 인스턴스는 Postgres 만 돌린다"** 는 전제로
+잡힌 값이다. 임베딩 스택이 들어오면서 그 전제가 깨졌다.
+
+실측 (2026-08-06):
+
+| 항목 | 메모리 |
+|---|---|
+| `import sentence_transformers` (torch 포함) | **759 MB** |
+| BGE-M3 가중치 로드 후 피크 | 약 2.9 GB |
+| 그때 가용 메모리 | 2.4 GB |
+
+**★ WSL2 는 모든 배포판과 Docker Desktop 이 하나의 유틸리티 VM 메모리를 공유한다.**
+그래서 다른 프로젝트의 컨테이너(connext-\*)가 뜨면 이쪽 여유가 그만큼 줄어든다.
+`docker stats` 의 분모가 `3.825GiB` 로 찍히는 게 그 증거다.
+
+증상이 고약하다. 커널 OOM 킬러가 python 을 죽이는 데서 끝나지 않고 **Ubuntu 배포판
+자체가 응답하지 않는다:**
+
+```
+wsl -l -v          → Ubuntu   Running     (살아 있는 것처럼 보인다)
+wsl -d Ubuntu ...  → Catastrophic failure / Wsl/Service/E_UNEXPECTED
+```
+
+복구는 `wsl --shutdown`(전체)이 아니라 **`wsl --terminate Ubuntu`** 로 충분하다.
+Docker Desktop 배포판과 그 컨테이너들은 그대로 살아 있다. Postgres 는 크래시
+복구로 정상 기동하고 데이터도 남는다 (실측: 4문서 / 47청크 / 임베딩 47 전부 보존).
+
+**메모리를 실험할 때는 상한을 걸어라.** 상한 없이 돌리면 커널이 VM 을 흔들지만,
+scope 안에서는 프로세스만 깔끔하게 죽는다:
+
+```bash
+systemd-run --quiet --scope -p MemoryMax=2200M -p MemorySwapMax=0 \
+  /opt/geniein/venv/bin/python -u <스크립트>
+```
+
+`python -u` 를 빼면 SIGKILL 에 stdout 버퍼가 통째로 날아가 **어디서 죽었는지
+알 수 없다.** 로그도 `/tmp`(tmpfs 2GB) 가 아니라 `/var/tmp` 로 받는다.
+
+> **이건 색인만의 문제가 아니다.** 질의 임베딩도 같은 모델을 쓰므로 유나가 검색에
+> 답하는 내내 BGE-M3 가 메모리에 상주해야 한다. 상시 요구량이지 일회성이 아니다.
+
+**→ 해결됨 (2026-08-16): `.wslconfig` 를 `memory=8GB` 로 올렸다.**
+
+상한이지 예약이 아니다 — `autoMemoryReclaim=gradual` 이 안 쓰는 만큼 돌려주므로,
+평소 Postgres 만 돌 때의 점유는 그대로다. 문제는 호스트 여유가 아니라 **cgroup
+상한이 2.9GB 피크에서 프로세스를 죽이는 것**이었다. 호스트에 램이 남아 있어도
+그 벽은 그대로여서, 여유가 생기길 기다리는 것으로는 해결되지 않는다.
+
+적용에는 `wsl --shutdown` 이 필요하다 (전체 VM 재시작이라 Docker Desktop 배포판과
+그 컨테이너도 함께 내려간다). 적용 후 확인:
+
+```bash
+wsl -d Ubuntu -u root -- free -h     # total 이 7.8Gi 로 나오면 반영된 것
+```
 
 ---
 
