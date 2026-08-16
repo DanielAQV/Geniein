@@ -131,9 +131,10 @@ INSERT INTO kb_documents (
     %(source_format)s, %(ocr_used)s, %(citation_scheme)s, %(effective_date)s,
     %(source_modified_at)s, now()
 )
-ON CONFLICT (source, source_url) WHERE source_url IS NOT NULL
+-- org_id 가 키에 들어 있으므로 다른 법인의 같은 파일은 충돌하지 않고 별도 행이 된다.
+-- (그래서 DO UPDATE 에 org_id 가 없다 — 키의 일부라 갱신 대상이 아니다)
+ON CONFLICT (org_id, source, source_url) WHERE source_url IS NOT NULL
 DO UPDATE SET
-    org_id = EXCLUDED.org_id,
     title = EXCLUDED.title,
     content_hash = EXCLUDED.content_hash,
     role_scope = EXCLUDED.role_scope,
@@ -180,9 +181,13 @@ def ingest_file(
         return summary
 
     with connect() as conn, conn.cursor() as cur:
+        # ★ org_id 를 조건에 넣지 않으면 **다른 법인의** 같은 파일이 걸려서
+        #   해시가 같다는 이유로 "unchanged" 로 건너뛴다. 그 법인 코퍼스는
+        #   영원히 비어 있는데 색인 로그는 정상으로 보인다.
         cur.execute(
-            "SELECT id, content_hash FROM kb_documents WHERE source = %s AND source_url = %s",
-            (row["source"], row["source_url"]),
+            "SELECT id, content_hash FROM kb_documents "
+            "WHERE org_id = %s AND source = %s AND source_url = %s",
+            (row["org_id"], row["source"], row["source_url"]),
         )
         existing = cur.fetchone()
         if existing and existing[1] == doc.content_hash and not force:
