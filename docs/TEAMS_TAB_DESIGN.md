@@ -159,7 +159,25 @@ CSP `connect-src`도 손대야 한다. Next route handler를 거치면 둘 다 `
 
 ## 4. 지금 막혀 있는 것 — 구현 전에 반드시 푼다
 
-### 4.1 iframe이 아예 렌더되지 않는다 ★
+### 4.1 iframe이 아예 렌더되지 않는다 — **해결 (2026-08-16)**
+
+> `headers()` 를 두 블록으로 쪼갰다. 일반 블록의 `source` 를
+> `/((?!teams(?:/|$)).*)` 로 좁혀 `/teams` 를 제외하고, `/teams/:path*` 블록에는
+> `X-Frame-Options` 를 아예 넣지 않는다. CSP 는 `frame-ancestors` 하나만 다르므로
+> 문자열 두 벌을 따로 두지 않고 조립한다 (한쪽만 고치는 사고 방지).
+>
+> **실제 응답 헤더로 검증** (dev 서버 + 운영 분기 양쪽):
+>
+> | 경로 | `X-Frame-Options` | `frame-ancestors` |
+> |---|---|---|
+> | `/`, `/insights`, `/admin/login` | `SAMEORIGIN` | `'self'` |
+> | `/teams`, `/teams/search` | **없음** | Teams 도메인 4개 |
+> | `/teamsomething`, `/team` | `SAMEORIGIN` | `'self'` |
+>
+> 마지막 줄이 `(?:/|$)` 를 넣은 이유다 — `/((?!teams).*)` 로 썼으면
+> `/teamsomething` 까지 프레임 예외로 새어나간다.
+>
+> 아래는 원래 분석이다.
 
 `apps/web/next.config.mjs`가 **전 경로**에 다음을 박고 있다:
 
