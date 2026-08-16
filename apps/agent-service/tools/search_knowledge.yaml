@@ -1,0 +1,45 @@
+# 유나의 첫 도구 (설계문서 3.2.3).
+#
+# 이름은 ASCII snake_case, 설명은 한국어다 (원칙④).
+# 라우팅 판단이 이 description 에 걸리므로, 언제 쓰는지와 실제 사용자 말투 예시를 넣는다.
+# 라우팅이 틀리면 코드가 아니라 이 글을 고친다 (10.1).
+
+name: search_knowledge
+tier: read
+
+description: |
+  회사 규정·사규·사내 제도에 대한 질문에 답할 때 사용한다.
+  사내 문서를 검색해 근거가 된 문서명·조항·개정일과 함께 답할 수 있게 해준다.
+
+  이럴 때 쓴다:
+    "출장 일비 규정이 어떻게 돼?"
+    "야근하면 식대 나와요?"
+    "다기능 수당 받으려면 조건이 뭐야?"
+    "근태수당 깎이는 경우 알려줘"
+    "해외 출장 숙박비 한도 얼마까지야?"
+
+  이럴 때는 쓰지 않는다 (도구 없이 직접 답한다):
+    인사·잡담·감사 인사 ("안녕", "고마워")
+    회사 규정과 무관한 일반 상식 질문
+
+  검색 결과가 없으면 그렇다고 알려준다. 내용을 지어내지 않는다.
+
+input_schema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: |
+        검색할 내용. 사용자의 질문을 그대로 넣어도 되고, 핵심 용어로 다듬어도 된다.
+        문서가 영어·베트남어로만 있어도 한국어로 검색된다.
+  required: [query]
+  additionalProperties: false
+
+handler: src.tools.knowledge:search
+
+# ★ 원칙③ — 신원은 서버가 주입한다. 여기 적힌 키는 input_schema 에 있으면 안 되고,
+#   레지스트리가 로드 시점에 그걸 검증한다. 모델은 "누구의 권한으로" 를 지정할 수 없다.
+inject_context:
+  - internal_user_id
+  - org_id
+  - roles

@@ -4,5 +4,11 @@ anthropic>=0.69
 pydantic>=2.10,<3.0
 pydantic-settings>=2.7,<3.0
 PyYAML>=6.0,<7.0
+# 문서 파싱 (색인 경로). 지금까지 선언 없이 venv 에만 깔려 있어서, 새 환경에서
+# docx 색인이 ImportError 로 죽었다.
+python-docx>=1.2,<2.0
+# 텍스트 PDF 추출 (B등급). pypdf 는 이 코퍼스에서 구조와 단어 중 하나를 반드시
+# 망가뜨린다 — src/kb/parse.py 의 _page_lines 주석 참조.
+pdfplumber>=0.11,<0.12
 psycopg[binary]>=3.2,<4.0
 httpx>=0.28,<1.0
