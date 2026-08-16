@@ -28,11 +28,26 @@ const isProd = process.env.NODE_ENV === 'production';
  *   Teams 는 이 헤더가 남아 있으면 iframe 을 **백지로** 띄운다. 콘솔 오류 말고는
  *   아무 신호가 없어서 앱 버그로 오인하기 쉽다.
  */
+/**
+ * Microsoft 문서의 호스트별 frame-ancestor 표를 그대로 옮긴 것이다.
+ * (Teams 문서: "Requirements for Building Tabs" → Content Security Policy)
+ *
+ * ★ `*.cloud.microsoft` 가 핵심이다. Teams 웹·데스크톱을 포함한 Microsoft 클라우드
+ *   서비스가 이 도메인으로 이전 중이라, 없으면 새 클라이언트에서 탭이 **"refused to
+ *   connect"** 로 뜬다. `*.microsoft.com` 으로는 안 덮인다 — `cloud.microsoft` 는
+ *   다른 도메인이다. (처음에 그렇게 잘못 적어서 실제로 이 증상을 봤다.)
+ *
+ * Outlook 에서도 열 계획이 생기면 아래를 추가한다:
+ *   outlook.office.com, outlook.office365.com,
+ *   outlook-sdf.office.com, outlook-sdf.office365.com
+ */
 const TEAMS_FRAME_ANCESTORS = [
-  'https://teams.microsoft.com',
+  'https://*.cloud.microsoft', // 전 호스트 (신규 도메인)
+  'https://teams.microsoft.com', // Teams
   'https://*.teams.microsoft.com',
-  'https://*.skype.com',
-  'https://*.microsoft.com',
+  'https://*.microsoft365.com', // Microsoft 365 앱
+  'https://*.office.com',
+  'https://*.skype.com', // 구 Teams 클라이언트 (하위 호환)
 ].join(' ');
 
 /**

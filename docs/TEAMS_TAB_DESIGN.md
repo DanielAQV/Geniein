@@ -177,6 +177,30 @@ CSP `connect-src`도 손대야 한다. Next route handler를 거치면 둘 다 `
 > 마지막 줄이 `(?:/|$)` 를 넣은 이유다 — `/((?!teams).*)` 로 썼으면
 > `/teamsomething` 까지 프레임 예외로 새어나간다.
 >
+> **★ 수정 (2026-08-16, 실제 사이드로드에서 발견).** 처음에 `frame-ancestors` 를
+> `teams.microsoft.com *.teams.microsoft.com *.skype.com *.microsoft.com` 으로
+> 적었는데, 실제 Teams 에서 탭이 **"refused to connect"** 로 떴다. 헤더는 정상이고
+> 터널도 200 이었다 — 목록이 틀린 것이었다.
+>
+> Microsoft 문서(Requirements for Building Tabs → CSP)의 호스트별 표:
+>
+> | 호스트 | frame-ancestor |
+> |---|---|
+> | **전 호스트 (신규)** | **`*.cloud.microsoft`** |
+> | Teams | `teams.microsoft.com`, `*.teams.microsoft.com` |
+> | Microsoft 365 앱 | `*.microsoft365.com`, `*.office.com` |
+> | Outlook | `outlook.office.com`, `outlook.office365.com`, `outlook-sdf.office.com`, `outlook-sdf.office365.com` |
+>
+> Teams 웹·데스크톱을 포함한 Microsoft 클라우드 서비스가 `*.cloud.microsoft` 로
+> **이전 중**이라 이게 없으면 새 클라이언트에서 안 뜬다. `*.microsoft.com` 으로는
+> 안 덮인다 — `cloud.microsoft` 는 별개 도메인이다. `*.microsoft.com` 은 문서에도
+> 없는 값이었고 필요 이상으로 넓어서 뺐다.
+>
+> Outlook 행은 넣지 않았다 (MVP 는 Teams). 필요해지면 `next.config.mjs` 의
+> `TEAMS_FRAME_ANCESTORS` 주석에 적어둔 목록을 추가한다.
+>
+> **이건 서버 헤더라 앱 패키지 재업로드가 필요 없다** — 탭 새로고침이면 반영된다.
+>
 > 아래는 원래 분석이다.
 
 `apps/web/next.config.mjs`가 **전 경로**에 다음을 박고 있다:
