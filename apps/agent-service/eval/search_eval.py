@@ -3,7 +3,10 @@
 `src/kb/search.py` 의 갈래 가중치 기본값이 왜 그 값인지에 대한 근거이고,
 **코퍼스가 커지면 다시 돌려서 다시 정하라고** 저장소에 둔다.
 
-    cd apps/agent-service && python eval/search_eval.py
+    cd apps/agent-service && EVAL_ORG_ID=<테넌트 UUID> python eval/search_eval.py
+
+`EVAL_ORG_ID` 는 색인할 때 `--org-id` 로 넣은 값과 같아야 한다. 다르면 필터에
+아무것도 안 걸려 전 항목 미검출로 나오는데, 그게 검색 품질 문제처럼 보인다.
 
 질의 세 묶음을 따로 재는 것이 중요하다. 한 묶음만 보면 결론이 뒤집힌다 —
 자연어만 보면 벡터 단독이 압도적이지만, 그것만 보고 정하면 희귀토큰 조회가
@@ -20,6 +23,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -29,6 +33,14 @@ from src.kb import search as S  # noqa: E402
 
 TOP_K = 8
 ROLES = ["requester"]
+
+# 검색은 org_id 없이 부를 수 없다 (테넌트 격리). 하네스도 예외가 아니다.
+ORG_ID = os.environ.get("EVAL_ORG_ID", "")
+if not ORG_ID:
+    raise SystemExit(
+        "EVAL_ORG_ID 가 필요합니다. 색인할 때 --org-id 로 넣은 테넌트 UUID 를 주세요.\n"
+        "  EVAL_ORG_ID=<uuid> python eval/search_eval.py"
+    )
 
 # (질의, 정답 breadcrumb 에 반드시 들어있어야 할 문자열)
 QUERY_SETS: dict[str, list[tuple[str, str]]] = {
@@ -82,7 +94,9 @@ def _ranks(cases: list[tuple[str, str]]) -> list[int | None]:
     out: list[int | None] = []
     for query, needle in cases:
         found = None
-        for position, hit in enumerate(S.search(query, roles=ROLES, limit=TOP_K), 1):
+        for position, hit in enumerate(
+            S.search(query, org_id=ORG_ID, roles=ROLES, limit=TOP_K), 1
+        ):
             breadcrumb = hit.content.split("]")[0]
             if needle in breadcrumb:
                 found = position

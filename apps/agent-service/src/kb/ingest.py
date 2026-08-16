@@ -95,7 +95,7 @@ def _as_date(value: Any) -> date | None:
     return None
 
 
-def _document_row(path: Path, doc: ParsedDoc, source_format: str) -> dict[str, Any]:
+def _document_row(path: Path, doc: ParsedDoc, source_format: str, org_id: str) -> dict[str, Any]:
     meta = doc.metadata
     try:
         source_url = str(path.resolve().relative_to(REPO_ROOT)).replace("\\", "/")
@@ -103,6 +103,7 @@ def _document_row(path: Path, doc: ParsedDoc, source_format: str) -> dict[str, A
         source_url = str(path.resolve()).replace("\\", "/")
 
     return {
+        "org_id": org_id,
         "source": str(meta.get("source") or "upload"),
         "source_url": source_url,
         "title": doc.title,
@@ -117,18 +118,22 @@ def _document_row(path: Path, doc: ParsedDoc, source_format: str) -> dict[str, A
     }
 
 
+# ★ org_id 는 NOT NULL 로 취급한다 (스키마는 nullable 이지만 여기서 항상 채운다).
+#   NULL 로 들어간 문서는 검색 필터(`d.org_id = :org_id`)에 영원히 안 걸리므로
+#   색인은 성공하고 조회만 안 되는, 가장 찾기 어려운 상태가 된다.
 UPSERT_DOC = """
 INSERT INTO kb_documents (
-    source, source_url, title, content_hash, role_scope, lang,
+    org_id, source, source_url, title, content_hash, role_scope, lang,
     source_format, ocr_used, citation_scheme, effective_date,
     source_modified_at, indexed_at
 ) VALUES (
-    %(source)s, %(source_url)s, %(title)s, %(content_hash)s, %(role_scope)s, %(lang)s,
+    %(org_id)s, %(source)s, %(source_url)s, %(title)s, %(content_hash)s, %(role_scope)s, %(lang)s,
     %(source_format)s, %(ocr_used)s, %(citation_scheme)s, %(effective_date)s,
     %(source_modified_at)s, now()
 )
 ON CONFLICT (source, source_url) WHERE source_url IS NOT NULL
 DO UPDATE SET
+    org_id = EXCLUDED.org_id,
     title = EXCLUDED.title,
     content_hash = EXCLUDED.content_hash,
     role_scope = EXCLUDED.role_scope,
@@ -143,7 +148,9 @@ RETURNING id
 """
 
 
-def ingest_file(path: Path, *, force: bool = False, dry_run: bool = False) -> dict[str, Any]:
+def ingest_file(
+    path: Path, *, org_id: str, force: bool = False, dry_run: bool = False
+) -> dict[str, Any]:
     source_format = detect_format(path)
     if source_format == "hwp":
         raise ValueError(
@@ -156,7 +163,7 @@ def ingest_file(path: Path, *, force: bool = False, dry_run: bool = False) -> di
     if not chunks:
         raise ValueError(f"{path.name}: 추출된 텍스트가 없습니다. 스캔본이면 vision 전사가 필요합니다.")
 
-    row = _document_row(path, doc, source_format)
+    row = _document_row(path, doc, source_format, org_id)
     summary = {
         "file": path.name,
         "title": doc.title,
@@ -211,6 +218,10 @@ def ingest_file(path: Path, *, force: bool = False, dry_run: bool = False) -> di
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="지식베이스 색인")
     parser.add_argument("paths", nargs="+", type=Path)
+    # 필수다. 어느 법인의 문서인지 말하지 않고는 색인할 수 없다 — 기본값을 주면
+    # 그 값이 조용히 전사 기본이 되고, 그게 테넌트 격리가 무너지는 경로다.
+    # 값은 Entra 테넌트 ID(tid)와 같다 (apps/api/.env 의 ENTRA_ALLOWED_TENANTS).
+    parser.add_argument("--org-id", required=True, help="문서를 소유한 법인의 테넌트 ID (UUID)")
     parser.add_argument("--force", action="store_true", help="해시가 같아도 다시 색인한다")
     parser.add_argument("--dry-run", action="store_true", help="청킹 결과만 보고 DB 는 건드리지 않는다")
     parser.add_argument("--log-level", default="INFO")
@@ -232,7 +243,9 @@ def main(argv: list[str] | None = None) -> int:
             failed += 1
             continue
         try:
-            result = ingest_file(path, force=args.force, dry_run=args.dry_run)
+            result = ingest_file(
+                path, org_id=args.org_id, force=args.force, dry_run=args.dry_run
+            )
         except Exception as exc:  # noqa: BLE001 — 한 파일 실패가 배치를 죽이지 않는다
             logger.error("색인 실패 %s: %s", path.name, exc)
             failed += 1
