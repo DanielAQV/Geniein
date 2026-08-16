@@ -5,7 +5,7 @@
  *
  * 그래서 두 곳이 같은 화면을 쓴다:
  *   /teams/search    실제 동작 (Teams SSO + BFF)
- *   /teams/preview   개발 전용. 캔에 담긴 대화로 디자인만 본다
+ *   /teams/preview   개발 전용. 로컬 뇌에 직접 묻고, 설정이 없으면 예시로 떨어진다
  *
  * ★ 검색창이 아니라 **대화**다. 한 번 묻고 끝나면 "해외는?" 같은 되묻기가
  *   불가능해서, 사용자가 매번 질문을 처음부터 다시 쓰게 된다. 이전 발언이
@@ -19,6 +19,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type ReactNode,
 } from 'react'
 import { AlertCircle, Loader2, RotateCcw, Send, Sparkles } from 'lucide-react'
 import { RichText } from './rich-text'
@@ -52,6 +53,8 @@ export interface ChatViewProps {
   /** 부팅 중이거나 환경이 준비되지 않아 입력을 받을 수 없는 상태 */
   inputDisabled?: boolean
   suggestions?: string[]
+  /** 헤더 아래 띠. 지금은 미리보기가 "이건 실제 답변이 아니다"를 밝히는 데 쓴다. */
+  notice?: ReactNode
 }
 
 /** 이 시간을 넘기면 "원래 오래 걸린다"고 알려준다. 그 전에는 잡음이다. */
@@ -62,20 +65,41 @@ const COMPOSER_MAX_HEIGHT = 160
 
 const MAX_QUESTION_LENGTH = 2000
 
+const TOOL_LABELS: Record<string, string> = {
+  search_knowledge: '사내 규정 검색',
+}
+
 function ToolBadges({ tools }: { tools: ToolChip[] }) {
   if (tools.length === 0) return null
+
+  // 같은 도구를 여러 번 부르는 일이 흔하다 (질문이 두 갈래면 두 번 찾는다).
+  // 그대로 나열하면 같은 칩이 반복돼 버그처럼 보이므로 묶어서 횟수로 보여준다.
+  const grouped = tools.reduce<{ key: string; label: string; failed: boolean; count: number }[]>(
+    (acc, tool) => {
+      const failed = tool.outcome !== 'ok'
+      const key = `${tool.name}:${failed}`
+      const found = acc.find((item) => item.key === key)
+      if (found) {
+        found.count += 1
+        return acc
+      }
+      return [...acc, { key, label: TOOL_LABELS[tool.name] ?? tool.name, failed, count: 1 }]
+    },
+    [],
+  )
 
   // 검색이 실제로 돌았는지 보여준다. 답변만 있으면 사용자는 이게 규정을 찾아본
   // 답인지 그냥 지어낸 말인지 구분할 수 없다.
   return (
     <div className="mt-3 flex flex-wrap gap-1.5">
-      {tools.map((tool, index) => (
+      {grouped.map((tool) => (
         <span
-          key={`${tool.name}-${index}`}
+          key={tool.key}
           className="rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] text-muted-foreground"
         >
-          {tool.name === 'search_knowledge' ? '사내 규정 검색' : tool.name}
-          {tool.outcome !== 'ok' && ' · 실패'}
+          {tool.label}
+          {tool.count > 1 && ` ×${tool.count}`}
+          {tool.failed && ' · 실패'}
         </span>
       ))}
     </div>
@@ -102,6 +126,7 @@ export function ChatView({
   onReset,
   inputDisabled = false,
   suggestions = [],
+  notice,
 }: ChatViewProps) {
   const [draft, setDraft] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -167,6 +192,8 @@ export function ChatView({
           )}
         </div>
       </header>
+
+      {notice}
 
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-3xl px-4 py-6">
