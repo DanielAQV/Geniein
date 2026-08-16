@@ -388,6 +388,55 @@ CREATE UNIQUE INDEX kb_documents_org_source_url_uniq
 두 번째가 `indexed`(≠`unchanged`)로 나오고 두 행이 공존하며, 지니 행만 지웠을 때
 에어키 행이 남는 것까지 봤다. 검증 문서는 삭제했다 (최종 20건 / 232청크 / org 1개).
 
+### 4.5 Next dev 를 터널로 열면 하이드레이션이 통째로 죽는다 — **해결 (2026-08-16)**
+
+**증상.** Teams 탭이 뜨긴 하는데 입력창이 영영 비활성. 오류도, 콘솔 메시지도 없다.
+브라우저에서 터널 주소를 직접 열어도 똑같고, "Teams 밖입니다" 안내조차 안 뜬다.
+
+**원인.** Next dev 는 `/_next/*` 개발 리소스를 **다른 오리진에서 요청하면 차단한다.**
+터널 호스트는 localhost 가 아니므로 클라이언트 청크가 막히고 → **React 가 하이드레이트되지
+않고** → `useEffect` 가 안 돌고 → `phase` 가 `booting` 에서 멈춰 입력이 `disabled` 로 남는다.
+
+**왜 오래 걸렸나.** 신호가 전부 엉뚱한 데 있다. 서버 HTML 은 정상이라 화면은 멀쩡해 보이고,
+브라우저 콘솔에는 아무것도 안 찍히며, 경고는 **Next dev 서버 로그에만** 나온다. 클라이언트만
+들여다보면 절대 못 찾는다. 결정적 증거는 `input` 에 React fiber 키가 없다는 것이었다.
+
+**조치.** `next.config.mjs` 에 `allowedDevOrigins` 추가 (터널 도메인 와일드카드 +
+`DEV_TUNNEL_HOST`). 운영 빌드에는 없는 문제다 — dev 리소스 자체가 없다.
+
+### 4.6 ★★ Teams SSO 는 App ID URI **도메인**과 iframe 오리진이 같아야 한다
+
+**증상.** 탭은 정상 렌더되는데 `authentication.getAuthToken()` 이 거절한다:
+
+```
+App resource defined in manifest and iframe origin do not match
+```
+
+**원인.** Teams 는 토큰을 내주기 전에 `webApplicationInfo.resource`(= Entra 애플리케이션
+ID URI)의 **호스트 부분**과 탭을 서빙하는 **오리진**이 일치하는지 본다.
+
+| | 값 |
+|---|---|
+| `resource` | `api://genie.geniein.com/<clientId>` → 호스트 `genie.geniein.com` |
+| `contentUrl` 오리진 | `<터널>.trycloudflare.com` |
+
+`validDomains` 를 맞춰도 소용없다 — 이건 **별개의 검사**다.
+
+**함의.** 임시 터널(quick tunnel)로는 SSO 를 검증할 수 없다. 주소가 재시작마다 바뀌므로
+매번 Entra 에 App ID URI 를 새로 추가해야 하기 때문이다.
+
+**선택지.**
+
+1. **고정 호스트명 (권장).** `genie.geniein.com` 을 named tunnel 로 localhost:3000 에
+   물린다. 그러면 `resource` 호스트 = `contentUrl` 호스트가 되어 SSO 가 통하고, **그대로
+   운영 호스트가 된다.** Cloudflare 계정 + `geniein.com` DNS 권한 필요.
+2. **터널마다 URI 추가.** Entra `identifierUris` 는 배열이라 여러 개 등록할 수 있다.
+   `api://<터널호스트>/<clientId>` 를 추가하고 `ENTRA_API_AUDIENCE` 를 그 값으로 빌드.
+   1회성 확인에는 되지만 터널이 죽을 때마다 반복해야 한다.
+
+> Entra 규칙: `api://<string>/<appId>` 형식이 허용되고 `<string>` 은 임의 문자열이어도
+> 된다 (현재 값이 그 형태다). App ID URI 는 테넌트 내 유일해야 하고 `/` 로 끝나면 안 된다.
+
 ---
 
 ## 5. 작업 단위 (커밋 순서)
