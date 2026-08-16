@@ -54,7 +54,8 @@ const CLOCK_TOLERANCE_SEC = 60;
  * 둘 다 받아도 테넌트 격리는 그대로다 — 두 값 모두 **검증된 `tid` 로 조립**하므로
  * 다른 테넌트의 발급자는 여전히 통과하지 못한다.
  */
-function issuersFor(tenantId: string): string[] {
+// jsonwebtoken 의 타입은 "비어 있지 않은 목록"을 튜플로 강제한다. string[] 는 안 받는다.
+function issuersFor(tenantId: string): [string, ...string[]] {
   return [
     `https://login.microsoftonline.com/${tenantId}/v2.0`,
     `https://sts.windows.net/${tenantId}/`,
@@ -73,7 +74,7 @@ const GUID_PATTERN =
  * 설정값에서 clientId 를 유도해 둘 다 허용한다. 새 환경변수를 만들지 않는 편이
  * 값의 출처가 하나로 유지된다. 유도에 실패하면 설정값만 쓴다 — 조용히 넓어지지 않는다.
  */
-function audiencesFor(audience: string): string[] {
+function audiencesFor(audience: string): [string, ...string[]] {
   const lastSegment = audience.split('/').pop() ?? '';
   return GUID_PATTERN.test(lastSegment) && lastSegment !== audience
     ? [audience, lastSegment]
