@@ -25,7 +25,7 @@ services:
     container_name: geniein-agent-service
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY is required}
-      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-5}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
       ANTHROPIC_EFFORT: ${ANTHROPIC_EFFORT:-medium}
       DB_HOST: postgres
       DB_PORT: 5432

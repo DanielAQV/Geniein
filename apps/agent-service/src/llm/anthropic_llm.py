@@ -2,12 +2,18 @@
 
 여기서만 Anthropic SDK를 안다. 호출부(agent/core.py)는 이 파일을 import 하지 않는다.
 
-Claude Opus 5 주의사항 (2026 기준):
+주의사항 (2026 기준). 아래는 Sonnet 5 와 Opus 5 에 **모두** 해당하므로,
+모델을 갈아끼워도 이 파일은 그대로다:
   · temperature / top_p / top_k  → 400. 사용하지 않는다
   · thinking budget_tokens        → 400. adaptive 사용
   · assistant prefill             → 400
   · thinking 은 기본 ON. max_tokens 가 thinking + 응답을 합쳐 제한하므로 여유가 필요
   · stop_reason == "refusal" 을 content 읽기 전에 확인
+
+★ thinking 을 끄지 않는다. 껐을 때 모델이 도구 호출을 tool_use 블록이 아니라
+  사람이 읽는 텍스트로 흘리는 경우가 있는데, 그러면 core.py 의 `wants_tools` 가
+  False 가 되어 **검색을 안 한 답변이 정상 응답으로 나간다** — 에러도 로그도 없다.
+  비용·지연은 thinking 스위치가 아니라 effort 로 조절한다.
 """
 
 from __future__ import annotations

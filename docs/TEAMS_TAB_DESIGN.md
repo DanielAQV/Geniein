@@ -448,4 +448,7 @@ inject_context:
 | 2026-08-16 | Phase 2 SharePoint 는 위임 권한 + OBO | 앱 권한으로 가면 ACL 을 우리가 재판하게 됨 (8.2) |
 | 2026-08-16 | MVP 도 에이전트 루프를 탄다 (`/agent/search` → 뇌 `/agent/message`) | 뇌에 검색 직행 엔드포인트가 없다. 인용 품질은 오히려 낫고, 대가는 지연 — 로딩 UX 를 커밋 5에 포함 |
 | 2026-08-16 | BFF→게이트웨이 토큰은 `ADMIN_SERVICE_TOKEN` 재사용 | 같은 두 당사자의 같은 관계다. 토큰을 하나 더 만들어도 새 경계가 생기지 않는다 |
+| 2026-08-16 | 검색 경로 모델 = **`claude-sonnet-5`**, effort `medium` | 사규 검색은 청크를 읽고 인용하는 작업이지 난제가 아니다. Opus 5 대비 지연·비용이 낮고 코드 변경이 0 — 어댑터가 지키는 제약이 두 모델에 동일하다. `low` 는 근거를 얕게 읽을 위험이 있어 쓰지 않는다 |
+| 2026-08-16 | thinking 은 끄지 않는다 | Opus 5·Sonnet 5 모두 기본 ON. 끄면 도구 호출이 평문으로 새어 **검색 없이 답이 나가는** 무증상 실패가 있다. 지연은 effort 로만 조절 |
+| 2026-08-16 | Fast mode 미사용 | Opus 전용이고 가격이 2배. 현재 레버로 충분하다고 판단 |
 | 2026-08-16 | 운영 도메인 = **`genie.geniein.com`** | Application ID URI 에 이미 박혀 있음 (`api://genie.geniein.com/{clientId}`). 사실상 고정값이며 `contentUrl`·`validDomains` 가 여기서 따라온다. 브라우저는 BFF 만 부르므로 `CORS_ORIGINS` 는 늘지 않는다 |

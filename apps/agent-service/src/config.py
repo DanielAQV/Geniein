@@ -21,7 +21,14 @@ class Settings(BaseSettings):
 
     # LLM — 어댑터 안에서만 읽는다. 호출부는 이 값을 모른다 (3.5)
     anthropic_api_key: str = ""
-    anthropic_model: str = "claude-opus-5"
+    # 사규 검색은 청크를 읽고 인용을 붙이는 작업이지 난제가 아니다.
+    # Sonnet 5 는 이 구간에서 Opus 5 에 근접하면서 지연·비용이 크게 낮다.
+    #
+    # ⚠ effort 를 low 까지 내리지 않는다. Sonnet 5 는 낮은 쪽 effort 를 엄격히
+    #   지켜서 "시킨 것만" 하는데, 청크 8건에서 맞는 조항을 골라 개정일까지
+    #   인용하는 건 그 경계에 걸린다. 근거를 얕게 읽는 게 보이면 프롬프트로
+    #   우회하지 말고 effort 를 올린다.
+    anthropic_model: str = "claude-sonnet-5"
     anthropic_effort: str = "medium"
     anthropic_max_tokens: int = 8192
 
