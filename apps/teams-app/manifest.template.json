@@ -5,7 +5,7 @@
   "id": "${ENTRA_CLIENT_ID}",
   "developer": {
     "name": "AirQuay Vina",
-    "websiteUrl": "${CONTENT_HOST}",
+    "websiteUrl": "${WEBSITE_URL}",
     "privacyUrl": "${PRIVACY_URL}",
     "termsOfUseUrl": "${TERMS_URL}"
   },

@@ -42,11 +42,19 @@ if (!clientId || !audience) {
 }
 
 /**
- * 호스트는 Application ID URI 에서 유도한다 — `api://genie.geniein.com/<clientId>`.
- * 값을 하나 더 관리하지 않기 위해서다. 터널로 검증할 때만 CONTENT_HOST 로 덮는다.
+ * 호스트가 둘이고, 섞으면 안 된다.
+ *
+ *   serviceHost   서비스가 실제로 사는 곳. Application ID URI 에서 유도한다
+ *                 (`api://genie.geniein.com/<clientId>`). **터널을 따라가지 않는다.**
+ *   contentHost   탭 콘텐츠를 지금 어디서 받아올지. 터널 검증 때만 달라진다.
+ *
+ * ★ 게시자(AirQuay Vina)와 서비스(Geniein)가 다른 주체다. developer 블록의
+ *   링크는 서비스 쪽을 가리켜야 하고, 임시 터널 주소가 회사 사이트로 박히면 안 된다.
+ *   contentUrl / validDomains 만 contentHost 를 따른다.
  */
 const domainFromAudience = audience.replace(/^api:\/\//, '').split('/')[0]
-const contentHost = (get('CONTENT_HOST') || `https://${domainFromAudience}`).replace(/\/+$/, '')
+const serviceHost = `https://${domainFromAudience}`
+const contentHost = (get('CONTENT_HOST') || serviceHost).replace(/\/+$/, '')
 const contentDomain = contentHost.replace(/^https?:\/\//, '')
 
 /**
@@ -82,8 +90,10 @@ const values = {
   ENTRA_API_AUDIENCE: audience,
   CONTENT_HOST: contentHost,
   CONTENT_DOMAIN: contentDomain,
-  PRIVACY_URL: get('TEAMS_PRIVACY_URL') || `${contentHost}/privacy`,
-  TERMS_URL: get('TEAMS_TERMS_URL') || `${contentHost}/terms`,
+  // developer 블록은 serviceHost 기준이다 — 터널을 따라가면 안 된다 (위 주석)
+  WEBSITE_URL: get('TEAMS_WEBSITE_URL') || serviceHost,
+  PRIVACY_URL: get('TEAMS_PRIVACY_URL') || `${serviceHost}/privacy`,
+  TERMS_URL: get('TEAMS_TERMS_URL') || `${serviceHost}/terms`,
 }
 
 let manifest = readFileSync(join(HERE, 'manifest.template.json'), 'utf8')
@@ -106,7 +116,8 @@ for (const icon of ['color.png', 'outline.png']) copyFileSync(join(HERE, icon), 
 console.log('dist/ 생성 완료')
 console.log(`  버전       ${version}   (${why})`)
 console.log(`  앱 ID      ${clientId}`)
-console.log(`  콘텐츠 호스트 ${contentHost}`)
+console.log(`  콘텐츠 호스트 ${contentHost}${contentHost === serviceHost ? '' : '  (터널)'}`)
+console.log(`  서비스 링크 ${values.WEBSITE_URL}  (게시자 AirQuay Vina, 서비스 Geniein)`)
 console.log(`  리소스     ${audience}`)
 console.log('')
 console.log('업로드용 zip 만들기 (파일 3개가 zip 최상위에 있어야 한다):')

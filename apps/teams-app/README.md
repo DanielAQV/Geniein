@@ -45,9 +45,24 @@ node build.mjs && node validate.mjs        # 또는 pnpm package
 |---|---|---|
 | `ENTRA_CLIENT_ID` | `apps/api/.env` | 매니페스트 `id` 와 `webApplicationInfo.id` 에 **둘 다** 쓴다 |
 | `ENTRA_API_AUDIENCE` | `apps/api/.env` | `webApplicationInfo.resource` |
-| `CONTENT_HOST` | 선택 | 기본값은 Application ID URI 의 도메인. 터널 검증 때만 덮는다 |
+| `CONTENT_HOST` | 선택 | 탭 콘텐츠를 받아올 곳. 터널 검증 때만 덮는다 |
 | `TEAMS_APP_VERSION` | 선택 | 버전을 직접 지정. 아래 참조 |
-| `TEAMS_PRIVACY_URL` / `TEAMS_TERMS_URL` | 선택 | 기본값 `<호스트>/privacy`, `<호스트>/terms` |
+| `TEAMS_WEBSITE_URL` | 선택 | 기본값은 서비스 도메인. 아래 참조 |
+| `TEAMS_PRIVACY_URL` / `TEAMS_TERMS_URL` | 선택 | 기본값 `<서비스>/privacy`, `<서비스>/terms` |
+
+### 게시자와 서비스는 다른 주체다
+
+**게시자는 AirQuay Vina, 서비스는 Geniein 이다.** 그래서 호스트가 둘이고 섞으면 안 된다:
+
+| | 값 | 터널을 따라가나 |
+|---|---|---|
+| `contentUrl`, `validDomains` | 탭 콘텐츠를 지금 받아올 곳 | **예** — `CONTENT_HOST` |
+| `developer.*` 링크 | 서비스가 실제로 사는 곳 | **아니오** — Application ID URI 의 도메인 |
+
+섞으면 개발 빌드에서 `websiteUrl` 이 `xxxx.trycloudflare.com` 이 된다 —
+몇 시간 뒤 사라질 임시 터널이 회사 사이트로 박히는 것이다.
+
+공개 사이트가 `genie.geniein.com` 이 아니라면 `TEAMS_WEBSITE_URL` 로 지정한다.
 
 ### 버전 — 재업로드하면 반드시 올라가야 한다
 
