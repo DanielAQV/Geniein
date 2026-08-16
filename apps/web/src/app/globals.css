@@ -112,6 +112,90 @@
   --hero-img-opacity: 1;
 }
 
+/* ── Teams 탭 ─────────────────────────────────────────────────────────
+   탭은 사이트 테마(다크 고정)가 아니라 **Teams 호스트 테마**를 따라야 한다.
+   Teams 를 라이트 모드로 쓰는 사람에게 탭만 시커멓게 뜨면 남의 화면처럼 보인다.
+
+   ★ 컴포넌트를 고치지 않고 토큰만 다시 정의한다. `@theme inline` 이라
+     `bg-background` 같은 유틸리티가 `var(--background)` 를 **요소에서** 해석하므로,
+     여기서 값을 덮으면 안쪽 전체가 따라온다.
+
+   ★ 선택자를 `html[...]` 로 쓴다. `[data-teams-theme]` 만으로는 `.dark` 와 특이도가
+     같아서(둘 다 html 에 걸린다) **어느 쪽이 이길지 스타일시트 순서에 달리게 된다.**
+     실제로 그렇게 썼다가 번들 순서 때문에 라이트 모드가 다크로 나왔다. 요소 선택자를
+     하나 더해 특이도로 이기게 하면 순서와 무관해진다.
+
+   값은 Teams 자체 팔레트에 맞춘다. 회사 사이트 색을 그대로 쓰면 Teams 안에서
+   이물감이 생긴다. */
+html[data-teams-theme] {
+  color-scheme: light;
+  --background: #f5f5f5;
+  --foreground: #242424;
+  --card: #ffffff;
+  --card-foreground: #242424;
+  --popover: #ffffff;
+  --popover-foreground: #242424;
+  --primary: #5b5fc7;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #242424;
+  --muted: #ebebeb;
+  --muted-foreground: #616161;
+  --accent: #5b5fc7;
+  --accent-foreground: #ffffff;
+  --destructive: #c4314b;
+  --border: #e0e0e0;
+  --input: #ffffff;
+  --ring: #5b5fc7;
+  --radius: 0.75rem;
+}
+
+html[data-teams-theme='dark'] {
+  color-scheme: dark;
+  --background: #1f1f1f;
+  --foreground: #ffffff;
+  --card: #292929;
+  --card-foreground: #ffffff;
+  --popover: #292929;
+  --popover-foreground: #ffffff;
+  --primary: #7f85f5;
+  --primary-foreground: #1f1f1f;
+  --secondary: #333333;
+  --secondary-foreground: #ffffff;
+  --muted: #333333;
+  --muted-foreground: #adadad;
+  --accent: #7f85f5;
+  --accent-foreground: #1f1f1f;
+  --destructive: #f1707b;
+  --border: #383838;
+  --input: #292929;
+  --ring: #7f85f5;
+}
+
+/* 고대비 모드. 취향이 아니라 **필요**해서 켠 사람들이라 은은한 회색 단계가 통하지
+   않는다 — 경계를 전부 순백으로 세운다. */
+html[data-teams-theme='contrast'] {
+  color-scheme: dark;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffff01;
+  --primary-foreground: #000000;
+  --secondary: #1aebff;
+  --secondary-foreground: #000000;
+  --muted: #000000;
+  --muted-foreground: #ffffff;
+  --accent: #ffff01;
+  --accent-foreground: #000000;
+  --destructive: #ffff01;
+  --border: #ffffff;
+  --input: #000000;
+  --ring: #ffff01;
+}
+
 @theme inline {
   --font-sans: var(--font-noto-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;

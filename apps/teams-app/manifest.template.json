@@ -24,9 +24,9 @@
   "accentColor": "#02040A",
   "staticTabs": [
     {
-      "entityId": "yuna-search",
+      "entityId": "genie-search",
       "name": "사규검색",
-      "contentUrl": "${CONTENT_HOST}/teams/search",
+      "contentUrl": "${CONTENT_HOST}/teams/search?theme={theme}",
       "websiteUrl": "${CONTENT_HOST}/teams/search",
       "scopes": ["personal"]
     }

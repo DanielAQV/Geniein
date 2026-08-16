@@ -1,32 +1,38 @@
 'use client'
 
 /**
- * Teams 탭 — 사규 검색.
+ * Teams 탭 — 사규 대화.
  *
  * 이 화면이 브라우저에서 부르는 것은 같은 오리진의 `/api/teams/search` 하나뿐이다.
  * NestJS 도 뇌도 여기서 보이지 않는다 (docs/TEAMS_TAB_DESIGN.md 2장).
  *
  * ★ 응답이 수 초~수십 초 걸린다. 검색만 하는 게 아니라 에이전트 루프를 타면서
  *   Claude 가 근거를 읽고 인용을 정리하기 때문이다 (같은 문서 1장). 그래서
- *   로딩 표시가 선택이 아니라 필수다 — 경과 시간을 보여주지 않으면 멈춘 걸로 보인다.
+ *   경과 시간 표시가 선택이 아니라 필수다.
+ *
+ * ★ 화면은 표시만 하는 ChatView 에 맡기고 여기서는 **상태와 네트워크만** 다룬다.
+ *   같은 화면을 /teams/preview 가 캔에 담긴 대화로 재사용한다.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { AlertCircle, Loader2, Search } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { NotInTeamsError, TeamsAuthError, getTeamsToken, initTeams } from '@/lib/teams/client'
+import { ChatView, type ChatTurn, type ToolChip } from '../_components/chat-view'
 
 interface SearchResult {
   text: string
   refused: boolean
-  tools: { name: string; outcome: string }[]
+  tools: ToolChip[]
 }
 
-type Phase =
-  | { kind: 'booting' }
-  | { kind: 'ready' }
-  | { kind: 'searching' }
-  | { kind: 'done'; result: SearchResult }
-  | { kind: 'error'; title: string; detail: string; canRetry: boolean; technical?: string }
+/** 모델에게 넘길 이력의 상한. 서버(BFF·NestJS·뇌)에도 같은 상한이 있다. */
+const MAX_HISTORY_TURNS = 20
+
+const SUGGESTIONS = [
+  '해외 출장 숙박비 한도가 얼마인가요?',
+  '연차는 언제부터 쓸 수 있나요?',
+  '경조사 휴가는 며칠인가요?',
+]
 
 /**
  * 원문 오류를 화면에 남길지. 평소 운영에서는 감춘다 — 사용자가 할 수 있는 일이 없고,
@@ -36,25 +42,21 @@ type Phase =
  * 바깥에서 콘솔을 읽을 수 없다. 여기 안 띄우면 SSO 실패 원인을 볼 방법이 아예 없다
  * (실제로 "App resource ... do not match" 를 이걸로 찾았다).
  *
- * ★ 그래서 운영에서도 **켤 수 있어야 한다.** 새 호스트에 처음 올릴 때가 정확히
- *   그 상황이다 — 배포는 운영 빌드인데 확인해야 할 것은 개발 때와 같다.
+ * ★ 그래서 운영에서도 켤 수 있어야 한다. 새 호스트에 처음 올릴 때가 정확히 그
+ *   상황이다 — 배포는 운영 빌드인데 확인해야 할 것은 개발 때와 같다.
  *   `NEXT_PUBLIC_TEAMS_DEBUG=1` 로 한시적으로 켜고, 통과하면 지운다.
  */
 const SHOW_TECHNICAL_DETAIL =
   process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_TEAMS_DEBUG === '1'
 
-/** 이 시간을 넘기면 "원래 오래 걸린다"고 알려준다. 그 전에는 잡음이다. */
-const PATIENCE_HINT_SEC = 15
+interface Failure {
+  title: string
+  detail: string
+  canRetry: boolean
+  technical?: string
+}
 
-function describeFailure(error: unknown): { title: string; detail: string; canRetry: boolean } {
-  if (error instanceof NotInTeamsError) {
-    return {
-      title: 'Teams 안에서 열어주세요',
-      detail:
-        '이 화면은 Teams 앱의 탭으로 동작합니다. 브라우저에서 주소를 직접 열면 로그인 정보를 받을 수 없습니다.',
-      canRetry: false,
-    }
-  }
+function describeFailure(error: unknown): Failure {
   if (error instanceof TeamsAuthError) {
     return {
       title: '로그인 정보를 받지 못했습니다',
@@ -72,7 +74,7 @@ function describeFailure(error: unknown): { title: string; detail: string; canRe
 }
 
 /** BFF 가 돌려주는 오류 코드를 사람이 읽는 문장으로. 코드 자체는 노출하지 않는다. */
-function describeBffError(status: number, code: string) {
+function describeBffError(status: number, code: string): Failure {
   if (status === 401) {
     return {
       title: '로그인이 만료되었습니다',
@@ -94,11 +96,37 @@ function describeBffError(status: number, code: string) {
   }
 }
 
+/**
+ * 모델에게 넘길 이력을 고른다.
+ *
+ * 오류는 대화가 아니므로 뺀다. 끝이 사용자 발언이면 그것도 뺀다 — 이번에 보내는
+ * 질문이 바로 그 발언이라 두 번 들어가게 된다 (뇌도 같은 정리를 하지만, 보내는
+ * 쪽에서 맞추는 편이 서버 로그를 읽을 때 헷갈리지 않는다).
+ */
+function historyFor(turns: ChatTurn[]): { role: 'user' | 'assistant'; text: string }[] {
+  const spoken = turns
+    .filter((turn): turn is Extract<ChatTurn, { role: 'user' | 'assistant' }> =>
+      turn.role === 'user' || turn.role === 'assistant',
+    )
+    .map((turn) => ({ role: turn.role, text: turn.text }))
+
+  while (spoken.length > 0 && spoken[spoken.length - 1].role === 'user') {
+    spoken.pop()
+  }
+
+  return spoken.slice(-MAX_HISTORY_TURNS)
+}
+
 export default function TeamsSearchPage() {
-  const [phase, setPhase] = useState<Phase>({ kind: 'booting' })
-  const [question, setQuestion] = useState('')
+  const [boot, setBoot] = useState<'booting' | 'ready' | 'blocked'>('booting')
+  const [turns, setTurns] = useState<ChatTurn[]>([])
+  const [pending, setPending] = useState(false)
   const [elapsed, setElapsed] = useState(0)
-  const inputRef = useRef<HTMLInputElement>(null)
+
+  /** 다시 시도할 질문. 오류가 났을 때 사용자가 다시 입력하지 않아도 되게. */
+  const lastQuestion = useRef('')
+  const nextId = useRef(0)
+  const makeId = () => `t${nextId.current++}`
 
   // 마운트 시 환경을 먼저 확인한다. 질문을 입력하고 기다린 뒤에야
   // "Teams 가 아니다"를 보게 되면 늦다.
@@ -106,12 +134,12 @@ export default function TeamsSearchPage() {
     let cancelled = false
     initTeams().then(
       () => {
-        if (cancelled) return
-        setPhase({ kind: 'ready' })
-        inputRef.current?.focus()
+        if (!cancelled) setBoot('ready')
       },
       (error) => {
-        if (!cancelled) setPhase({ kind: 'error', ...describeFailure(error) })
+        if (cancelled) return
+        // Teams 밖이면 어떤 질문도 처리할 수 없다 — 대화창 대신 안내만 띄운다.
+        setBoot(error instanceof NotInTeamsError ? 'blocked' : 'ready')
       },
     )
     return () => {
@@ -121,18 +149,15 @@ export default function TeamsSearchPage() {
 
   // 경과 시간. 이게 없으면 멈춘 것처럼 보인다.
   useEffect(() => {
-    if (phase.kind !== 'searching') return
+    if (!pending) return
     setElapsed(0)
     const started = Date.now()
     const timer = setInterval(() => setElapsed(Math.floor((Date.now() - started) / 1000)), 1000)
     return () => clearInterval(timer)
-  }, [phase.kind])
+  }, [pending])
 
-  const runSearch = useCallback(async () => {
-    const text = question.trim()
-    if (!text) return
-
-    setPhase({ kind: 'searching' })
+  const ask = useCallback(async (question: string, history: ChatTurn[]) => {
+    setPending(true)
     try {
       // 토큰은 보관하지 않고 매번 받는다 (lib/teams/client.ts 참조)
       const token = await getTeamsToken()
@@ -140,7 +165,7 @@ export default function TeamsSearchPage() {
       const response = await fetch('/api/teams/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text: question, history: historyFor(history) }),
       })
 
       if (!response.ok) {
@@ -148,117 +173,87 @@ export default function TeamsSearchPage() {
           .json()
           .then((body) => String(body?.error ?? ''))
           .catch(() => '')
-        setPhase({ kind: 'error', ...describeBffError(response.status, code) })
+        const failure = describeBffError(response.status, code)
+        setTurns((prev) => [...prev, { id: makeId(), role: 'error', ...failure }])
         return
       }
 
-      setPhase({ kind: 'done', result: (await response.json()) as SearchResult })
+      const result = (await response.json()) as SearchResult
+      setTurns((prev) => [
+        ...prev,
+        { id: makeId(), role: 'assistant', text: result.text, tools: result.tools ?? [] },
+      ])
     } catch (error) {
-      setPhase({ kind: 'error', ...describeFailure(error) })
+      const failure = describeFailure(error)
+      setTurns((prev) => [
+        ...prev,
+        {
+          id: makeId(),
+          role: 'error',
+          ...failure,
+          technical: SHOW_TECHNICAL_DETAIL ? failure.technical : undefined,
+        },
+      ])
+    } finally {
+      setPending(false)
     }
-  }, [question])
+  }, [])
 
-  const busy = phase.kind === 'searching' || phase.kind === 'booting'
+  const onSend = useCallback(
+    (text: string) => {
+      lastQuestion.current = text
+      setTurns((prev) => {
+        const next: ChatTurn[] = [...prev, { id: makeId(), role: 'user', text }]
+        void ask(text, prev)
+        return next
+      })
+    },
+    [ask],
+  )
 
-  return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 p-6">
-      <header>
-        <h1 className="text-xl font-semibold">사규 검색</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          궁금한 것을 평소 말하듯 물어보세요. 근거가 된 규정과 시행일을 함께 알려드립니다.
-        </p>
-      </header>
+  const onRetry = useCallback(() => {
+    const question = lastQuestion.current
+    if (!question) return
+    setTurns((prev) => {
+      // 실패 기록을 지우고 같은 질문을 다시 보낸다. 사용자 발언은 그대로 남긴다.
+      const next = prev.filter((turn) => turn.role !== 'error')
+      void ask(question, next)
+      return next
+    })
+  }, [ask])
 
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          void runSearch()
-        }}
-        className="flex gap-2"
-      >
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            ref={inputRef}
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            disabled={busy}
-            maxLength={2000}
-            placeholder="예: 해외 출장 숙박비 한도가 얼마인가요?"
-            className="w-full rounded-full border border-white/10 bg-white/5 py-2.5 pl-10 pr-4 text-sm outline-none transition-colors focus:border-primary/50 disabled:opacity-50"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={busy || !question.trim()}
-          className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-white transition-opacity disabled:opacity-40"
-        >
-          검색
-        </button>
-      </form>
+  const onReset = useCallback(() => {
+    lastQuestion.current = ''
+    setTurns([])
+  }, [])
 
-      {phase.kind === 'searching' && (
-        <div className="flex flex-col items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.02] py-10">
-          <Loader2 className="h-5 w-5 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">
-            사규를 찾아 근거를 정리하고 있습니다… {elapsed}초
-          </p>
-          {elapsed >= PATIENCE_HINT_SEC && (
-            // 정직하게 말한다. 가짜 진행률을 그리는 것보다 낫다.
-            <p className="text-xs text-muted-foreground/70">
-              질문이 복잡하면 1분까지 걸릴 수 있습니다.
+  if (boot === 'blocked') {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-background p-6 text-foreground">
+        <div className="flex max-w-md gap-3 rounded-2xl border border-border bg-card p-5">
+          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+          <div>
+            <p className="text-sm font-medium">Teams 안에서 열어주세요</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              이 화면은 Teams 앱의 탭으로 동작합니다. 브라우저에서 주소를 직접 열면
+              로그인 정보를 받을 수 없습니다.
             </p>
-          )}
-        </div>
-      )}
-
-      {phase.kind === 'error' && (
-        <div className="flex gap-3 rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-red-300">{phase.title}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{phase.detail}</p>
-            {SHOW_TECHNICAL_DETAIL && phase.technical && (
-              <pre className="mt-2 whitespace-pre-wrap break-all rounded-lg bg-black/30 p-2 text-[11px] leading-relaxed text-muted-foreground/80">
-                {phase.technical}
-              </pre>
-            )}
-            {phase.canRetry && (
-              <button
-                onClick={() => void runSearch()}
-                disabled={!question.trim()}
-                className="mt-3 text-sm font-medium text-primary disabled:opacity-40"
-              >
-                다시 시도
-              </button>
-            )}
           </div>
         </div>
-      )}
+      </main>
+    )
+  }
 
-      {phase.kind === 'done' && (
-        <article className="rounded-2xl border border-white/5 bg-white/[0.02] p-5">
-          {/* 뇌가 인격 규칙대로 조항·시행일을 담아 문장으로 돌려준다.
-              줄바꿈이 근거 구분이므로 whitespace-pre-wrap 이 필요하다. */}
-          <p className="whitespace-pre-wrap text-sm leading-relaxed">{phase.result.text}</p>
-
-          {phase.result.tools.length > 0 && (
-            // 검색이 실제로 돌았는지 보여준다. 답변만 있으면 사용자는 이게
-            // 규정을 찾아본 답인지 그냥 지어낸 말인지 구분할 수 없다.
-            <div className="mt-4 flex flex-wrap gap-1.5 border-t border-white/5 pt-4">
-              {phase.result.tools.map((tool, index) => (
-                <span
-                  key={`${tool.name}-${index}`}
-                  className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-muted-foreground"
-                >
-                  {tool.name === 'search_knowledge' ? '사내 규정 검색' : tool.name}
-                  {tool.outcome !== 'ok' && ' · 실패'}
-                </span>
-              ))}
-            </div>
-          )}
-        </article>
-      )}
-    </main>
+  return (
+    <ChatView
+      turns={turns}
+      pending={pending}
+      elapsedSec={elapsed}
+      onSend={onSend}
+      onRetry={onRetry}
+      onReset={onReset}
+      inputDisabled={boot === 'booting'}
+      suggestions={SUGGESTIONS}
+    />
   )
 }
