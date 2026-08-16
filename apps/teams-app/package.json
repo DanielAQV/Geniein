@@ -1,0 +1,12 @@
+{
+  "name": "teams-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Teams 탭 앱 패키지 (매니페스트 + 아이콘)",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "validate": "node validate.mjs",
+    "package": "node build.mjs && node validate.mjs"
+  }
+}

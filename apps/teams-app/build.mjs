@@ -1,0 +1,87 @@
+/**
+ * Teams 앱 패키지 빌드 — 템플릿 + 아이콘 → dist/
+ *
+ * ★ 매니페스트를 완성본으로 커밋하지 않는다. 안에 들어가는 값(테넌트 앱 ID,
+ *   Application ID URI, 호스트)은 이미 `apps/api/.env` 에 있고, 저장소에 두 벌을
+ *   두면 한쪽만 고치는 사고가 난다. 여기서 조립한다.
+ *
+ * 로컬 검증은 호스트만 바꿔서 같은 템플릿을 쓴다:
+ *   CONTENT_HOST=https://xxxx.devtunnels.ms node build.mjs
+ */
+
+import { readFileSync, writeFileSync, copyFileSync, mkdirSync, existsSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const HERE = dirname(fileURLToPath(import.meta.url))
+const DIST = join(HERE, 'dist')
+const API_ENV = join(HERE, '..', 'api', '.env')
+
+/** 프로세스 환경이 우선. 없으면 apps/api/.env 에서 읽는다 (값의 단일 출처). */
+function readConfig() {
+  const fromFile = {}
+  if (existsSync(API_ENV)) {
+    for (const line of readFileSync(API_ENV, 'utf8').split(/\r?\n/)) {
+      const match = /^([A-Z_]+)=(.*)$/.exec(line.trim())
+      if (match) fromFile[match[1]] = match[2].trim()
+    }
+  }
+  return (key) => process.env[key] || fromFile[key] || ''
+}
+
+const get = readConfig()
+
+const clientId = get('ENTRA_CLIENT_ID')
+const audience = get('ENTRA_API_AUDIENCE')
+if (!clientId || !audience) {
+  console.error(
+    '중단: ENTRA_CLIENT_ID / ENTRA_API_AUDIENCE 가 필요합니다.\n' +
+      `      apps/api/.env 에 넣거나 환경변수로 주세요.`,
+  )
+  process.exit(1)
+}
+
+/**
+ * 호스트는 Application ID URI 에서 유도한다 — `api://genie.geniein.com/<clientId>`.
+ * 값을 하나 더 관리하지 않기 위해서다. 터널로 검증할 때만 CONTENT_HOST 로 덮는다.
+ */
+const domainFromAudience = audience.replace(/^api:\/\//, '').split('/')[0]
+const contentHost = (get('CONTENT_HOST') || `https://${domainFromAudience}`).replace(/\/+$/, '')
+const contentDomain = contentHost.replace(/^https?:\/\//, '')
+
+const values = {
+  ENTRA_CLIENT_ID: clientId,
+  ENTRA_API_AUDIENCE: audience,
+  CONTENT_HOST: contentHost,
+  CONTENT_DOMAIN: contentDomain,
+  PRIVACY_URL: get('TEAMS_PRIVACY_URL') || `${contentHost}/privacy`,
+  TERMS_URL: get('TEAMS_TERMS_URL') || `${contentHost}/terms`,
+}
+
+let manifest = readFileSync(join(HERE, 'manifest.template.json'), 'utf8')
+manifest = manifest.replace(/\$\{([A-Z_]+)\}/g, (whole, key) => {
+  if (!(key in values)) {
+    console.error(`중단: 템플릿의 \${${key}} 를 채울 값이 없습니다`)
+    process.exit(1)
+  }
+  return values[key]
+})
+
+// 조립 결과가 유효한 JSON 인지 확인하고 나간다. 매니페스트가 깨지면 Teams 는
+// "앱 패키지가 올바르지 않습니다" 한 줄만 말하고 어디가 문제인지 알려주지 않는다.
+JSON.parse(manifest)
+
+mkdirSync(DIST, { recursive: true })
+writeFileSync(join(DIST, 'manifest.json'), manifest)
+for (const icon of ['color.png', 'outline.png']) copyFileSync(join(HERE, icon), join(DIST, icon))
+
+console.log('dist/ 생성 완료')
+console.log(`  앱 ID      ${clientId}`)
+console.log(`  콘텐츠 호스트 ${contentHost}`)
+console.log(`  리소스     ${audience}`)
+console.log('')
+console.log('업로드용 zip 만들기 (파일 3개가 zip 최상위에 있어야 한다):')
+console.log(
+  '  PowerShell  Compress-Archive -Path dist\\* -DestinationPath dist\\teams-app.zip -Force',
+)
+console.log('  bash        (cd dist && zip -r teams-app.zip manifest.json color.png outline.png)')
