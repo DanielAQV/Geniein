@@ -102,8 +102,31 @@ const BASE_SECURITY_HEADERS = [
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
 ];
 
+/**
+ * ★ 개발 서버를 터널로 노출할 때 반드시 필요하다.
+ *
+ * Next dev 는 `/_next/*` 개발 리소스(HMR 등)를 **다른 오리진에서 요청하면
+ * 차단한다.** 터널 호스트는 localhost 가 아니므로 클라이언트 청크가 막히고,
+ * 그러면 **하이드레이션이 통째로 안 일어난다** — 화면은 서버 HTML 그대로 보이는데
+ * useEffect 가 안 돌아 버튼·입력이 영원히 disabled 로 남는다. 콘솔에는 아무것도
+ * 안 찍히고 Next dev **서버 로그**에만 경고가 나와서, 클라이언트만 들여다보면
+ * 원인을 못 찾는다.
+ *
+ * 운영 빌드에는 없는 문제다 (dev 리소스 자체가 없다).
+ *
+ * 터널 주소는 재시작마다 바뀌므로 `DEV_TUNNEL_HOST` 로 넘긴다. 와일드카드도
+ * 같이 둬서 흔한 터널 서비스는 값을 안 줘도 뚫리게 한다.
+ */
+const devTunnelHost = process.env.DEV_TUNNEL_HOST?.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: [
+    '*.trycloudflare.com',
+    '*.devtunnels.ms',
+    '*.ngrok-free.app',
+    ...(devTunnelHost ? [devTunnelHost] : []),
+  ],
   typescript: {
     ignoreBuildErrors: true,
   },
