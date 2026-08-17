@@ -169,19 +169,33 @@ TMPDIR=/var/tmp/pip /home/dev_admin/genie/venv/bin/pip install torch \
 사규 20건 / 232청크가 이미 색인돼 있다. **다시 색인하지 말고 옮긴다** — 재색인은
 느리고, 무엇보다 같은 결과가 나온다는 보장이 없다.
 
+★ **두 파일로 나눠 뜬다.** 한 파일에 `--data-only` 로 담으면 pg_dump 가 알파벳순으로
+`kb_chunks` 를 먼저 쓰는데, 그 테이블이 `kb_documents` 를 참조해서 복원이 **외래키
+위반으로 깨진다.** 번호를 붙여 순서를 강제한다.
+
+★ `--data-only` 인 이유는 스키마를 이미 `02-knowledge.sql` 로 올렸기 때문이다.
+전체 덤프를 넣으면 `relation already exists` 로 깨진다. 둘 중 하나만 해야 한다.
+
 옮기는 쪽(현재 색인이 있는 곳)에서:
 
 ```bash
-pg_dump -h <현재DB> -U postgres -d geniein_db \
-        -t kb_documents -t kb_chunks --no-owner --no-acl \
-        -f kb.sql
+sudo -u postgres pg_dump -d geniein_db --data-only --no-owner --no-acl \
+  -t kb_documents -f 01-kb_documents.sql
+sudo -u postgres pg_dump -d geniein_db --data-only --no-owner --no-acl \
+  -t kb_chunks -f 02-kb_chunks.sql
 ```
 
-받는 쪽(물리 서버)에서:
+받는 쪽(물리 서버)에서 — **순서대로**:
 
 ```bash
-PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db -f kb.sql
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db \
+  -v ON_ERROR_STOP=1 -f 01-kb_documents.sql
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db \
+  -v ON_ERROR_STOP=1 -f 02-kb_chunks.sql
 ```
+
+> `ON_ERROR_STOP=1` 을 붙인다. 없으면 psql 이 오류를 흘리며 계속 진행해서, 절반만
+> 들어간 상태로 "끝났다"고 보이게 된다.
 
 검증 — 두 숫자가 옮기기 전과 같아야 한다:
 
