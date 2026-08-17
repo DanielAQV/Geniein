@@ -103,7 +103,7 @@ sudo -u postgres psql -p 5433 -d geniein_db -c \
 
 ```bash
 PGPASSWORD='<위에서 정한 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db \
-  -f /srv/genie/db/init/02-knowledge.sql
+  -f /home/dev_admin/genie/db/init/02-knowledge.sql
 ```
 
 ★ `hnsw` 인덱스가 만들어지는 단계가 여기다. pgvector 가 0.5 미만이면 이 명령이
@@ -117,19 +117,19 @@ PGPASSWORD='<위에서 정한 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie 
 값을 치른다.** 이 서버에 실제로 필요한 것(`apps/agent-service` + `db`)은 0.1MB 다.
 
 ```bash
-sudo mkdir -p /srv/genie && sudo chown "$USER" /srv/genie
-git clone --depth 1 -b feat/teams-tab <저장소> /srv/genie
-cd /srv/genie/apps/agent-service
+cd ~
+git clone --depth 1 -b feat/teams-tab <저장소> genie
+cd /home/dev_admin/genie/apps/agent-service
 
-python3 -m venv /srv/genie/venv
-/srv/genie/venv/bin/pip install -r requirements.txt
+python3 -m venv /home/dev_admin/genie/venv
+/home/dev_admin/genie/venv/bin/pip install -r requirements.txt
 ```
 
 얕은 저장소도 `git pull` 은 그대로 된다. 더 줄이려면 필요한 경로만 받는다:
 
 ```bash
-git clone --depth 1 --filter=blob:none --sparse -b feat/teams-tab <저장소> /srv/genie
-cd /srv/genie && git sparse-checkout set apps/agent-service db
+git clone --depth 1 --filter=blob:none --sparse -b feat/teams-tab <저장소> ~/genie
+cd ~/genie && git sparse-checkout set apps/agent-service db
 ```
 
 ### 2.3 임베딩 스택 (torch — CPU)
@@ -139,10 +139,10 @@ cd /srv/genie && git sparse-checkout set apps/agent-service db
 딸려 와서 디스크와 시간만 먹는다.
 
 ```bash
-TMPDIR=/var/tmp/pip /srv/genie/venv/bin/pip install torch \
+TMPDIR=/var/tmp/pip /home/dev_admin/genie/venv/bin/pip install torch \
   --index-url https://download.pytorch.org/whl/cpu
 
-/srv/genie/venv/bin/pip install -r /srv/genie/apps/agent-service/requirements-embed.txt
+/home/dev_admin/genie/venv/bin/pip install -r /home/dev_admin/genie/apps/agent-service/requirements-embed.txt
 ```
 
 첫 실행에서 모델 2.3GB 를 내려받는다.
@@ -201,7 +201,7 @@ PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_
 
 ## 4. 뇌 기동
 
-`/srv/genie/.env` (또는 `apps/agent-service/.env`):
+`/home/dev_admin/genie/.env` (또는 `apps/agent-service/.env`):
 
 | 키 | 값 |
 |---|---|
@@ -217,7 +217,7 @@ PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_
 ★ `127.0.0.1` 에만 바인딩한다:
 
 ```bash
-/srv/genie/venv/bin/python -m uvicorn src.main:app --host 127.0.0.1 --port 8001
+/home/dev_admin/genie/venv/bin/python -m uvicorn src.main:app --host 127.0.0.1 --port 8001
 ```
 
 systemd 로 상주시키고(`Restart=always`), 부팅 시 자동 시작을 켠다.
