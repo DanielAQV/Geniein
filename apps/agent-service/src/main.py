@@ -139,6 +139,18 @@ class MessageRequest(BaseModel):
     org_id: str | None = None
     roles: list[str] = Field(default_factory=list)
 
+    # 계정 언어 (`ko-kr`). 게이트웨이가 Entra 클레임 `xms_pl` 에서 뽑아 넘긴다.
+    # 없을 수 있고, 없으면 인격의 기본 규칙(질문한 언어로 답한다)만 적용된다.
+    locale: str | None = Field(default=None, max_length=35)
+
+    # 사용자가 탭에서 직접 고른 언어 (`ko`/`vi`/`en`). 계정 언어보다 강한 근거다
+    # (뇌의 _language_hint 참조). 신원이 아니라 표시 설정이므로 클라이언트에서 와도 된다.
+    #
+    # ★ 모르는 값이 와도 400 을 내지 않는다. 이 값은 인가 경계가 아니고, 표시 설정
+    #   하나 때문에 검색이 실패하는 것이 더 나쁘다. 판정 함수가 조용히 다음 근거로
+    #   넘어간다. 길이만 막는다 — 프롬프트에 긴 문자열이 실리지 않게.
+    chosen_lang: str | None = Field(default=None, max_length=16)
+
 
 class ToolTraceOut(BaseModel):
     name: str
@@ -200,6 +212,8 @@ def agent_message(req: MessageRequest) -> MessageResponse:
             internal_user_id=req.internal_user_id,
             org_id=req.org_id,
             roles=tuple(req.roles),
+            locale=req.locale,
+            chosen_lang=req.chosen_lang,
         ),
         history=_to_provider_messages(req.history),
     )

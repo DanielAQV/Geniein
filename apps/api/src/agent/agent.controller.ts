@@ -16,6 +16,7 @@
 import {
   BadRequestException,
   Body,
+  Get,
   Controller,
   Post,
   Req,
@@ -40,6 +41,26 @@ const MAX_QUESTION_LENGTH = 2000;
 const MAX_HISTORY_TURNS = 20;
 /** 이력 한 마디의 상한. 답변이 길 수 있어 질문 상한보다 넉넉하다. */
 const MAX_HISTORY_TEXT_LENGTH = 8000;
+
+/**
+ * 탭이 보낼 수 있는 언어 값. `apps/web/src/app/teams/_lib/i18n.ts` 의 `LANGUAGES` 와
+ * 같아야 한다 — 화면에 없는 언어를 뇌에 넘겨도 문구가 없다.
+ */
+const ALLOWED_LANGS = ['ko', 'vi', 'en'] as const;
+
+/**
+ * 사용자가 탭에서 직접 고른 언어. 모르는 값은 **버리고 통과시킨다.**
+ *
+ * ★ 400 을 내지 않는 것이 의도다. 이 값은 인가 경계가 아니라 표시 설정이고, 뇌에는
+ *   계정 언어라는 다음 근거가 있다. 오래된 탭이 새 언어 코드를 보냈다는 이유로 검색이
+ *   실패하면, 사용자는 답을 못 받고 원인도 알 수 없다.
+ */
+function parseLang(raw: unknown): string | null {
+  return typeof raw === 'string' &&
+    (ALLOWED_LANGS as readonly string[]).includes(raw)
+    ? raw
+    : null;
+}
 
 /**
  * 이력은 **클라이언트가 들고 있다가 다시 보내는 값**이다. 서버는 이것을 신원이나
@@ -85,11 +106,30 @@ function parseHistory(
 export class AgentController {
   constructor(private readonly agentService: AgentService) {}
 
+  /**
+   * 탭이 부팅할 때 한 번 부른다 — 화면 문구를 무슨 언어로 그릴지 정하려고.
+   *
+   * ★ 신원을 돌려주지 않는다. 화면이 필요한 것은 언어 하나뿐이고, 이름·이메일을
+   *   내려보내면 쓰지도 않을 개인정보가 브라우저와 로그에 남는다.
+   *
+   * ★ `preferredLanguage` 는 없을 수 있다 (Entra `xms_pl` 이 "설정돼 있으면" 실린다).
+   *   그때는 `null` 을 돌려주고, 화면이 Teams locale 로 떨어진다. 서버가 억지로
+   *   기본값을 만들어 내려보내면 클라이언트가 더 나은 근거를 갖고도 못 쓰게 된다.
+   */
+  @Get('me')
+  me(@Req() request: RequestWithEntraUser): { language: string | null } {
+    const user = request.entraUser;
+    if (!user) throw new BadRequestException('identity is missing');
+
+    return { language: user.preferredLanguage ?? null };
+  }
+
   @Post('search')
   search(
     @Body('text') text: unknown,
     @Body('history') history: unknown,
     @Req() request: RequestWithEntraUser,
+    @Body('lang') lang?: unknown,
   ): Promise<AgentSearchResult> {
     const question = typeof text === 'string' ? text.trim() : '';
     if (!question || question.length > MAX_QUESTION_LENGTH) {
@@ -104,6 +144,8 @@ export class AgentController {
     if (!user) throw new BadRequestException('identity is missing');
 
     // ★ 요청 본문의 신원 비슷한 필드는 읽지 않는다. 토큰이 유일한 출처다.
-    return this.agentService.search(question, user, priorTurns);
+    //   `lang` 은 예외가 아니다 — 신원이 아니라 표시 설정이고, 이 값으로 열리는
+    //   데이터가 없다. 어느 법인의 문서를 볼지는 여전히 토큰의 tid 가 정한다.
+    return this.agentService.search(question, user, priorTurns, parseLang(lang));
   }
 }

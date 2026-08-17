@@ -3,7 +3,8 @@
 /**
  * 미리보기 알맹이.
  *
- * 기본은 **로컬 뇌에 실제로 질문한다** (`/api/teams/preview-search`, 개발 빌드 전용).
+ * 기본은 **실제 검색 서비스에 질문한다** (`/api/teams/preview-search`, 개발 빌드 전용).
+ * 어디로 갈지는 `RAG_SERVICE_URL` 이 정한다 — 로컬일 수도, 사내 서버일 수도 있다.
  * 그 경로가 없거나 설정이 안 됐으면 캔에 담긴 예시 응답으로 떨어진다.
  *
  * ★ 떨어졌다는 사실을 반드시 화면에 밝힌다. 처음엔 조용히 고정 응답만 내놨는데,
@@ -16,14 +17,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { FlaskConical, Info } from 'lucide-react'
 import { ChatView, type ChatTurn, type ToolChip } from '../_components/chat-view'
 import { normalizeTheme, type TeamsTheme } from '../_components/teams-theme-sync'
+import {
+  DEFAULT_LANG,
+  readStoredLang,
+  storeLang,
+  stringsFor,
+  type Lang,
+} from '../_lib/i18n'
 
 const MAX_HISTORY_TURNS = 20
-
-const SUGGESTIONS = [
-  '해외 출장 숙박비 한도가 얼마인가요?',
-  '출장 가기 전에 뭘 해야 하나요?',
-  '연차는 언제부터 쓸 수 있나요?',
-]
 
 const CANNED_ANSWER = `해외출장 숙박비 한도는 **1일 최대 150 USD**입니다 (실비 정산, 세금계산서/영수증 첨부 기준).
 
@@ -109,7 +111,7 @@ function Banner({ mode, reason }: { mode: Mode; reason: string }) {
               질문 내용과 무관하게 준비된 두 답변이 번갈아 나옵니다. {reason}
             </>
           ) : (
-            <>로컬 뇌에 실제로 질문하고 있습니다. 답변까지 40~60초 걸립니다.</>
+            <>실제 검색 서비스에 연결돼 있습니다 (`RAG_SERVICE_URL`).</>
           )}
         </p>
       </div>
@@ -131,6 +133,7 @@ function historyFor(turns: ChatTurn[]) {
 export function PreviewClient() {
   /** null = "아직 안 읽음". 인라인 스크립트(`?theme=`)가 세운 값을 덮지 않기 위해서다. */
   const [theme, setTheme] = useState<TeamsTheme | null>(null)
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG)
   const [turns, setTurns] = useState<ChatTurn[]>([])
   const [pending, setPending] = useState(false)
   const [elapsed, setElapsed] = useState(0)
@@ -141,8 +144,12 @@ export function PreviewClient() {
   const cannedCount = useRef(0)
   const makeId = () => `p${nextId.current++}`
 
+  const strings = stringsFor(lang)
+
   useEffect(() => {
     setTheme(normalizeTheme(document.documentElement.getAttribute('data-teams-theme')))
+    const stored = readStoredLang()
+    if (stored) setLang(stored)
   }, [])
 
   useEffect(() => {
@@ -195,7 +202,7 @@ export function PreviewClient() {
             pushCanned(
               code === 'preview_not_configured'
                 ? 'apps/web/.env 에 RAG_SERVICE_URL · AGENT_SERVICE_TOKEN · TEAMS_PREVIEW_ORG_ID 를 넣으면 실제로 물어봅니다.'
-                : '뇌를 부르지 못했습니다 (로컬 agent-service 가 떠 있는지 확인하세요).',
+                : '검색 서비스를 부르지 못했습니다 (주소·토큰과, 그쪽이 이 IP 를 허용하는지 확인하세요).',
             )
             return
           }
@@ -231,7 +238,13 @@ export function PreviewClient() {
         onSend={onSend}
         onRetry={() => undefined}
         onReset={onReset}
-        suggestions={SUGGESTIONS}
+        suggestions={strings.suggestions}
+        strings={strings}
+        lang={lang}
+        onLangChange={(next) => {
+          storeLang(next)
+          setLang(next)
+        }}
         notice={<Banner mode={mode} reason={reason} />}
       />
     </>
