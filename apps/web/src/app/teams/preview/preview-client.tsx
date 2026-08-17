@@ -3,9 +3,9 @@
 /**
  * 미리보기 알맹이.
  *
- * 기본은 **실제 뇌에 질문한다** (`/api/teams/preview-search`, 개발 빌드 전용).
- * 뇌가 어디 있는지는 `RAG_SERVICE_URL` 이 정한다 — 로컬일 수도, 사내 서버일 수도
- * 있다. 그 경로가 없거나 설정이 안 됐으면 캔에 담긴 예시 응답으로 떨어진다.
+ * 기본은 **실제 검색 서비스에 질문한다** (`/api/teams/preview-search`, 개발 빌드 전용).
+ * 어디로 갈지는 `RAG_SERVICE_URL` 이 정한다 — 로컬일 수도, 사내 서버일 수도 있다.
+ * 그 경로가 없거나 설정이 안 됐으면 캔에 담긴 예시 응답으로 떨어진다.
  *
  * ★ 떨어졌다는 사실을 반드시 화면에 밝힌다. 처음엔 조용히 고정 응답만 내놨는데,
  *   무슨 질문을 해도 같은 답이 나오니 **에이전트가 질문을 무시하는 것처럼 보였다.**
@@ -111,10 +111,7 @@ function Banner({ mode, reason }: { mode: Mode; reason: string }) {
               질문 내용과 무관하게 준비된 두 답변이 번갈아 나옵니다. {reason}
             </>
           ) : (
-            <>
-              실제 뇌에 질문하고 있습니다 (`RAG_SERVICE_URL`). 답변까지 10~60초
-              걸립니다.
-            </>
+            <>실제 검색 서비스에 연결돼 있습니다 (`RAG_SERVICE_URL`).</>
           )}
         </p>
       </div>
@@ -205,7 +202,7 @@ export function PreviewClient() {
             pushCanned(
               code === 'preview_not_configured'
                 ? 'apps/web/.env 에 RAG_SERVICE_URL · AGENT_SERVICE_TOKEN · TEAMS_PREVIEW_ORG_ID 를 넣으면 실제로 물어봅니다.'
-                : '뇌를 부르지 못했습니다 (주소·토큰과, 그 뇌가 이 IP 를 허용하는지 확인하세요).',
+                : '검색 서비스를 부르지 못했습니다 (주소·토큰과, 그쪽이 이 IP 를 허용하는지 확인하세요).',
             )
             return
           }

@@ -58,8 +58,9 @@ export interface Strings {
   emptyBody: string
   placeholder: string
   send: string
-  searching: (seconds: number) => string
-  patience: string
+  /** 검색 중 문구. **시간을 약속하지 않는다** — 실측이 45초에서 10초로 바뀌었고,
+   *  또 바뀔 값이다. 근거 없는 숫자를 적으면 그게 곧 틀린 안내가 된다. */
+  searching: string
   toolSearch: string
   toolFailed: string
   retry: string
@@ -86,8 +87,7 @@ const ko: Strings = {
   emptyBody: '평소 말하듯 물어보세요. 근거가 된 규정과 시행일을 함께 알려드립니다.',
   placeholder: '예: 해외 출장 숙박비 한도가 얼마인가요?',
   send: '보내기',
-  searching: (s) => `사규를 찾아 근거를 정리하고 있습니다… ${s}초`,
-  patience: '질문이 복잡하면 1분까지 걸릴 수 있습니다.',
+  searching: '문서를 확인하고 있습니다',
   toolSearch: '사내 규정 검색',
   toolFailed: '실패',
   retry: '다시 시도',
@@ -121,8 +121,7 @@ const vi: Strings = {
     'Hãy hỏi như khi bạn nói chuyện thường ngày. Chúng tôi sẽ kèm theo điều khoản và ngày hiệu lực làm căn cứ.',
   placeholder: 'Ví dụ: Mức phụ cấp khách sạn khi công tác nước ngoài là bao nhiêu?',
   send: 'Gửi',
-  searching: (s) => `Đang tra cứu quy định và tổng hợp căn cứ… ${s} giây`,
-  patience: 'Câu hỏi phức tạp có thể mất đến 1 phút.',
+  searching: 'Đang kiểm tra tài liệu',
   toolSearch: 'Tra cứu quy định nội bộ',
   toolFailed: 'thất bại',
   retry: 'Thử lại',
@@ -156,8 +155,7 @@ const en: Strings = {
     'Ask in plain language. Answers come with the regulation and its effective date.',
   placeholder: 'e.g. What is the accommodation limit for overseas travel?',
   send: 'Send',
-  searching: (s) => `Searching the policies and gathering sources… ${s}s`,
-  patience: 'Complex questions can take up to a minute.',
+  searching: 'Checking the documents',
   toolSearch: 'Internal policy search',
   toolFailed: 'failed',
   retry: 'Try again',

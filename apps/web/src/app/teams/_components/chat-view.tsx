@@ -5,7 +5,7 @@
  *
  * 그래서 두 곳이 같은 화면을 쓴다:
  *   /teams/search    실제 동작 (Teams SSO + BFF)
- *   /teams/preview   개발 전용. 로컬 뇌에 직접 묻고, 설정이 없으면 예시로 떨어진다
+ *   /teams/preview   개발 전용. 검색 서비스에 직접 묻고, 설정이 없으면 예시로 떨어진다
  *
  * ★ 검색창이 아니라 **대화**다. 한 번 묻고 끝나면 "해외는?" 같은 되묻기가
  *   불가능해서, 사용자가 매번 질문을 처음부터 다시 쓰게 된다. 이전 발언이
@@ -67,8 +67,14 @@ export interface ChatViewProps {
   onLangChange: (next: Lang) => void
 }
 
-/** 이 시간을 넘기면 "원래 오래 걸린다"고 알려준다. 그 전에는 잡음이다. */
-const PATIENCE_HINT_SEC = 15
+/**
+ * 이 시간을 넘겨야 경과 초를 보여준다.
+ *
+ * ★ 처음부터 초를 세면 짧은 대기에도 시계를 들이대는 꼴이라 실제보다 느리게 느껴진다.
+ *   반대로 아예 안 보여주면 오래 걸릴 때 멈춘 것처럼 보인다. 평소엔 조용하고
+ *   느려질 때만 말하는 쪽이 맞다.
+ */
+const ELAPSED_AFTER_SEC = 10
 
 /** 입력창 최대 높이(px). 넘으면 자체 스크롤 — 대화가 화면에서 밀려나지 않게. */
 const COMPOSER_MAX_HEIGHT = 160
@@ -337,15 +343,15 @@ export function ChatView({
                   <div className="flex min-w-0 flex-1 items-center gap-2 pt-1">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     <p className="text-sm text-muted-foreground">
-                      {strings.searching(elapsedSec)}
+                      {strings.searching}
+                      {elapsedSec >= ELAPSED_AFTER_SEC && (
+                        <span className="ml-1.5 tabular-nums text-muted-foreground/70">
+                          {elapsedSec}s
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
-              )}
-
-              {pending && elapsedSec >= PATIENCE_HINT_SEC && (
-                // 정직하게 말한다. 가짜 진행률을 그리는 것보다 낫다.
-                <p className="pl-10 text-xs text-muted-foreground/70">{strings.patience}</p>
               )}
             </div>
           )}
