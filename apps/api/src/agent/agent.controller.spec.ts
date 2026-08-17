@@ -24,7 +24,12 @@ const RESULT: AgentSearchResult = { text: '답변', refused: false, tools: [] };
 const search =
   jest.fn<
     Promise<AgentSearchResult>,
-    [string, EntraUser, { role: 'user' | 'assistant'; text: string }[]]
+    [
+      string,
+      EntraUser,
+      { role: 'user' | 'assistant'; text: string }[],
+      string | null,
+    ]
   >();
 
 function controller(): AgentController {
@@ -45,13 +50,13 @@ describe('AgentController', () => {
       controller().search('출장 일비 얼마야?', undefined, requestOf(USER)),
     ).resolves.toEqual(RESULT);
 
-    expect(search).toHaveBeenCalledWith('출장 일비 얼마야?', USER, []);
+    expect(search).toHaveBeenCalledWith('출장 일비 얼마야?', USER, [], null);
   });
 
   it('앞뒤 공백을 다듬어 넘긴다', async () => {
     await controller().search('  일비  ', undefined, requestOf(USER));
 
-    expect(search).toHaveBeenCalledWith('일비', USER, []);
+    expect(search).toHaveBeenCalledWith('일비', USER, [], null);
   });
 
   it.each([
@@ -89,13 +94,13 @@ describe('AgentController', () => {
     it('정상 이력을 그대로 넘긴다', async () => {
       await controller().search('그럼 국내는?', OK, requestOf(USER));
 
-      expect(search).toHaveBeenCalledWith('그럼 국내는?', USER, OK);
+      expect(search).toHaveBeenCalledWith('그럼 국내는?', USER, OK, null);
     });
 
     it('없으면 빈 배열로 넘긴다', async () => {
       await controller().search('일비', undefined, requestOf(USER));
 
-      expect(search).toHaveBeenCalledWith('일비', USER, []);
+      expect(search).toHaveBeenCalledWith('일비', USER, [], null);
     });
 
     it.each([
@@ -129,6 +134,41 @@ describe('AgentController', () => {
       expect(() => controller().search('일비', huge, requestOf(USER))).toThrow(
         BadRequestException,
       );
+    });
+  });
+
+  /**
+   * 사용자가 탭에서 고른 언어. 신원이 아니라 표시 설정이므로 본문에서 받는다 —
+   * 이 값으로 열리는 데이터가 없고, 어느 법인의 문서를 볼지는 토큰의 tid 가 정한다.
+   */
+  describe('고른 언어(lang)', () => {
+    it.each([['ko'], ['vi'], ['en']])('허용된 값 %s 을 그대로 넘긴다', async (lang) => {
+      await controller().search('일비', undefined, requestOf(USER), lang);
+
+      expect(search).toHaveBeenCalledWith('일비', USER, [], lang);
+    });
+
+    // ★ 거부하지 않고 **버린다.** 표시 설정 하나 때문에 검색이 실패하면 사용자는
+    //   답을 못 받고 원인도 알 수 없다. 뇌에는 계정 언어라는 다음 근거가 있다.
+    it.each([
+      ['모르는 코드', 'jp'],
+      ['사이트 사전 코드', 'vn'],
+      ['문자열이 아님', 42],
+      ['빈 문자열', ''],
+      ['긴 문자열', 'k'.repeat(50)],
+      ['객체', { lang: 'ko' }],
+    ])('%s 이면 버리고 통과시킨다', async (_label, lang) => {
+      await expect(
+        controller().search('일비', undefined, requestOf(USER), lang),
+      ).resolves.toEqual(RESULT);
+
+      expect(search).toHaveBeenCalledWith('일비', USER, [], null);
+    });
+
+    it('없으면 null 로 넘긴다', async () => {
+      await controller().search('일비', undefined, requestOf(USER));
+
+      expect(search).toHaveBeenCalledWith('일비', USER, [], null);
     });
   });
 

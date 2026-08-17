@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'missing_token' }, { status: 401 })
   }
 
-  let body: { text?: unknown; history?: unknown }
+  let body: { text?: unknown; history?: unknown; lang?: unknown }
   try {
     body = (await request.json()) ?? {}
   } catch {
@@ -51,6 +51,11 @@ export async function POST(request: Request) {
   // 이력은 모양만 보고 넘긴다 — 실제 검증은 NestJS 가 한다. 여기서 규칙을 한 벌 더
   // 두면 두 곳이 어긋날 때 원인을 찾기 어려워진다. BFF 의 일은 통과시키는 것이다.
   const history = Array.isArray(body.history) ? body.history : []
+
+  // 사용자가 탭에서 고른 언어. 허용 목록은 NestJS 가 갖고 있으므로 여기서는 타입만 본다
+  // (i18n.ts 를 import 하면 같은 목록이 두 곳에 생긴다). 없으면 아예 안 보낸다 —
+  // 자동 판정으로 정해진 값을 보내면 "사용자가 골랐다"는 신호가 흐려진다.
+  const lang = typeof body.lang === 'string' ? body.lang : undefined
 
   const serviceToken = process.env.ADMIN_SERVICE_TOKEN
   if (!serviceToken) {
@@ -69,7 +74,7 @@ export async function POST(request: Request) {
         // 호출자 신원 — 이 요청이 우리 BFF 에서 왔음을 NestJS 에 증명한다
         'x-service-token': serviceToken,
       },
-      body: JSON.stringify({ text: question, history }),
+      body: JSON.stringify({ text: question, history, ...(lang ? { lang } : {}) }),
       cache: 'no-store',
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     })

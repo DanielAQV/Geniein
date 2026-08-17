@@ -111,6 +111,7 @@ describe('AgentService', () => {
         internal_user_id: `${TENANT}:${OID}`,
         org_id: TENANT,
         locale: null,
+        chosen_lang: null,
         roles: [],
       });
     });
@@ -119,6 +120,22 @@ describe('AgentService', () => {
       await serviceWith(CONFIGURED).search('일비', { ...USER, preferredLanguage: 'vi-vn' });
 
       expect(sentBody()).toMatchObject({ locale: 'vi-vn' });
+    });
+
+    /**
+     * 고른 언어와 계정 언어는 **따로** 넘어간다. 뇌가 우선순위를 정하기 때문이다
+     * (발언 언어 > 고른 값 > 계정 언어). 게이트웨이에서 하나로 합치면 그 순서를
+     * 여기서 정해버리는 셈이 되고, 뇌는 사용자가 고른 것인지 알 수 없게 된다.
+     */
+    it('고른 언어를 계정 언어와 별개로 넘긴다', async () => {
+      await serviceWith(CONFIGURED).search(
+        '일비',
+        { ...USER, preferredLanguage: 'en-us' },
+        [],
+        'vi',
+      );
+
+      expect(sentBody()).toMatchObject({ locale: 'en-us', chosen_lang: 'vi' });
     });
 
     it('계정 언어가 없으면 null 로 넘긴다', async () => {

@@ -205,8 +205,15 @@ export default function TeamsSearchPage() {
     setLang(next)
   }, [])
 
+  /**
+   * `chosen` 은 **사용자가 직접 고른 언어**이고, 자동 판정 결과는 넣지 않는다.
+   *
+   * ★ 이 구분이 없으면 신호가 흐려진다. 자동 판정은 이미 계정 언어와 Teams locale
+   *   에서 나온 값이라, 그걸 되돌려 보내면 서버가 "사용자가 골랐다"와 "우리가 추측했다"
+   *   를 구분할 수 없다. 서버 쪽 우선순위(발언 언어 > 고른 값 > 계정 언어)가 무의미해진다.
+   */
   const ask = useCallback(
-    async (question: string, history: ChatTurn[], s: Strings) => {
+    async (question: string, history: ChatTurn[], s: Strings, chosen: Lang | null) => {
       setPending(true)
       try {
         // 토큰은 보관하지 않고 매번 받는다 (lib/teams/client.ts 참조)
@@ -215,7 +222,11 @@ export default function TeamsSearchPage() {
         const response = await fetch('/api/teams/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ text: question, history: historyFor(history) }),
+          body: JSON.stringify({
+            text: question,
+            history: historyFor(history),
+            ...(chosen ? { lang: chosen } : {}),
+          }),
         })
 
         if (!response.ok) {
@@ -256,11 +267,11 @@ export default function TeamsSearchPage() {
       lastQuestion.current = text
       setTurns((prev) => {
         const next: ChatTurn[] = [...prev, { id: makeId(), role: 'user', text }]
-        void ask(text, prev, strings)
+        void ask(text, prev, strings, chosenByUser.current ? lang : null)
         return next
       })
     },
-    [ask, strings],
+    [ask, strings, lang],
   )
 
   const onRetry = useCallback(() => {
@@ -269,10 +280,10 @@ export default function TeamsSearchPage() {
     setTurns((prev) => {
       // 실패 기록을 지우고 같은 질문을 다시 보낸다. 사용자 발언은 그대로 남긴다.
       const next = prev.filter((turn) => turn.role !== 'error')
-      void ask(question, next, strings)
+      void ask(question, next, strings, chosenByUser.current ? lang : null)
       return next
     })
-  }, [ask, strings])
+  }, [ask, strings, lang])
 
   const onReset = useCallback(() => {
     lastQuestion.current = ''

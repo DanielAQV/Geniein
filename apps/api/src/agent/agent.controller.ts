@@ -43,6 +43,26 @@ const MAX_HISTORY_TURNS = 20;
 const MAX_HISTORY_TEXT_LENGTH = 8000;
 
 /**
+ * 탭이 보낼 수 있는 언어 값. `apps/web/src/app/teams/_lib/i18n.ts` 의 `LANGUAGES` 와
+ * 같아야 한다 — 화면에 없는 언어를 뇌에 넘겨도 문구가 없다.
+ */
+const ALLOWED_LANGS = ['ko', 'vi', 'en'] as const;
+
+/**
+ * 사용자가 탭에서 직접 고른 언어. 모르는 값은 **버리고 통과시킨다.**
+ *
+ * ★ 400 을 내지 않는 것이 의도다. 이 값은 인가 경계가 아니라 표시 설정이고, 뇌에는
+ *   계정 언어라는 다음 근거가 있다. 오래된 탭이 새 언어 코드를 보냈다는 이유로 검색이
+ *   실패하면, 사용자는 답을 못 받고 원인도 알 수 없다.
+ */
+function parseLang(raw: unknown): string | null {
+  return typeof raw === 'string' &&
+    (ALLOWED_LANGS as readonly string[]).includes(raw)
+    ? raw
+    : null;
+}
+
+/**
  * 이력은 **클라이언트가 들고 있다가 다시 보내는 값**이다. 서버는 이것을 신원이나
  * 권한 판단에 쓰지 않는다 — 그 출처는 오직 Entra 토큰이다 (설계문서 원칙③).
  * 여기서는 모양만 본다. 내용의 진위는 확인할 수 있는 종류가 아니고, 확인해야 할
@@ -109,6 +129,7 @@ export class AgentController {
     @Body('text') text: unknown,
     @Body('history') history: unknown,
     @Req() request: RequestWithEntraUser,
+    @Body('lang') lang?: unknown,
   ): Promise<AgentSearchResult> {
     const question = typeof text === 'string' ? text.trim() : '';
     if (!question || question.length > MAX_QUESTION_LENGTH) {
@@ -123,6 +144,8 @@ export class AgentController {
     if (!user) throw new BadRequestException('identity is missing');
 
     // ★ 요청 본문의 신원 비슷한 필드는 읽지 않는다. 토큰이 유일한 출처다.
-    return this.agentService.search(question, user, priorTurns);
+    //   `lang` 은 예외가 아니다 — 신원이 아니라 표시 설정이고, 이 값으로 열리는
+    //   데이터가 없다. 어느 법인의 문서를 볼지는 여전히 토큰의 tid 가 정한다.
+    return this.agentService.search(question, user, priorTurns, parseLang(lang));
   }
 }
