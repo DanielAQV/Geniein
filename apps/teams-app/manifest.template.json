@@ -10,12 +10,12 @@
     "termsOfUseUrl": "${TERMS_URL}"
   },
   "name": {
-    "short": "사규검색",
-    "full": "유나 — 사내 규정 검색"
+    "short": "Policy Search",
+    "full": "Policy Search — Company Regulations"
   },
   "description": {
-    "short": "사내 규정을 평소 말하듯 물어보고 근거와 함께 답을 받습니다.",
-    "full": "출장비·수당·근태 같은 사내 규정을 자연어로 물어보면, 근거가 된 문서명·조항·시행일과 함께 답변합니다. 회사 계정으로 자동 로그인되며, 본인이 속한 법인의 규정만 검색됩니다."
+    "short": "Ask about company policies in plain language and get answers with sources.",
+    "full": "Ask about travel expenses, allowances, attendance and other company policies in plain language. Every answer cites the source document, article and effective date. You are signed in automatically with your company account, and only your own entity's policies are searched."
   },
   "icons": {
     "color": "color.png",
@@ -25,7 +25,7 @@
   "staticTabs": [
     {
       "entityId": "genie-search",
-      "name": "사규검색",
+      "name": "Policy Search",
       "contentUrl": "${CONTENT_HOST}/teams/search?theme={theme}",
       "websiteUrl": "${CONTENT_HOST}/teams/search",
       "scopes": ["personal"]
