@@ -94,6 +94,18 @@ export interface EntraUser {
   internalUserId: string;
   displayName?: string;
   preferredUsername?: string;
+  /**
+   * 사용자 계정에 설정된 선호 언어 (`ko-kr`, `vi-vn` 형식). Entra 선택적 클레임
+   * `xms_pl` 에서 온다.
+   *
+   * ★ **없을 수 있다.** 문서가 "if set" 이라고 못박은 대로, 사용자 프로필에 선호
+   *   언어가 채워져 있어야 실린다. 안 채운 테넌트가 흔하므로 이 값 하나에 기대면
+   *   안 되고, 없을 때의 대안(Teams locale / 사용자 선택)이 반드시 있어야 한다.
+   *
+   * ★ 클라이언트가 보낸 값이 아니라 **서명 검증을 통과한 토큰**에서 나온다.
+   *   그래서 Teams 가 주는 locale 힌트와 신뢰 수준이 다르다.
+   */
+  preferredLanguage?: string;
 }
 
 export interface RequestWithEntraUser {
@@ -155,6 +167,12 @@ export class EntraAuthGuard implements CanActivate {
       preferredUsername:
         typeof payload.preferred_username === 'string'
           ? payload.preferred_username
+          : undefined,
+      // Entra 선택적 클레임. 앱 등록에서 켜야 실리고, 켜도 사용자 프로필에
+      // 값이 있어야 온다 (EntraUser.preferredLanguage 주석 참조).
+      preferredLanguage:
+        typeof payload.xms_pl === 'string' && payload.xms_pl.trim()
+          ? payload.xms_pl.trim().toLowerCase()
           : undefined,
     };
 

@@ -85,8 +85,13 @@ export class AgentService {
     );
 
     // 비용과 지연은 우리가 들고 있는다. 브라우저로 내려보내지 않는다 (설계문서 10.2).
+    // ★ lang 은 Entra 선택적 클레임 `xms_pl` 이 실제로 오는지 확인하는 용도로 남긴다.
+    //   "앱 등록에서 켰다"와 "토큰에 값이 실린다"는 별개다 — 사용자 프로필에 선호
+    //   언어가 없으면 켜도 비어 있고, 그러면 언어 판단을 다른 근거로 해야 한다.
+    //   언어 태그는 개인을 식별하지 않으므로 로그에 남겨도 된다.
     this.logger.log(
-      `검색 완료 user=${user.internalUserId} ${Date.now() - startedAt}ms ` +
+      `검색 완료 user=${user.internalUserId} lang=${user.preferredLanguage ?? '-'} ` +
+        `${Date.now() - startedAt}ms ` +
         `iterations=${body.iterations} tools=[${body.tool_trace
           .map((t) => `${t.name}:${t.outcome}`)
           .join(', ')}] usage=${JSON.stringify(body.usage)}`,

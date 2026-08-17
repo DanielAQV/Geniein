@@ -59,6 +59,7 @@ interface TokenOverrides {
   aud?: string;
   oid?: string | undefined;
   scp?: string | undefined;
+  xms_pl?: string | undefined;
   expiresIn?: string | number;
   key?: Parameters<typeof sign>[1];
   algorithm?: 'RS256' | 'HS256' | 'none';
@@ -75,6 +76,7 @@ function token(over: TokenOverrides = {}): string {
   };
   if (over.oid !== undefined) payload.oid = over.oid;
   if (over.scp !== undefined) payload.scp = over.scp;
+  if (over.xms_pl !== undefined) payload.xms_pl = over.xms_pl;
 
   const algorithm = over.algorithm ?? 'RS256';
   return sign(payload, over.key ?? (algorithm === 'RS256' ? privateKey : ''), {
@@ -272,6 +274,40 @@ describe('EntraAuthGuard', () => {
       await expect(guard.canActivate(ctx)).rejects.toThrow(
         UnauthorizedException,
       );
+    });
+  });
+
+  /**
+   * Entra 선택적 클레임 `xms_pl` (계정 선호 언어). 앱 등록에서 켜야 실리고,
+   * 켜도 사용자 프로필에 값이 있어야 온다 — 그래서 **없는 경우가 정상 경로**다.
+   * 없다고 인증이 막히면 안 된다.
+   */
+  describe('선호 언어 클레임', () => {
+    it('있으면 소문자로 정규화해 싣는다', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx, request } = contextWith(bearer(goodToken({ xms_pl: 'vi-VN' })));
+
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+      expect(request.entraUser?.preferredLanguage).toBe('vi-vn');
+    });
+
+    it('없어도 통과한다 (값만 비어 있다)', async () => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx, request } = contextWith(bearer(goodToken()));
+
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+      expect(request.entraUser?.preferredLanguage).toBeUndefined();
+    });
+
+    it.each([
+      ['빈 문자열', ''],
+      ['공백뿐', '   '],
+    ])('%s 이면 없는 것으로 본다', async (_label, value) => {
+      const guard = guardWith(CONFIGURED);
+      const { ctx, request } = contextWith(bearer(goodToken({ xms_pl: value })));
+
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+      expect(request.entraUser?.preferredLanguage).toBeUndefined();
     });
   });
 
