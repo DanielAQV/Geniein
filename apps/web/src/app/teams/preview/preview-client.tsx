@@ -84,13 +84,19 @@ async function streamCanned(
   handlers.onPhase({ kind: 'reading' })
   await wait(600)
 
-  // 토큰 단위를 모사한다. 한 글자씩 흘리면 실제보다 매끄러워 보여서, 진짜 스트림에서
-  // 덜컹거리는 것을 미리 못 본다.
-  let shown = ''
-  for (let i = 0; i < text.length; i += 6) {
-    shown += text.slice(i, i + 6)
-    handlers.onText(shown)
-    await wait(30)
+  // ★ **고르게 흘리지 않는다.** 실제 델타는 뭉텅이로 온다 — 한 번에 40자가 오고
+  //   다음 300ms 는 아무것도 안 온다. 고르게 모사하면 화면이 실제보다 매끄러워 보여서,
+  //   운영에서 덜컹거리는 것을 미리 못 본다 (실제로 그렇게 놓쳤다).
+  //
+  //   숫자는 고정 주기로 돈다. 난수를 쓰면 볼 때마다 달라서 "고쳐졌는지"를 비교할 수 없다.
+  const BURSTS = [8, 2, 41, 1, 17, 63, 3, 11, 29, 5]
+  const PAUSES = [40, 310, 25, 260, 60, 15, 340, 90, 20, 200]
+
+  let shown = 0
+  for (let step = 0; shown < text.length; step += 1) {
+    shown = Math.min(text.length, shown + BURSTS[step % BURSTS.length])
+    handlers.onText(text.slice(0, shown))
+    await wait(PAUSES[step % PAUSES.length])
   }
 }
 
