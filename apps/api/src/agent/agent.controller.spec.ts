@@ -32,9 +32,61 @@ const search =
     ]
   >();
 
+const searchStream =
+  jest.fn<
+    Promise<ReadableStream<Uint8Array>>,
+    [
+      string,
+      EntraUser,
+      { role: 'user' | 'assistant'; text: string }[],
+      string | null,
+    ]
+  >();
+
 function controller(): AgentController {
   search.mockResolvedValue(RESULT);
-  return new AgentController({ search } as unknown as AgentService);
+  return new AgentController({
+    search,
+    searchStream,
+  } as unknown as AgentService);
+}
+
+/** 줄들을 뇌가 내보내는 것처럼 흘리는 스트림. 청크 경계는 일부러 줄과 안 맞춘다. */
+function streamOf(...chunks: string[]): ReadableStream<Uint8Array> {
+  const encoder = new TextEncoder();
+  return new ReadableStream({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(encoder.encode(chunk));
+      controller.close();
+    },
+  });
+}
+
+/** Express 응답 대신. 컨트롤러가 실제로 쓰는 넷만 있다 (StreamingResponse). */
+function responseSpy() {
+  const headers: Record<string, string> = {};
+  const chunks: string[] = [];
+  const decoder = new TextDecoder();
+  return {
+    headers,
+    get body() {
+      return chunks.join('');
+    },
+    ended: false,
+    setHeader(name: string, value: string) {
+      headers[name] = value;
+    },
+    flushHeaders() {},
+    write(chunk: Uint8Array | string) {
+      chunks.push(
+        typeof chunk === 'string' ? chunk : decoder.decode(chunk, { stream: true }),
+      );
+      return true;
+    },
+    end() {
+      this.ended = true;
+    },
+  };
 }
 
 const requestOf = (user?: EntraUser): RequestWithEntraUser => ({
@@ -169,6 +221,110 @@ describe('AgentController', () => {
       await controller().search('일비', undefined, requestOf(USER));
 
       expect(search).toHaveBeenCalledWith('일비', USER, [], null);
+    });
+  });
+
+  /**
+   * 스트리밍 경로. 게이트웨이의 일은 **바꾸지 않고 흘리는 것**이므로, 바이트가 그대로
+   * 나가는지와 검증이 비스트리밍과 같은지를 본다.
+   */
+  describe('POST /agent/search/stream', () => {
+    const LINES =
+      '{"type":"status","phase":"thinking"}\n' +
+      '{"type":"text","delta":"해외 출장"}\n' +
+      '{"type":"done","refused":false,"iterations":2,"replace_text":null,' +
+      '"tools":[{"name":"search_knowledge","outcome":"ok"}],"usage":{}}\n';
+
+    it('뇌의 줄을 바꾸지 않고 흘린다', async () => {
+      // 청크 경계를 줄 중간에 둔다 — 계층이 재조립하지 않는지 확인하는 지점이다.
+      searchStream.mockResolvedValue(streamOf(LINES.slice(0, 40), LINES.slice(40)));
+      const res = responseSpy();
+
+      await controller().searchStream('일비', undefined, requestOf(USER), res, 'ko');
+
+      expect(res.body).toBe(LINES);
+      expect(res.ended).toBe(true);
+      expect(searchStream).toHaveBeenCalledWith('일비', USER, [], 'ko');
+    });
+
+    it('버퍼링을 막는 헤더를 세운다', async () => {
+      searchStream.mockResolvedValue(streamOf(LINES));
+      const res = responseSpy();
+
+      await controller().searchStream('일비', undefined, requestOf(USER), res);
+
+      expect(res.headers['Content-Type']).toBe('application/x-ndjson');
+      expect(res.headers['X-Accel-Buffering']).toBe('no');
+      expect(res.headers['Cache-Control']).toBe('no-store');
+    });
+
+    // 검증은 비스트리밍과 **같은 함수**를 쓴다. 갈리면 한쪽으로만 우회할 수 있게 된다.
+    it.each([
+      ['빈 문자열', ''],
+      ['2000자 초과', 'ㄱ'.repeat(2001)],
+      ['문자열이 아님', 42],
+    ])('%s 이면 스트림을 열지 않는다', async (_label, text) => {
+      const res = responseSpy();
+
+      await expect(
+        controller().searchStream(text, undefined, requestOf(USER), res),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(searchStream).not.toHaveBeenCalled();
+      expect(res.headers).toEqual({});
+    });
+
+    it('이력이 20턴을 넘으면 스트림을 열지 않는다', async () => {
+      const tooLong = Array.from({ length: 21 }, (_, i) => ({
+        role: i % 2 === 0 ? 'user' : 'assistant',
+        text: `${i}`,
+      }));
+      const res = responseSpy();
+
+      await expect(
+        controller().searchStream('일비', tooLong, requestOf(USER), res),
+      ).rejects.toThrow(BadRequestException);
+      expect(searchStream).not.toHaveBeenCalled();
+    });
+
+    /**
+     * ★ 스트림이 열린 뒤의 실패는 HTTP 상태로 말할 수 없다 — 헤더가 이미 200 으로
+     *   나갔다. 조용히 끊으면 화면에는 "중간에 멈춘 답변"으로 보이므로, 마지막 한 줄로
+     *   알리고 닫아야 한다.
+     */
+    it('스트림이 중간에 깨지면 error 줄을 넣고 닫는다', async () => {
+      const encoder = new TextEncoder();
+      // ★ `start()` 안에서 바로 error 를 부르면 큐에 넣은 청크가 **버려진다.**
+      //   그건 "한 줄도 못 보낸 채 끊긴" 경우고, 여기서 보려는 것은 흐르다 끊긴
+      //   경우다. pull 로 나눠 첫 청크를 실제로 내보낸 뒤 끊는다.
+      let pulls = 0;
+      searchStream.mockResolvedValue(
+        new ReadableStream({
+          pull(controller) {
+            if (pulls++ === 0) {
+              controller.enqueue(encoder.encode('{"type":"status","phase":"thinking"}\n'));
+              return;
+            }
+            controller.error(new Error('뇌 연결이 끊겼다'));
+          },
+        }),
+      );
+      const res = responseSpy();
+
+      await controller().searchStream('일비', undefined, requestOf(USER), res);
+
+      expect(res.body).toContain('"type":"status"');
+      expect(res.body).toContain('{"type":"error","code":"stream_broken"}');
+      expect(res.ended).toBe(true);
+    });
+
+    it('신원이 없으면 스트림을 열지 않는다', async () => {
+      const res = responseSpy();
+
+      await expect(
+        controller().searchStream('일비', undefined, requestOf(undefined), res),
+      ).rejects.toThrow(BadRequestException);
+      expect(searchStream).not.toHaveBeenCalled();
     });
   });
 

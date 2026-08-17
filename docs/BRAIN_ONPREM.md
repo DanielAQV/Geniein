@@ -309,9 +309,19 @@ server {
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
 
+        # ★ 스트리밍에 필요하다. nginx 는 상류에 기본 HTTP/1.0 으로 말하는데, 그러면
+        #   청크 전송이 안 되고 uvicorn 이 커넥션 종료로 본문 끝을 알리게 된다.
+        #   /agent/message/stream 은 답이 쓰이는 대로 흘려보내는 경로라 1.1 이어야 한다.
+        proxy_http_version 1.1;
+
         # 뇌가 도구 연쇄 + LLM 을 도는 동안 수십 초 걸린다.
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
+
+        # ★★ 스트리밍의 생사가 이 한 줄에 걸린다. 켜져 있으면 nginx 가 응답을 모아
+        #    한 번에 내보내서, 스트리밍이 **조용히 사라진다** — 증상은 "그냥 느리다"로만
+        #    보여서 원인을 찾기 어렵다. 뇌와 게이트웨이가 `X-Accel-Buffering: no` 를
+        #    함께 보내지만, 설정으로도 잠가 둔다.
         proxy_buffering off;
     }
 }
