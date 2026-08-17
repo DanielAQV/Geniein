@@ -17,14 +17,19 @@
  *
  * ★ 신원은 미리보기임이 드러나는 고정 값이다. 뇌의 감사 로그에서 사람의 질문과
  *   개발 중 질의가 섞이면 안 된다.
+ *
+ * ★ **탭 본체와 같은 경로(스트리밍)를 쓴다.** 미리보기가 다른 경로를 타면 개발 전용
+ *   화면이 존재 이유를 잃는다 — 로컬에서 보는 것이 운영에서 도는 것과 달라진다.
+ *   실제로 그랬다: 스트리밍을 붙인 직후 미리보기만 비스트리밍이라 로컬에서 확인이
+ *   불가능했다.
  */
 
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-// 뇌가 도구 연쇄 + LLM 이라 수십 초가 걸린다 (탭 본체와 같은 이유).
-export const maxDuration = 90
+// 스트림은 답변이 끝날 때까지 열려 있다 (탭 본체의 스트리밍 경로와 같은 값).
+export const maxDuration = 300
 
 const IS_DEV = process.env.NODE_ENV !== 'production'
 const UPSTREAM_TIMEOUT_MS = 75_000
@@ -61,7 +66,7 @@ export async function POST(request: Request) {
 
   let upstream: Response
   try {
-    upstream = await fetch(`${brainUrl}/agent/message`, {
+    upstream = await fetch(`${brainUrl}/agent/message/stream`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,6 +80,8 @@ export async function POST(request: Request) {
         roles: [],
       }),
       cache: 'no-store',
+      // ★ 첫 응답까지만 건다. 본문 수신 중에도 발동하는 신호라, 스트림 전체에 걸면
+      //   긴 답변이 중간에 끊긴다 (탭 본체의 스트리밍 경로와 같은 이유).
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     })
   } catch (error) {
@@ -82,21 +89,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'brain_unreachable' }, { status: 502 })
   }
 
-  if (!upstream.ok) {
+  if (!upstream.ok || !upstream.body) {
     console.error('[preview] 뇌 응답 오류:', upstream.status)
     return NextResponse.json({ error: 'brain_error' }, { status: 502 })
   }
 
-  const result = (await upstream.json()) as {
-    text: string
-    refused: boolean
-    tool_trace: { name: string; outcome: string }[]
-  }
-
-  // 탭 본체와 같은 모양으로 돌려준다 — 화면이 두 경로를 구분할 필요가 없게.
-  return NextResponse.json({
-    text: result.text,
-    refused: result.refused,
-    tools: result.tool_trace.map((t) => ({ name: t.name, outcome: t.outcome })),
+  // 탭 본체와 같은 NDJSON 을 그대로 흘린다 — 화면이 두 경로를 구분할 필요가 없게.
+  return new Response(upstream.body, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/x-ndjson; charset=utf-8',
+      'Cache-Control': 'no-store',
+      'X-Accel-Buffering': 'no',
+    },
   })
 }

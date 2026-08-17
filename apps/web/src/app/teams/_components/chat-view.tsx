@@ -401,14 +401,18 @@ export function ChatView({
                   <GenieAvatar />
                   <div className="min-w-0 flex-1 pt-0.5">
                     {streamingText ? (
-                      <>
+                      // 커서를 **마지막 블록 안쪽**에 붙인다. 형제 요소로 두면 마크다운이
+                      // 만든 <p> 다음이라 줄이 바뀌어, 글자와 떨어진 곳에서 깜박인다.
+                      // 텍스트에 문자를 섞지 않는 것도 중요하다 — 그러면 마크다운
+                      // 문법이 아직 안 닫힌 구간에서 그 문자가 본문처럼 렌더된다.
+                      // ★ 한 겹 더 들어간다. RichText 가 블록들을 감싸는 <div> 를 하나
+                      //   만들기 때문에, 그 래퍼에 ::after 를 붙이면 블록 **다음**이라
+                      //   또 줄이 바뀐다. 마지막 블록(보통 <p>) 안쪽이어야 글자 끝에
+                      //   붙는다. 목록·표로 끝나는 순간에는 한 줄 아래에 놓이는데,
+                      //   그건 인라인으로 만들 방법이 없고 잠깐이라 그대로 둔다.
+                      <div className="[&>div>*:last-child]:after:ml-0.5 [&>div>*:last-child]:after:animate-pulse [&>div>*:last-child]:after:text-primary [&>div>*:last-child]:after:content-['▍']">
                         <RichText text={streamingText} />
-                        {/* 커서. 아직 쓰는 중임을 한 글자로 말한다 */}
-                        <span
-                          aria-hidden
-                          className="ml-0.5 inline-block h-4 w-[2px] animate-pulse bg-primary align-text-bottom"
-                        />
-                      </>
+                      </div>
                     ) : (
                       <div className="flex items-center gap-2 pt-0.5">
                         <Loader2 className="h-4 w-4 animate-spin text-primary" />
