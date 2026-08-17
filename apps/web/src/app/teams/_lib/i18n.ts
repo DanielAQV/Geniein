@@ -23,11 +23,24 @@ export type Lang = (typeof LANGUAGES)[number]
 
 export const DEFAULT_LANG: Lang = 'ko'
 
-/** 언어 선택기에 보일 이름. 각 언어를 **그 언어로** 적는다 — 못 읽는 이름은 소용없다. */
+/** 언어 이름. 각 언어를 **그 언어로** 적는다 — 못 읽는 이름은 소용없다. */
 export const LANGUAGE_LABELS: Record<Lang, string> = {
   ko: '한국어',
   vi: 'Tiếng Việt',
   en: 'English',
+}
+
+/**
+ * 선택기 버튼에 보일 두 글자.
+ *
+ * ★ 헤더에 세 언어를 한 줄로 늘어놓으려면 이름 전체는 너무 넓다 ("Tiếng Việt" 하나가
+ *   72px 다). 두 글자 코드는 어느 언어 사용자에게나 같은 모양으로 읽히고, 못 읽는
+ *   사람을 위한 이름 전체는 `title`·`aria-label` 로 함께 준다 (chat-view.tsx).
+ */
+export const LANGUAGE_SHORT: Record<Lang, string> = {
+  ko: 'KO',
+  vi: 'VI',
+  en: 'EN',
 }
 
 /** `ko-KR`, `vi-vn`, `en` → `Lang`. 모르는 값이면 null (다음 근거로 넘어간다). */

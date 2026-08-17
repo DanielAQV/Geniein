@@ -26,6 +26,7 @@ import { RichText } from './rich-text'
 import {
   LANGUAGES,
   LANGUAGE_LABELS,
+  LANGUAGE_SHORT,
   type Lang,
   type Strings,
 } from '../_lib/i18n'
@@ -120,14 +121,20 @@ function ToolBadges({ tools, strings }: { tools: ToolChip[]; strings: Strings })
 }
 
 /**
- * 언어 선택기.
+ * 언어 선택기 — 세그먼트 알약.
  *
  * ★ 자동 판정은 반드시 틀리는 경우가 생긴다 — 계정 언어가 안 채워져 있거나,
  *   Teams 를 영어로 쓰는 베트남 직원이거나. 그때 사용자가 **한 번에** 고칠 수
  *   있어야 한다. 탈출구가 없으면 틀린 사람은 계속 틀린 채로 쓴다.
  *
- * 네이티브 select 를 쓴다. 좁은 탭에서도 OS 가 알아서 띄우고, 키보드·스크린리더
- * 동작을 따로 만들 필요가 없다.
+ * ★ 네이티브 `select` 를 버렸다. 키보드·스크린리더를 공짜로 얻는 대신 OS 위젯이
+ *   그대로 노출돼서, Teams 안에서 이 화면만 다른 시대의 물건처럼 보였다. 언어가
+ *   셋뿐이라 전부 펼쳐 놓을 수 있고, 그러면 **현재 언어가 항상 보이고 전환이
+ *   한 번**이다 — 메뉴를 여는 단계가 사라진다.
+ *
+ * ★ `radiogroup` 이 아니라 `group` + `aria-pressed` 다. 라디오는 화살표 키로
+ *   옮겨다니는 것이 규약인데, 그러려면 포커스 관리를 직접 해야 한다. 버튼 셋은
+ *   Tab 으로 자연히 순회하고 Enter/Space 로 눌린다 — 만들 것이 없다.
  */
 function LanguagePicker({
   lang,
@@ -139,18 +146,34 @@ function LanguagePicker({
   label: string
 }) {
   return (
-    <select
-      value={lang}
+    <div
+      role="group"
       aria-label={label}
-      onChange={(event) => onChange(event.target.value as Lang)}
-      className="rounded-lg bg-transparent px-1.5 py-1 text-xs text-muted-foreground outline-none transition-colors hover:bg-muted focus:bg-muted"
+      className="flex items-center gap-0.5 rounded-full bg-muted p-0.5"
     >
-      {LANGUAGES.map((value) => (
-        <option key={value} value={value}>
-          {LANGUAGE_LABELS[value]}
-        </option>
-      ))}
-    </select>
+      {LANGUAGES.map((value) => {
+        const active = value === lang
+        return (
+          <button
+            key={value}
+            type="button"
+            onClick={() => onChange(value)}
+            aria-pressed={active}
+            // 코드만으로는 못 읽는 사람이 있다. 이름 전체를 여기서 준다.
+            title={LANGUAGE_LABELS[value]}
+            aria-label={LANGUAGE_LABELS[value]}
+            className={
+              'rounded-full px-2 py-0.5 text-[11px] font-medium tabular-nums transition-colors ' +
+              (active
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground')
+            }
+          >
+            {LANGUAGE_SHORT[value]}
+          </button>
+        )
+      })}
+    </div>
   )
 }
 
