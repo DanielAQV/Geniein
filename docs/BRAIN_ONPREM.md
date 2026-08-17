@@ -49,13 +49,18 @@ EC2 에 그대로 두고 **뇌와 벡터 DB 만** 사내 물리 서버(64GB / 1T
 기존 DB·역할·설정은 건드리지 않는다. 특히 `ALTER USER postgres PASSWORD` 처럼
 공용 계정을 바꾸는 조작은 하지 않는다 — 다른 서비스가 그 자격으로 붙어 있을 수 있다.
 
+★★ **포트가 5432 가 아니다.** 실측(2026-08-17): `Ver 16 / Cluster main / Port 5433`.
+우분투는 설치 시점에 5432 가 점유돼 있으면 다음 포트로 클러스터를 만든다. 뇌의
+기본값은 5432 이므로(`config.py`) **`DB_PORT=5433` 을 명시하지 않으면 붙지 않거나,
+더 나쁘게는 5432 에 있는 다른 것에 붙는다.** 아래 명령들도 전부 `-p 5433` 이 붙어 있다.
+
 먼저 읽기만 해서 현황을 본다:
 
 ```bash
 pg_lsclusters
-sudo -u postgres psql -c "SELECT version();"
-sudo -u postgres psql -c "\l"          # 기존 DB 목록 — 여기 있는 것은 건드리지 않는다
-sudo -u postgres psql -c \
+sudo -u postgres psql -p 5433 -c "SELECT version();"
+sudo -u postgres psql -p 5433 -c "\l"          # 기존 DB 목록 — 여기 있는 것은 건드리지 않는다
+sudo -u postgres psql -p 5433 -c \
   "SELECT name, default_version, installed_version FROM pg_available_extensions
    WHERE name IN ('vector','pg_trgm');"
 ```
@@ -65,20 +70,20 @@ sudo -u postgres psql -c \
 
 ```bash
 PGVER=$(pg_lsclusters -h | awk '{print $1}' | head -1)
-sudo apt install -y "postgresql-${PGVER}-pgvector"
+sudo apt install -y "postgresql-${PGVER}-pgvector"   # 실측: PGVER=16
 ```
 
 우리 것만 **별도 DB · 별도 역할**로 만든다. 확장은 DB 단위라 여기서 켜도 다른
 DB 에는 영향이 없다.
 
 ```bash
-sudo -u postgres psql <<'SQL'
+sudo -u postgres psql -p 5433 <<'SQL'
 CREATE ROLE genie LOGIN PASSWORD '<새 비밀번호>';
 CREATE DATABASE geniein_db OWNER genie;
 SQL
 
-sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS vector;"
-sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+sudo -u postgres psql -p 5433 -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS vector;"
+sudo -u postgres psql -p 5433 -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 ```
 
 > 역할을 나누는 이유는 사고 범위를 좁히기 위해서다. 뇌가 `postgres` 수퍼유저로
@@ -89,7 +94,7 @@ sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 0.5 에서 들어왔다. 낮으면 테이블 생성이 인덱스 단계에서 실패한다.
 
 ```bash
-sudo -u postgres psql -d geniein_db -c \
+sudo -u postgres psql -p 5433 -d geniein_db -c \
   "SELECT extname, extversion FROM pg_extension WHERE extname IN ('vector','pg_trgm');"
 # vector 가 0.5.0 미만이면 apt 패키지 대신 소스로 빌드해야 한다
 ```
@@ -97,7 +102,7 @@ sudo -u postgres psql -d geniein_db -c \
 스키마를 올린다. **`genie` 역할로** 올려야 테이블 소유자가 그 역할이 된다:
 
 ```bash
-PGPASSWORD='<위에서 정한 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db \
+PGPASSWORD='<위에서 정한 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db \
   -f /srv/genie/db/init/02-knowledge.sql
 ```
 
@@ -163,15 +168,15 @@ pg_dump -h <현재DB> -U postgres -d geniein_db \
 받는 쪽(물리 서버)에서:
 
 ```bash
-PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -f kb.sql
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db -f kb.sql
 ```
 
 검증 — 두 숫자가 옮기기 전과 같아야 한다:
 
 ```bash
-PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "SELECT count(*) FROM kb_documents;"   -- 20
-PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "SELECT count(*) FROM kb_chunks;"      -- 232
-PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "SELECT count(DISTINCT org_id) FROM kb_documents;"  -- 1
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db -c "SELECT count(*) FROM kb_documents;"   -- 20
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db -c "SELECT count(*) FROM kb_chunks;"      -- 232
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_db -c "SELECT count(DISTINCT org_id) FROM kb_documents;"  -- 1
 ```
 
 > ★ 임베딩이 실제로 살아 있는지도 본다. 벡터 열이 NULL 로 넘어오면 검색이
@@ -191,7 +196,7 @@ PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "S
 | `ANTHROPIC_API_KEY` | 기존 값 |
 | `AGENT_SERVICE_TOKEN` | **새로 만든다** (`openssl rand -hex 32`). 이 대화에 노출된 값은 쓰지 않는다 |
 | `ANTHROPIC_MODEL` | `claude-sonnet-5` |
-| `DB_HOST` / `DB_PORT` | `127.0.0.1` / `5432` |
+| `DB_HOST` / `DB_PORT` | `127.0.0.1` / **`5433`** ← 기본값 5432 가 아니다 |
 | `DB_NAME` / `DB_USERNAME` / `DB_PASSWORD` | `geniein_db` / `genie` / 2.1 에서 정한 값 |
 
 > ★ `postgres` 수퍼유저로 붙이지 않는다. 같은 서버에 estimator 의 DB 가 있어서,
