@@ -1,0 +1,39 @@
+# ── 비밀·자격증명 ────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ── 사내 문서 (절대 커밋 금지) ──────────────────────
+# 사규·가이드 원본. RAG ingest 입력이지 소스코드가 아니다.
+regulations/
+uploads/
+
+# ── 의존성 ──────────────────────────────────────
+node_modules/
+.pnpm-store/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ── 빌드 산출물 ──────────────────────────────────
+.next/
+dist/
+build/
+*.tsbuildinfo
+
+# ── 런타임 데이터 ────────────────────────────────
+pgdata/
+apps/web/public/uploads/
+
+# ── 에디터·OS ────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# ── 로컬 도구 ────────────────────────────────────
+.claude/settings.local.json
+coverage/

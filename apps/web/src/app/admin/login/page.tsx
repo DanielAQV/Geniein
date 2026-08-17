@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation"
 import { Lock, User, ArrowRight, ShieldCheck } from "lucide-react"
 import { motion } from "framer-motion"
 
+/** `?from=` 은 사용자 입력이다. 같은 오리진의 admin 경로만 허용한다 (오픈 리다이렉트 방지) */
+function safeRedirect(from: string | null): string {
+  if (!from) return "/admin/insights"
+  // `//evil.com` 은 브라우저가 프로토콜 상대 URL 로 읽는다 — 반드시 걸러야 한다
+  if (!from.startsWith("/admin") || from.startsWith("//")) return "/admin/insights"
+  return from
+}
+
 export default function AdminLoginPage() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -12,25 +20,42 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    // 사용자 요청 정보 확인
-    if (username === "connext" && password === "123456789") {
-      // 실제 프로젝트에서는 서버 사이드 세션/쿠키를 쓰지만, 
-      // 요청하신 대로 우선 로컬 스토리지 기반 인증 처리
-      localStorage.setItem("admin_auth", "true")
-      setTimeout(() => {
-        router.push("/admin/insights")
-      }, 800)
-    } else {
-      setTimeout(() => {
+    // 자격증명 검증은 서버에서만 일어난다. 이 컴포넌트는 정답을 모른다.
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      })
+
+      if (res.ok) {
+        // useSearchParams 를 쓰면 Suspense 경계가 필요해진다.
+        // 제출 시점(클라이언트 확정)에만 읽으면 그 제약이 없다.
+        const from = new URLSearchParams(window.location.search).get("from")
+        // 쿠키가 세팅됐으므로 서버 상태를 다시 읽어야 한다
+        router.replace(safeRedirect(from))
+        router.refresh()
+        return
+      }
+
+      const data = await res.json().catch(() => ({}))
+      if (res.status === 429) {
+        setError(`Too many attempts. Try again in ${data.retryAfterSeconds ?? 60}s.`)
+      } else if (res.status === 503) {
+        setError("Admin login is not configured on this server.")
+      } else {
         setError("Invalid username or password")
-        setIsLoading(false)
-      }, 500)
+      }
+    } catch {
+      setError("Could not reach the server. Please try again.")
     }
+
+    setIsLoading(false)
   }
 
   return (

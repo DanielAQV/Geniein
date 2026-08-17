@@ -1,0 +1,55 @@
+# 유나 뇌(agent-service) 로컬 실행 스택.
+# 호스트에 Python을 설치하지 않는다 — Phase 0의 "컨테이너화 + 재현 가능한 배포"를 겸한다.
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: geniein-postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-geniein_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_NAME:-geniein_db}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  agent-service:
+    build:
+      context: ./apps/agent-service
+    container_name: geniein-agent-service
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY is required}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5}
+      ANTHROPIC_EFFORT: ${ANTHROPIC_EFFORT:-medium}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-geniein_db}
+      # 게이트웨이만 뇌를 부를 수 있게 하는 공유 토큰. 기본값을 주지 않는다 —
+      # 없으면 기동 자체가 실패해야 한다 (ANTHROPIC_API_KEY 와 같은 규칙).
+      AGENT_SERVICE_TOKEN: ${AGENT_SERVICE_TOKEN:?AGENT_SERVICE_TOKEN is required — openssl rand -base64 32}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    # ⚠ 이 포트 퍼블리시는 **로컬 개발 편의**다. 8000 이 호스트에 열려 있으므로
+    #   "내부망에서만 호출된다"는 전제가 배치만으로는 성립하지 않는다.
+    #   배포 compose 에서는 ports 를 빼고 expose 만 둔다 (TEAMS_TAB_DESIGN.md 4.2).
+    ports:
+      - "${AGENT_PORT:-8000}:8000"
+    volumes:
+      # 도구/인격 정의는 코드가 아니라 설정이다 (3.2.2 / 3.2.5).
+      # 바인드 마운트로 두면 컨테이너 재빌드 없이 수정·재기동만으로 반영된다.
+      - ./apps/agent-service/tools:/app/tools:ro
+      - ./apps/agent-service/personas:/app/personas:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

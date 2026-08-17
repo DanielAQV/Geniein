@@ -12,7 +12,6 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
 
 interface AdminLayoutProps {
   children: ReactNode
@@ -21,26 +20,16 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const [isAuth, setIsAuth] = useState(false)
 
-  useEffect(() => {
-    // 로그인 페이지는 인증 체크 제외
-    if (pathname === "/admin/login") {
-      setIsAuth(true)
-      return
-    }
+  // 인증 검사는 여기 없다. src/middleware.ts 가 요청이 이 컴포넌트에
+  // 도달하기 전에 막는다. 클라이언트에서 한 번 더 검사하면 두 개의
+  // 진실이 생기고, 약한 쪽(이쪽)이 우회 경로가 된다.
 
-    const auth = localStorage.getItem("admin_auth")
-    if (auth !== "true") {
-      router.push("/admin/login")
-    } else {
-      setIsAuth(true)
-    }
-  }, [pathname, router])
-
-  const handleLogout = () => {
-    localStorage.removeItem("admin_auth")
-    router.push("/admin/login")
+  const handleLogout = async () => {
+    // httpOnly 쿠키라 클라이언트가 지울 수 없다 — 서버에 요청한다
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {})
+    router.replace("/admin/login")
+    router.refresh()
   }
 
   const menuItems = [
@@ -53,11 +42,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // 로그인 페이지는 사이드바 없이 렌더링
   if (pathname === "/admin/login") {
     return <>{children}</>
-  }
-
-  // 인증 체크 중일 때는 아무것도 보여주지 않음 (플래시 방지)
-  if (!isAuth) {
-    return <div className="min-h-screen bg-[#02040a]" />
   }
 
   return (

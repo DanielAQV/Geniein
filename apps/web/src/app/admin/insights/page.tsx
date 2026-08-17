@@ -1,7 +1,7 @@
 "use client"
 
 import useSWR from "swr"
-import { fetcher } from "@/lib/api"
+import { adminFetcher } from "@/lib/api"
 import { 
   MoreVertical, 
   ExternalLink, 
@@ -13,7 +13,8 @@ import {
 } from "lucide-react"
 
 export default function AdminInsightsPage() {
-  const { data: insights, isLoading } = useSWR('/insights/admin', fetcher)
+  // 같은 오리진의 BFF. 세션 쿠키로 인가되고, NestJS 는 직접 노출되지 않는다.
+  const { data: insights, isLoading } = useSWR('/api/admin/insights', adminFetcher)
 
   const getStatusBadge = (status: string) => {
     switch (status) {
