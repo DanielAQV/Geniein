@@ -207,90 +207,88 @@ function GenieAvatar() {
 }
 
 /**
- * 한 덩어리의 최소 길이. 어절 하나에서 둘쯤이다.
- *
- * ★ 처음에 28자로 잡았더니 **계단처럼** 보였다. 덩어리가 크면 도착 간격도 그만큼
- *   벌어져서, 앞 덩어리의 fade 가 끝난 뒤에 다음이 시작한다 — 그러면 아무리 부드러운
- *   곡선을 써도 하나씩 순서대로 뜨는 것으로 읽힌다. 애니메이션(0.45s)보다 도착 간격이
- *   **짧아야** 겹치고, 겹쳐야 흐름이 된다.
+ * 밀린 글자를 이 시간 안에 따라잡는다. 작을수록 도착 속도에 가깝고(덜컹거림),
+ * 클수록 매끄럽지만 답변이 실제보다 늦게 끝난 것처럼 보인다.
  */
-const MIN_CHUNK_CHARS = 12
-
-/** 한 덩어리의 최대 길이. 뭉텅이로 밀렸을 때 한 번에 너무 큰 덩어리가 뜨지 않게. */
-const MAX_CHUNK_CHARS = 40
-
-/** 덩어리를 내보내는 최소 간격(ms). 밀렸을 때의 속도 상한이다. */
-const CHUNK_INTERVAL_MS = 55
+const SMOOTH_CATCHUP_MS = 360
 
 /**
- * 도착한 글자를 **덩어리 단위로 확정해서** 내보낸다.
+ * 화면을 갱신하는 최소 간격(ms). 25fps 쯤이다.
  *
- * ★ 처음에는 글자 단위로 따라가게 만들었는데, 그건 타이프라이터이고 우리가 원한 느낌이
- *   아니었다. 실제 대화 UI 는 **10~20 토큰쯤의 덩어리가 하나씩 fade in** 된다 —
- *   글자가 흐르는 게 아니라 말뭉치가 나타난다.
- *
- * ★ 한 번 내보낸 덩어리는 **다시 바뀌지 않는다.** 이게 애니메이션의 전제다. 문자열을
- *   매번 다시 자르면 마지막 덩어리가 계속 자라고, 그러면 그 조각이 프레임마다 다시
- *   fade in 되면서 깜박인다. 그래서 덩어리는 "단어 경계까지 다 왔을 때"만 확정한다.
- *
- * ★ 경계는 공백 뒤에서 끊고, 개행 **앞에서** 끊는다. 개행 뒤에서 끊으면 표시가 줄머리에
- *   놓여 불릿·표 판정을 흔든다 (rich-text.tsx 가 걷어내지만, 애초에 안 만드는 게 낫다).
- *
- * ★ `prefers-reduced-motion` 이면 통째로 준다. 글자가 움직이는 것이라, 움직임에
- *   민감한 사람에게는 읽기를 방해한다.
+ * ★ 매 프레임 그리지 않는다. 갱신 한 번에 **마크다운 전체를 다시 파싱**하고
+ *   (rich-text.tsx 는 문자열을 매번 새로 훑는다) 스크롤 위치를 다시 계산하므로,
+ *   60fps 로 커밋하면 답변이 길어질수록 그 비용이 프레임 예산을 잠식한다.
+ *   글자 흐름은 25fps 로도 연속으로 보인다 — 사람이 읽는 속도보다 한참 빠르다.
  */
-function useStreamChunks(target: string, streaming: boolean): string[] {
-  const [chunks, setChunks] = useState<string[]>([])
-  const doneLen = useRef(0)
+const SMOOTH_COMMIT_MS = 40
+
+/**
+ * 도착 속도와 렌더 속도를 분리한다.
+ *
+ * ★ 이것이 "띄엄띄엄"의 원인이었다. 모델의 델타는 고르게 오지 않고 뭉텅이로 온다 —
+ *   한 프레임에 40자가 오고 다음 300ms 는 아무것도 안 온다. 받는 즉시 그리면 그
+ *   불균형이 그대로 눈에 보인다. 게다가 델타마다 마크다운을 다시 파싱하고 스크롤을
+ *   건드려서 그 순간마다 프레임을 흘린다.
+ *
+ * 밀린 만큼을 매 프레임 나눠 따라가면 도착이 뭉쳐도 화면은 일정한 속도로 자란다.
+ * 뒤처진 양에 비례해 속도를 올리므로(지수적 접근) 오래 밀리지도 않는다.
+ *
+ * ★ 스트리밍이 끝나면 **즉시** 목표에 맞춘다. 남은 지연을 그리는 동안 최종 버블이
+ *   붙으면 화면이 한 번 튄다.
+ *
+ * ★ `prefers-reduced-motion` 이면 애니메이션 없이 바로 보여준다. 이건 장식이 아니라
+ *   글자가 움직이는 것이라, 움직임에 민감한 사람에게는 읽기를 방해한다.
+ */
+function useSmoothText(target: string, streaming: boolean): string {
+  const [shown, setShown] = useState(target)
+  const shownRef = useRef(target)
 
   useEffect(() => {
     const instant =
       !streaming ||
-      // 대화 초기화·재시도로 목표가 줄어들면 맞춰야 한다
-      target.length < doneLen.current ||
+      // 대화 초기화·재시도로 목표가 줄어들면 따라잡을 것이 아니라 맞춰야 한다
+      target.length < shownRef.current.length ||
       (typeof window !== 'undefined' &&
         window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
 
     if (instant) {
-      doneLen.current = target.length
-      setChunks(target ? [target] : [])
+      shownRef.current = target
+      setShown(target)
       return
     }
 
-    let timer = 0
+    let raf = 0
+    let last = performance.now()
 
-    const emit = () => {
-      const end = chunkEnd(target, doneLen.current)
-      if (end > doneLen.current) {
-        const piece = target.slice(doneLen.current, end)
-        doneLen.current = end
-        setChunks((prev) => [...prev, piece])
+    const step = (now: number) => {
+      const elapsed = now - last
+      if (elapsed < SMOOTH_COMMIT_MS) {
+        // 아직 갱신할 때가 아니다. 프레임만 넘긴다 — 여기서 그리면 60fps 가 된다.
+        raf = requestAnimationFrame(step)
+        return
       }
-      timer = window.setTimeout(emit, CHUNK_INTERVAL_MS)
+      last = now
+
+      const backlog = target.length - shownRef.current.length
+      const chars = Math.max(1, Math.ceil((backlog * elapsed) / SMOOTH_CATCHUP_MS))
+      let next = shownRef.current.length + chars
+
+      // 서로게이트 쌍(⚠️ 같은 이모지) 가운데를 자르면 그 프레임에 깨진 글자가 보인다
+      if (next < target.length) {
+        const code = target.charCodeAt(next - 1)
+        if (code >= 0xd800 && code <= 0xdbff) next += 1
+      }
+
+      shownRef.current = target.slice(0, next)
+      setShown(shownRef.current)
+      if (shownRef.current.length < target.length) raf = requestAnimationFrame(step)
     }
 
-    timer = window.setTimeout(emit, CHUNK_INTERVAL_MS)
-    return () => window.clearTimeout(timer)
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
   }, [target, streaming])
 
-  return chunks
-}
-
-/**
- * `from` 부터 확정할 수 있는 덩어리의 끝. 아직 모자라면 `from` 을 그대로 돌려준다
- * (= 내보낼 것이 없다).
- */
-function chunkEnd(text: string, from: number): number {
-  const min = from + MIN_CHUNK_CHARS
-  if (text.length < min) return from
-
-  const hardEnd = Math.min(text.length, from + MAX_CHUNK_CHARS)
-  for (let i = min; i < hardEnd; i += 1) {
-    if (text[i] === '\n') return i // 개행 앞에서
-    if (text[i] === ' ') return i + 1 // 공백은 앞 덩어리에 붙인다
-  }
-  // 공백이 없는 긴 덩어리(한국어는 흔하다). 상한에서 끊는다.
-  return hardEnd
+  return shown
 }
 
 /** 진행 단계를 사람이 읽는 한 줄로. 단계를 아직 못 받았으면 일반 문구로 떨어진다. */
@@ -326,9 +324,8 @@ export function ChatView({
   const busy = pending || inputDisabled
   const canSend = draft.trim().length > 0 && !busy
 
-  // 화면에 그릴 덩어리들. 도착한 것이 아니라 **확정된** 것만이다 (useStreamChunks).
-  const visibleChunks = useStreamChunks(streamingText, pending)
-  const hasVisible = visibleChunks.length > 0
+  // 화면에 그릴 글자. 도착한 것이 아니라 **따라가는 중인** 값이다 (useSmoothText).
+  const visibleText = useSmoothText(streamingText, pending)
 
   // 새 발언이 생기거나 글자가 늘어나면 바닥으로. useLayoutEffect 라야 중간 프레임이
   // 안 보인다.
@@ -338,17 +335,12 @@ export function ChatView({
   //
   // ★ `scrollIntoView` 대신 `scrollTop` 을 쓴다. 전자는 조상 전체를 훑어 스크롤
   //   위치를 계산하므로, 이 빈도로 부르면 레이아웃 비용이 눈에 보인다.
-  //
-  // ★★ 컨테이너에 `scroll-smooth` 를 준다. 이걸 안 주면 덩어리마다 화면이 **순간이동**
-  //    하고, 그게 글자 애니메이션과 무관하게 "뚝뚝 끊긴다"로 읽힌다 — 초당 스무 번
-  //    튕기는 스크롤이 눈에는 계단으로 보인다. 브라우저가 보간해 주면 같은 값을 넣어도
-  //    화면은 흐르듯 따라간다.
   useLayoutEffect(() => {
     const el = scrollRef.current
     if (!el) return
     const distance = el.scrollHeight - el.scrollTop - el.clientHeight
     if (distance < 120) el.scrollTop = el.scrollHeight
-  }, [turns.length, pending, visibleChunks.length])
+  }, [turns.length, pending, visibleText])
 
   // 답변이 끝나면 다시 입력창으로. 이어서 되묻는 것이 기본 동작이다.
   useEffect(() => {
@@ -413,7 +405,7 @@ export function ChatView({
 
       {notice}
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-3xl px-4 py-6">
           {empty ? (
             <div className="flex flex-col items-center gap-5 py-16 text-center">
@@ -503,7 +495,7 @@ export function ChatView({
                 <div className="flex gap-3">
                   <GenieAvatar />
                   <div className="min-w-0 flex-1 pt-0.5">
-                    {hasVisible ? (
+                    {visibleText ? (
                       // 커서를 **마지막 블록 안쪽**에 붙인다. 형제 요소로 두면 마크다운이
                       // 만든 <p> 다음이라 줄이 바뀌어, 글자와 떨어진 곳에서 깜박인다.
                       // 텍스트에 문자를 섞지 않는 것도 중요하다 — 그러면 마크다운
@@ -513,8 +505,8 @@ export function ChatView({
                       //   또 줄이 바뀐다. 마지막 블록(보통 <p>) 안쪽이어야 글자 끝에
                       //   붙는다. 목록·표로 끝나는 순간에는 한 줄 아래에 놓이는데,
                       //   그건 인라인으로 만들 방법이 없고 잠깐이라 그대로 둔다.
-                      <div className="[&>div>*:last-child]:after:ml-0.5 [&>div>*:last-child]:after:animate-pulse [&>div>*:last-child]:after:text-primary [&>div>*:last-child]:after:content-['▍']">
-                        <RichText chunks={visibleChunks} />
+                      <div className="[&>div>*:last-child]:after:ml-0.5 [&>div>*:last-child]:after:animate-pulse [&>div>*:last-child]:after:text-primary [&>div>*:last-child]:after:content-['▏']">
+                        <RichText text={visibleText} />
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 pt-0.5">

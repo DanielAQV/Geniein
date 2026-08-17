@@ -3,59 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ── 스트리밍 답변의 덩어리 등장 ─────────────────────────────────────
-   새로 도착한 덩어리가 나타나는 방식 (teams/_components/rich-text.tsx 의 `.chunk-in`).
-
-   실측으로 세 번 고쳤고, 그 셋이 다 필요했다:
-
-   ① **opacity 만으로는 안 된다.** 덩어리가 통째로 밝아졌다 멈추고 다음 덩어리가 또
-      밝아지는 계단이 된다. blur 를 함께 풀어야 글자가 **맺히는** 것처럼 보인다.
-
-   ② **이징이 전부다.** 처음 쓴 `cubic-bezier(0.22, 1, 0.36, 1)`(ease-out-quint)은
-      실측에서 83ms 에 이미 opacity 0.55 였다 — 0.45s 라고 적어놓고 체감은 100ms 인
-      "권총" 이었다. 지금 값(Material 표준 곡선)은 변화가 구간 전체에 펴진다:
-
-          66ms → 0.04    116ms → 0.24    166ms → 0.56    216ms → 0.78    416ms → 1.00
-
-   ③ **지속시간이 덩어리 도착 간격보다 길어야 한다.** 도착이 대략 0.15~0.3s 간격이므로
-      0.4s 면 앞 덩어리가 아직 맺히는 중에 다음이 시작해서 **겹친다.** 겹치지 않으면
-      곡선을 어떻게 잡아도 하나씩 순서대로 뜨는 계단이다.
-
-   ★ `transform` 을 쓰지 않는다. 인라인 요소에는 적용되지 않아 `inline-block` 이
-     필요해지는데, 그러면 **덩어리 안에서 줄바꿈이 안 된다** — 12~40자 덩어리가 통째로
-     다음 줄로 넘어가 우측이 들쭉날쭉해지고, 좁은 탭에서 바로 티가 난다.
-
-   ★ `will-change` 를 쓰지 않는다. 답변 하나에 이 요소가 수십 개 생기는데 전부 합성
-     레이어로 올리면 스크롤이 무거워진다.
-
-   ★ 숫자를 바꿀 때는 눈으로 짐작하지 말고 **재라.** 브라우저 콘솔에서:
-
-         const s = Object.assign(document.createElement('span'), { className: 'chunk-in' })
-         document.body.append(s)
-         setInterval(() => console.log(getComputedStyle(s).opacity, getComputedStyle(s).filter), 50)
-   ── */
-@keyframes chunk-in {
-  from {
-    opacity: 0;
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-.chunk-in {
-  animation: chunk-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* 움직임에 민감한 사람에게는 글자가 맺히는 것이 읽기를 방해한다. 바로 보여준다. */
-@media (prefers-reduced-motion: reduce) {
-  .chunk-in {
-    animation: none;
-  }
-}
-
 :root {
   --background: oklch(0.96 0.005 270);
   /* Softer off-white */
