@@ -206,14 +206,21 @@ function GenieAvatar() {
   )
 }
 
-/** 한 덩어리의 최소 길이. 10~20 토큰쯤이다 — 이보다 짧으면 타이핑처럼 보인다. */
-const MIN_CHUNK_CHARS = 28
+/**
+ * 한 덩어리의 최소 길이. 어절 하나에서 둘쯤이다.
+ *
+ * ★ 처음에 28자로 잡았더니 **계단처럼** 보였다. 덩어리가 크면 도착 간격도 그만큼
+ *   벌어져서, 앞 덩어리의 fade 가 끝난 뒤에 다음이 시작한다 — 그러면 아무리 부드러운
+ *   곡선을 써도 하나씩 순서대로 뜨는 것으로 읽힌다. 애니메이션(0.45s)보다 도착 간격이
+ *   **짧아야** 겹치고, 겹쳐야 흐름이 된다.
+ */
+const MIN_CHUNK_CHARS = 12
 
 /** 한 덩어리의 최대 길이. 뭉텅이로 밀렸을 때 한 번에 너무 큰 덩어리가 뜨지 않게. */
-const MAX_CHUNK_CHARS = 90
+const MAX_CHUNK_CHARS = 40
 
-/** 덩어리를 내보내는 최소 간격(ms). 뭉텅이가 밀렸을 때의 속도 상한이다. */
-const CHUNK_INTERVAL_MS = 90
+/** 덩어리를 내보내는 최소 간격(ms). 밀렸을 때의 속도 상한이다. */
+const CHUNK_INTERVAL_MS = 55
 
 /**
  * 도착한 글자를 **덩어리 단위로 확정해서** 내보낸다.
@@ -331,6 +338,11 @@ export function ChatView({
   //
   // ★ `scrollIntoView` 대신 `scrollTop` 을 쓴다. 전자는 조상 전체를 훑어 스크롤
   //   위치를 계산하므로, 이 빈도로 부르면 레이아웃 비용이 눈에 보인다.
+  //
+  // ★★ 컨테이너에 `scroll-smooth` 를 준다. 이걸 안 주면 덩어리마다 화면이 **순간이동**
+  //    하고, 그게 글자 애니메이션과 무관하게 "뚝뚝 끊긴다"로 읽힌다 — 초당 스무 번
+  //    튕기는 스크롤이 눈에는 계단으로 보인다. 브라우저가 보간해 주면 같은 값을 넣어도
+  //    화면은 흐르듯 따라간다.
   useLayoutEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -401,7 +413,7 @@ export function ChatView({
 
       {notice}
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth">
         <div className="mx-auto w-full max-w-3xl px-4 py-6">
           {empty ? (
             <div className="flex flex-col items-center gap-5 py-16 text-center">

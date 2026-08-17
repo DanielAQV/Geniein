@@ -69,10 +69,9 @@ function inline(text: string): ReactNode {
     const wrapped = pieces.map((piece) => {
       chunk += 1
       return (
-        <span
-          key={`${chunk}-${index}`}
-          className="animate-in fade-in duration-500 ease-out"
-        >
+        // 애니메이션은 globals.css 의 `.chunk-in` 이다 — opacity 와 blur 를 함께
+        // 풀어야 글자가 맺히는 것처럼 보인다 (그 파일 주석 참조).
+        <span key={`${chunk}-${index}`} className="chunk-in">
           {piece}
         </span>
       )
