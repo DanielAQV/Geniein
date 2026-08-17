@@ -16,6 +16,7 @@
 import {
   BadRequestException,
   Body,
+  Get,
   Controller,
   Post,
   Req,
@@ -84,6 +85,24 @@ function parseHistory(
 @UseGuards(ServiceTokenGuard, EntraAuthGuard)
 export class AgentController {
   constructor(private readonly agentService: AgentService) {}
+
+  /**
+   * 탭이 부팅할 때 한 번 부른다 — 화면 문구를 무슨 언어로 그릴지 정하려고.
+   *
+   * ★ 신원을 돌려주지 않는다. 화면이 필요한 것은 언어 하나뿐이고, 이름·이메일을
+   *   내려보내면 쓰지도 않을 개인정보가 브라우저와 로그에 남는다.
+   *
+   * ★ `preferredLanguage` 는 없을 수 있다 (Entra `xms_pl` 이 "설정돼 있으면" 실린다).
+   *   그때는 `null` 을 돌려주고, 화면이 Teams locale 로 떨어진다. 서버가 억지로
+   *   기본값을 만들어 내려보내면 클라이언트가 더 나은 근거를 갖고도 못 쓰게 된다.
+   */
+  @Get('me')
+  me(@Req() request: RequestWithEntraUser): { language: string | null } {
+    const user = request.entraUser;
+    if (!user) throw new BadRequestException('identity is missing');
+
+    return { language: user.preferredLanguage ?? null };
+  }
 
   @Post('search')
   search(

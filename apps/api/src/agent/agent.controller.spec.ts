@@ -132,6 +132,26 @@ describe('AgentController', () => {
     });
   });
 
+  describe('GET /agent/me', () => {
+    it('계정 언어만 돌려준다 — 신원은 담지 않는다', () => {
+      const result = controller().me(requestOf({ ...USER, preferredLanguage: 'vi-vn' }));
+
+      // 화면이 필요한 것은 언어 하나뿐이다. 이름·이메일을 내려보내면 쓰지도 않을
+      // 개인정보가 브라우저와 로그에 남는다.
+      expect(result).toEqual({ language: 'vi-vn' });
+    });
+
+    it('계정 언어가 없으면 null — 서버가 기본값을 지어내지 않는다', () => {
+      // null 을 받으면 화면이 Teams locale 로 떨어진다. 서버가 'ko' 같은 값을
+      // 만들어 내려보내면 클라이언트가 더 나은 근거를 갖고도 못 쓰게 된다.
+      expect(controller().me(requestOf(USER))).toEqual({ language: null });
+    });
+
+    it('신원이 없으면 거부한다', () => {
+      expect(() => controller().me(requestOf(undefined))).toThrow(BadRequestException);
+    });
+  });
+
   // ★ 가드 배선이 틀렸을 때 익명으로 뇌를 부르느니 여기서 터지는 게 낫다.
   it('신원이 없으면 뇌를 부르지 않는다', () => {
     expect(() => controller().search('일비', undefined, requestOf(undefined))).toThrow(

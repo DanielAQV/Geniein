@@ -139,6 +139,10 @@ class MessageRequest(BaseModel):
     org_id: str | None = None
     roles: list[str] = Field(default_factory=list)
 
+    # 계정 언어 (`ko-kr`). 게이트웨이가 Entra 클레임 `xms_pl` 에서 뽑아 넘긴다.
+    # 없을 수 있고, 없으면 인격의 기본 규칙(질문한 언어로 답한다)만 적용된다.
+    locale: str | None = Field(default=None, max_length=35)
+
 
 class ToolTraceOut(BaseModel):
     name: str
@@ -200,6 +204,7 @@ def agent_message(req: MessageRequest) -> MessageResponse:
             internal_user_id=req.internal_user_id,
             org_id=req.org_id,
             roles=tuple(req.roles),
+            locale=req.locale,
         ),
         history=_to_provider_messages(req.history),
     )

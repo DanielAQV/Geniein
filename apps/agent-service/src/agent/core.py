@@ -26,6 +26,40 @@ from .persona import Persona
 logger = logging.getLogger(__name__)
 
 
+#: 계정 언어 태그(`ko-kr`)의 앞부분 → 사람이 읽는 이름. 모델에게 "vi" 라고만
+#: 말하면 무엇을 뜻하는지 흔들릴 수 있어 언어 이름으로 준다.
+_LANGUAGE_NAMES = {
+    "ko": "한국어",
+    "vi": "베트남어",
+    "en": "영어",
+    "ja": "일본어",
+    "zh": "중국어",
+}
+
+
+def _language_hint(locale: str) -> str:
+    """시스템 프롬프트에 붙일 언어 안내.
+
+    ★ **규칙이 아니라 기본값이다.** 질문한 언어로 답하는 것이 언제나 우선이고,
+      이 값은 그것만으로 판단이 안 될 때 쓰인다 — "150 USD?" 나 "OT 규정?" 처럼
+      언어를 알 수 없는 질문이 실제로 온다. 여기서 강하게 지시하면 베트남 직원이
+      한국어로 물어도 베트남어로 답하는, 더 나쁜 동작이 된다.
+
+    ★ 모르는 태그는 조용히 무시한다. 계정 설정은 우리가 통제하지 못하고,
+      낯선 값 하나가 답변 언어를 망가뜨릴 이유는 없다.
+    """
+    name = _LANGUAGE_NAMES.get(locale.split("-")[0].lower())
+    if not name:
+        return ""
+
+    return (
+        "## 사용자 언어\n"
+        f"이 사용자의 계정 언어는 {name}입니다. "
+        "질문한 언어로 답하는 것이 우선이고, 질문만으로 언어를 알기 어려울 때만 "
+        f"{name}로 답하세요."
+    )
+
+
 @dataclass(frozen=True)
 class AgentContext:
     """서버가 아는 호출 맥락. 모델은 이 값을 지정할 수 없다 (원칙③)."""
@@ -33,12 +67,20 @@ class AgentContext:
     internal_user_id: str
     org_id: str | None = None
     roles: tuple[str, ...] = ()
+    # 사용자 계정에 설정된 언어 (`ko-kr`, `vi-vn`). Entra 선택적 클레임 `xms_pl`
+    # 에서 오고 **없을 수 있다.**
+    #
+    # ★ 답변 언어를 이 값으로 정하지 않는다. 질문한 언어가 언제나 우선이고
+    #   (personas/default.yaml 의 language 규칙), 이것은 **판단이 안 설 때의 기준**
+    #   이다. "150 USD?" 처럼 언어를 알 수 없는 질문이 실제로 온다.
+    locale: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
             "internal_user_id": self.internal_user_id,
             "org_id": self.org_id,
             "roles": list(self.roles),
+            "locale": self.locale,
         }
 
 
@@ -85,6 +127,14 @@ class Agent:
         history: list[Any] | None = None,
     ) -> AgentResponse:
         system = self._persona.system_prompt(tool_count=len(self._registry))
+
+        # ★ 시스템 프롬프트가 언어별로 갈리므로 프롬프트 캐시도 언어 수만큼 나뉜다.
+        #   사용자 수가 아니라 **언어 수**라 두세 갈래에 그치고, 각 갈래 안에서는
+        #   캐시가 그대로 산다. 사용자별로 갈리는 값을 여기 넣으면 안 되는 이유이기도 하다.
+        hint = _language_hint(context.locale) if context.locale else ""
+        if hint:
+            system += "\n\n" + hint
+
         tools = self._registry.to_api_schema()
 
         messages: list[Any] = list(history or [])

@@ -78,6 +78,9 @@ export class AgentService {
         // ★ 서버가 확정한 신원. 클라이언트가 주장한 값이 아니다.
         internal_user_id: user.internalUserId,
         org_id: user.tenantId,
+        // 계정 언어. 답변 언어를 강제하지 않고, 질문만으로 언어를 알기 어려울 때의
+        // 기준으로만 쓰인다 (뇌의 _language_hint 참조). 없으면 그냥 빠진다.
+        locale: user.preferredLanguage ?? null,
         // Entra 그룹 클레임을 roles 로 승격하는 것은 ACL 필터와 함께 간다
         // (docs/TEAMS_TAB_DESIGN.md 3.4). 그때까지는 뇌가 최소 권한으로 떨어진다.
         roles: [],

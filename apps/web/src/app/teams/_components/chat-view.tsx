@@ -23,6 +23,12 @@ import {
 } from 'react'
 import { AlertCircle, Loader2, RotateCcw, Send, Sparkles } from 'lucide-react'
 import { RichText } from './rich-text'
+import {
+  LANGUAGES,
+  LANGUAGE_LABELS,
+  type Lang,
+  type Strings,
+} from '../_lib/i18n'
 
 export interface ToolChip {
   name: string
@@ -55,6 +61,10 @@ export interface ChatViewProps {
   suggestions?: string[]
   /** 헤더 아래 띠. 지금은 미리보기가 "이건 실제 답변이 아니다"를 밝히는 데 쓴다. */
   notice?: ReactNode
+  /** 화면 문구. 언어 판단은 호출부가 하고 여기는 결과만 받는다 */
+  strings: Strings
+  lang: Lang
+  onLangChange: (next: Lang) => void
 }
 
 /** 이 시간을 넘기면 "원래 오래 걸린다"고 알려준다. 그 전에는 잡음이다. */
@@ -65,11 +75,7 @@ const COMPOSER_MAX_HEIGHT = 160
 
 const MAX_QUESTION_LENGTH = 2000
 
-const TOOL_LABELS: Record<string, string> = {
-  search_knowledge: '사내 규정 검색',
-}
-
-function ToolBadges({ tools }: { tools: ToolChip[] }) {
+function ToolBadges({ tools, strings }: { tools: ToolChip[]; strings: Strings }) {
   if (tools.length === 0) return null
 
   // 같은 도구를 여러 번 부르는 일이 흔하다 (질문이 두 갈래면 두 번 찾는다).
@@ -83,7 +89,8 @@ function ToolBadges({ tools }: { tools: ToolChip[] }) {
         found.count += 1
         return acc
       }
-      return [...acc, { key, label: TOOL_LABELS[tool.name] ?? tool.name, failed, count: 1 }]
+      const label = tool.name === 'search_knowledge' ? strings.toolSearch : tool.name
+      return [...acc, { key, label, failed, count: 1 }]
     },
     [],
   )
@@ -99,10 +106,45 @@ function ToolBadges({ tools }: { tools: ToolChip[] }) {
         >
           {tool.label}
           {tool.count > 1 && ` ×${tool.count}`}
-          {tool.failed && ' · 실패'}
+          {tool.failed && ` · ${strings.toolFailed}`}
         </span>
       ))}
     </div>
+  )
+}
+
+/**
+ * 언어 선택기.
+ *
+ * ★ 자동 판정은 반드시 틀리는 경우가 생긴다 — 계정 언어가 안 채워져 있거나,
+ *   Teams 를 영어로 쓰는 베트남 직원이거나. 그때 사용자가 **한 번에** 고칠 수
+ *   있어야 한다. 탈출구가 없으면 틀린 사람은 계속 틀린 채로 쓴다.
+ *
+ * 네이티브 select 를 쓴다. 좁은 탭에서도 OS 가 알아서 띄우고, 키보드·스크린리더
+ * 동작을 따로 만들 필요가 없다.
+ */
+function LanguagePicker({
+  lang,
+  onChange,
+  label,
+}: {
+  lang: Lang
+  onChange: (next: Lang) => void
+  label: string
+}) {
+  return (
+    <select
+      value={lang}
+      aria-label={label}
+      onChange={(event) => onChange(event.target.value as Lang)}
+      className="rounded-lg bg-transparent px-1.5 py-1 text-xs text-muted-foreground outline-none transition-colors hover:bg-muted focus:bg-muted"
+    >
+      {LANGUAGES.map((value) => (
+        <option key={value} value={value}>
+          {LANGUAGE_LABELS[value]}
+        </option>
+      ))}
+    </select>
   )
 }
 
@@ -127,6 +169,9 @@ export function ChatView({
   inputDisabled = false,
   suggestions = [],
   notice,
+  strings,
+  lang,
+  onLangChange,
 }: ChatViewProps) {
   const [draft, setDraft] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -178,18 +223,26 @@ export function ChatView({
       <header className="shrink-0 border-b border-border px-4 py-2.5">
         <div className="mx-auto flex w-full max-w-3xl items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <h1 className="text-sm font-semibold">사규 검색</h1>
-          {turns.length > 0 && (
-            <button
-              type="button"
-              onClick={onReset}
-              disabled={pending}
-              className="ml-auto flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              새 대화
-            </button>
-          )}
+          <h1 className="text-sm font-semibold">{strings.title}</h1>
+
+          <div className="ml-auto flex items-center gap-1">
+            <LanguagePicker
+              lang={lang}
+              onChange={onLangChange}
+              label={strings.languageLabel}
+            />
+            {turns.length > 0 && (
+              <button
+                type="button"
+                onClick={onReset}
+                disabled={pending}
+                className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted disabled:opacity-40"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                {strings.newChat}
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -203,10 +256,8 @@ export function ChatView({
                 <Sparkles className="h-6 w-6" />
               </div>
               <div className="space-y-1.5">
-                <p className="text-base font-semibold">무엇이 궁금하세요?</p>
-                <p className="text-sm text-muted-foreground">
-                  평소 말하듯 물어보세요. 근거가 된 규정과 시행일을 함께 알려드립니다.
-                </p>
+                <p className="text-base font-semibold">{strings.emptyTitle}</p>
+                <p className="text-sm text-muted-foreground">{strings.emptyBody}</p>
               </div>
               {suggestions.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-2 pt-1">
@@ -243,7 +294,7 @@ export function ChatView({
                       <GenieAvatar />
                       <div className="min-w-0 flex-1 pt-0.5">
                         <RichText text={turn.text} />
-                        <ToolBadges tools={turn.tools} />
+                        <ToolBadges tools={turn.tools} strings={strings} />
                       </div>
                     </div>
                   )
@@ -272,7 +323,7 @@ export function ChatView({
                           disabled={busy}
                           className="mt-3 text-sm font-medium text-primary disabled:opacity-40"
                         >
-                          다시 시도
+                          {strings.retry}
                         </button>
                       )}
                     </div>
@@ -286,7 +337,7 @@ export function ChatView({
                   <div className="flex min-w-0 flex-1 items-center gap-2 pt-1">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     <p className="text-sm text-muted-foreground">
-                      사규를 찾아 근거를 정리하고 있습니다… {elapsedSec}초
+                      {strings.searching(elapsedSec)}
                     </p>
                   </div>
                 </div>
@@ -294,9 +345,7 @@ export function ChatView({
 
               {pending && elapsedSec >= PATIENCE_HINT_SEC && (
                 // 정직하게 말한다. 가짜 진행률을 그리는 것보다 낫다.
-                <p className="pl-10 text-xs text-muted-foreground/70">
-                  질문이 복잡하면 1분까지 걸릴 수 있습니다.
-                </p>
+                <p className="pl-10 text-xs text-muted-foreground/70">{strings.patience}</p>
               )}
             </div>
           )}
@@ -324,13 +373,13 @@ export function ChatView({
               resize(event.target)
             }}
             onKeyDown={onKeyDown}
-            placeholder="예: 해외 출장 숙박비 한도가 얼마인가요?"
+            placeholder={strings.placeholder}
             className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={!canSend}
-            aria-label="보내기"
+            aria-label={strings.send}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-opacity disabled:opacity-30"
           >
             {pending ? (

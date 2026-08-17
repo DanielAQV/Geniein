@@ -110,8 +110,23 @@ describe('AgentService', () => {
         history: [],
         internal_user_id: `${TENANT}:${OID}`,
         org_id: TENANT,
+        locale: null,
         roles: [],
       });
+    });
+
+    it('계정 언어를 넘긴다', async () => {
+      await serviceWith(CONFIGURED).search('일비', { ...USER, preferredLanguage: 'vi-vn' });
+
+      expect(sentBody()).toMatchObject({ locale: 'vi-vn' });
+    });
+
+    it('계정 언어가 없으면 null 로 넘긴다', async () => {
+      // 뇌는 이 값이 없으면 인격의 기본 규칙(질문한 언어로 답한다)만 쓴다.
+      // 게이트웨이가 임의로 기본값을 만들어 넣으면 그 판단을 가로채게 된다.
+      await serviceWith(CONFIGURED).search('일비', USER);
+
+      expect(sentBody()).toMatchObject({ locale: null });
     });
 
     it('대화 이력을 그대로 넘긴다', async () => {
