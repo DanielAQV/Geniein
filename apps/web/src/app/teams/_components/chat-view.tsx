@@ -206,6 +206,91 @@ function GenieAvatar() {
   )
 }
 
+/**
+ * 밀린 글자를 이 시간 안에 따라잡는다. 작을수록 도착 속도에 가깝고(덜컹거림),
+ * 클수록 매끄럽지만 답변이 실제보다 늦게 끝난 것처럼 보인다.
+ */
+const SMOOTH_CATCHUP_MS = 220
+
+/**
+ * 화면을 갱신하는 최소 간격(ms). 25fps 쯤이다.
+ *
+ * ★ 매 프레임 그리지 않는다. 갱신 한 번에 **마크다운 전체를 다시 파싱**하고
+ *   (rich-text.tsx 는 문자열을 매번 새로 훑는다) 스크롤 위치를 다시 계산하므로,
+ *   60fps 로 커밋하면 답변이 길어질수록 그 비용이 프레임 예산을 잠식한다.
+ *   글자 흐름은 25fps 로도 연속으로 보인다 — 사람이 읽는 속도보다 한참 빠르다.
+ */
+const SMOOTH_COMMIT_MS = 40
+
+/**
+ * 도착 속도와 렌더 속도를 분리한다.
+ *
+ * ★ 이것이 "띄엄띄엄"의 원인이었다. 모델의 델타는 고르게 오지 않고 뭉텅이로 온다 —
+ *   한 프레임에 40자가 오고 다음 300ms 는 아무것도 안 온다. 받는 즉시 그리면 그
+ *   불균형이 그대로 눈에 보인다. 게다가 델타마다 마크다운을 다시 파싱하고 스크롤을
+ *   건드려서 그 순간마다 프레임을 흘린다.
+ *
+ * 밀린 만큼을 매 프레임 나눠 따라가면 도착이 뭉쳐도 화면은 일정한 속도로 자란다.
+ * 뒤처진 양에 비례해 속도를 올리므로(지수적 접근) 오래 밀리지도 않는다.
+ *
+ * ★ 스트리밍이 끝나면 **즉시** 목표에 맞춘다. 남은 지연을 그리는 동안 최종 버블이
+ *   붙으면 화면이 한 번 튄다.
+ *
+ * ★ `prefers-reduced-motion` 이면 애니메이션 없이 바로 보여준다. 이건 장식이 아니라
+ *   글자가 움직이는 것이라, 움직임에 민감한 사람에게는 읽기를 방해한다.
+ */
+function useSmoothText(target: string, streaming: boolean): string {
+  const [shown, setShown] = useState(target)
+  const shownRef = useRef(target)
+
+  useEffect(() => {
+    const instant =
+      !streaming ||
+      // 대화 초기화·재시도로 목표가 줄어들면 따라잡을 것이 아니라 맞춰야 한다
+      target.length < shownRef.current.length ||
+      (typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
+
+    if (instant) {
+      shownRef.current = target
+      setShown(target)
+      return
+    }
+
+    let raf = 0
+    let last = performance.now()
+
+    const step = (now: number) => {
+      const elapsed = now - last
+      if (elapsed < SMOOTH_COMMIT_MS) {
+        // 아직 갱신할 때가 아니다. 프레임만 넘긴다 — 여기서 그리면 60fps 가 된다.
+        raf = requestAnimationFrame(step)
+        return
+      }
+      last = now
+
+      const backlog = target.length - shownRef.current.length
+      const chars = Math.max(1, Math.ceil((backlog * elapsed) / SMOOTH_CATCHUP_MS))
+      let next = shownRef.current.length + chars
+
+      // 서로게이트 쌍(⚠️ 같은 이모지) 가운데를 자르면 그 프레임에 깨진 글자가 보인다
+      if (next < target.length) {
+        const code = target.charCodeAt(next - 1)
+        if (code >= 0xd800 && code <= 0xdbff) next += 1
+      }
+
+      shownRef.current = target.slice(0, next)
+      setShown(shownRef.current)
+      if (shownRef.current.length < target.length) raf = requestAnimationFrame(step)
+    }
+
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
+  }, [target, streaming])
+
+  return shown
+}
+
 /** 진행 단계를 사람이 읽는 한 줄로. 단계를 아직 못 받았으면 일반 문구로 떨어진다. */
 function phaseLabel(phase: Phase | null | undefined, strings: Strings): string {
   if (!phase) return strings.searching
@@ -234,18 +319,28 @@ export function ChatView({
 }: ChatViewProps) {
   const [draft, setDraft] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const busy = pending || inputDisabled
   const canSend = draft.trim().length > 0 && !busy
 
-  // 새 발언이 생기면 바닥으로. useLayoutEffect 라야 중간 프레임이 안 보인다.
+  // 화면에 그릴 글자. 도착한 것이 아니라 **따라가는 중인** 값이다 (useSmoothText).
+  const visibleText = useSmoothText(streamingText, pending)
+
+  // 새 발언이 생기거나 글자가 늘어나면 바닥으로. useLayoutEffect 라야 중간 프레임이
+  // 안 보인다.
   //
-  // ★ 글자가 늘어날 때도 따라가야 한다. 스트리밍 중에는 발언 수가 그대로이므로
-  //   `turns.length` 만 보면 답변이 화면 밖으로 자라나간다.
+  // ★ **바닥 근처에 있을 때만** 내린다. 스트리밍 중에는 이 효과가 초당 스무 번 넘게
+  //   도는데, 무조건 내리면 위로 올려 읽는 사용자를 매번 끌어내린다.
+  //
+  // ★ `scrollIntoView` 대신 `scrollTop` 을 쓴다. 전자는 조상 전체를 훑어 스크롤
+  //   위치를 계산하므로, 이 빈도로 부르면 레이아웃 비용이 눈에 보인다.
   useLayoutEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: 'end' })
-  }, [turns.length, pending, streamingText])
+    const el = scrollRef.current
+    if (!el) return
+    const distance = el.scrollHeight - el.scrollTop - el.clientHeight
+    if (distance < 120) el.scrollTop = el.scrollHeight
+  }, [turns.length, pending, visibleText])
 
   // 답변이 끝나면 다시 입력창으로. 이어서 되묻는 것이 기본 동작이다.
   useEffect(() => {
@@ -310,7 +405,7 @@ export function ChatView({
 
       {notice}
 
-      <div className="flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-3xl px-4 py-6">
           {empty ? (
             <div className="flex flex-col items-center gap-5 py-16 text-center">
@@ -400,7 +495,7 @@ export function ChatView({
                 <div className="flex gap-3">
                   <GenieAvatar />
                   <div className="min-w-0 flex-1 pt-0.5">
-                    {streamingText ? (
+                    {visibleText ? (
                       // 커서를 **마지막 블록 안쪽**에 붙인다. 형제 요소로 두면 마크다운이
                       // 만든 <p> 다음이라 줄이 바뀌어, 글자와 떨어진 곳에서 깜박인다.
                       // 텍스트에 문자를 섞지 않는 것도 중요하다 — 그러면 마크다운
@@ -411,7 +506,7 @@ export function ChatView({
                       //   붙는다. 목록·표로 끝나는 순간에는 한 줄 아래에 놓이는데,
                       //   그건 인라인으로 만들 방법이 없고 잠깐이라 그대로 둔다.
                       <div className="[&>div>*:last-child]:after:ml-0.5 [&>div>*:last-child]:after:animate-pulse [&>div>*:last-child]:after:text-primary [&>div>*:last-child]:after:content-['▍']">
-                        <RichText text={streamingText} />
+                        <RichText text={visibleText} />
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 pt-0.5">
@@ -431,8 +526,6 @@ export function ChatView({
               )}
             </div>
           )}
-
-          <div ref={bottomRef} />
         </div>
       </div>
 
