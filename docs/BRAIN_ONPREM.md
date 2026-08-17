@@ -1,5 +1,17 @@
 # 뇌(RAG)를 사내 물리 서버로
 
+> **완료 (2026-08-17).** 아래는 실측 결과다. 다시 할 때 "이게 정상"의 기준으로 쓴다.
+>
+> | 확인 | 결과 |
+> |---|---|
+> | 데이터 이관 | `20 docs / 232 chunks / 0 null-emb / 1 org` — 원본과 일치 |
+> | 뇌 기동 | `gnom-brain.service` active·enabled, `/health` 200 |
+> | 노출 경계 | 사무실 IP 에서 `/health`·`/agent/message` 모두 **403** (EC2 만 허용) |
+> | 탭 | `genie.geniein.com/teams/search` 200, Teams 에서 실제 답변 확인 |
+>
+> 주소: `gnom.geniein.com` → 물리 서버 공인 IP. 이름은 법인장이 에이전트를 부르는
+> 호칭을 따랐다.
+
 EC2(t3.small)에는 BGE-M3 가 들어가지 않는다 (`TEAMS_DEPLOY.md` 5장). 웹·게이트웨이는
 EC2 에 그대로 두고 **뇌와 벡터 DB 만** 사내 물리 서버(64GB / 1TB)로 옮긴다.
 
