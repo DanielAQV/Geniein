@@ -42,25 +42,48 @@ EC2 에 그대로 두고 **뇌와 벡터 DB 만** 사내 물리 서버(64GB / 1T
 
 ## 2. 물리 서버 준비
 
-### 2.1 Postgres + 확장 (새로 설치)
+### 2.1 Postgres + 확장
 
-스키마가 `vector(1024)` 와 trigram 인덱스를 쓴다 (`db/init/02-knowledge.sql`).
+★★ **이 서버에는 이미 다른 서비스(gnom estimator)의 Postgres 가 돌고 있다.**
+살아 있는 남의 데이터가 있는 서버다. 여기서 하는 일은 전부 **덧붙이기**여야 하고,
+기존 DB·역할·설정은 건드리지 않는다. 특히 `ALTER USER postgres PASSWORD` 처럼
+공용 계정을 바꾸는 조작은 하지 않는다 — 다른 서비스가 그 자격으로 붙어 있을 수 있다.
+
+먼저 읽기만 해서 현황을 본다:
 
 ```bash
-sudo apt update
-sudo apt install -y postgresql postgresql-contrib
+pg_lsclusters
+sudo -u postgres psql -c "SELECT version();"
+sudo -u postgres psql -c "\l"          # 기존 DB 목록 — 여기 있는 것은 건드리지 않는다
+sudo -u postgres psql -c \
+  "SELECT name, default_version, installed_version FROM pg_available_extensions
+   WHERE name IN ('vector','pg_trgm');"
+```
 
-# pgvector 는 서버 메이저 버전에 맞는 패키지를 깔아야 한다
+`vector` 의 `default_version` 이 비어 있으면 확장 패키지가 없다는 뜻이다. 서버
+메이저 버전에 맞는 것을 깐다 (기존 DB 에 영향 없는 추가 설치다):
+
+```bash
 PGVER=$(pg_lsclusters -h | awk '{print $1}' | head -1)
-echo "Postgres $PGVER"
 sudo apt install -y "postgresql-${PGVER}-pgvector"
 ```
 
+우리 것만 **별도 DB · 별도 역할**로 만든다. 확장은 DB 단위라 여기서 켜도 다른
+DB 에는 영향이 없다.
+
 ```bash
-sudo -u postgres psql -c "CREATE DATABASE geniein_db;"
+sudo -u postgres psql <<'SQL'
+CREATE ROLE genie LOGIN PASSWORD '<새 비밀번호>';
+CREATE DATABASE geniein_db OWNER genie;
+SQL
+
 sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS vector;"
 sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 ```
+
+> 역할을 나누는 이유는 사고 범위를 좁히기 위해서다. 뇌가 `postgres` 수퍼유저로
+> 붙으면 실수 한 번이 estimator 의 데이터까지 닿는다. `genie` 는 자기 DB 밖을
+> 볼 이유가 없다.
 
 ★ **pgvector 0.5 이상이어야 한다.** 스키마가 `USING hnsw` 를 쓰는데 그 인덱스는
 0.5 에서 들어왔다. 낮으면 테이블 생성이 인덱스 단계에서 실패한다.
@@ -71,12 +94,15 @@ sudo -u postgres psql -d geniein_db -c \
 # vector 가 0.5.0 미만이면 apt 패키지 대신 소스로 빌드해야 한다
 ```
 
-계정과 스키마:
+스키마를 올린다. **`genie` 역할로** 올려야 테이블 소유자가 그 역할이 된다:
 
 ```bash
-sudo -u postgres psql -c "ALTER USER postgres PASSWORD '<새 비밀번호>';"
-sudo -u postgres psql -d geniein_db -f /srv/genie/db/init/02-knowledge.sql
+PGPASSWORD='<위에서 정한 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db \
+  -f /srv/genie/db/init/02-knowledge.sql
 ```
+
+★ `hnsw` 인덱스가 만들어지는 단계가 여기다. pgvector 가 0.5 미만이면 이 명령이
+실패한다 — 그때는 스키마를 고치는 게 아니라 pgvector 를 올려야 한다.
 
 ### 2.2 코드와 파이썬
 
@@ -137,15 +163,15 @@ pg_dump -h <현재DB> -U postgres -d geniein_db \
 받는 쪽(물리 서버)에서:
 
 ```bash
-psql -U postgres -d geniein_db -f kb.sql
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -f kb.sql
 ```
 
 검증 — 두 숫자가 옮기기 전과 같아야 한다:
 
 ```bash
-psql -U postgres -d geniein_db -c "SELECT count(*) FROM kb_documents;"   -- 20
-psql -U postgres -d geniein_db -c "SELECT count(*) FROM kb_chunks;"      -- 232
-psql -U postgres -d geniein_db -c "SELECT count(DISTINCT org_id) FROM kb_documents;"  -- 1
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "SELECT count(*) FROM kb_documents;"   -- 20
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "SELECT count(*) FROM kb_chunks;"      -- 232
+PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -U genie -d geniein_db -c "SELECT count(DISTINCT org_id) FROM kb_documents;"  -- 1
 ```
 
 > ★ 임베딩이 실제로 살아 있는지도 본다. 벡터 열이 NULL 로 넘어오면 검색이
@@ -165,7 +191,11 @@ psql -U postgres -d geniein_db -c "SELECT count(DISTINCT org_id) FROM kb_documen
 | `ANTHROPIC_API_KEY` | 기존 값 |
 | `AGENT_SERVICE_TOKEN` | **새로 만든다** (`openssl rand -hex 32`). 이 대화에 노출된 값은 쓰지 않는다 |
 | `ANTHROPIC_MODEL` | `claude-sonnet-5` |
-| `DB_HOST` / `DB_PORT` / `DB_NAME` / `DB_USERNAME` / `DB_PASSWORD` | 물리 서버 Postgres |
+| `DB_HOST` / `DB_PORT` | `127.0.0.1` / `5432` |
+| `DB_NAME` / `DB_USERNAME` / `DB_PASSWORD` | `geniein_db` / `genie` / 2.1 에서 정한 값 |
+
+> ★ `postgres` 수퍼유저로 붙이지 않는다. 같은 서버에 estimator 의 DB 가 있어서,
+> 뇌가 수퍼유저 자격을 들고 있으면 실수 한 번이 남의 데이터까지 닿는다.
 
 ★ `127.0.0.1` 에만 바인딩한다:
 
