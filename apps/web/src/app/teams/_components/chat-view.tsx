@@ -48,12 +48,30 @@ export type ChatTurn =
       canRetry: boolean
     }
 
+/**
+ * 지금 무엇을 하고 있는가. 스트리밍 경로에서 뇌가 보내주는 단계다.
+ *
+ * ★ 대기 40~60초 중 텍스트 생성은 마지막 5~10초뿐이다. 단계를 안 보여주면 앞의
+ *   30초가 그대로 침묵이라, 텍스트를 흘려도 체감이 크게 안 바뀐다.
+ */
+export type Phase =
+  | { kind: 'thinking' }
+  | { kind: 'searching'; detail?: string }
+  | { kind: 'reading' }
+
 export interface ChatViewProps {
   turns: ChatTurn[]
   /** 답변을 기다리는 중인가 */
   pending: boolean
   /** 기다린 시간(초). 이게 없으면 멈춘 것처럼 보인다 */
   elapsedSec: number
+  /**
+   * 스트리밍 진행 상태. 비스트리밍 경로(미리보기)는 넘기지 않고, 그때는
+   * `strings.searching` 한 줄로 떨어진다.
+   */
+  phase?: Phase | null
+  /** 아직 끝나지 않은 답변. 글자가 오는 대로 늘어난다 */
+  streamingText?: string
   onSend: (text: string) => void
   onRetry: () => void
   onReset: () => void
@@ -188,10 +206,22 @@ function GenieAvatar() {
   )
 }
 
+/** 진행 단계를 사람이 읽는 한 줄로. 단계를 아직 못 받았으면 일반 문구로 떨어진다. */
+function phaseLabel(phase: Phase | null | undefined, strings: Strings): string {
+  if (!phase) return strings.searching
+  if (phase.kind === 'thinking') return strings.phaseThinking
+  if (phase.kind === 'reading') return strings.phaseReading
+  return phase.detail
+    ? `${strings.phaseSearching} · ${phase.detail}`
+    : strings.phaseSearching
+}
+
 export function ChatView({
   turns,
   pending,
   elapsedSec,
+  phase,
+  streamingText = '',
   onSend,
   onRetry,
   onReset,
@@ -210,9 +240,12 @@ export function ChatView({
   const canSend = draft.trim().length > 0 && !busy
 
   // 새 발언이 생기면 바닥으로. useLayoutEffect 라야 중간 프레임이 안 보인다.
+  //
+  // ★ 글자가 늘어날 때도 따라가야 한다. 스트리밍 중에는 발언 수가 그대로이므로
+  //   `turns.length` 만 보면 답변이 화면 밖으로 자라나간다.
   useLayoutEffect(() => {
     bottomRef.current?.scrollIntoView({ block: 'end' })
-  }, [turns.length, pending])
+  }, [turns.length, pending, streamingText])
 
   // 답변이 끝나면 다시 입력창으로. 이어서 되묻는 것이 기본 동작이다.
   useEffect(() => {
@@ -360,19 +393,35 @@ export function ChatView({
                 )
               })}
 
+              {/* 아직 답변 중. 글자가 왔으면 그것을, 아직이면 진행 단계를 보여준다.
+                  둘을 같은 자리에 두는 것이 중요하다 — 단계 줄이 사라지고 답변이
+                  다른 곳에 나타나면 화면이 한 번 튄다. */}
               {pending && (
                 <div className="flex gap-3">
                   <GenieAvatar />
-                  <div className="flex min-w-0 flex-1 items-center gap-2 pt-1">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">
-                      {strings.searching}
-                      {elapsedSec >= ELAPSED_AFTER_SEC && (
-                        <span className="ml-1.5 tabular-nums text-muted-foreground/70">
-                          {elapsedSec}s
-                        </span>
-                      )}
-                    </p>
+                  <div className="min-w-0 flex-1 pt-0.5">
+                    {streamingText ? (
+                      <>
+                        <RichText text={streamingText} />
+                        {/* 커서. 아직 쓰는 중임을 한 글자로 말한다 */}
+                        <span
+                          aria-hidden
+                          className="ml-0.5 inline-block h-4 w-[2px] animate-pulse bg-primary align-text-bottom"
+                        />
+                      </>
+                    ) : (
+                      <div className="flex items-center gap-2 pt-0.5">
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                        <p className="text-sm text-muted-foreground">
+                          {phaseLabel(phase, strings)}
+                          {elapsedSec >= ELAPSED_AFTER_SEC && (
+                            <span className="ml-1.5 tabular-nums text-muted-foreground/70">
+                              {elapsedSec}s
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

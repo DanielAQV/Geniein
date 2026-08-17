@@ -3,12 +3,15 @@
 /**
  * Teams 탭 — 사규 대화.
  *
- * 이 화면이 브라우저에서 부르는 것은 같은 오리진의 `/api/teams/*` 둘뿐이다.
- * NestJS 도 뇌도 여기서 보이지 않는다 (docs/TEAMS_TAB_DESIGN.md 2장).
+ * 이 화면이 브라우저에서 부르는 것은 같은 오리진의 `/api/teams/*` 둘뿐이다
+ * (`me`, `search/stream`). NestJS 도 뇌도 여기서 보이지 않는다
+ * (docs/TEAMS_TAB_DESIGN.md 2장).
  *
  * ★ 응답이 수 초~수십 초 걸린다. 검색만 하는 게 아니라 에이전트 루프를 타면서
- *   Claude 가 근거를 읽고 인용을 정리하기 때문이다. 그래서 경과 시간 표시가
- *   선택이 아니라 필수다.
+ *   Claude 가 근거를 읽고 인용을 정리하기 때문이다. 그래서 **스트리밍**이다 —
+ *   대기 중 무엇을 하고 있는지(생각·검색·근거 읽기)와 쓰이는 중인 답변을 함께
+ *   보여준다. 실측 40~60초 중 텍스트 생성은 마지막 5~10초뿐이라, 진행 단계가
+ *   없으면 텍스트만 흘려도 앞의 30초가 그대로 침묵이다.
  *
  * ★ 화면은 표시만 하는 ChatView 에 맡기고 여기서는 **상태·네트워크·언어**만 다룬다.
  */
@@ -16,7 +19,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { NotInTeamsError, TeamsAuthError, getTeamsToken, initTeams } from '@/lib/teams/client'
-import { ChatView, type ChatTurn, type ToolChip } from '../_components/chat-view'
+import { ChatView, type ChatTurn, type Phase, type ToolChip } from '../_components/chat-view'
+import { readStream } from '../_lib/stream'
 import {
   DEFAULT_LANG,
   readStoredLang,
@@ -26,12 +30,6 @@ import {
   type Lang,
   type Strings,
 } from '../_lib/i18n'
-
-interface SearchResult {
-  text: string
-  refused: boolean
-  tools: ToolChip[]
-}
 
 /** 모델에게 넘길 이력의 상한. 서버(BFF·NestJS·뇌)에도 같은 상한이 있다. */
 const MAX_HISTORY_TURNS = 20
@@ -102,6 +100,16 @@ function historyFor(turns: ChatTurn[]): { role: 'user' | 'assistant'; text: stri
   return spoken.slice(-MAX_HISTORY_TURNS)
 }
 
+/** 스트림 안에서 온 실패. 상태 코드가 없으므로 문구는 상류 오류와 같은 것을 쓴다. */
+function describeStreamError(code: string, s: Strings): Failure {
+  return {
+    title: s.upstreamTitle,
+    detail: s.upstreamBody,
+    canRetry: true,
+    technical: SHOW_TECHNICAL_DETAIL ? `stream: ${code}` : undefined,
+  }
+}
+
 /** Teams 클라이언트가 설정된 언어. 못 읽으면 null — 다음 근거로 넘어간다. */
 async function teamsLocale(): Promise<string | null> {
   try {
@@ -132,6 +140,8 @@ export default function TeamsSearchPage() {
   const [turns, setTurns] = useState<ChatTurn[]>([])
   const [pending, setPending] = useState(false)
   const [elapsed, setElapsed] = useState(0)
+  const [phase, setPhase] = useState<Phase | null>(null)
+  const [streamingText, setStreamingText] = useState('')
 
   /**
    * ★ 저장된 선택이 있으면 그것으로 시작한다. 자동 판정을 기다렸다가 바꾸면
@@ -219,7 +229,7 @@ export default function TeamsSearchPage() {
         // 토큰은 보관하지 않고 매번 받는다 (lib/teams/client.ts 참조)
         const token = await getTeamsToken()
 
-        const response = await fetch('/api/teams/search', {
+        const response = await fetch('/api/teams/search/stream', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
           body: JSON.stringify({
@@ -229,7 +239,9 @@ export default function TeamsSearchPage() {
           }),
         })
 
-        if (!response.ok) {
+        // 스트림이 열리기 **전**의 실패는 여전히 HTTP 상태로 온다. 여기까지는
+        // 비스트리밍 경로와 오류 처리가 같다.
+        if (!response.ok || !response.body) {
           const code = await response
             .json()
             .then((body) => String(body?.error ?? ''))
@@ -239,11 +251,28 @@ export default function TeamsSearchPage() {
           return
         }
 
-        const result = (await response.json()) as SearchResult
-        setTurns((prev) => [
-          ...prev,
-          { id: makeId(), role: 'assistant', text: result.text, tools: result.tools ?? [] },
-        ])
+        const outcome = await readStream(response.body, {
+          onPhase: setPhase,
+          onText: (full) => setStreamingText(full),
+        })
+
+        if (outcome.kind === 'error') {
+          setTurns((prev) => [
+            ...prev,
+            { id: makeId(), role: 'error', ...describeStreamError(outcome.code, s) },
+          ])
+          return
+        }
+
+        // ★ `replace_text` 가 있으면 쌓인 글자를 버린다. 거절·중단처럼 서버가 지어낸
+        //   문장일 때만 실리고, 그때는 모델이 흘린 조각을 남기는 것이 오해를 만든다.
+        const text = outcome.replaceText ?? outcome.text
+        if (text) {
+          setTurns((prev) => [
+            ...prev,
+            { id: makeId(), role: 'assistant', text, tools: outcome.tools },
+          ])
+        }
       } catch (error) {
         const failure = describeFailure(error, s)
         setTurns((prev) => [
@@ -257,6 +286,8 @@ export default function TeamsSearchPage() {
         ])
       } finally {
         setPending(false)
+        setPhase(null)
+        setStreamingText('')
       }
     },
     [],
@@ -309,6 +340,8 @@ export default function TeamsSearchPage() {
       turns={turns}
       pending={pending}
       elapsedSec={elapsed}
+      phase={phase}
+      streamingText={streamingText}
       onSend={onSend}
       onRetry={onRetry}
       onReset={onReset}

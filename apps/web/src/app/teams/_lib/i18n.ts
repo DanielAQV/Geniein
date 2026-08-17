@@ -72,8 +72,17 @@ export interface Strings {
   placeholder: string
   send: string
   /** 검색 중 문구. **시간을 약속하지 않는다** — 실측이 45초에서 10초로 바뀌었고,
-   *  또 바뀔 값이다. 근거 없는 숫자를 적으면 그게 곧 틀린 안내가 된다. */
+   *  또 바뀔 값이다. 근거 없는 숫자를 적으면 그게 곧 틀린 안내가 된다.
+   *
+   *  스트리밍에서는 아래 단계별 문구가 이 자리를 대신한다. 이 값은 비스트리밍
+   *  경로(`/teams/preview`)와, 단계를 아직 못 받은 첫 순간에 쓰인다. */
   searching: string
+  /** 모델을 부르는 중 — 아직 아무것도 안 왔다 */
+  phaseThinking: string
+  /** 도구가 도는 중. 검색어가 있으면 뒤에 붙여 보여준다 */
+  phaseSearching: string
+  /** 도구 결과를 받아 다시 모델을 부르는 중 */
+  phaseReading: string
   toolSearch: string
   toolFailed: string
   retry: string
@@ -101,6 +110,9 @@ const ko: Strings = {
   placeholder: '예: 해외 출장 숙박비 한도가 얼마인가요?',
   send: '보내기',
   searching: '문서를 확인하고 있습니다',
+  phaseThinking: '생각하고 있습니다',
+  phaseSearching: '사규를 검색하고 있습니다',
+  phaseReading: '근거를 읽고 있습니다',
   toolSearch: '사내 규정 검색',
   toolFailed: '실패',
   retry: '다시 시도',
@@ -135,6 +147,9 @@ const vi: Strings = {
   placeholder: 'Ví dụ: Mức phụ cấp khách sạn khi công tác nước ngoài là bao nhiêu?',
   send: 'Gửi',
   searching: 'Đang kiểm tra tài liệu',
+  phaseThinking: 'Đang suy nghĩ',
+  phaseSearching: 'Đang tra cứu quy định',
+  phaseReading: 'Đang đọc căn cứ',
   toolSearch: 'Tra cứu quy định nội bộ',
   toolFailed: 'thất bại',
   retry: 'Thử lại',
@@ -169,6 +184,9 @@ const en: Strings = {
   placeholder: 'e.g. What is the accommodation limit for overseas travel?',
   send: 'Send',
   searching: 'Checking the documents',
+  phaseThinking: 'Thinking',
+  phaseSearching: 'Searching the policies',
+  phaseReading: 'Reading the sources',
   toolSearch: 'Internal policy search',
   toolFailed: 'failed',
   retry: 'Try again',
