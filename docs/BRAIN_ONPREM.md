@@ -195,7 +195,32 @@ PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_
 ```
 
 > `ON_ERROR_STOP=1` 을 붙인다. 없으면 psql 이 오류를 흘리며 계속 진행해서, 절반만
-> 들어간 상태로 "끝났다"고 보이게 된다.
+> 들어간 상태로 "끝났다"고 보이게 된다. 실제로 이 옵션이 아래 버전 문제를 잡아냈다.
+
+★★ **pg_dump 버전이 대상 서버보다 높으면 그대로 안 들어간다.**
+실측: 원본 PostgreSQL **18.4** → 대상 **16**. pg_dump 는 자기보다 낮은 서버로의
+복원을 보장하지 않는다. 상위 버전에서만 있는 구문이 섞여 들어오기 때문이다.
+
+이번에 걸린 것은 셋이었다:
+
+| 구문 | 언제 생겼나 |
+|---|---|
+| `\restrict` / `\unrestrict` | psql 18 메타명령 |
+| `SET transaction_timeout = 0;` | PostgreSQL 17 설정 |
+
+증상은 `ERROR: unrecognized configuration parameter "transaction_timeout"` 이고,
+`ON_ERROR_STOP=1` 덕에 **0건이 들어간 상태로 멈춘다** (그게 옳다 — 반만 들어가는
+것보다 낫다). 단순한 data-only 덤프라면 그 줄들만 걷어내면 된다:
+
+```bash
+sed -i -e '/^\\restrict /d' -e '/^\\unrestrict /d' \
+       -e '/^SET transaction_timeout = 0;$/d' \
+       01-kb_documents.sql 02-kb_chunks.sql
+```
+
+> 원칙적으로는 **대상 버전에 맞는 pg_dump 로 뜨는 것**이 맞다. 위 방법은 두 테이블의
+> data-only 라서 통하는 것이고, 스키마까지 담은 덤프나 타입이 복잡한 경우에는
+> 이렇게 넘어가면 안 된다. 그때는 대상과 같은 메이저의 클라이언트를 깔아 다시 뜬다.
 
 검증 — 두 숫자가 옮기기 전과 같아야 한다:
 
