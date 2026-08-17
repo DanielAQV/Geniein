@@ -309,9 +309,27 @@ server {
         proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
 
+        # 스트리밍 경로(/agent/message/stream)를 위한 권장 설정. **필수는 아니다** —
+        # nginx 는 상류에 기본 HTTP/1.0 으로 말하고, 그때는 청크 전송 대신 uvicorn 이
+        # 커넥션 종료로 본문 끝을 알린다. 바이트는 그래도 흐른다 (스트리밍의 생사는
+        # 아래 proxy_buffering 이 정한다).
+        #
+        # 1.1 로 얻는 것: 상류 keepalive, 그리고 **끝을 청크 프레이밍으로 구분**하는 것.
+        # 1.0 에서는 정상 종료와 중간 끊김이 둘 다 "연결이 닫혔다"로 보인다. 화면은
+        # `done` 줄이 없으면 오류로 보게 만들어 두었지만(계약이 앱 레이어에 있다),
+        # 전송 레이어에서도 갈릴 수 있는 편이 낫다.
+        #
+        # ★ upstream 블록에 keepalive 를 쓰게 되면 그때는 필수다 — 1.0 이면 무시된다.
+        proxy_http_version 1.1;
+
         # 뇌가 도구 연쇄 + LLM 을 도는 동안 수십 초 걸린다.
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
+
+        # ★★ 스트리밍의 생사가 이 한 줄에 걸린다. 켜져 있으면 nginx 가 응답을 모아
+        #    한 번에 내보내서, 스트리밍이 **조용히 사라진다** — 증상은 "그냥 느리다"로만
+        #    보여서 원인을 찾기 어렵다. 뇌와 게이트웨이가 `X-Accel-Buffering: no` 를
+        #    함께 보내지만, 설정으로도 잠가 둔다.
         proxy_buffering off;
     }
 }

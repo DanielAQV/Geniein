@@ -11,11 +11,17 @@
  *   무슨 질문을 해도 같은 답이 나오니 **에이전트가 질문을 무시하는 것처럼 보였다.**
  *   미리보기가 가짜라는 것을 미리보기가 스스로 말하지 않으면, 디자인을 보는 도구가
  *   제품이 고장 났다는 오해를 만든다.
+ *
+ * ★ **캔 응답도 스트리밍으로 흘린다.** 로컬에는 보통 뇌 설정이 없어서 캔으로 떨어지는데,
+ *   그 경로가 답을 한 번에 뱉으면 미리보기로 스트리밍 화면을 **전혀** 확인할 수 없다.
+ *   실제로 그랬다 — 탭 본체를 스트리밍으로 바꾼 직후, 로컬에서 볼 방법이 없었다.
+ *   캔이 가짜인 것은 배너가 말하고, 움직임은 진짜와 같아야 한다.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FlaskConical, Info } from 'lucide-react'
-import { ChatView, type ChatTurn, type ToolChip } from '../_components/chat-view'
+import { ChatView, type ChatTurn, type Phase, type ToolChip } from '../_components/chat-view'
+import { readStream } from '../_lib/stream'
 import { normalizeTheme, type TeamsTheme } from '../_components/teams-theme-sync'
 import {
   DEFAULT_LANG,
@@ -57,6 +63,36 @@ const THEMES: { value: TeamsTheme; label: string }[] = [
 ]
 
 type Mode = 'unknown' | 'live' | 'canned'
+
+/**
+ * 캔 응답을 진짜처럼 흘린다.
+ *
+ * 실제 스트림의 모양을 따라간다 — 생각 → 검색 → 근거 읽기 → 글자. 숫자는 눈에 자연스러운
+ * 정도로만 잡았고, 실측을 모사하지 않는다 (뇌의 실제 지연은 40~60초다. 미리보기에서
+ * 그만큼 기다리게 하면 화면을 못 본다).
+ */
+async function streamCanned(
+  text: string,
+  handlers: { onPhase: (phase: Phase) => void; onText: (full: string) => void },
+): Promise<void> {
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  handlers.onPhase({ kind: 'thinking' })
+  await wait(700)
+  handlers.onPhase({ kind: 'searching', detail: '해외 출장 숙박비' })
+  await wait(900)
+  handlers.onPhase({ kind: 'reading' })
+  await wait(600)
+
+  // 토큰 단위를 모사한다. 한 글자씩 흘리면 실제보다 매끄러워 보여서, 진짜 스트림에서
+  // 덜컹거리는 것을 미리 못 본다.
+  let shown = ''
+  for (let i = 0; i < text.length; i += 6) {
+    shown += text.slice(i, i + 6)
+    handlers.onText(shown)
+    await wait(30)
+  }
+}
 
 function ThemeSwitcher({
   theme,
@@ -137,6 +173,8 @@ export function PreviewClient() {
   const [turns, setTurns] = useState<ChatTurn[]>([])
   const [pending, setPending] = useState(false)
   const [elapsed, setElapsed] = useState(0)
+  const [phase, setPhase] = useState<Phase | null>(null)
+  const [streamingText, setStreamingText] = useState('')
   const [mode, setMode] = useState<Mode>('unknown')
   const [reason, setReason] = useState('')
 
@@ -164,19 +202,18 @@ export function PreviewClient() {
     return () => clearInterval(timer)
   }, [pending])
 
-  const pushCanned = useCallback((why: string) => {
+  /** 캔 응답으로 떨어진다. 탭 본체와 같은 렌더 경로를 타도록 흘려보낸다. */
+  const pushCanned = useCallback(async (why: string) => {
     const isFollowUp = cannedCount.current > 0
     cannedCount.current += 1
     setMode('canned')
     setReason(why)
+
+    const text = isFollowUp ? CANNED_FOLLOW_UP : CANNED_ANSWER
+    await streamCanned(text, { onPhase: setPhase, onText: setStreamingText })
     setTurns((prev) => [
       ...prev,
-      {
-        id: makeId(),
-        role: 'assistant',
-        text: isFollowUp ? CANNED_FOLLOW_UP : CANNED_ANSWER,
-        tools: [] as ToolChip[],
-      },
+      { id: makeId(), role: 'assistant', text, tools: [] as ToolChip[] },
     ])
   }, [])
 
@@ -194,12 +231,12 @@ export function PreviewClient() {
             body: JSON.stringify({ text, history }),
           })
 
-          if (!response.ok) {
+          if (!response.ok || !response.body) {
             const code = await response
               .json()
               .then((b) => String(b?.error ?? ''))
               .catch(() => '')
-            pushCanned(
+            await pushCanned(
               code === 'preview_not_configured'
                 ? 'apps/web/.env 에 RAG_SERVICE_URL · AGENT_SERVICE_TOKEN · TEAMS_PREVIEW_ORG_ID 를 넣으면 실제로 물어봅니다.'
                 : '검색 서비스를 부르지 못했습니다 (주소·토큰과, 그쪽이 이 IP 를 허용하는지 확인하세요).',
@@ -207,16 +244,32 @@ export function PreviewClient() {
             return
           }
 
-          const result = (await response.json()) as { text: string; tools?: ToolChip[] }
+          // 탭 본체와 **같은 파서**를 쓴다. 미리보기만의 해석 코드를 두면, 여기서 잘
+          //  보이는데 운영에서 깨지는 경우가 생긴다.
+          const outcome = await readStream(response.body, {
+            onPhase: setPhase,
+            onText: setStreamingText,
+          })
+          if (outcome.kind === 'error') {
+            await pushCanned(`스트림이 끊겼습니다 (${outcome.code}).`)
+            return
+          }
           setMode('live')
           setTurns((prev) => [
             ...prev,
-            { id: makeId(), role: 'assistant', text: result.text, tools: result.tools ?? [] },
+            {
+              id: makeId(),
+              role: 'assistant',
+              text: outcome.replaceText ?? outcome.text,
+              tools: outcome.tools,
+            },
           ])
         } catch {
-          pushCanned('미리보기 경로에 연결하지 못했습니다.')
+          await pushCanned('미리보기 경로에 연결하지 못했습니다.')
         } finally {
           setPending(false)
+          setPhase(null)
+          setStreamingText('')
         }
       })()
     },
@@ -235,6 +288,8 @@ export function PreviewClient() {
         turns={turns}
         pending={pending}
         elapsedSec={elapsed}
+        phase={phase}
+        streamingText={streamingText}
         onSend={onSend}
         onRetry={() => undefined}
         onReset={onReset}

@@ -18,8 +18,10 @@ import {
   Body,
   Get,
   Controller,
+  Logger,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AgentService, type AgentSearchResult } from './agent.service';
@@ -101,9 +103,24 @@ function parseHistory(
   });
 }
 
+/**
+ * 스트리밍 응답에 쓰는 것만 골라 둔 최소 인터페이스.
+ *
+ * ★ `express.Response` 타입을 끌어오지 않는다. 이 파일이 HTTP 어댑터에 묶이면
+ *   테스트에서도 Express 객체를 만들어야 한다. 여기서 실제로 쓰는 것은 넷뿐이다.
+ */
+export interface StreamingResponse {
+  setHeader(name: string, value: string): void;
+  flushHeaders?(): void;
+  write(chunk: Uint8Array | string): boolean;
+  end(): void;
+}
+
 @Controller('agent')
 @UseGuards(ServiceTokenGuard, EntraAuthGuard)
 export class AgentController {
+  private readonly logger = new Logger(AgentController.name);
+
   constructor(private readonly agentService: AgentService) {}
 
   /**
@@ -147,5 +164,68 @@ export class AgentController {
     //   `lang` 은 예외가 아니다 — 신원이 아니라 표시 설정이고, 이 값으로 열리는
     //   데이터가 없다. 어느 법인의 문서를 볼지는 여전히 토큰의 tid 가 정한다.
     return this.agentService.search(question, user, priorTurns, parseLang(lang));
+  }
+
+  /**
+   * 같은 검색을, 답이 쓰이는 대로.
+   *
+   * 검증은 `search` 와 **같은 함수들**을 쓴다. 상한과 규칙이 두 벌로 갈리면 한쪽으로만
+   * 우회할 수 있게 된다 (스트리밍 경로로 21턴짜리 이력을 밀어넣는 식으로).
+   *
+   * ★ 실패를 두 갈래로 나눠야 한다. 첫 응답 **전**의 실패는 HTTP 상태로 알릴 수
+   *   있으므로 예외를 그대로 던진다(502/503). 스트림이 열린 **뒤**의 실패는 이미
+   *   200 이 나갔으므로 상태로 말할 수 없고, 뇌가 스트림 안에 `error` 줄을 넣는다.
+   */
+  @Post('search/stream')
+  async searchStream(
+    @Body('text') text: unknown,
+    @Body('history') history: unknown,
+    @Req() request: RequestWithEntraUser,
+    @Res() response: StreamingResponse,
+    @Body('lang') lang?: unknown,
+  ): Promise<void> {
+    const question = typeof text === 'string' ? text.trim() : '';
+    if (!question || question.length > MAX_QUESTION_LENGTH) {
+      throw new BadRequestException('text must be 1..2000 characters');
+    }
+
+    const priorTurns = parseHistory(history);
+
+    const user = request.entraUser;
+    if (!user) throw new BadRequestException('identity is missing');
+
+    const stream = await this.agentService.searchStream(
+      question,
+      user,
+      priorTurns,
+      parseLang(lang),
+    );
+
+    response.setHeader('Content-Type', 'application/x-ndjson');
+    response.setHeader('Cache-Control', 'no-store');
+    // nginx 두 겹에 `proxy_buffering off` 가 들어가 있지만, 설정이 한 번 어긋나면
+    // 스트리밍이 조용히 사라지고 증상은 "느려졌다"로만 보인다. 헤더로 한 겹 더.
+    response.setHeader('X-Accel-Buffering', 'no');
+    response.flushHeaders?.();
+
+    const reader = stream.getReader();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        response.write(value);
+      }
+      response.end();
+    } catch (err) {
+      // 여기까지 왔으면 헤더는 이미 나갔다. 상태 코드를 바꿀 수 없으므로 스트림 안에
+      // 마지막 한 줄로 알리고 닫는다 — 조용히 끊으면 화면에는 "중간에 멈춘 답변"이 된다.
+      this.logger.error(
+        `스트림 중단: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      response.write(`${JSON.stringify({ type: 'error', code: 'stream_broken' })}\n`);
+      response.end();
+    } finally {
+      reader.releaseLock();
+    }
   }
 }

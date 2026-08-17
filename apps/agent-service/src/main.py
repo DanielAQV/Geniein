@@ -13,12 +13,14 @@ from __future__ import annotations
 import hmac
 import logging
 from contextlib import asynccontextmanager
-from typing import Any, Literal
+from typing import Any, Iterator, Literal
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from .agent import Agent, AgentContext, load_persona
+from .agent.wire import error_json, event_json
 from .config import get_settings
 from .llm.anthropic_llm import AnthropicLLM
 from .tools.registry import ToolRegistry
@@ -238,4 +240,56 @@ def agent_message(req: MessageRequest) -> MessageResponse:
             "cache_read_tokens": result.usage.cache_read_tokens,
             "cache_write_tokens": result.usage.cache_write_tokens,
         },
+    )
+
+
+# ── 스트리밍 ───────────────────────────────────────────────────────────
+#
+# **NDJSON** 이다 (한 줄에 JSON 하나). SSE 가 아닌 이유:
+#
+#   · 브라우저의 EventSource 는 POST 도 Authorization 헤더도 못 보낸다. 이 경로는
+#     둘 다 필요하므로 어차피 fetch + ReadableStream 으로 읽는다. 그러면 SSE 의
+#     `event:`/`data:` 규약은 파싱 부담만 남는다.
+#   · 중간 계층이 둘(NestJS, Next BFF)이고 둘 다 바이트를 그대로 흘린다. 줄 단위
+#     포맷이면 계층마다 재조립할 필요가 없다.
+#
+# ★ `X-Accel-Buffering: no` 를 붙인다. 두 nginx 는 `proxy_buffering off` 가 이미
+#   들어가 있지만, 설정이 한 번 어긋나면 스트리밍이 조용히 사라진다 —
+#   증상이 "느려졌다"로만 보여서 원인을 찾기 어렵다. 헤더로 한 겹 더 잠근다.
+
+
+@app.post("/agent/message/stream", dependencies=[Depends(require_service_token)])
+def agent_message_stream(req: MessageRequest) -> StreamingResponse:
+    agent: Agent | None = _state.get("agent")
+    if agent is None:
+        raise HTTPException(status_code=503, detail="agent not ready")
+
+    if not settings.anthropic_api_key:
+        raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY is not configured")
+
+    def lines() -> Iterator[str]:
+        try:
+            for event in agent.stream(
+                user_text=req.text,
+                context=AgentContext(
+                    internal_user_id=req.internal_user_id,
+                    org_id=req.org_id,
+                    roles=tuple(req.roles),
+                    locale=req.locale,
+                    chosen_lang=req.chosen_lang,
+                ),
+                history=_to_provider_messages(req.history),
+            ):
+                yield event_json(event) + "\n"
+        except Exception:  # noqa: BLE001
+            # ★ 여기서 예외를 밖으로 내보내면 안 된다. 헤더는 이미 200 으로 나갔으므로
+            #   HTTP 상태로는 실패를 알릴 수 없고, 커넥션만 끊기면 화면에는 "답변이
+            #   중간에 멈춘" 것으로 보인다. 실패도 스트림 안에서 말해야 한다.
+            logger.exception("스트리밍 중 실패")
+            yield error_json("internal") + "\n"
+
+    return StreamingResponse(
+        lines(),
+        media_type="application/x-ndjson",
+        headers={"X-Accel-Buffering": "no", "Cache-Control": "no-store"},
     )

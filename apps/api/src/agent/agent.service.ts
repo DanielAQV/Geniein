@@ -111,6 +111,117 @@ export class AgentService {
     };
   }
 
+  /**
+   * 스트리밍 경로. 뇌의 NDJSON 을 **바이트 그대로** 브라우저까지 흘린다.
+   *
+   * ★ 여기서 재조립하지 않는다. 줄을 모아 객체로 만들었다가 다시 내보내면 계층마다
+   *   파서가 생기고, 그중 하나가 어긋나면 원인을 찾기 어렵다. 게이트웨이의 일은
+   *   신원을 확정하고 통과시키는 것이다.
+   *
+   * ★ 다만 **엿본다.** 스트리밍이 되면 본문을 파싱하지 않으므로, 그냥 흘리면 토큰
+   *   사용량과 `lang=` 관측이 통째로 사라진다 (그 로그가 지금 Entra `xms_pl` 이
+   *   실제로 오는지 확인하는 유일한 수단이다). 마지막 `done` 줄만 보고 로그를 남긴다.
+   *
+   * 반환하는 것은 web stream 이다. 호출부(컨트롤러)가 Express 응답으로 잇는다.
+   */
+  async searchStream(
+    question: string,
+    user: EntraUser,
+    history: ChatTurn[] = [],
+    chosenLang: string | null = null,
+  ): Promise<ReadableStream<Uint8Array>> {
+    const { baseUrl, token, timeoutMs } = this.requireConfig();
+    const startedAt = Date.now();
+
+    let response: Response;
+    try {
+      response = await fetch(`${baseUrl}/agent/message/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-service-token': token },
+        body: JSON.stringify({
+          text: question,
+          history,
+          internal_user_id: user.internalUserId,
+          org_id: user.tenantId,
+          locale: user.preferredLanguage ?? null,
+          chosen_lang: chosenLang,
+          roles: [],
+        }),
+        // ★ 타임아웃은 **첫 응답까지**만 건다. 스트림이 열린 뒤에는 끄지 않는다 —
+        //   AbortSignal.timeout 은 본문 수신 중에도 발동하므로, 60초짜리 답변이
+        //   중간에 잘린다. 스트림 자체의 상한은 nginx proxy_read_timeout(300s) 이다.
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+    } catch (err) {
+      this.logger.error(
+        `뇌 스트림 호출 실패: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      throw new BadGatewayException('agent service is unreachable');
+    }
+
+    if (!response.ok || !response.body) {
+      this.logger.error(
+        `뇌가 ${response.status} 를 반환했습니다 (${await this.safeText(response)})`,
+      );
+      throw new BadGatewayException('agent service returned an error');
+    }
+
+    return response.body.pipeThrough(
+      this.observe(user, startedAt),
+    ) as ReadableStream<Uint8Array>;
+  }
+
+  /**
+   * 지나가는 줄을 바꾸지 않고 보기만 하는 변환기. `done` 줄에서 로그를 남긴다.
+   *
+   * ★ 줄이 청크 경계에 걸쳐 쪼개진다. 버퍼에 모아 개행에서만 자른다 — 청크마다
+   *   JSON.parse 를 시도하면 멀쩡한 스트림에서 파싱 오류가 쏟아진다.
+   */
+  private observe(
+    user: EntraUser,
+    startedAt: number,
+  ): TransformStream<Uint8Array, Uint8Array> {
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let logged = false;
+
+    const inspect = (line: string): void => {
+      if (logged || !line.includes('"done"')) return;
+      try {
+        const event = JSON.parse(line) as {
+          type?: string;
+          iterations?: number;
+          tools?: { name: string; outcome: string }[];
+          usage?: Record<string, number>;
+        };
+        if (event.type !== 'done') return;
+        logged = true;
+        this.logger.log(
+          `검색 완료(스트림) user=${user.internalUserId} lang=${user.preferredLanguage ?? '-'} ` +
+            `${Date.now() - startedAt}ms iterations=${event.iterations} ` +
+            `tools=[${(event.tools ?? [])
+              .map((t) => `${t.name}:${t.outcome}`)
+              .join(', ')}] usage=${JSON.stringify(event.usage ?? {})}`,
+        );
+      } catch {
+        // 관측이 실패해도 스트림은 흘러야 한다. 사용자 답변이 로그보다 중요하다.
+      }
+    };
+
+    return new TransformStream({
+      transform: (chunk, controller) => {
+        controller.enqueue(chunk);
+        buffer += decoder.decode(chunk, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) if (line.trim()) inspect(line);
+      },
+      flush: () => {
+        if (buffer.trim()) inspect(buffer);
+      },
+    });
+  }
+
   // ── 설정 ────────────────────────────────────────────────────────────
 
   private requireConfig(): {

@@ -17,9 +17,9 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Iterator
 
-from ..llm.base import LLM, ToolResult, Usage
+from ..llm.base import LLM, TextDelta, ToolResult, Turn, Usage
 from ..tools.registry import ToolRegistry
 from .language import detect as detect_language
 from .persona import Persona
@@ -143,6 +143,60 @@ class AgentResponse:
     iterations: int = 0
 
 
+# ── 스트리밍 이벤트 ────────────────────────────────────────────────────
+#
+# ★ 화면이 채워야 하는 것은 텍스트가 아니라 **기다림**이다. 실측 40~60초 중
+#   텍스트 생성은 마지막 5~10초뿐이고, 나머지는 사고와 검색이다. 텍스트만
+#   흘리면 스피너를 30초 보다가 갑자기 답이 쏟아지는 지금과 크게 다르지 않다.
+#   그래서 진행 단계도 같은 스트림으로 내보낸다.
+
+
+@dataclass(frozen=True)
+class StatusEvent:
+    """모델 호출이 시작됐다. `phase` 는 화면 문구를 고르는 데만 쓴다."""
+
+    #: `thinking` — 첫 턴. `reading` — 도구 결과를 받아 다시 부르는 턴.
+    phase: str
+
+
+@dataclass(frozen=True)
+class ToolStartEvent:
+    name: str
+    arguments: dict[str, Any]
+    chain_position: int
+
+
+@dataclass(frozen=True)
+class ToolEndEvent:
+    name: str
+    outcome: str
+    latency_ms: int
+    chain_position: int
+
+
+@dataclass(frozen=True)
+class TextEvent:
+    """모델이 방금 쓴 글자들."""
+
+    delta: str
+
+
+@dataclass(frozen=True)
+class DoneEvent:
+    """끝. `replace_text` 가 있으면 화면에 쌓인 글자를 그것으로 **바꾼다.**
+
+    ★ 정상 경로에서는 `None` 이다. 이미 흘려보낸 글자가 곧 답변이므로 다시 보내면
+      중복된다. 거절·중단처럼 **서버가 지어낸 문장**일 때만 값이 실린다 — 그때는
+      모델이 흘린 조각(있다면)을 남겨두는 것이 오히려 오해를 만든다.
+    """
+
+    response: AgentResponse
+    replace_text: str | None = None
+
+
+AgentEvent = StatusEvent | ToolStartEvent | ToolEndEvent | TextEvent | DoneEvent
+
+
 class Agent:
     def __init__(
         self,
@@ -164,6 +218,23 @@ class Agent:
         context: AgentContext,
         history: list[Any] | None = None,
     ) -> AgentResponse:
+        """한 번에 답을 돌려주는 경로. `stream()` 을 모아 준다.
+
+        ★ 루프를 복제하지 않는다. 도구 연쇄·거절·반복 상한은 규칙이 미묘해서, 두 벌로
+          두면 한쪽만 고치는 일이 반드시 생긴다. 여기서는 마지막 이벤트만 취한다.
+        """
+        for event in self.stream(user_text=user_text, context=context, history=history):
+            if isinstance(event, DoneEvent):
+                return event.response
+        raise RuntimeError("스트림이 DoneEvent 없이 끝났습니다")
+
+    def stream(
+        self,
+        *,
+        user_text: str,
+        context: AgentContext,
+        history: list[Any] | None = None,
+    ) -> Iterator[AgentEvent]:
         system = self._persona.system_prompt(tool_count=len(self._registry))
 
         # ★ 시스템 프롬프트가 언어별로 갈리므로 프롬프트 캐시도 언어 수만큼 나뉜다.
@@ -188,33 +259,60 @@ class Agent:
         chain_position = 0
 
         for iteration in range(1, self._max_iterations + 1):
-            turn = self._llm.run_agent_turn(system=system, messages=messages, tools=tools)
+            # 도구를 한 번이라도 돌린 뒤의 턴은 "근거를 읽는" 중이다. 사용자에게
+            # 같은 문구를 계속 보여주면 멈춘 것처럼 보이므로 단계를 갈라 준다.
+            yield StatusEvent(phase="thinking" if chain_position == 0 else "reading")
+
+            turn: Turn | None = None
+            for event in self._llm.stream_agent_turn(
+                system=system, messages=messages, tools=tools
+            ):
+                if isinstance(event, TextDelta):
+                    yield TextEvent(delta=event.text)
+                else:
+                    turn = event.turn
+            if turn is None:  # 어댑터가 계약을 지키지 않은 것 (base.py 참조)
+                raise RuntimeError("턴이 TurnComplete 없이 끝났습니다")
+
             totals = _accumulate(totals, turn.usage)
 
             if turn.is_refusal:
-                return AgentResponse(
-                    text="요청하신 내용은 답변드리기 어렵습니다.",
-                    tool_trace=trace,
-                    usage=totals,
-                    refused=True,
-                    iterations=iteration,
+                yield DoneEvent(
+                    response=AgentResponse(
+                        text="요청하신 내용은 답변드리기 어렵습니다.",
+                        tool_trace=trace,
+                        usage=totals,
+                        refused=True,
+                        iterations=iteration,
+                    ),
+                    # 거절 전에 조각이 흘렀을 수 있다. 그 조각과 안내 문장이 나란히
+                    # 남으면 무엇이 답인지 모르게 되므로 통째로 바꾼다.
+                    replace_text="요청하신 내용은 답변드리기 어렵습니다.",
                 )
+                return
 
             self._llm.append_assistant_turn(messages, turn)
 
             if not turn.wants_tools:
-                return AgentResponse(
-                    text=turn.text,
-                    tool_trace=trace,
-                    usage=totals,
-                    iterations=iteration,
+                yield DoneEvent(
+                    response=AgentResponse(
+                        text=turn.text,
+                        tool_trace=trace,
+                        usage=totals,
+                        iterations=iteration,
+                    )
                 )
+                return
 
             results: list[ToolResult] = []
             for call in turn.tool_calls:
                 chain_position += 1
                 spec = self._registry.get(call.name)
                 started = time.perf_counter()
+
+                yield ToolStartEvent(
+                    name=call.name, arguments=call.arguments, chain_position=chain_position
+                )
 
                 result = self._registry.execute(
                     name=call.name,
@@ -226,26 +324,38 @@ class Agent:
                     approval_granted=False,
                 )
                 results.append(result)
+                latency_ms = int((time.perf_counter() - started) * 1000)
+                outcome = "error" if result.is_error else "ok"
                 trace.append(
                     ToolTrace(
                         name=call.name,
                         tier=spec.tier if spec else "unknown",
                         arguments=call.arguments,
-                        outcome="error" if result.is_error else "ok",
-                        latency_ms=int((time.perf_counter() - started) * 1000),
+                        outcome=outcome,
+                        latency_ms=latency_ms,
                         chain_position=chain_position,
                     )
+                )
+                yield ToolEndEvent(
+                    name=call.name,
+                    outcome=outcome,
+                    latency_ms=latency_ms,
+                    chain_position=chain_position,
                 )
 
             # 여러 결과는 한 턴에 함께 넣는다
             self._llm.append_tool_results(messages, results)
 
         logger.warning("도구 연쇄가 %d회를 초과했습니다. 루프를 중단합니다.", self._max_iterations)
-        return AgentResponse(
-            text="처리가 예상보다 길어져 중단했습니다. 질문을 조금 더 좁혀서 다시 물어봐 주세요.",
-            tool_trace=trace,
-            usage=totals,
-            iterations=self._max_iterations,
+        stopped = "처리가 예상보다 길어져 중단했습니다. 질문을 조금 더 좁혀서 다시 물어봐 주세요."
+        yield DoneEvent(
+            response=AgentResponse(
+                text=stopped,
+                tool_trace=trace,
+                usage=totals,
+                iterations=self._max_iterations,
+            ),
+            replace_text=stopped,
         )
 
 
