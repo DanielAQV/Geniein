@@ -42,9 +42,19 @@ EC2 에 그대로 두고 **뇌와 벡터 DB 만** 사내 물리 서버(64GB / 1T
 
 ## 2. 물리 서버 준비
 
-### 2.1 Postgres + 확장
+### 2.1 Postgres + 확장 (새로 설치)
 
 스키마가 `vector(1024)` 와 trigram 인덱스를 쓴다 (`db/init/02-knowledge.sql`).
+
+```bash
+sudo apt update
+sudo apt install -y postgresql postgresql-contrib
+
+# pgvector 는 서버 메이저 버전에 맞는 패키지를 깔아야 한다
+PGVER=$(pg_lsclusters -h | awk '{print $1}' | head -1)
+echo "Postgres $PGVER"
+sudo apt install -y "postgresql-${PGVER}-pgvector"
+```
 
 ```bash
 sudo -u postgres psql -c "CREATE DATABASE geniein_db;"
@@ -52,10 +62,20 @@ sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS vector;"
 sudo -u postgres psql -d geniein_db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
 ```
 
-확인 — 셋 다 나와야 한다:
+★ **pgvector 0.5 이상이어야 한다.** 스키마가 `USING hnsw` 를 쓰는데 그 인덱스는
+0.5 에서 들어왔다. 낮으면 테이블 생성이 인덱스 단계에서 실패한다.
 
 ```bash
-sudo -u postgres psql -d geniein_db -c "SELECT extname FROM pg_extension;"
+sudo -u postgres psql -d geniein_db -c \
+  "SELECT extname, extversion FROM pg_extension WHERE extname IN ('vector','pg_trgm');"
+# vector 가 0.5.0 미만이면 apt 패키지 대신 소스로 빌드해야 한다
+```
+
+계정과 스키마:
+
+```bash
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD '<새 비밀번호>';"
+sudo -u postgres psql -d geniein_db -f /srv/genie/db/init/02-knowledge.sql
 ```
 
 ### 2.2 코드와 파이썬
@@ -69,21 +89,35 @@ python3 -m venv /srv/genie/venv
 /srv/genie/venv/bin/pip install -r requirements.txt
 ```
 
-### 2.3 임베딩 스택 (torch)
+### 2.3 임베딩 스택 (torch — CPU)
 
 ★ `requirements-embed.txt` 는 torch 를 고정하지 않는다. 환경마다 인덱스가 다르다.
+이 서버는 GPU 가 없으므로 **CPU 휠**을 쓴다 — 기본 인덱스로 깔면 CUDA 휠(3GB대)이
+딸려 와서 디스크와 시간만 먹는다.
 
 ```bash
-# GPU 가 있으면 (CUDA 12.6 기준)
-TMPDIR=/var/tmp/pip /srv/genie/venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cu126
-# GPU 가 없으면
-TMPDIR=/var/tmp/pip /srv/genie/venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu
+TMPDIR=/var/tmp/pip /srv/genie/venv/bin/pip install torch \
+  --index-url https://download.pytorch.org/whl/cpu
 
-/srv/genie/venv/bin/pip install -r requirements-embed.txt
+/srv/genie/venv/bin/pip install -r /srv/genie/apps/agent-service/requirements-embed.txt
 ```
 
-첫 실행에서 모델 2.3GB 를 받는다. 64GB 램이면 CPU 로도 질의는 돌지만, **색인은
-GPU 가 있는 쪽이 비교가 안 되게 빠르다.**
+첫 실행에서 모델 2.3GB 를 내려받는다.
+
+#### CPU 라서 달라지는 것
+
+64GB 면 메모리는 문제가 아니다. 바뀌는 건 속도다.
+
+| | CPU 에서 | 판단 |
+|---|---|---|
+| **질의 임베딩** (짧은 문장 1개) | 수백 ms | 답변이 원래 40~60초라 묻히는 수준. 문제 없다 |
+| **색인** (현재 232청크) | 수 분 | 한 번 하면 끝이라 견딜 만하다 |
+| **색인** (코퍼스가 크게 늘면) | 선형으로 늘어남 | 그때는 GPU 있는 노트북에서 색인하고 `pg_dump` 로 옮기는 편이 낫다 (3장과 같은 방법) |
+
+★ **첫 질문이 모델 로딩 값을 치른다.** `embed.py` 는 지연 로드라, 기동 후 첫 요청이
+2.3GB 를 올리는 동안 그만큼 더 기다린다. 서비스 시작 직후 아무 질문이나 한 번
+던져 예열해 두면 실제 사용자가 그 값을 안 낸다. (기동 시 자동 예열은 코드 변경이
+필요하다 — 필요해지면 그때 넣는다.)
 
 ---
 
