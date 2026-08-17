@@ -111,13 +111,25 @@ PGPASSWORD='<위에서 정한 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie 
 
 ### 2.2 코드와 파이썬
 
+★ **`--depth 1` 로 받는다.** 저장소 팩이 180MB 인데, 그 대부분이 지금 트리에는 없는
+과거 커밋의 업로드 이미지(`apps/web/public/uploads/`)다. 커밋했다가 지운 파일이라
+작업 트리에는 안 보이지만 **히스토리에는 영구히 남아 있어 전체 clone 이 매번 그
+값을 치른다.** 이 서버에 실제로 필요한 것(`apps/agent-service` + `db`)은 0.1MB 다.
+
 ```bash
 sudo mkdir -p /srv/genie && sudo chown "$USER" /srv/genie
-git clone -b feat/teams-tab <저장소> /srv/genie
+git clone --depth 1 -b feat/teams-tab <저장소> /srv/genie
 cd /srv/genie/apps/agent-service
 
 python3 -m venv /srv/genie/venv
 /srv/genie/venv/bin/pip install -r requirements.txt
+```
+
+얕은 저장소도 `git pull` 은 그대로 된다. 더 줄이려면 필요한 경로만 받는다:
+
+```bash
+git clone --depth 1 --filter=blob:none --sparse -b feat/teams-tab <저장소> /srv/genie
+cd /srv/genie && git sparse-checkout set apps/agent-service db
 ```
 
 ### 2.3 임베딩 스택 (torch — CPU)
