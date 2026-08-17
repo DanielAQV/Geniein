@@ -265,12 +265,27 @@ systemd 로 상주시키고(`Restart=always`), 부팅 시 자동 시작을 켠�
 
 ## 5. 앞단 nginx (TLS + IP 허용목록)
 
-`brain.geniein.com` 처럼 별도 이름을 쓴다. DNS A 레코드를 물리 서버 공인 IP 로.
+`gnom.geniein.com` 을 쓴다 (법인장이 에이전트를 부르는 이름). DNS A 레코드를 물리
+서버 공인 IP 로.
+
+★★ **이 서버의 nginx 는 이미 connext 를 서빙하고 있다.** EC2 에서 겪은 것과 같은
+함정이 있으니 순서를 지킨다:
+
+1. **우리 블록을 먼저 만들고 활성화한다** (`sites-available/gnom` → 심볼릭 링크).
+   기존 파일은 건드리지 않는다.
+2. **그다음에** certbot 을 돌린다.
+
+EC2 에서는 블록 없이 certbot 을 먼저 돌렸다가, certbot 이 매칭되는 블록을 못 찾고
+**기존 홈페이지 블록을 복제해** 우리 이름을 붙였다. `proxy_pass` 가 엉뚱한 곳을
+가리키게 되어 한참 헤맸다. 순서를 지키면 생기지 않는다.
+
+`nginx -t` 가 통과할 때만 reload 한다 — connext 가 돌고 있어서 문법 오류로 재시작이
+실패하면 그쪽까지 같이 내려간다.
 
 ```nginx
 server {
     listen 443 ssl;
-    server_name brain.geniein.com;
+    server_name gnom.geniein.com;
 
     # ★ ① 네트워크 겹. 부르는 곳은 EC2 하나뿐이므로 그 주소만 허용한다.
     allow 54.89.239.197;
@@ -291,7 +306,7 @@ server {
 ```
 
 ```bash
-sudo certbot --nginx -d brain.geniein.com
+sudo certbot --nginx -d gnom.geniein.com
 ```
 
 > certbot 의 HTTP-01 검증은 80 으로 들어온다. `allow/deny` 를 80 블록에도 그대로
@@ -306,7 +321,7 @@ sudo certbot --nginx -d brain.geniein.com
 ```bash
 cd /var/www/genie
 sed -i '/^RAG_SERVICE_URL=/d; /^AGENT_SERVICE_TOKEN=/d' apps/api/.env
-echo 'RAG_SERVICE_URL=https://brain.geniein.com' >> apps/api/.env
+echo 'RAG_SERVICE_URL=https://gnom.geniein.com' >> apps/api/.env
 echo 'AGENT_SERVICE_TOKEN=<물리서버와 같은 값>' >> apps/api/.env
 pm2 restart genie-api
 ```
@@ -319,11 +334,11 @@ pm2 restart genie-api
 
 1. **밖에서는 안 보인다** — 사무실 밖 회선(휴대폰 테더링 등)에서:
    ```bash
-   curl -sS -m 10 https://brain.geniein.com/health    # 403 또는 무응답이어야 정상
+   curl -sS -m 10 https://gnom.geniein.com/health    # 403 또는 무응답이어야 정상
    ```
 2. **토큰 없이는 막힌다** — EC2 에서:
    ```bash
-   curl -sS -o /dev/null -w '%{http_code}\n' -X POST https://brain.geniein.com/agent/message \
+   curl -sS -o /dev/null -w '%{http_code}\n' -X POST https://gnom.geniein.com/agent/message \
         -H 'content-type: application/json' -d '{"text":"x","internal_user_id":"probe"}'
    # 401
    ```
