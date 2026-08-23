@@ -1,14 +1,4 @@
-"""Postgres 연결.
-
-소유권: `kb_documents` / `kb_chunks` 는 agent-service 가 소유한다 (db/init/02-knowledge.sql).
-NestJS 엔티티가 없으므로 TypeORM synchronize 가 이 테이블을 건드리지 않는다.
-
-커넥션 풀을 두지 않는다 — 현재 부하에서는 이른 최적화이고, 색인 CLI 와 API 가
-같은 헬퍼를 공유하는 편이 낫다. 부하가 보이면 psycopg_pool 로 이 파일 안에서만 바꾼다.
-
-pgvector 파이썬 어댑터를 쓰지 않는 이유: 의존성 하나를 아끼기 위해 벡터를
-`'[0.1,0.2,...]'::vector` 리터럴로 넘긴다. Postgres 가 파싱하는 형식 그대로다.
-"""
+"""Postgres 연결."""
 
 from __future__ import annotations
 
@@ -28,11 +18,7 @@ def connect() -> Iterator[psycopg.Connection]:
 
 
 def to_vector_literal(values: Sequence[float]) -> str:
-    """pgvector 리터럴. `%s::vector` 로 바인딩해서 쓴다.
-
-    repr(float) 대신 반복 가능한 표현을 쓴다 — 같은 입력이 같은 문자열이 되어야
-    재색인 시 불필요한 diff 가 생기지 않는다.
-    """
+    """pgvector 리터럴. `%s::vector` 로 바인딩해서 쓴다."""
     return "[" + ",".join(f"{v:.7g}" for v in values) + "]"
 
 

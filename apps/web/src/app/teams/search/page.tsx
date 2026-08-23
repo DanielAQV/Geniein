@@ -1,20 +1,5 @@
 'use client'
 
-/**
- * Teams 탭 — 사규 대화.
- *
- * 이 화면이 브라우저에서 부르는 것은 같은 오리진의 `/api/teams/*` 둘뿐이다
- * (`me`, `search/stream`). NestJS 도 뇌도 여기서 보이지 않는다
- * (docs/TEAMS_TAB_DESIGN.md 2장).
- *
- * ★ 응답이 수 초~수십 초 걸린다. 검색만 하는 게 아니라 에이전트 루프를 타면서
- *   Claude 가 근거를 읽고 인용을 정리하기 때문이다. 그래서 **스트리밍**이다 —
- *   대기 중 무엇을 하고 있는지(생각·검색·근거 읽기)와 쓰이는 중인 답변을 함께
- *   보여준다. 실측 40~60초 중 텍스트 생성은 마지막 5~10초뿐이라, 진행 단계가
- *   없으면 텍스트만 흘려도 앞의 30초가 그대로 침묵이다.
- *
- * ★ 화면은 표시만 하는 ChatView 에 맡기고 여기서는 **상태·네트워크·언어**만 다룬다.
- */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AlertCircle } from 'lucide-react'
@@ -31,17 +16,8 @@ import {
   type Strings,
 } from '../_lib/i18n'
 
-/** 모델에게 넘길 이력의 상한. 서버(BFF·NestJS·뇌)에도 같은 상한이 있다. */
 const MAX_HISTORY_TURNS = 20
 
-/**
- * 원문 오류를 화면에 남길지. 평소 운영에서는 감춘다 — 사용자가 할 수 있는 일이 없고,
- * MSAL/Entra 오류에는 테넌트·리소스 식별자가 섞여 나온다.
- *
- * 개발에서는 반대로 반드시 보여야 한다. 이 화면은 크로스 오리진 iframe 안이라
- * 바깥에서 콘솔을 읽을 수 없다. `NEXT_PUBLIC_TEAMS_DEBUG=1` 로 운영에서도 한시적으로
- * 켤 수 있다 — 새 호스트에 처음 올릴 때가 정확히 그 상황이다.
- */
 const SHOW_TECHNICAL_DETAIL =
   process.env.NODE_ENV !== 'production' || process.env.NEXT_PUBLIC_TEAMS_DEBUG === '1'
 
@@ -68,7 +44,6 @@ function describeFailure(error: unknown, s: Strings): Failure {
   }
 }
 
-/** BFF 가 돌려주는 오류 코드를 사람이 읽는 문장으로. 코드 자체는 노출하지 않는다. */
 function describeBffError(status: number, code: string, s: Strings): Failure {
   if (status === 401) {
     return { title: s.expiredTitle, detail: s.expiredBody, canRetry: true }
@@ -79,13 +54,6 @@ function describeBffError(status: number, code: string, s: Strings): Failure {
   return { title: s.upstreamTitle, detail: s.upstreamBody, canRetry: true }
 }
 
-/**
- * 모델에게 넘길 이력을 고른다.
- *
- * 오류는 대화가 아니므로 뺀다. 끝이 사용자 발언이면 그것도 뺀다 — 이번에 보내는
- * 질문이 바로 그 발언이라 두 번 들어간다 (뇌도 같은 정리를 하지만, 보내는 쪽에서
- * 맞추는 편이 서버 로그를 읽을 때 헷갈리지 않는다).
- */
 function historyFor(turns: ChatTurn[]): { role: 'user' | 'assistant'; text: string }[] {
   const spoken = turns
     .filter((turn): turn is Extract<ChatTurn, { role: 'user' | 'assistant' }> =>
@@ -100,7 +68,6 @@ function historyFor(turns: ChatTurn[]): { role: 'user' | 'assistant'; text: stri
   return spoken.slice(-MAX_HISTORY_TURNS)
 }
 
-/** 스트림 안에서 온 실패. 상태 코드가 없으므로 문구는 상류 오류와 같은 것을 쓴다. */
 function describeStreamError(code: string, s: Strings): Failure {
   return {
     title: s.upstreamTitle,
@@ -110,7 +77,6 @@ function describeStreamError(code: string, s: Strings): Failure {
   }
 }
 
-/** Teams 클라이언트가 설정된 언어. 못 읽으면 null — 다음 근거로 넘어간다. */
 async function teamsLocale(): Promise<string | null> {
   try {
     const { app } = await import('@microsoft/teams-js')
@@ -121,7 +87,6 @@ async function teamsLocale(): Promise<string | null> {
   }
 }
 
-/** Entra 계정에 설정된 언어. 없을 수 있고, 실패해도 화면은 떠야 한다. */
 async function accountLocale(token: string): Promise<string | null> {
   try {
     const response = await fetch('/api/teams/me', {
@@ -143,21 +108,15 @@ export default function TeamsSearchPage() {
   const [phase, setPhase] = useState<Phase | null>(null)
   const [streamingText, setStreamingText] = useState('')
 
-  /**
-   * ★ 저장된 선택이 있으면 그것으로 시작한다. 자동 판정을 기다렸다가 바꾸면
-   *   직접 고른 사람에게 화면이 한 번 번쩍인다.
-   */
   const [lang, setLang] = useState<Lang>(DEFAULT_LANG)
   const chosenByUser = useRef(false)
 
   const strings = stringsFor(lang)
 
-  /** 다시 시도할 질문. 오류가 났을 때 사용자가 다시 입력하지 않아도 되게. */
   const lastQuestion = useRef('')
   const nextId = useRef(0)
   const makeId = () => `t${nextId.current++}`
 
-  // 저장된 선택을 먼저 반영한다 (SSR 이후 첫 effect).
   useEffect(() => {
     const stored = readStoredLang()
     if (stored) {
@@ -166,8 +125,7 @@ export default function TeamsSearchPage() {
     }
   }, [])
 
-  // 마운트 시 환경을 먼저 확인한다. 질문을 입력하고 기다린 뒤에야
-  // "Teams 가 아니다"를 보게 되면 늦다.
+  // 환경 확인은 마운트 시에. 질문을 기다린 뒤에 "Teams 가 아니다"를 보면 늦다.
   useEffect(() => {
     let cancelled = false
 
@@ -177,7 +135,6 @@ export default function TeamsSearchPage() {
         if (cancelled) return
         setBoot('ready')
 
-        // 언어는 부팅을 막지 않는다. 늦게 와도 문구만 바뀐다.
         if (chosenByUser.current) return
         const [fromTeams, token] = await Promise.all([
           teamsLocale(),
@@ -186,11 +143,9 @@ export default function TeamsSearchPage() {
         const fromAccount = token ? await accountLocale(token) : null
         if (cancelled || chosenByUser.current) return
 
-        // 순서가 곧 우선순위다 — 계정 설정이 클라이언트 UI 설정보다 낫다.
         setLang(resolveLang(fromAccount, fromTeams))
       } catch (error) {
         if (cancelled) return
-        // Teams 밖이면 어떤 질문도 처리할 수 없다 — 대화창 대신 안내만 띄운다.
         setBoot(error instanceof NotInTeamsError ? 'blocked' : 'ready')
       }
     })()
@@ -200,7 +155,6 @@ export default function TeamsSearchPage() {
     }
   }, [])
 
-  // 경과 시간. 이게 없으면 멈춘 것처럼 보인다.
   useEffect(() => {
     if (!pending) return
     setElapsed(0)
@@ -215,18 +169,10 @@ export default function TeamsSearchPage() {
     setLang(next)
   }, [])
 
-  /**
-   * `chosen` 은 **사용자가 직접 고른 언어**이고, 자동 판정 결과는 넣지 않는다.
-   *
-   * ★ 이 구분이 없으면 신호가 흐려진다. 자동 판정은 이미 계정 언어와 Teams locale
-   *   에서 나온 값이라, 그걸 되돌려 보내면 서버가 "사용자가 골랐다"와 "우리가 추측했다"
-   *   를 구분할 수 없다. 서버 쪽 우선순위(발언 언어 > 고른 값 > 계정 언어)가 무의미해진다.
-   */
   const ask = useCallback(
     async (question: string, history: ChatTurn[], s: Strings, chosen: Lang | null) => {
       setPending(true)
       try {
-        // 토큰은 보관하지 않고 매번 받는다 (lib/teams/client.ts 참조)
         const token = await getTeamsToken()
 
         const response = await fetch('/api/teams/search/stream', {
@@ -239,8 +185,7 @@ export default function TeamsSearchPage() {
           }),
         })
 
-        // 스트림이 열리기 **전**의 실패는 여전히 HTTP 상태로 온다. 여기까지는
-        // 비스트리밍 경로와 오류 처리가 같다.
+        // 스트림이 열리기 전의 실패는 여전히 HTTP 상태로 온다.
         if (!response.ok || !response.body) {
           const code = await response
             .json()
@@ -264,8 +209,7 @@ export default function TeamsSearchPage() {
           return
         }
 
-        // ★ `replace_text` 가 있으면 쌓인 글자를 버린다. 거절·중단처럼 서버가 지어낸
-        //   문장일 때만 실리고, 그때는 모델이 흘린 조각을 남기는 것이 오해를 만든다.
+        // `replace_text` 가 있으면 쌓인 글자를 버린다 — 거절·중단일 때 조각이 남으면 오해를 만든다.
         const text = outcome.replaceText ?? outcome.text
         if (text) {
           setTurns((prev) => [
@@ -309,7 +253,6 @@ export default function TeamsSearchPage() {
     const question = lastQuestion.current
     if (!question) return
     setTurns((prev) => {
-      // 실패 기록을 지우고 같은 질문을 다시 보낸다. 사용자 발언은 그대로 남긴다.
       const next = prev.filter((turn) => turn.role !== 'error')
       void ask(question, next, strings, chosenByUser.current ? lang : null)
       return next

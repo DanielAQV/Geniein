@@ -1,12 +1,3 @@
-/**
- * 자격증명 검증 — Node 런타임 전용 (scrypt).
- *
- * ★ 이 파일은 브리지다. 설계문서 7장의 목적지는 Entra ID SSO 이고,
- *   전환 시 이 파일과 /api/auth/login 만 사라진다. session.ts 는 남는다.
- *
- * 평문 비밀번호는 어디에도 저장하지 않는다. .env 에는 해시만 둔다:
- *   node apps/web/scripts/hash-password.mjs '비밀번호'
- */
 
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 
@@ -45,10 +36,6 @@ function verifyPassword(password: string, stored: string): boolean {
   return timingSafeEqual(derived, expected)
 }
 
-/**
- * 사용자명이 틀려도 scrypt 를 그대로 한 번 돌린다.
- * 빨리 실패하면 응답 시간으로 "이 사용자명은 존재한다"가 새어나간다.
- */
 const DUMMY_HASH = hashPassword(randomBytes(24).toString('hex'))
 
 export interface AdminIdentity {

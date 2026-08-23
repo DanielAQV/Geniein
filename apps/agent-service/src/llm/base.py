@@ -1,17 +1,4 @@
-"""LLM 어댑터 경계.
-
-설계 문서 3.5 — 경계는 유스케이스 단위로 자른다.
-
-    ❌ generate(prompt) -> str
-       최소공통분모 래퍼. 스왑은 쉬워지지만 프롬프트 캐싱·적응형 사고·
-       structured outputs 를 전부 포기하게 된다. 사규 고정 프리픽스 캐싱은
-       이 시스템 비용 레버 1순위이므로 포기할 수 없다.
-
-    ✅ run_agent_turn / answer_with_context / extract_structured
-       provider별 최적화는 어댑터 "안에서" 한다. 호출부는 같은 시그니처만 본다.
-
-나중에 로컬 LLM으로 뇌를 갈아끼울 때 이 프로토콜 구현체만 새로 쓰면 된다.
-"""
+"""LLM 어댑터 경계."""
 
 from __future__ import annotations
 
@@ -45,11 +32,7 @@ class Usage:
 
 @dataclass
 class Turn:
-    """에이전트 한 턴의 결과.
-
-    raw_content 는 provider 고유 블록 배열이다. 호출부는 이걸 해석하지 않고
-    append_assistant_turn 에 그대로 되돌려주기만 한다 (thinking 블록 보존 필요).
-    """
+    """에이전트 한 턴의 결과."""
 
     text: str
     tool_calls: list[ToolCall] = field(default_factory=list)
@@ -75,13 +58,11 @@ class TextDelta:
 
 @dataclass(frozen=True)
 class TurnComplete:
-    """한 턴의 끝. 스트리밍 중에도 호출부는 결국 `Turn` 이 필요하다 —
-    도구 호출 목록과 `raw_content`(thinking 블록 포함)가 다음 턴의 입력이기 때문이다."""
+    """한 턴의 끝. 도구 호출 목록과 raw_content 가 다음 턴의 입력이다."""
 
     turn: Turn
 
 
-#: 스트리밍 한 턴이 내보내는 것. 마지막은 반드시 `TurnComplete` 다.
 TurnEvent = TextDelta | TurnComplete
 
 
@@ -107,12 +88,7 @@ class LLM(Protocol):
         tools: list[dict[str, Any]],
         effort: str | None = None,
     ) -> Iterator[TurnEvent]:
-        """`run_agent_turn` 과 같은 한 턴을, 쓰이는 대로 내보내면서.
-
-        ★ 두 메서드가 따로 있는 것은 어댑터의 사정이다. 위쪽(agent/core.py)에는
-          루프가 하나뿐이고, 그 루프는 항상 이 스트리밍 쪽을 쓴다 — `run_agent_turn`
-          은 그 결과를 모아 주는 얇은 껍데기로 남는다. 루프가 둘이면 반드시 갈라진다.
-        """
+        """`run_agent_turn` 과 같은 한 턴을, 쓰이는 대로 내보내면서."""
         ...
 
     def append_assistant_turn(self, messages: list[Any], turn: Turn) -> list[Any]:

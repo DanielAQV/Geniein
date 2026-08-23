@@ -1,25 +1,4 @@
-"""Teams 아이콘 생성 — 탭 헤더와 **같은 반짝이**.
-
-**빌드에 포함되지 않는다.** color.png / outline.png 는 저장소에 커밋돼 있고,
-모양이나 색을 바꾸고 싶을 때만 이 스크립트를 돌린다.
-
-    python make-icons.py          # Pillow 필요
-
-만드는 것:
-  color.png    192x192  무배경 + 브랜드색 선
-  outline.png   32x32   무배경 + 흰 선 (Teams 좌측 앱 바)
-
-★ 모양을 지어내지 않는다. 화면 헤더가 lucide 의 `Sparkles` 를 쓰므로(chat-view.tsx)
-  **그 아이콘의 패스를 그대로** 옮겨 온다. 손으로 비슷하게 그린 도형을 쓰면 앱 바의
-  아이콘과 탭 안의 아이콘이 미묘하게 달라져서, 같은 것을 가리키는지 확신이 안 선다.
-
-  출처: lucide-react@0.564.0 `icons/sparkles.js` (viewBox 24, stroke-width 2, 둥근 끝)
-  ★ 헤더 아이콘을 바꾸거나 lucide 를 올릴 때는 아래 PATH 도 같이 옮겨야 한다.
-    자동으로 따라가지 않는다 — teams-app 은 lucide 를 의존하지 않기 때문이다.
-
-★ 색도 지어내지 않는다. apps/web/src/app/globals.css 다크 테마의 `--primary` 를
-  oklch 에서 그대로 변환한다.
-"""
+"""Teams 아이콘 생성 — 탭 헤더와 **같은 반짝이**."""
 
 import math
 import pathlib
@@ -36,10 +15,8 @@ MARGIN = 0.06  # 캔버스 여백 비율. 앱 바에서 가장자리에 붙지 �
 # globals.css 다크 테마 값 (oklch)
 PRIMARY_OKLCH = (0.60, 0.18, 270)
 
-# ── lucide sparkles 패스 (viewBox 24) ────────────────────────────────
 # 큰 별: 시작점 뒤로 (원호, 직선)이 번갈아 나온다.
 STAR_START = (11.017, 2.814)
-# (rx, ry, large_arc, sweep, dx, dy) — 상대 원호 / (dx, dy) — 상대 직선
 STAR_SEGMENTS = [
     ("a", 1, 1, 0, 1, 1.966, 0),
     ("l", 1.051, 5.558),
@@ -91,12 +68,7 @@ def arc_points(
     p1: tuple[float, float],
     steps: int = 16,
 ) -> list[tuple[float, float]]:
-    """SVG 원호(A/a)를 점열로 편다.
-
-    끝점 표기(어디서 어디로, 반지름 얼마)를 중심 표기(중심·시작각·회전각)로 바꾸는
-    SVG 명세 F.6.5 의 절차다. 여기 원호는 전부 rx == ry 이고 회전이 없어서 실제로는
-    원의 일부지만, 명세대로 두는 편이 나중에 다른 패스를 옮겨 올 때 안전하다.
-    """
+    """SVG 원호(A/a)를 점열로 편다."""
     x0, y0 = p0
     x1, y1 = p1
     if (x0, y0) == (x1, y1) or rx == 0 or ry == 0:
@@ -150,11 +122,7 @@ def star_outline() -> list[tuple[float, float]]:
 
 
 def render(size: int, color: tuple[int, int, int]) -> Image.Image:
-    """배경도 면도 없이 **선으로만** 그린다.
-
-    Teams 앱 아이콘의 결이 픽토그램이라 면을 채우지 않는다. 채도 높은 사각형
-    하나가 앱 목록에서 유독 튀는 것도 피한다.
-    """
+    """배경도 면도 없이 **선으로만** 그린다."""
     s = size * SS
     inner = s * (1 - 2 * MARGIN)
     scale = inner / VIEWBOX
@@ -201,7 +169,7 @@ if __name__ == "__main__":
     primary = oklch_to_rgb(*PRIMARY_OKLCH)
     print(f"브랜드 primary = #{'%02X%02X%02X' % primary}")
 
-    # color.png 는 라이트·다크 표면 **양쪽**에 놓인다. 무배경으로 가는 이상
+    # color.png 는 라이트·다크 표면 양쪽에 놓인다. 무배경이라
     # 흰 선은 라이트에서 사라지므로 브랜드색으로 그린다.
     render(192, primary).save(HERE / "color.png")
     print("color.png   192x192 (무배경, 브랜드색 선)")

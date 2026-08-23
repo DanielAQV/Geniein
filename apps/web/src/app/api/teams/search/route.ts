@@ -1,35 +1,14 @@
-/**
- * Teams 탭 검색 BFF — 한 번에 답하는 경로.
- *
- * ★ 탭은 이제 `./stream` 을 쓴다. 이 파일은 **되돌릴 자리**로 남긴다 — 중간 프록시가
- *   버퍼링하는 환경에서 스트리밍이 통째로 죽으면, 화면의 fetch 주소 한 줄만 바꿔
- *   돌아올 수 있어야 한다. 운영에서 스트리밍이 한동안 문제없이 돌면 지운다.
- *
- * 브라우저는 이 경로까지만 안다. 여기서 서버가 NestJS 를 부르므로
- * `CORS_ORIGINS` 도 CSP `connect-src` 도 'self' 로 남는다
- * (docs/TEAMS_TAB_DESIGN.md 3.3).
- *
- * 관리자 BFF(/api/admin/*)와 다른 점: 신원이 **세션 쿠키가 아니라 Bearer** 다.
- * Teams iframe 은 서드파티 컨텍스트라 세션 쿠키가 브라우저 정책에 막힌다.
- *
- * ★ 이 파일은 신원을 **검증하지 않는다.** Bearer 를 그대로 넘기고, 검증은
- *   NestJS 의 EntraAuthGuard 가 한다 (설계 3.2 — 신뢰 경계는 거기 하나다).
- *   여기서 한 번 더 검증하면 진실이 둘이 되고, 약한 쪽이 우회 경로가 된다.
- *   대신 형식이 틀린 요청은 상류를 부르기 전에 끊는다.
- */
 
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-// 뇌가 도구 연쇄 + LLM 이라 수십 초가 걸린다. 플랫폼 기본 상한에 먼저 잘리면
-// NestJS 가 만든 오류 대신 정체불명의 타임아웃이 브라우저로 간다.
+// 뇌는 수십 초가 걸린다. 플랫폼 기본 상한에 먼저 잘리면 정체불명의 타임아웃이 나간다.
 export const maxDuration = 90
 
 const UPSTREAM =
   process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
-/** NestJS 쪽 상한(60초)보다 길게 잡는다 — 그래야 상류의 502 가 그대로 보인다. */
 const UPSTREAM_TIMEOUT_MS = 75_000
 
 const MAX_QUESTION_LENGTH = 2000
@@ -52,13 +31,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'invalid_text' }, { status: 400 })
   }
 
-  // 이력은 모양만 보고 넘긴다 — 실제 검증은 NestJS 가 한다. 여기서 규칙을 한 벌 더
-  // 두면 두 곳이 어긋날 때 원인을 찾기 어려워진다. BFF 의 일은 통과시키는 것이다.
+  // 이력은 모양만 보고 넘긴다 — 실제 검증은 NestJS 가 한다. BFF 의 일은 통과시키는 것이다.
   const history = Array.isArray(body.history) ? body.history : []
 
-  // 사용자가 탭에서 고른 언어. 허용 목록은 NestJS 가 갖고 있으므로 여기서는 타입만 본다
-  // (i18n.ts 를 import 하면 같은 목록이 두 곳에 생긴다). 없으면 아예 안 보낸다 —
-  // 자동 판정으로 정해진 값을 보내면 "사용자가 골랐다"는 신호가 흐려진다.
+  // 고른 언어. 허용 목록은 NestJS 가 갖고 있어 여기서는 타입만 본다. 없으면 아예 안 보낸다.
   const lang = typeof body.lang === 'string' ? body.lang : undefined
 
   const serviceToken = process.env.ADMIN_SERVICE_TOKEN
@@ -73,9 +49,7 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 사용자 신원 — NestJS 의 EntraAuthGuard 가 검증한다
         Authorization: authorization,
-        // 호출자 신원 — 이 요청이 우리 BFF 에서 왔음을 NestJS 에 증명한다
         'x-service-token': serviceToken,
       },
       body: JSON.stringify({ text: question, history, ...(lang ? { lang } : {}) }),
@@ -90,8 +64,7 @@ export async function POST(request: Request) {
   if (!upstream.ok) {
     // 상류 본문을 그대로 흘리지 않는다 — 내부 오류 메시지가 브라우저로 나간다.
     console.error('[bff] NestJS 응답 %d', upstream.status)
-    // 401 만 그대로 전달한다. 토큰 만료는 사용자가 새로고침으로 복구할 수 있는
-    // 유일한 경우라, 502 로 뭉뚱그리면 화면이 잘못된 안내를 하게 된다.
+    // 401 만 그대로 전달한다 — 새로고침으로 복구할 수 있는 유일한 경우다.
     const status = upstream.status === 401 ? 401 : 502
     return NextResponse.json({ error: status === 401 ? 'unauthorized' : 'upstream_error' }, { status })
   }

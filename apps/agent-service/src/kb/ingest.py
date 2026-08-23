@@ -1,20 +1,4 @@
-"""색인 파이프라인 (설계문서 5.1).
-
-    파싱 → 청킹(표 보존) → BGE-M3 임베딩 → kb_documents / kb_chunks
-
-두 가지를 코드로 강제한다:
-
-  · **포맷 등급은 자동 판별한다.** 업로더가 판단하지 않는다. 확장자가 아니라
-    매직 바이트로 본다 — 코퍼스에 `.docx.pdf` 같은 이름이 실제로 있다.
-
-  · **재색인은 삭제 후 재삽입이다.** append 만 하면 구버전 청크가 검색에 계속
-    걸린다. 개정된 사규를 자신 있게 인용하는 것이 read 티어의 진짜 위험이다.
-
-사용:
-    python -m src.kb.ingest regulations/transcripts/*.md
-    python -m src.kb.ingest --force regulations/*.docx
-    python -m src.kb.ingest --dry-run <경로>       # 청킹 결과만 보고 DB 는 건드리지 않는다
-"""
+"""색인 파이프라인 (설계문서 5.1)."""
 
 from __future__ import annotations
 
@@ -44,12 +28,7 @@ ROLE_HINTS = {
 
 
 def detect_format(path: Path) -> str:
-    """포맷 등급 판별. 확장자가 아니라 내용으로 본다.
-
-    설계문서 5.1 의 실측 판별법:
-        폰트 0개 + 이미지 있음 → 스캔본(C등급)
-        그 외 PDF              → 텍스트본(B등급)
-    """
+    """포맷 등급 판별. 확장자가 아니라 내용으로 본다."""
     if path.suffix.lower() == ".md":
         # 전사본. 원본 등급은 frontmatter 가 들고 있다.
         return "pdf_scan"
@@ -118,9 +97,8 @@ def _document_row(path: Path, doc: ParsedDoc, source_format: str, org_id: str) -
     }
 
 
-# ★ org_id 는 NOT NULL 로 취급한다 (스키마는 nullable 이지만 여기서 항상 채운다).
-#   NULL 로 들어간 문서는 검색 필터(`d.org_id = :org_id`)에 영원히 안 걸리므로
-#   색인은 성공하고 조회만 안 되는, 가장 찾기 어려운 상태가 된다.
+# org_id 는 NOT NULL 로 취급한다 (스키마는 nullable 이지만 여기서 항상 채운다).
+# NULL 로 들어간 문서는 검색 필터에 영원히 안 걸린다 — 색인만 성공하고 조회는 안 된다.
 UPSERT_DOC = """
 INSERT INTO kb_documents (
     org_id, source, source_url, title, content_hash, role_scope, lang,
@@ -181,9 +159,8 @@ def ingest_file(
         return summary
 
     with connect() as conn, conn.cursor() as cur:
-        # ★ org_id 를 조건에 넣지 않으면 **다른 법인의** 같은 파일이 걸려서
-        #   해시가 같다는 이유로 "unchanged" 로 건너뛴다. 그 법인 코퍼스는
-        #   영원히 비어 있는데 색인 로그는 정상으로 보인다.
+        # org_id 를 조건에 넣지 않으면 다른 법인의 같은 파일이 해시가 같다는 이유로
+        # "unchanged" 로 건너뛰어, 그 법인 코퍼스가 영원히 비어 있게 된다.
         cur.execute(
             "SELECT id, content_hash FROM kb_documents "
             "WHERE org_id = %s AND source = %s AND source_url = %s",
@@ -197,7 +174,7 @@ def ingest_file(
         cur.execute(UPSERT_DOC, row)
         document_id = cur.fetchone()[0]
 
-        # ★ 재색인은 삭제 후 재삽입이다. append 하면 구버전이 계속 검색된다 (5.1).
+        # 재색인은 삭제 후 재삽입이다. append 하면 구버전이 계속 검색된다 (5.1).
         cur.execute("DELETE FROM kb_chunks WHERE document_id = %s", (document_id,))
 
         texts = [c.content for c in chunks]
@@ -223,9 +200,8 @@ def ingest_file(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="지식베이스 색인")
     parser.add_argument("paths", nargs="+", type=Path)
-    # 필수다. 어느 법인의 문서인지 말하지 않고는 색인할 수 없다 — 기본값을 주면
-    # 그 값이 조용히 전사 기본이 되고, 그게 테넌트 격리가 무너지는 경로다.
-    # 값은 Entra 테넌트 ID(tid)와 같다 (apps/api/.env 의 ENTRA_ALLOWED_TENANTS).
+    # 필수다. 기본값을 주면 그 값이 조용히 전사 기본이 되고 테넌트 격리가 무너진다.
+    # 값은 Entra 테넌트 ID(tid)와 같다.
     parser.add_argument("--org-id", required=True, help="문서를 소유한 법인의 테넌트 ID (UUID)")
     parser.add_argument("--force", action="store_true", help="해시가 같아도 다시 색인한다")
     parser.add_argument("--dry-run", action="store_true", help="청킹 결과만 보고 DB 는 건드리지 않는다")

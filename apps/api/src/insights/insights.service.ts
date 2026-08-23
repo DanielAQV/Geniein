@@ -26,7 +26,6 @@ export class InsightsService {
 
     if (tag) {
       // Postgres-specific tag array overlap check
-      // For TypeORM, we can use raw where or specific operators
       return this.insightRepository.createQueryBuilder('insight')
         .where('insight.publish_status = :status', { status: PublishStatus.PUBLISHED })
         .andWhere(category ? 'insight.category = :category' : '1=1', { category: category?.toLowerCase() })

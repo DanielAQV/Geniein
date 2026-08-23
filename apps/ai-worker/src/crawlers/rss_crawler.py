@@ -50,5 +50,4 @@ class RSSCrawler:
 
     def fetch_content(self, url):
         # RSS는 이미 요약본(summary)이 들어있어서 추가 크롤링 없이 바로 반환 가능
-        # 하지만 더 자세한 본문이 필요하면 나중에 여기에 추가 크롤링 로직 넣으면 됨
         return ""

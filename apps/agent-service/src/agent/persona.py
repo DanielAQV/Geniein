@@ -1,11 +1,7 @@
 """인격 로더 — 인격은 요구사항이므로 설정이어야 한다 (3.2.5).
 
-유나는 지니인의 브랜드 자산이고 장기적으로 고객사에 함께 나간다.
-말투는 조직별로 조정 가능해야 하지만, 안전 규칙은 조정 대상이 아니다.
-
-★ constraints 는 병합하지 않는다. org 오버라이드에 constraints 가 들어와도
-  무시하고 항상 코어 값을 쓴다. 이 분리가 없으면 "설정으로 안전 규칙을
-  무력화하는 경로"가 생긴다.
+constraints 는 병합하지 않는다. org 오버라이드에 들어와도 무시하고 항상 코어 값을
+쓴다 — 이 분리가 없으면 설정으로 안전 규칙을 무력화하는 경로가 생긴다.
 """
 
 from __future__ import annotations
@@ -59,7 +55,6 @@ class Persona:
         if behavior_lines:
             parts.append("## 행동 지침\n" + "\n\n".join(behavior_lines))
 
-        # 도구가 없을 때 "도구를 쓰려 시도하지 말라"를 명시한다.
         # 폴백을 명시하지 않으면 "안녕"에도 억지로 도구를 부른다 (3.2.3).
         if tool_count == 0:
             parts.append(
@@ -76,7 +71,6 @@ class Persona:
                 "도구를 호출하지 마세요."
             )
 
-        # ★ 항상 마지막에, 항상 코어 값으로
         parts.append("## 반드시 지킬 것\n" + "\n".join(f"- {c}" for c in self._constraints))
 
         return "\n\n".join(parts)
@@ -104,6 +98,5 @@ def load_persona(directory: Path, org: str | None = None) -> Persona:
                 if key in override:
                     data[key] = {**(data.get(key) or {}), **(override[key] or {})}
 
-    # constraints 는 병합 대상이 아니다 — 항상 코어 값
     data["constraints"] = core_constraints
     return Persona(data, core_constraints)

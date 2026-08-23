@@ -1,9 +1,3 @@
-/**
- * 서명 검증은 **진짜로** 돌린다. 테스트 안에서 RSA 키쌍을 만들어 토큰에 서명하고,
- * JWKS 조회(= 네트워크)만 목으로 막는다. 그래야 "위조 토큰이 떨어지는가"를
- * 실제 암호 연산으로 확인하게 된다 — 검증기를 통째로 목으로 두면 이 파일이
- * 확인하는 것이 아무것도 없어진다.
- */
 
 import {
   ExecutionContext,
@@ -25,7 +19,6 @@ jest.mock('jwks-rsa', () => ({
   }),
 }));
 
-// ── 고정값 ────────────────────────────────────────────────────────────
 
 const TENANT_A = 'b81a7702-1111-2222-3333-444455556666'; // 에어키 자리
 const TENANT_B = '3685a694-aaaa-bbbb-cccc-ddddeeeeffff'; // 지니 자리
@@ -36,10 +29,8 @@ const OID = '0a1b2c3d-4e5f-6789-abcd-ef0123456789';
 const issuerOf = (tid: string) =>
   `https://login.microsoftonline.com/${tid}/v2.0`;
 
-/** v1 토큰의 발급자. Entra 앱이 v1 을 받도록 설정돼 있으면 이쪽이 온다. */
 const v1IssuerOf = (tid: string) => `https://sts.windows.net/${tid}/`;
 
-/** AUDIENCE 끝의 clientId. v2 토큰은 `aud` 에 이것만 담아 보낸다. */
 const CLIENT_ID = '62a46191-3dcb-406e-a779-7411bf059611';
 
 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
@@ -51,7 +42,6 @@ const forged = generateKeyPairSync('rsa', { modulusLength: 2048 });
 const pem = (key: typeof publicKey) =>
   key.export({ type: 'spki', format: 'pem' }).toString();
 
-// ── 헬퍼 ──────────────────────────────────────────────────────────────
 
 interface TokenOverrides {
   tid?: string;
@@ -86,7 +76,6 @@ function token(over: TokenOverrides = {}): string {
   } as Parameters<typeof sign>[2]);
 }
 
-/** oid 와 scp 가 정상으로 들어간 평범한 토큰. */
 const goodToken = (over: TokenOverrides = {}) =>
   token({ oid: OID, scp: 'access_as_user', ...over });
 
@@ -115,7 +104,6 @@ const CONFIGURED = {
 
 const bearer = (t: string) => ({ authorization: `Bearer ${t}` });
 
-// ── 테스트 ────────────────────────────────────────────────────────────
 
 describe('EntraAuthGuard', () => {
   beforeEach(() => {
@@ -222,11 +210,6 @@ describe('EntraAuthGuard', () => {
     });
   });
 
-  /**
-   * 토큰이 v1 이냐 v2 냐는 Entra 앱 등록의 `accessTokenAcceptedVersion` 이 정한다.
-   * 한쪽만 받으면 조용히 401 이 나고 화면에는 "로그인이 만료되었습니다"로만 보인다 —
-   * 실제로 첫 배포가 이걸로 막혔다. 양쪽을 받되 **경계는 좁혀둔 채**여야 한다.
-   */
   describe('토큰 버전 (v1 / v2)', () => {
     it('v1 발급자(sts.windows.net)를 통과시킨다', async () => {
       const guard = guardWith(CONFIGURED);
@@ -277,11 +260,6 @@ describe('EntraAuthGuard', () => {
     });
   });
 
-  /**
-   * Entra 선택적 클레임 `xms_pl` (계정 선호 언어). 앱 등록에서 켜야 실리고,
-   * 켜도 사용자 프로필에 값이 있어야 온다 — 그래서 **없는 경우가 정상 경로**다.
-   * 없다고 인증이 막히면 안 된다.
-   */
   describe('선호 언어 클레임', () => {
     it('있으면 소문자로 정규화해 싣는다', async () => {
       const guard = guardWith(CONFIGURED);
@@ -430,7 +408,7 @@ describe('EntraAuthGuard', () => {
     });
   });
 
-  // ★ ServiceTokenGuard 와 같은 규칙. "설정 안 했으니 열어둔다"가 원래의 취약점이었다.
+  // ServiceTokenGuard 와 같은 규칙. "설정 안 했으니 열어둔다"가 원래의 취약점이었다.
   describe('설정 누락은 인증 해제가 아니다', () => {
     it.each([
       ['둘 다 없음', {}],

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { Lock, User, ArrowRight, ShieldCheck } from "lucide-react"
 import { motion } from "framer-motion"
 
-/** `?from=` 은 사용자 입력이다. 같은 오리진의 admin 경로만 허용한다 (오픈 리다이렉트 방지) */
 function safeRedirect(from: string | null): string {
   if (!from) return "/admin/insights"
   // `//evil.com` 은 브라우저가 프로토콜 상대 URL 로 읽는다 — 반드시 걸러야 한다
@@ -25,7 +24,6 @@ export default function AdminLoginPage() {
     setIsLoading(true)
     setError("")
 
-    // 자격증명 검증은 서버에서만 일어난다. 이 컴포넌트는 정답을 모른다.
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -34,8 +32,7 @@ export default function AdminLoginPage() {
       })
 
       if (res.ok) {
-        // useSearchParams 를 쓰면 Suspense 경계가 필요해진다.
-        // 제출 시점(클라이언트 확정)에만 읽으면 그 제약이 없다.
+        // useSearchParams 를 쓰면 Suspense 경계가 필요하다. 제출 시점에만 읽으면 그 제약이 없다.
         const from = new URLSearchParams(window.location.search).get("from")
         // 쿠키가 세팅됐으므로 서버 상태를 다시 읽어야 한다
         router.replace(safeRedirect(from))

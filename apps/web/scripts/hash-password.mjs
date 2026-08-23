@@ -1,17 +1,6 @@
 #!/usr/bin/env node
-/**
- * ADMIN_PASSWORD_HASH 생성기.
- *
- *   node apps/web/scripts/hash-password.mjs          ← 권장. 입력이 화면에 안 보인다
- *   node apps/web/scripts/hash-password.mjs '비밀번호'  ← 자동화용. 셸 기록에 남는다
- *
- * ★ 숨김 입력은 실제 터미널(TTY)에서만 된다. 에디터의 통합 콘솔이나
- *   다른 프로그램이 대신 실행하는 경우 stdin 이 TTY 가 아니라서 거부된다.
- *
- * 출력값을 apps/web/.env 에 넣는다. 평문은 저장하지 않는다.
- * (src/lib/auth/credentials.ts 의 hashPassword 와 같은 파라미터를 쓴다 —
- *  형식을 바꾸면 양쪽을 같이 고쳐야 한다.)
- */
+// ADMIN_PASSWORD_HASH 생성기. 인자 없이 실행하면 입력이 화면에 안 보인다 (TTY 필요).
+// 출력값을 apps/web/.env 에 넣는다. credentials.ts 의 hashPassword 와 같은 파라미터다.
 
 import { randomBytes, scryptSync } from 'node:crypto'
 
@@ -28,16 +17,6 @@ const ETX = '\u0003' // Ctrl-C
 const EOT = '\u0004' // Ctrl-D
 const DEL = '\u007f' // Backspace (대부분의 터미널)
 
-/**
- * 입력을 가리고 한 줄 받는다.
- *
- * raw 모드로 키 입력을 직접 읽는다. readline 에 맡기고 되쓰기만 막는 방식
- * (`_writeToOutput` 덮어쓰기)은 문서화되지 않은 내부에 의존해서 Node 버전에
- * 따라 조용히 풀린다 — 그러면 비밀번호가 그대로 화면에 찍힌다.
- *
- * 글자마다 `*` 를 찍는 이유: 가려졌는지를 눈으로 확인할 수 있어야 한다.
- * 아무것도 안 보이면 "먹통인가"와 "가려진 건가"를 구분할 수 없다.
- */
 function promptHidden(query) {
   return new Promise((resolve, reject) => {
     const { stdin, stdout } = process
@@ -113,7 +92,6 @@ async function readPassword() {
 
   const password = await promptHidden('비밀번호: ')
   // 화면에 안 보이므로 오타를 잡을 방법이 확인 입력뿐이다.
-  // 여기서 틀리면 관리자 화면에 못 들어간다.
   const confirm = await promptHidden('비밀번호 확인: ')
 
   if (password !== confirm) {

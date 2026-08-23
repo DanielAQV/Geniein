@@ -1,12 +1,3 @@
-/**
- * 탭이 부팅할 때 한 번 부르는 경로 — 화면 문구를 무슨 언어로 그릴지 정한다.
- *
- * 검색과 같은 경계를 지난다 (Teams SSO 토큰 + 서비스 토큰). 다만 이 응답에는
- * **언어 하나뿐**이고 신원은 담기지 않는다 — 화면이 그 이상을 알 이유가 없다.
- *
- * ★ 실패해도 화면은 떠야 한다. 언어를 못 정한 것이 탭을 못 쓰게 만들 이유는
- *   없으므로, 호출부는 이 경로가 죽어도 Teams locale 로 떨어진다.
- */
 
 import { NextResponse } from 'next/server'
 
@@ -16,7 +7,6 @@ export const dynamic = 'force-dynamic'
 const UPSTREAM =
   process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
-/** 검색과 달리 즉답이라 상한이 짧다. 여기서 오래 기다리면 탭이 늦게 뜬다. */
 const UPSTREAM_TIMEOUT_MS = 10_000
 
 export async function GET(request: Request) {

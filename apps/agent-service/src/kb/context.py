@@ -1,25 +1,4 @@
-"""부모-섹션 주입 — 검색은 청크로, 근거는 섹션으로 (설계문서 5.1).
-
-    ❌ 검색된 청크만 컨텍스트에
-       → 표·앞뒤 맥락이 없다. 청크 텍스트가 부정확하면 그게 답변 근거가 된다
-    ✅ 청크로 찾고, 그 청크가 속한 원본 섹션을 통째로 주입
-       → 검색은 확장 가능하게, 근거는 원본으로
-
-**검색 인덱스의 텍스트 품질과 답변 근거의 정확도를 분리**하는 것이 요점이다.
-청크는 "이 섹션에 출장 일비 얘기가 있다"는 신호 역할만 하면 되고, 실제 답변은
-섹션 전문을 보고 만든다.
-
-이게 지금 의미를 갖게 된 것은 파싱을 고친 덕이다. 예전에는 섹션이 "문서 전체"
-또는 "PDF 한 페이지"였어서 주입 단위로 쓸 수가 없었다. 지금은 `제 20조 (자녀 학비
-보조 수당)` 처럼 조 단위로 갈린다 — 실측 분포는 섹션 177개, 중앙값 386자, p90
-1,982자다. 대부분이 작아서 통째로 넣어도 싸다.
-
-큰 것만 막으면 된다. PART 단위까지만 갈리는 영문 사규 PDF 몇 개가 최대 11,447자다
-(그 문서들은 .docx 원본을 받으면 조 단위로 갈린다 — headings.py 참조).
-
-★ 중복 제거가 공짜로 따라온다. 상위 8청크가 같은 조에서 3개 나오는 일이 흔한데,
-  예전에는 같은 내용이 세 번 들어갔다. 이제 섹션 하나로 합쳐진다.
-"""
+"""부모-섹션 주입 — 검색은 청크로, 근거는 섹션으로 (설계문서 5.1)."""
 
 from __future__ import annotations
 
@@ -33,16 +12,14 @@ from .search import Hit
 logger = logging.getLogger(__name__)
 
 # 섹션 하나가 컨텍스트를 독식하지 못하게 하는 상한.
-# p90 이 1,982자이므로 대부분의 섹션은 이 값에 걸리지 않는다.
 MAX_SECTION_CHARS = 6000
 
 # 주입 총량 상한. 넘으면 순위가 낮은 섹션부터 버린다.
 MAX_TOTAL_CHARS = 20000
 
 # 섹션 전문을 되찾는 질의. 청크 첫 줄(breadcrumb)이 같으면 같은 섹션이다.
-# unnest 를 두 배열로 돌려 (문서, breadcrumb) 짝을 정확히 맞춘다 —
-# 각각 = ANY() 로 걸면 교차곱이 되어 다른 문서의 같은 이름 섹션까지 딸려온다
-# ("PART I — GENERAL PROVISIONS" 는 2021본과 2023본에 모두 있다).
+# unnest 를 두 배열로 돌려 짝을 맞춘다. 각각 = ANY() 로 걸면 교차곱이 되어
+# 다른 문서의 같은 이름 섹션까지 딸려온다.
 SECTION_SQL = """
 SELECT c.document_id, want.crumb, c.ordinal, c.content
 FROM kb_chunks c
@@ -72,20 +49,13 @@ class Evidence:
 
 
 def _body(chunk_content: str) -> str:
-    """청크에서 breadcrumb 줄을 뗀 본문.
-
-    breadcrumb 은 섹션마다 한 번만 쓰면 되므로, 청크마다 반복해 넣지 않는다.
-    """
+    """청크에서 breadcrumb 줄을 뗀 본문."""
     parts = chunk_content.split("\n", 1)
     return parts[1] if len(parts) == 2 else chunk_content
 
 
 def _window(chunks: list[tuple[int, str]], matched: set[int]) -> tuple[str, bool]:
-    """상한을 넘는 섹션에서 걸린 청크 주변만 남긴다.
-
-    잘라야 한다면 아무 데나 자르는 게 아니라 **검색에 걸린 청크에서 바깥으로**
-    넓힌다. 걸린 자리가 답이 있는 자리이기 때문이다.
-    """
+    """상한을 넘는 섹션에서 걸린 청크 주변만 남긴다."""
     by_ordinal = {ordinal: text for ordinal, text in chunks}
     keep = sorted(o for o in matched if o in by_ordinal)
     if not keep:
