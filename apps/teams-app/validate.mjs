@@ -1,15 +1,3 @@
-/**
- * 생성된 매니페스트를 Microsoft 가 게시한 **실제 스키마**와 대조한다.
- *
- *   node build.mjs && node validate.mjs
- *
- * 손으로 훑는 것으로는 안 된다. 스키마가 `additionalProperties: false` 라서
- * 필드 이름 하나가 틀리거나 옛 버전 필드가 남아 있으면 패키지 전체가 거부되는데,
- * Teams 는 "앱 패키지가 올바르지 않습니다" 한 줄만 말하고 어디가 문제인지
- * 알려주지 않는다. (실제로 이 검사가 구버전 필드 `packageName` 을 잡아냈다.)
- *
- * 스키마를 받아 오므로 네트워크가 필요하다.
- */
 import { readFileSync } from 'node:fs'
 
 const m = JSON.parse(readFileSync(process.argv[2] ?? new URL('dist/manifest.json', import.meta.url), 'utf8'))
@@ -56,8 +44,7 @@ say(urls.every((u) => u.startsWith('https://')), '모든 URL 이 https')
 say(m.validDomains.every((d) => !d.includes('://')), 'validDomains 에 스킴 없음')
 say(m.validDomains.includes(new URL(m.staticTabs[0].contentUrl).host), 'contentUrl 호스트가 validDomains 에 포함')
 
-// 스키마의 maxLength 를 재귀로 훑는다. 한국어 설명은 자릿수 감이 안 와서 넘기기
-// 쉽고, 넘겨도 Teams 는 "앱 패키지가 올바르지 않습니다" 한 줄만 말한다.
+// 스키마의 maxLength 를 재귀로 훑는다. 한국어 설명은 자릿수 감이 안 와서 넘기기 쉽다.
 const overflows = []
 ;(function walk(value, spec, path) {
   if (!spec || value == null) return

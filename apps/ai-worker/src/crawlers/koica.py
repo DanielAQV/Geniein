@@ -20,7 +20,6 @@ class KoicaCrawler:
     def fetch_latest_news(self):
         print(f"🔍 Fetching KOICA news list: {self.list_url}")
         try:
-            # SSL 검증 무시하고 접속
             response = self.session.get(self.list_url, headers=self.headers, verify=False, timeout=15)
             if response.status_code != 200:
                 print(f"❌ Failed to fetch list: {response.status_code}")

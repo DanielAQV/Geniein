@@ -2,11 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
-/**
- * 허용 오리진. `app.enableCors()` 는 모든 오리진을 허용한다 —
- * 브라우저가 어느 사이트에서든 이 API 를 읽을 수 있다는 뜻이다.
- * 화이트리스트가 비어 있으면 CORS 를 아예 켜지 않는다 (같은 오리진만 동작).
- */
 function allowedOrigins(): string[] {
   return (process.env.CORS_ORIGINS ?? '')
     .split(',')
@@ -33,7 +28,6 @@ async function bootstrap() {
     logger.warn('CORS_ORIGINS 가 비어 있어 CORS 를 비활성화합니다 (같은 오리진만 허용)');
   }
 
-  // Security headers
   const helmet = await import('helmet');
   app.use(
     helmet.default({

@@ -8,7 +8,6 @@ load_dotenv()
 class AIProcessor:
     def __init__(self):
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-        # 페르소나 파일 로드
         try:
             with open('apps/ai-worker/PERSONA.md', 'r', encoding='utf-8') as f:
                 self.persona = f.read()
@@ -60,7 +59,6 @@ class AIProcessor:
             
             result = json.loads(response.choices[0].message.content)
             
-            # 데이터 타입 검증 (리스트여야 할 tags가 혹시 dict로 올 경우 대비)
             if 'tags' in result and not isinstance(result['tags'], list):
                 result['tags'] = [str(result['tags'])]
                 
@@ -77,8 +75,6 @@ class AIProcessor:
         together_api_key = os.getenv('TOGETHER_API_KEY')
         if not together_api_key:
             print("⚠️ TOGETHER_API_KEY not found in .env. Falling back to DALL-E 3 or skipping.")
-            # Fallback logic or just return None
-            # Here we'll try to use Together AI via a new client instance
         
         try:
             # 1. GPT를 사용하여 뉴스 제목에 최적화된 사실적인 사진 프롬프트 생성
@@ -119,7 +115,6 @@ class AIProcessor:
             print(f"📝 Optimized Prompt: {optimized_prompt[:100]}...")
 
             # 2. Together AI (FLUX.1 [schnell])를 사용하여 이미지 생성
-            # Together AI는 OpenAI SDK와 호환되므로 base_url만 바꿔서 사용 가능합니다.
             together_client = OpenAI(
                 api_key=together_api_key,
                 base_url="https://api.together.xyz/v1",

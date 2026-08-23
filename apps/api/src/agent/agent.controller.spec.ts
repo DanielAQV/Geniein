@@ -1,8 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 
-// 컨트롤러가 @UseGuards 로 EntraAuthGuard 를 참조하고, 그 체인 끝에 ESM 전용
-// 패키지(jose)가 있어서 jest 의 CJS 변환이 막힌다. 이 파일은 가드를 검증하지
-// 않으므로(그건 entra-auth.guard.spec.ts 의 몫) 로딩만 끊어준다.
+// 가드 체인 끝의 ESM 전용 패키지(jose)가 jest 의 CJS 변환을 막는다. 가드 검증은
+// entra-auth.guard.spec.ts 의 몫이라 여기서는 로딩만 끊는다.
 jest.mock('jwks-rsa', () => ({ JwksClient: jest.fn() }));
 
 import { AgentController } from './agent.controller';
@@ -51,7 +50,6 @@ function controller(): AgentController {
   } as unknown as AgentService);
 }
 
-/** 줄들을 뇌가 내보내는 것처럼 흘리는 스트림. 청크 경계는 일부러 줄과 안 맞춘다. */
 function streamOf(...chunks: string[]): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   return new ReadableStream({
@@ -62,7 +60,6 @@ function streamOf(...chunks: string[]): ReadableStream<Uint8Array> {
   });
 }
 
-/** Express 응답 대신. 컨트롤러가 실제로 쓰는 넷만 있다 (StreamingResponse). */
 function responseSpy() {
   const headers: Record<string, string> = {};
   const chunks: string[] = [];
@@ -132,11 +129,6 @@ describe('AgentController', () => {
     expect(search).toHaveBeenCalled();
   });
 
-  /**
-   * 이력은 클라이언트가 들고 있다가 다시 보내는 값이라 모양이 제멋대로일 수 있다.
-   * 걸러내지 않으면 뇌를 거쳐 모델 API 까지 흘러가 400 이 난다 — 사용자 입력만으로
-   * 상류를 깨뜨릴 수 있게 된다.
-   */
   describe('대화 이력', () => {
     const OK = [
       { role: 'user', text: '해외 숙박비는?' },
@@ -168,7 +160,6 @@ describe('AgentController', () => {
       expect(search).not.toHaveBeenCalled();
     });
 
-    // 상한이 있어야 하는 이유는 비용이다 — 이력은 매 턴 통째로 다시 청구된다.
     it('20턴을 넘으면 거부한다', () => {
       const tooLong = Array.from({ length: 21 }, (_, i) => ({
         role: i % 2 === 0 ? 'user' : 'assistant',
@@ -189,10 +180,6 @@ describe('AgentController', () => {
     });
   });
 
-  /**
-   * 사용자가 탭에서 고른 언어. 신원이 아니라 표시 설정이므로 본문에서 받는다 —
-   * 이 값으로 열리는 데이터가 없고, 어느 법인의 문서를 볼지는 토큰의 tid 가 정한다.
-   */
   describe('고른 언어(lang)', () => {
     it.each([['ko'], ['vi'], ['en']])('허용된 값 %s 을 그대로 넘긴다', async (lang) => {
       await controller().search('일비', undefined, requestOf(USER), lang);
@@ -200,8 +187,7 @@ describe('AgentController', () => {
       expect(search).toHaveBeenCalledWith('일비', USER, [], lang);
     });
 
-    // ★ 거부하지 않고 **버린다.** 표시 설정 하나 때문에 검색이 실패하면 사용자는
-    //   답을 못 받고 원인도 알 수 없다. 뇌에는 계정 언어라는 다음 근거가 있다.
+    // 거부하지 않고 버린다. 표시 설정 하나 때문에 검색이 실패하면 안 된다.
     it.each([
       ['모르는 코드', 'jp'],
       ['사이트 사전 코드', 'vn'],
@@ -224,10 +210,6 @@ describe('AgentController', () => {
     });
   });
 
-  /**
-   * 스트리밍 경로. 게이트웨이의 일은 **바꾸지 않고 흘리는 것**이므로, 바이트가 그대로
-   * 나가는지와 검증이 비스트리밍과 같은지를 본다.
-   */
   describe('POST /agent/search/stream', () => {
     const LINES =
       '{"type":"status","phase":"thinking"}\n' +
@@ -236,7 +218,6 @@ describe('AgentController', () => {
       '"tools":[{"name":"search_knowledge","outcome":"ok"}],"usage":{}}\n';
 
     it('뇌의 줄을 바꾸지 않고 흘린다', async () => {
-      // 청크 경계를 줄 중간에 둔다 — 계층이 재조립하지 않는지 확인하는 지점이다.
       searchStream.mockResolvedValue(streamOf(LINES.slice(0, 40), LINES.slice(40)));
       const res = responseSpy();
 
@@ -258,7 +239,6 @@ describe('AgentController', () => {
       expect(res.headers['Cache-Control']).toBe('no-store');
     });
 
-    // 검증은 비스트리밍과 **같은 함수**를 쓴다. 갈리면 한쪽으로만 우회할 수 있게 된다.
     it.each([
       ['빈 문자열', ''],
       ['2000자 초과', 'ㄱ'.repeat(2001)],
@@ -287,16 +267,10 @@ describe('AgentController', () => {
       expect(searchStream).not.toHaveBeenCalled();
     });
 
-    /**
-     * ★ 스트림이 열린 뒤의 실패는 HTTP 상태로 말할 수 없다 — 헤더가 이미 200 으로
-     *   나갔다. 조용히 끊으면 화면에는 "중간에 멈춘 답변"으로 보이므로, 마지막 한 줄로
-     *   알리고 닫아야 한다.
-     */
     it('스트림이 중간에 깨지면 error 줄을 넣고 닫는다', async () => {
       const encoder = new TextEncoder();
-      // ★ `start()` 안에서 바로 error 를 부르면 큐에 넣은 청크가 **버려진다.**
-      //   그건 "한 줄도 못 보낸 채 끊긴" 경우고, 여기서 보려는 것은 흐르다 끊긴
-      //   경우다. pull 로 나눠 첫 청크를 실제로 내보낸 뒤 끊는다.
+      // `start()` 안에서 바로 error 를 부르면 큐에 넣은 청크가 버려진다. 여기서
+      // 보려는 것은 흐르다 끊긴 경우라 pull 로 나눠 첫 청크를 실제로 내보낸다.
       let pulls = 0;
       searchStream.mockResolvedValue(
         new ReadableStream({
@@ -332,14 +306,11 @@ describe('AgentController', () => {
     it('계정 언어만 돌려준다 — 신원은 담지 않는다', () => {
       const result = controller().me(requestOf({ ...USER, preferredLanguage: 'vi-vn' }));
 
-      // 화면이 필요한 것은 언어 하나뿐이다. 이름·이메일을 내려보내면 쓰지도 않을
-      // 개인정보가 브라우저와 로그에 남는다.
+      // 화면이 필요한 것은 언어 하나뿐이다. 이름·이메일을 내려보내면 안 된다.
       expect(result).toEqual({ language: 'vi-vn' });
     });
 
     it('계정 언어가 없으면 null — 서버가 기본값을 지어내지 않는다', () => {
-      // null 을 받으면 화면이 Teams locale 로 떨어진다. 서버가 'ko' 같은 값을
-      // 만들어 내려보내면 클라이언트가 더 나은 근거를 갖고도 못 쓰게 된다.
       expect(controller().me(requestOf(USER))).toEqual({ language: null });
     });
 
@@ -348,7 +319,7 @@ describe('AgentController', () => {
     });
   });
 
-  // ★ 가드 배선이 틀렸을 때 익명으로 뇌를 부르느니 여기서 터지는 게 낫다.
+  // 가드 배선이 틀렸을 때 익명으로 뇌를 부르느니 여기서 터지는 게 낫다.
   it('신원이 없으면 뇌를 부르지 않는다', () => {
     expect(() => controller().search('일비', undefined, requestOf(undefined))).toThrow(
       BadRequestException,

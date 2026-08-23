@@ -1,14 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-/**
- * 베이스라인 — 지금까지 synchronize:true 가 만들어 온 ai_posts 를 마이그레이션으로 넘긴다.
- *
- * ★ 전부 멱등하게 쓴다. 기존 개발/운영 DB 에는 이 테이블이 이미 있으므로
- *   이 마이그레이션은 그런 DB 에서 아무것도 하지 않고 지나가야 한다.
- *   새 DB 에서만 실제로 테이블을 만든다.
- *
- * 이후 스키마 변경은 `pnpm migration:generate` 로 뽑아 쓴다.
- */
 export class BaselineAiPosts1754200000000 implements MigrationInterface {
   name = 'BaselineAiPosts1754200000000';
 
