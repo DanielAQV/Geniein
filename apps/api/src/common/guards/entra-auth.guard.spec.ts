@@ -27,8 +27,8 @@ jest.mock('jwks-rsa', () => ({
 
 // ── 고정값 ────────────────────────────────────────────────────────────
 
-const TENANT_A = 'b81a7702-1111-2222-3333-444455556666'; // 에어키 자리
-const TENANT_B = '3685a694-aaaa-bbbb-cccc-ddddeeeeffff'; // 지니 자리
+const TENANT_A = 'b81a7702-1111-2222-3333-444455556666'; // 지니 자리
+const TENANT_B = '3685a694-aaaa-bbbb-cccc-ddddeeeeffff'; // 에어키(AQV) 자리
 const OUTSIDER = '99999999-9999-9999-9999-999999999999'; // 남의 테넌트
 const AUDIENCE = 'api://genie.geniein.com/62a46191-3dcb-406e-a779-7411bf059611';
 const OID = '0a1b2c3d-4e5f-6789-abcd-ef0123456789';
