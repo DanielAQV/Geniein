@@ -5,7 +5,7 @@
 > | 확인 | 결과 |
 > |---|---|
 > | 데이터 이관 | `20 docs / 232 chunks / 0 null-emb / 1 org` — 원본과 일치 |
-> | 뇌 기동 | `gnom-brain.service` active·enabled, `/health` 200 |
+> | 뇌 기동 | `genie-brain.service` active·enabled, `/health` 200 |
 > | 노출 경계 | 사무실 IP 에서 `/health`·`/agent/message` 모두 **403** (EC2 만 허용) |
 > | 탭 | `genie.geniein.com/teams/search` 200, Teams 에서 실제 답변 확인 |
 >
@@ -271,7 +271,30 @@ PGPASSWORD='<genie 비밀번호>' psql -h 127.0.0.1 -p 5433 -U genie -d geniein_
 /home/dev_admin/genie/venv/bin/python -m uvicorn src.main:app --host 127.0.0.1 --port 8001
 ```
 
-systemd 로 상주시키고(`Restart=always`), 부팅 시 자동 시작을 켠다.
+systemd 로 상주시키고(`Restart=always`), 부팅 시 자동 시작을 켠다. 유닛 이름은
+**`genie-brain`** 이다 (주소는 `gnom.geniein.com` 인데 유닛은 `genie-` 로 시작한다.
+한 번 헷갈렸다).
+
+```ini
+User=dev_admin
+WorkingDirectory=/home/dev_admin/genie/apps/agent-service
+EnvironmentFile=/home/dev_admin/genie/.env      # ★ 저장소 루트다. 서비스 디렉터리가 아니다
+ExecStart=/home/dev_admin/genie/venv/bin/python -m uvicorn src.main:app --host 127.0.0.1 --port 8001
+```
+
+### 4.1 갱신 — 코드나 인격만 바뀌었을 때
+
+의존성이 그대로면 `pip` 을 다시 돌리지 않는다. 세 줄이다.
+
+```bash
+cd /home/dev_admin/genie && git pull
+# 설정이 늘었으면 /home/dev_admin/genie/.env 에 추가한다 (systemd 가 이 파일을 읽는다)
+systemctl restart genie-brain
+journalctl -u genie-brain -n 40 --no-pager | grep -E '기동|인격|테넌트'
+```
+
+★ **root 로 붙었다면 `~` 를 쓰지 않는다.** `~/genie` 가 `/root/genie` 로 풀려서
+"파일이 없다"가 된다. 실제 경로는 `/home/dev_admin/genie` 다.
 
 ---
 
