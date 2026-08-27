@@ -18,6 +18,10 @@
 #
 set -euo pipefail
 
+# ★ 임베딩 모델 캐시를 한 곳으로 고정한다. 기본값은 실행한 사용자의 홈이라,
+#   root 로 한 번 dev_admin 으로 한 번 돌리면 2.3GB 를 두 벌 받는다.
+export HF_HOME=${HF_HOME:-/home/dev_admin/.cache/huggingface}
+
 GUIDE_REPO=${GUIDE_REPO:-/home/dev_admin/genie-guides}
 BRAIN_DIR=${BRAIN_DIR:-/home/dev_admin/genie/apps/agent-service}
 VENV_PY=${VENV_PY:-/home/dev_admin/genie/venv/bin/python}
