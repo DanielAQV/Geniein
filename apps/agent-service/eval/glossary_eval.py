@@ -44,8 +44,9 @@ CASES: list[tuple[str, set[str]]] = [
     ("보너스는 누가 승인하나요?", {"thưởng", "approval", "duyệt"}),
     ("OTP 를 매달 올려야 합니까?", {"ot<->plan"}),
     # ── 결재 폼 약어 (담당자 확인). 직원은 이렇게 쓰고 문서는 풀어서 적는다.
-    ("PR 은 얼마부터 법인장 승인이 필요한가요?",
-     {"purchase<->request", "구매요청", "general<->director"}),
+    # 호칭은 '법인장' 이지만 대표이사로 묻는 사람도 같은 조항에 닿아야 한다
+    ("PR 은 얼마부터 대표이사 승인이 필요한가요?",
+     {"purchase<->request", "구매요청", "general<->director", "법인장"}),
     ("PMR 에 red invoice 를 꼭 붙여야 하나요?", {"payment<->request", "지급요청"}),
     # ── 팀 이름. 한국인은 한글로 적고 문서는 영어로 적는다.
     ("웨어하우스 파트도 같은 규정을 따르나요?", {"warehouse"}),

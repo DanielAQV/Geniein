@@ -22,8 +22,8 @@ groups:
   # ── 결재 흐름 ────────────────────────────────────
   # 직원이 쓰는 말과 문서의 표현이 다르다 (직원은 'OTPR', 문서는 'overtime payment').
   # 약어는 M365 TF 채팅방에 정의가 적힌 것 + 담당자가 확인해 준 것만 적는다.
-  #   "OT payment request(OTPR)" · "OT plan (OTP)" · "performance Bonus(PB)"
-  #   "AL Balance ... Annual Leave"
+  #   "OT payment request(OTPR)" · "OT plan (OTP)" · "AL Balance ... Annual Leave"
+  #   (PB = performance Bonus 도 방에 정의가 있지만 실무에서 안 쓴다고 해서 뺐다)
   #   PR / PPL / PMR 은 담당자 확인 (2026-08-27). 방에서는 PPL 을 'PL' 로도 쓴다.
   - [승인, 결재, approval, approve, approved, phê duyệt, duyệt]
   - [승인자, 결재자, approver, người phê duyệt]
@@ -45,7 +45,9 @@ groups:
 
   # ── 증빙 ─────────────────────────────────────────
   - [세금계산서, 적격증빙, red invoice, hóa đơn đỏ, hóa đơn VAT]
-  - [법인장, General Director, Tổng Giám đốc, TGD, TGĐ]
+  # 사내 호칭은 '법인장' 이지만 나머지도 열쇠로 같이 둔다 — 이 자리의 한국어 낱말은
+  # 검색을 여는 방아쇠라서, 사람이 쓸 법한 표기가 많을수록 걸릴 확률이 올라간다.
+  - [법인장, 대표이사, 총괄이사, General Director, Tổng Giám đốc, TGD, TGĐ]
 
   # ── 인사·노무 (베트남 노동법 표준 용어) ──────────────
   # 앞의 묶음들과 출처가 다르다. 위쪽은 우리 방·담당자에게서 나온 사내 표기이고,
