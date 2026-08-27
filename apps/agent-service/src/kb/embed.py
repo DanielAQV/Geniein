@@ -14,6 +14,7 @@ API 를 쓰면 **색인 단계에서 문서 원문이 통째로 외부로 나간
 from __future__ import annotations
 
 import logging
+import os
 import threading
 from typing import Any, Sequence
 
@@ -50,16 +51,26 @@ def _load() -> Any:
 
         logger.info("BGE-M3 로드 중 (최초 실행은 모델 2.3GB 다운로드로 오래 걸립니다)")
 
-        # ★ fp16 으로 올린다. fp32 는 가중치만 2.2GB 라 WSL 기본 메모리 상한(4GB)에서
-        #   OOM 으로 죽는다 (실측: anon-rss 2.4GB 에서 oom-kill). fp16 은 그 절반이고
-        #   검색 품질 차이는 코사인 유사도 소수 셋째 자리 수준이다.
+        # 정밀도는 **환경이 정한다** (`EMBED_DTYPE`).
         #
-        #   ⚠ 색인과 질의가 **같은 정밀도**여야 한다. 정밀도를 바꾸면 이미 색인된
-        #     벡터와 미세하게 어긋나므로 전체 재색인이 따라와야 한다.
+        #   fp16  가중치가 절반(1.1GB)이라 메모리가 좁은 곳에서 산다. WSL 기본 상한
+        #         (4GB)에서 fp32 가 oom-kill 당해서 기본값이 됐다.
+        #   fp32  CPU 에서 훨씬 빠르다. **CPU 에는 fp16 연산 유닛이 없어서** fp16 은
+        #         에뮬레이션으로 돌기 때문이다. 실측(물리 서버, CPU): 문서 하나(청크
+        #         11개)에 fp16 은 4분 40초가 걸렸다. 메모리가 넉넉한 서버에서 fp16 을
+        #         쓸 이유가 없다.
+        #
+        # ⚠ 색인과 질의가 **같은 정밀도**여야 한다. 값을 바꾸면 뇌를 재기동하고
+        #   전체 재색인을 함께 해야 이미 넣어둔 벡터와 어긋나지 않는다.
+        dtype = os.environ.get("EMBED_DTYPE", "float16").strip().lower()
         try:
-            model = SentenceTransformer(MODEL_NAME, model_kwargs={"dtype": "float16"})
+            model = (
+                SentenceTransformer(MODEL_NAME)
+                if dtype in ("float32", "fp32")
+                else SentenceTransformer(MODEL_NAME, model_kwargs={"dtype": dtype})
+            )
         except Exception as exc:  # noqa: BLE001 — 옵션 이름은 라이브러리 버전을 탄다
-            logger.warning("fp16 로드 실패(%s). 기본 정밀도로 재시도합니다.", exc)
+            logger.warning("%s 로드 실패(%s). 기본 정밀도로 재시도합니다.", dtype, exc)
             model = SentenceTransformer(MODEL_NAME)
 
         # sentence-transformers 5.x 에서 이름이 바뀌었다 (구 이름은 경고 후 동작)
