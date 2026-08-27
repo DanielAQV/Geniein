@@ -47,6 +47,10 @@ CASES: list[tuple[str, set[str]]] = [
     ("PR 은 얼마부터 대표이사 승인이 필요한가요?",
      {"purchase<->request", "구매요청", "general<->director"}),
     ("PMR 에 red invoice 를 꼭 붙여야 하나요?", {"payment<->request", "지급요청"}),
+    # ── 팀 이름. 한국인은 한글로 적고 문서는 영어로 적는다.
+    ("웨어하우스 파트도 같은 규정을 따르나요?", {"warehouse"}),
+    ("인프라팀 출장 승인 라인이 어떻게 되나요?",
+     {"bd<->infra", "business<->trip", "approval"}),
 ]
 
 #: 확장이 **일어나면 안 되는** 발언. 잘못된 확장은 엉뚱한 조항을 근거로 끌어올린다.

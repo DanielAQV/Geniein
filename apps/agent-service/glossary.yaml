@@ -25,7 +25,6 @@ groups:
   #   "OT payment request(OTPR)" · "OT plan (OTP)" · "performance Bonus(PB)"
   #   "AL Balance ... Annual Leave"
   #   PR / PPL / PMR 은 담당자 확인 (2026-08-27). 방에서는 PPL 을 'PL' 로도 쓴다.
-  # 보류: BO — 팀 이름으로 보이는데("the BO team") 정식 명칭을 모른다.
   - [승인, 결재, approval, approve, approved, phê duyệt, duyệt]
   - [승인자, 결재자, approver]
   - [요청자, 기안자, requester]
@@ -37,6 +36,16 @@ groups:
   - [PR, purchase request, 구매요청]
   - [PPL, PL, purchasing plan, 구매계획]
   - [PMR, payment request, 지급요청]
+
+  # ── 조직 ─────────────────────────────────────────
+  # 팀 이름은 한국인도 영어 그대로 쓰지만, 한글로 적는 팀이 몇 개 있다. 그 팀들만
+  # 넣는다 — PMO 처럼 어느 언어에서나 같은 철자면 어휘 검색이 이미 잡는다.
+  # (조직 단위: BO·Admin·BD Infra·PMO·Engineering 팀, Warehouse 는 파트)
+  - [BO, business operation]
+  - [어드민, admin]
+  - [인프라팀, 인프라, BD Infra]
+  - [엔지니어링, 엔지니어, engineering]
+  - [웨어하우스, warehouse]
 
   # ── 증빙 ─────────────────────────────────────────
   - [세금계산서, 적격증빙, red invoice, hóa đơn đỏ]
