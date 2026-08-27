@@ -2,7 +2,7 @@
 title: Accounting Payment
 summary: How Admin submits a payment that doesn't come from a team's payment request.
 role_scope: [admin, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

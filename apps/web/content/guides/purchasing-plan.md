@@ -2,7 +2,7 @@
 title: Purchasing Plan
 summary: How to submit a purchasing plan for an approved purchase request.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

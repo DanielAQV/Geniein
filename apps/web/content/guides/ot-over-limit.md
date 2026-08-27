@@ -2,7 +2,7 @@
 title: OT Over Limit
 summary: How to submit overtime that goes past the normal limit.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

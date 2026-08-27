@@ -2,7 +2,7 @@
 title: Repair Request
 summary: How to submit a repair request through the Purchase Request form.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

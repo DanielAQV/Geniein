@@ -2,7 +2,7 @@
 title: OT Payment Request
 summary: How to claim payment for overtime that has already been worked.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

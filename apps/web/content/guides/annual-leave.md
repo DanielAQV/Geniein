@@ -2,7 +2,7 @@
 title: Annual Leave
 summary: How to request leave, and what happens after it is approved.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

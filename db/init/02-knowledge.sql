@@ -49,11 +49,14 @@ CREATE TABLE IF NOT EXISTS kb_documents (
     org_id              uuid NOT NULL,
     created_at          timestamptz NOT NULL DEFAULT now(),
 
+    -- 'repo' 는 저장소에 텍스트로 사는 문서다 (apps/web/content/guides/*.md).
+    -- 사규는 SharePoint 에서 오고 가이드는 git 에서 온다 — 출처가 다르면 갱신
+    -- 경로도 다르므로 값으로 구분한다.
     CONSTRAINT kb_documents_source_chk
-        CHECK (source IN ('upload', 'sharepoint')),
+        CHECK (source IN ('upload', 'sharepoint', 'repo')),
     CONSTRAINT kb_documents_format_chk
         CHECK (source_format IS NULL
-               OR source_format IN ('docx', 'pdf_text', 'pdf_scan', 'hwp'))
+               OR source_format IN ('docx', 'pdf_text', 'pdf_scan', 'hwp', 'markdown'))
 );
 
 -- 같은 출처의 같은 문서를 두 번 넣지 않는다 (source_url 이 있는 경우에만).

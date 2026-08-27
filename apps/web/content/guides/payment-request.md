@@ -2,7 +2,7 @@
 title: Payment Request
 summary: How to request a payment for an approved purchasing plan or purchase request.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27

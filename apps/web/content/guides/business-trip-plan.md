@@ -2,7 +2,7 @@
 title: Business Trip Plan
 summary: How to request approval for a business trip, including transport, accommodation and any advance payment.
 role_scope: [requester, approver]
-source: guide
+source: repo
 source_format: markdown
 lang: [en]
 effective_date: 2026-08-27
