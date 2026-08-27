@@ -1,6 +1,6 @@
 ---
 title: Purchase Request
-summary: How to submit a purchase or repair request, what the system does with it, and what each status means.
+summary: How to submit a purchase or repair request, and what each status means.
 roles: [requester, approver]
 order: 1
 updated: 2026-08-27
@@ -11,89 +11,73 @@ supersedes: Purchase_Request_Guide_v1.pdf (23 Apr 2026)
 
 Use this form to request a purchase. For a repair, use the same form and set **Request Type** to `Repair` — the Repair Detail section then appears at the bottom.
 
-- Know **who approves and in what order**. Approvals run one after another, never at the same time.
-- Have your item list ready. Items go in the Excel template, not in the form.
-- You don't need a request number — the system assigns one.
+- Approvals run one after another, in the order you list the approvers.
+- Items go in the Excel template, not in the form.
 
 ## Submitting
 
-### Step 1 — Open the form and fill in the header
+### Step 1 — Fill in the form
 
 In the Purchase Request list, click **+ Add new item**.
 
 | Field | What to enter |
 |---|---|
-| Title | A clear name for this request. |
-| Team | Your team. |
-| Approver | One or more people, **in the order they should approve**. The second is notified only after the first approves. |
-| CC List | Optional. These people can follow the request on the CC Dashboard without approving it. |
+| Title | A name for this request. |
+| Team | Filled in automatically. |
+| Approver | One or more people, in the order they should approve. |
+| CC List | Optional. These people get a notification. They don't approve. |
 | Request Type | `General`, or `Repair` for repair work. |
-| Total Amount | The grand total of your item list. It must match the Excel file. |
+| Total Amount | The total of your item list. |
 | Remark | Why this purchase is needed. |
 
-### Step 2 — Download the template and fill in your items
+### Step 2 — Fill in the Excel template
 
 Click **Download Template** and complete one row per item: `Item`, `Specification`, `Quantity`, `Unit`, `Unit Price`, `Amount`, `Remark`.
 
-!stop **Don't rename or delete the column headers, and don't rename the table.** The system reads the file by those names. If they change, the file can't be processed.
-
-!note **Units matter.** Enter the unit you actually buy in — if you buy by the box, write `box`, not `m`. Mixed units for the same item are the most common cause of stock and invoice errors later.
+!stop **Don't rename the table, and don't rename or delete the column headers.** The system finds your items by the table inside the file, and reads the columns by their names.
 
 ### Step 3 — Attach the file and save
 
-Attach the completed template with the paperclip icon, check that the filename appears, then click **Save**.
+Attach the completed template with the paperclip icon and click **Save**. You can attach more than one file — quotations, drawings, photos — the system looks for the table inside them.
 
-!note You can attach **more than one file** — quotations, drawings, photos. The system finds the template among them and reads that one.
+### Step 4 — The request waits to be picked up (Pending)
 
-### Step 4 — The request is queued (Pending)
+Right after saving, the request sits as **Pending** until the system picks it up.
 
-Right after saving, the request sits as **Pending** until the system picks it up. This is short.
+!warn Saving again cancels the approval in progress and starts it over.
 
-!warn **Don't save again to hurry it.** A second save cancels the approval and starts everything over.
+### Step 5 — The system reads the file (In Progress)
 
-### Step 5 — The system takes over (In Progress)
-
-The status changes to **In Progress** first. The system then reads your Excel file, assigns a request number, and sends the approval to the first approver.
-
-!note **Where your items go.** They stay on the request itself — open your request and scroll down to see them. They don't appear as separate rows in the list.
+The status changes to **In Progress**, the system reads your Excel file, and the first approver receives the request.
 
 ### Step 6 — Approvers review, one after another
 
-Each approver gets a card in Microsoft Teams and can **Approve** or **Reject**. The next approver is notified only after the previous one approves.
+Each approver gets a card in Microsoft Teams and approves or rejects. The next approver is notified after the previous one approves. A comment written by an approver also appears on the request.
 
-- Approved by everyone → the request becomes **Approved**.
-- Rejected by anyone → it becomes **Rejected** and you get an email with the approver's comment.
+- Everyone approved → **Approved**
+- Rejected by anyone → **Rejected**, and you get an email with the comment.
 
 ## After approval
 
-Nothing further is required from you. The request and every item are marked Approved, your item rows are added to the purchasing records the rest of the company works from, the CC Dashboard updates for everyone you listed, and you receive a confirmation email.
-
-!note **Why accuracy pays off here.** The item names and units you typed are what purchasing, warehouse and invoicing will use. Correcting them later costs far more than getting them right now.
+The request and its items are marked Approved, the item rows are added to the purchasing records, and you receive a confirmation email.
 
 ## Changing a request you already submitted
 
-Edit the request and save it again. The approval that was running is cancelled, the entries from the previous submission are cleared, and approval restarts from the first approver.
-
-!warn **Approvers who already approved will be asked again.** Tell them what changed — otherwise the second card looks like a duplicate and sits unanswered.
+Edit the request and save it again. The approval in progress is cancelled, and a new one is sent starting from the first approver.
 
 ## Status
 
-| Status | Meaning | What you do |
-|---|---|---|
-| Pending | Saved, waiting for the system to pick it up. | Wait. Don't save again. |
-| In Progress | The system is reading your file and running the approval, one approver at a time. | Nothing. The current approver is shown on the request. |
-| Approved | Every approver approved. Items are in the purchasing records. | Proceed with purchasing. |
-| Rejected | An approver declined. The comment says why. | Fix and submit again, or drop the request. |
+| Status | Meaning |
+|---|---|
+| Pending | Saved, waiting for the system to pick it up. |
+| In Progress | The file has been read and the approval is running, one approver at a time. |
+| Approved | Every approver approved. |
+| Rejected | An approver declined. The comment says why. |
 
 ## When something goes wrong
 
 | What you see | Why | Fix |
 |---|---|---|
-| **In Progress** but no items appear | The template couldn't be read — usually a renamed header, a renamed table, or rows placed outside the table. | Download a fresh template, copy your rows into it, attach it again. |
-| Stuck on **Pending** | The system hasn't picked the request up yet. | Give it a few minutes. If it stays, tell the Approval admin — saving again restarts everything. |
-| **Total Amount** doesn't match the items | The header total is typed by hand and wasn't updated after the Excel file changed. | Correct the header amount and save again. |
-| An approver says they never received it | Approvals are sequential — later approvers aren't notified until the ones before them approve. | Check who the current approver is before chasing anyone. |
-
-## For approvers
-
-You'll get a card in Teams. Before deciding, open the request and check the item detail — quantity, unit, unit price — not only the total. Approving passes the request to the next approver; rejecting ends it and notifies the requester, so write a comment that says what to change.
+| **In Progress** but no items appear | The table couldn't be found — the table or a column header was renamed, or items were placed outside the table. | Download a fresh template, copy your rows into it, attach it again. |
+| Stuck on **Pending** | The system hasn't picked the request up yet. | Wait a few minutes. If it stays, tell the Approval admin — saving again restarts the approval. |
+| You want to know whose turn it is | | Open **Sent** in the Teams Approvals app. |
