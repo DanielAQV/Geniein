@@ -1,24 +1,15 @@
 # 회사 어휘 사전 — **검색 매칭 전용.**
 #
-# 왜 있는가: 코퍼스는 영어·베트남어인데 질문은 한국어로 온다. "일비 얼마예요?" 의
-# '일비' 는 문서 어디에도 없고 문서는 'daily allowance' 라고 적혀 있다. 지금은 그
-# 다리를 벡터 갈래 하나가 혼자 놓고 있는데, 벡터가 흔들리면 어휘·트라이그램 갈래는
-# 아예 0건이라 검색 전체가 같이 흔들린다. 이 파일이 그 두 갈래에 문서 표기를 넣어준다.
-#
-# ★ 한 줄이 **동의어 묶음**이고 방향이 없다. 질의에 이 중 하나라도 나오면 나머지가
-#   함께 검색어로 들어간다 — 베트남어로 물어도 한국어·영어 표기가 붙는다.
-# ★ 여기 적는 것은 **표기**지 뜻풀이가 아니다. 답변 문구나 번역을 여기서 정하지
-#   않는다 (그건 인격의 몫이다). 이 파일은 오직 "무엇을 찾을까"만 바꾼다.
-# ★ 확인한 것만 적는다. 뜻을 모르는 사내 약어는 비워둔다 — 틀린 확장은 엉뚱한
-#   조항을 근거로 끌어올리고, 그게 이 시스템에서 가장 비싼 실수다.
-#   (아직 못 적은 것: PR / PPL / PMR / BO — 결재 흐름에서 쓰이는 약어인데
-#    정식 명칭을 확인하지 못했다. 확인되면 한 줄씩 추가한다.)
-#
-# 고치는 법: 이 파일만 고치고 뇌를 재기동한다. 색인을 다시 만들 필요는 없다.
+# 한 줄이 동의어 묶음이고 방향이 없다. 질의에 어느 표기든 나오면 나머지가 함께
+# 검색어가 된다. 여러 낱말은 구(句)로 들어간다 — 'OT payment request' 는 붙어 있는
+# 세 낱말을 찾으므로 'request' 가 홀로 검색어가 되지 않는다.
+# 활용형은 따로 적는다 (approval / approve / approved) — 색인이 'simple' 사전이라
+# 어간을 자르지 않아 셋이 서로 다른 토큰이다.
+# 뜻을 확인한 표기만 적는다. 틀린 확장은 엉뚱한 조항을 근거로 끌어올린다.
 
 groups:
   # ── 출장 ─────────────────────────────────────────
-  - [출장, business trip, công tác]
+  - [출장, business trip, biz trip, công tác]
   - [일비, daily allowance, per diem, phụ cấp]
   - [숙박비, 호텔비, accommodation, tiền phòng]
   - [교통비, transportation, chi phí đi lại]
@@ -26,8 +17,27 @@ groups:
   # ── 근태·수당 ────────────────────────────────────
   - [식대, 중식대, meal allowance, tiền ăn]
   - [야근, 시간외근무, OT, overtime, làm thêm giờ]
-  - [연차, 유급휴가, annual leave, nghỉ phép]
+  - [연차, 유급휴가, annual leave, AL, nghỉ phép]
 
-  # ── 결재·증빙 ────────────────────────────────────
+  # ── 결재 흐름 ────────────────────────────────────
+  # 직원이 쓰는 말과 문서의 표현이 다르다 (직원은 'OTPR', 문서는 'overtime payment').
+  # 약어는 M365 TF 채팅방에 정의가 적힌 것 + 담당자가 확인해 준 것만 적는다.
+  #   "OT payment request(OTPR)" · "OT plan (OTP)" · "performance Bonus(PB)"
+  #   "AL Balance ... Annual Leave"
+  #   PR / PPL / PMR 은 담당자 확인 (2026-08-27). 방에서는 PPL 을 'PL' 로도 쓴다.
+  # 보류: BO — 팀 이름으로 보이는데("the BO team") 정식 명칭을 모른다.
+  - [승인, 결재, approval, approve, approved, phê duyệt, duyệt]
+  - [승인자, 결재자, approver]
+  - [요청자, 기안자, requester]
+  - [반려, reject, rejected, từ chối]
+  - [지급, 정산, payment, thanh toán]
+  - [OTP, OT plan]
+  - [OTPR, OT payment request]
+  - [PB, performance bonus, 성과급]
+  - [PR, purchase request, 구매요청]
+  - [PPL, PL, purchasing plan, 구매계획]
+  - [PMR, payment request, 지급요청]
+
+  # ── 증빙 ─────────────────────────────────────────
   - [세금계산서, 적격증빙, red invoice, hóa đơn đỏ]
   - [대표이사, 총괄이사, General Director, Tổng Giám đốc]

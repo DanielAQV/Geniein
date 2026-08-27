@@ -25,17 +25,28 @@ expand = _module.expand
 GLOSSARY = str(_ROOT / "glossary.yaml")
 
 #: (발언, 반드시 확장어로 나와야 하는 것들)
+#: 여러 낱말은 구로 묶여 나온다 — `daily<->allowance` (tsquery 인접 연산자).
 CASES: list[tuple[str, set[str]]] = [
     # ── 한국어로 묻고 영어·베트남어 문서를 찾아야 하는 경우. 사전이 있는 이유다.
-    ("일비 얼마예요?", {"daily", "allowance", "phụ", "cấp"}),
-    ("야근하면 식대 나와요?", {"overtime", "meal", "allowance"}),
-    ("연차는 언제부터 쓸 수 있나요?", {"annual", "leave", "nghỉ", "phép"}),
-    ("해외 출장 숙박비 한도가 얼마인가요?", {"business", "trip", "accommodation", "tiền", "phòng"}),
+    ("일비 얼마예요?", {"daily<->allowance", "phụ<->cấp"}),
+    ("야근하면 식대 나와요?", {"overtime", "meal<->allowance"}),
+    ("연차는 언제부터 쓸 수 있나요?", {"annual<->leave", "AL", "nghỉ<->phép"}),
+    ("해외 출장 숙박비 한도가 얼마인가요?",
+     {"business<->trip", "biz<->trip", "accommodation", "tiền<->phòng"}),
     # ── 베트남어 질의도 같은 다리를 건넌다 (묶음에 방향이 없다)
     ("Hạn mức tiền phòng khi đi công tác nước ngoài là bao nhiêu?",
-     {"숙박비", "accommodation", "출장", "business"}),
+     {"숙박비", "accommodation", "출장", "business<->trip"}),
     # ── 약어는 단어 경계로만 걸린다
     ("OT 규정?", {"overtime", "야근"}),
+    # ── M365 TF 채팅방에서 나온 결재 어휘. 직원은 폼 이름으로 묻고 문서는 다르게 적는다.
+    ("OTPR 반려되면 다시 올려야 하나요?",
+     {"ot<->payment<->request", "reject", "từ<->chối"}),
+    ("PB 는 누가 승인하나요?", {"performance<->bonus", "approval", "duyệt"}),
+    ("OTP 를 매달 올려야 합니까?", {"ot<->plan"}),
+    # ── 결재 폼 약어 (담당자 확인). 직원은 이렇게 쓰고 문서는 풀어서 적는다.
+    ("PR 은 얼마부터 대표이사 승인이 필요한가요?",
+     {"purchase<->request", "구매요청", "general<->director"}),
+    ("PMR 에 red invoice 를 꼭 붙여야 하나요?", {"payment<->request", "지급요청"}),
 ]
 
 #: 확장이 **일어나면 안 되는** 발언. 잘못된 확장은 엉뚱한 조항을 근거로 끌어올린다.

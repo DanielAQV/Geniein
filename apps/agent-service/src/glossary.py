@@ -13,6 +13,15 @@
     정확히 잡는다. 게다가 트라이그램은 질의어 유사도를 **합산**하므로 'per' 같은
     짧은 낱말 하나가 수십 개 청크를 동시에 밀어 올린다.
 
+★ **여러 낱말로 된 표기는 구(句)로 넣는다** — 'OT payment request' 는 tsquery 의
+  인접 연산자로 `ot<->payment<->request` 가 된다. 낱말로 쪼개 OR 로 넣으면
+  'plan'·'request'·'payment' 같은 흔한 단어가 홀로 검색어가 되어 수백 청크를
+  똑같이 긁고, 그러면 어휘 갈래의 순위가 평평해진다. 붙어 있는 표기를 찾는 것이
+  애초에 이 사전의 목적이다.
+
+★ 활용형은 **표기마다 따로 적는다** (approval / approve / approved). 색인이
+  'simple' 사전이라 어간을 자르지 않아서, 셋은 서로 다른 토큰이다.
+
 ★ 사전은 **재현율을 넓히는 장치이지 필터가 아니다.** 확장어가 늘어도 유효본·역할·
   org_id 필터는 갈래마다 그대로 걸린다. 이 파일이 인가 경계를 건드릴 수 있는
   경로는 없다.
@@ -40,9 +49,10 @@ logger = logging.getLogger(__name__)
 #: 부풀지 않게 한다 — tsquery 가 길어지면 어휘 갈래의 순위가 평평해진다.
 MAX_EXPANSION_TERMS = 16
 
-#: 확장어로 넣지 않을 짧은 낱말. 문서 어디에나 있어서 순위를 평평하게 만든다.
-#: 사용자가 **직접 친** 단어는 이 목록과 무관하게 그대로 쓴다 (search.py).
-_NOISE = {"per", "the", "of", "for", "and", "in", "on", "to", "a", "an"}
+#: 홑낱말 표기 중 확장어로 넣지 않을 것. 문서 어디에나 있어서 순위를 평평하게 만든다.
+#: 여러 낱말 표기는 구로 묶이므로 이 목록과 무관하다 ('per diem' → `per<->diem`).
+#: 사용자가 **직접 친** 단어도 이 목록과 무관하게 그대로 쓴다 (search.py).
+_NOISE = {"the", "of", "for", "and", "in", "on", "to", "a", "an"}
 
 #: 라틴 문자로만 된 표기는 단어 경계로 찾는다 — 'OT' 가 'NOTE' 안에서 걸리면 안 된다.
 #: 한국어·베트남어는 조사와 성조 부호가 붙으므로 부분 문자열로 찾는다.
@@ -96,29 +106,43 @@ def _hits(query_lower: str, word: str) -> bool:
 def expand(query: str, *, path: str) -> list[str]:
     """질의에 나온 회사 어휘를 **문서 표기**로 넓혀 추가 검색어를 만든다.
 
-    돌려주는 것은 단어 목록이다 ('daily allowance' 는 두 단어로 쪼개진다). tsquery 는
-    공백이 든 항목을 그대로 받으면 구문 오류를 내고, 어차피 순위는 단어 단위로 매겨진다.
+    돌려주는 것은 tsquery 에 그대로 실을 수 있는 항목들이다. 홑낱말은 그대로,
+    여러 낱말은 인접 연산자로 묶은 구다 ('daily allowance' → `daily<->allowance`).
+    항목은 전부 `_tokens()` 가 뽑은 낱말로만 조립되므로 tsquery 연산자가 섞여 들어갈 수 없다.
 
-    이미 질의에 있는 단어는 빼고 돌려준다 — 같은 단어를 두 번 넣어도 얻는 게 없다.
+    이미 질의에 있는 표기는 뺀다 — 같은 것을 두 번 넣어도 얻는 게 없다.
     """
     groups = load_groups(path)
     if not groups:
         return []
 
     lowered = query.lower()
-    already = {t.lower() for t in _tokens(query)}
+    query_words = {t.lower() for t in _tokens(query)}
 
     extra: list[str] = []
+    seen: set[str] = set()
     for words in groups:
         if not any(_hits(lowered, w) for w in words):
             continue
         for word in words:
-            for token in _tokens(word):
-                low = token.lower()
-                if low in already or low in _NOISE:
+            tokens = _tokens(word)
+            if not tokens:
+                continue
+            if len(tokens) == 1:
+                low = tokens[0].lower()
+                if low in query_words or low in _NOISE:
                     continue
-                already.add(low)
-                extra.append(token)
+                atom = tokens[0]
+            else:
+                # 구는 질의에 그대로 들어 있을 때만 건너뛴다. 낱말이 흩어져 있는
+                # 것과 붙어 있는 것은 다른 신호다.
+                if " ".join(t.lower() for t in tokens) in lowered:
+                    continue
+                atom = "<->".join(tokens)
+            if atom.lower() in seen:
+                continue
+            seen.add(atom.lower())
+            extra.append(atom)
 
     if len(extra) > MAX_EXPANSION_TERMS:
         logger.info("확장어가 %d개라 %d개로 자릅니다", len(extra), MAX_EXPANSION_TERMS)
