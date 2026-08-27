@@ -23,7 +23,7 @@ In the Overtime Plan list, click **+ Add new item**.
 | Field | What to enter |
 |---|---|
 | Title | A name for this plan. |
-| Applicant | Who is submitting the plan. |
+| Applicant · Team | Filled in automatically. |
 | Staff | Everyone who will work the overtime. |
 | Start date · End date | When the overtime is planned. |
 | Site | `LG Display`, `LG Innotek` or `Others`. |

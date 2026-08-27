@@ -21,7 +21,7 @@ In the Accounting payment check list, click **+ Add new item**.
 | Field | What to enter |
 |---|---|
 | Title | A name for this payment. |
-| Applicant | Who is submitting it. |
+| Applicant | Filled in automatically. |
 | Related documents | The request or plan this payment belongs to, if there is one. |
 | Total Amount | The total of your payment lines. |
 | Remark / PJT | The project or anything the approvers should know. |

@@ -22,7 +22,7 @@ In the OT Over Limit list, click **+ Add new item**.
 | Field | What to enter |
 |---|---|
 | Title | A name for this request. |
-| Applicant | Who is submitting it. |
+| Applicant · Team | Filled in automatically. |
 | OT Plan | The approved Overtime Plan this work was registered under. |
 | Staff | Everyone the request is for. |
 | OT Date · Start time · End time | When the overtime was actually worked. |

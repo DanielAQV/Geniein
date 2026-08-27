@@ -22,7 +22,7 @@ In the Business Trip Plan list, click **+ Add new item**.
 | Field | What to enter |
 |---|---|
 | Trip Title | A name for this trip. |
-| Requester · Team · Position | Who is travelling. |
+| Requester · Team | Filled in automatically. |
 | Reason | Why the trip is needed. |
 
 ### Step 2 — Schedule and transport
