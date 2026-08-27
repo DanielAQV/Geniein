@@ -48,6 +48,22 @@ class Settings(BaseSettings):
     tools_dir: Path = SERVICE_ROOT / "tools"
     personas_dir: Path = SERVICE_ROOT / "personas"
 
+    # 테넌트(Entra tid) → 인격 파일 키. `tid:키` 를 쉼표로 잇는다.
+    #
+    #   PERSONA_ORG_MAP=<AQV 테넌트 tid>:aqv
+    #
+    # 지니(코어)와 마이키(AQV)는 같은 뇌를 쓰고 이름·소속만 다르다. 그 "어느
+    # 테넌트가 누구인가"를 정하는 값이 이것이다.
+    #
+    # ★ 매핑이 **여기(.env)** 에 있고 인격 **내용**은 저장소의 personas/*.yaml 에
+    #   있다. 테넌트 GUID 를 저장소에 넣지 않으면서 인격 파일 이름은 사람이 읽을
+    #   수 있게 두기 위해서다.
+    # ★ 클라이언트가 인격을 고를 수 없다. `org_id` 는 게이트웨이가 검증한 토큰의
+    #   `tid` 에서 오고, 서버가 이 표로 인격을 정한다 (원칙③).
+    #
+    # 비어 있으면 모든 테넌트가 코어 인격(지니)을 쓴다 — 지금까지의 동작 그대로다.
+    persona_org_map: str = ""
+
     # 게이트웨이(NestJS)만 이 서비스를 부를 수 있게 하는 공유 토큰.
     #
     # ⚠ 사용자 자격증명이 아니다. 사용자 신원은 게이트웨이가 Entra 토큰을 검증해

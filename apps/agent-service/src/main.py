@@ -1,4 +1,4 @@
-"""유나의 뇌 — FastAPI.
+"""에이전트의 뇌 — FastAPI.
 
 이 서비스는 인터넷에 직접 노출되지 않는다. NestJS(게이트웨이)가 앞에 서고,
 이쪽은 내부망에서만 호출된다 (RAG_SERVICE_URL / AI_ALLOWED_IPS 의 원래 의도).
@@ -19,7 +19,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from .agent import Agent, AgentContext, load_persona
+from .agent import CORE_PERSONA, Agent, AgentContext, load_org_personas, parse_org_map
 from .agent.wire import error_json, event_json
 from .config import get_settings
 from .llm.anthropic_llm import AnthropicLLM
@@ -30,7 +30,7 @@ logging.basicConfig(
     level=getattr(logging, settings.log_level.upper(), logging.INFO),
     format="%(asctime)s %(levelname)-7s %(name)s | %(message)s",
 )
-logger = logging.getLogger("yuna")
+logger = logging.getLogger("brain")
 
 _state: dict[str, Any] = {}
 
@@ -40,28 +40,56 @@ async def lifespan(app: FastAPI):
     # 도구와 인격은 기동 시 1회 로드한다.
     # 대화 중 도구를 동적으로 추가/제거하지 않는다 — 프롬프트 캐시가 전멸한다 (3.2.1).
     registry = ToolRegistry.load(settings.tools_dir)
-    persona = load_persona(settings.personas_dir)
+    llm = AnthropicLLM(settings)
+
+    # ★ 인격은 **테넌트마다 다르다.** 지니(코어)와 마이키(AQV)는 같은 뇌·같은 성격을
+    #   쓰고 이름과 소속만 다르다 (personas/aqv.yaml). 어느 테넌트가 누구인지는
+    #   PERSONA_ORG_MAP 이 정하고, 그 값은 .env 에만 있다 (config.py).
+    #
+    #   Agent 는 llm/registry/persona 를 들고 있는 얇은 객체라 인격 수만큼 만들어도
+    #   비용이 없다. 요청마다 조립하지 않는 이유는 대화 도중 인격이 바뀌지 않게
+    #   하기 위해서다.
+    org_map = parse_org_map(settings.persona_org_map)
+    personas = load_org_personas(settings.personas_dir, org_map)
+
     _state["registry"] = registry
-    _state["persona"] = persona
-    _state["llm"] = AnthropicLLM(settings)
-    _state["agent"] = Agent(
-        llm=_state["llm"],
-        registry=registry,
-        persona=persona,
-        max_iterations=settings.max_tool_iterations,
-    )
+    _state["llm"] = llm
+    _state["personas"] = personas
+    _state["persona_org_map"] = org_map
+    _state["unmapped_orgs"] = set()
+    _state["agents"] = {
+        key: Agent(
+            llm=llm,
+            registry=registry,
+            persona=persona,
+            max_iterations=settings.max_tool_iterations,
+        )
+        for key, persona in personas.items()
+    }
     logger.info(
-        "유나 기동 — 모델=%s effort=%s 도구=%d개 %s",
+        "뇌 기동 — 모델=%s effort=%s 도구=%d개 %s",
         settings.anthropic_model,
         settings.anthropic_effort,
         len(registry),
         [s.name for s in registry.specs],
     )
+    logger.info(
+        "인격 %d개 — %s",
+        len(personas),
+        ", ".join(f"{key}({persona.name})" for key, persona in personas.items()),
+    )
+    # tid 는 앞 8자만 남긴다. 어느 테넌트가 어느 인격인지 확인하는 데는 충분하고,
+    # 로그가 흘러도 식별자 전체가 같이 흐르지는 않는다.
+    for tid, key in org_map.items():
+        logger.info("테넌트 %s… → 인격 %s(%s)", tid[:8], key, personas[key].name)
+    if not org_map:
+        logger.info("PERSONA_ORG_MAP 이 비어 있어 모든 테넌트가 %s 인격을 씁니다.", CORE_PERSONA)
+
     yield
     _state.clear()
 
 
-app = FastAPI(title="Yuna Brain", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Agent Brain", version="0.1.0", lifespan=lifespan)
 
 
 def require_service_token(x_service_token: str = Header(default="")) -> None:
@@ -83,6 +111,36 @@ def require_service_token(x_service_token: str = Header(default="")) -> None:
     # 그러면 401 이어야 할 것이 500 이 된다.
     if not hmac.compare_digest(x_service_token.encode("utf-8"), expected.encode("utf-8")):
         raise HTTPException(status_code=401, detail="unauthorized")
+
+
+def _agent_for(org_id: str | None) -> Agent:
+    """이 요청에 답할 에이전트(=인격)를 고른다.
+
+    ★ 고르는 근거는 **게이트웨이가 검증한 `tid`** 하나다. 클라이언트가 인격을
+      지정하는 필드는 없다 — 있으면 남의 회사 에이전트 이름을 뒤집어쓸 수 있다.
+      (인격이 데이터를 여는 것은 아니지만, 신원은 신원이다.)
+
+    ★ 매핑에 없는 테넌트는 코어(지니)로 떨어진다. 열리는 쪽이 아니라 **이름만**
+      기본값이 되는 것이라 요청을 막지 않는다. 다만 처음 한 번은 경고를 남긴다 —
+      "마이키가 왜 안 나오지"의 답이 대개 여기 있다.
+    """
+    agents: dict[str, Agent] | None = _state.get("agents")
+    if not agents:
+        raise HTTPException(status_code=503, detail="agent not ready")
+
+    key = _state["persona_org_map"].get((org_id or "").lower())
+    if key is None:
+        seen: set[str] = _state["unmapped_orgs"]
+        if org_id and org_id not in seen:
+            seen.add(org_id)
+            logger.warning(
+                "테넌트 %s… 에 매핑된 인격이 없어 %s 를 씁니다 (PERSONA_ORG_MAP 확인)",
+                org_id[:8],
+                CORE_PERSONA,
+            )
+        key = CORE_PERSONA
+
+    return agents[key]
 
 
 class HistoryTurn(BaseModel):
@@ -173,11 +231,14 @@ class MessageResponse(BaseModel):
 @app.get("/health")
 def health() -> dict[str, Any]:
     registry: ToolRegistry | None = _state.get("registry")
+    # 인격 **키**만 싣는다 (이름도, 테넌트 GUID 도 아니다). 배포 후 "마이키가 실렸나"를
+    # 토큰 없이 확인할 수 있으면 충분하고, 그 이상은 이 공개 엔드포인트의 몫이 아니다.
     return {
         "status": "ok",
         "model": settings.anthropic_model,
         "tools": [s.name for s in registry.specs] if registry else [],
         "tool_count": len(registry) if registry else 0,
+        "personas": sorted(_state.get("personas") or {}),
     }
 
 
@@ -201,9 +262,7 @@ def list_tools() -> list[dict[str, Any]]:
     dependencies=[Depends(require_service_token)],
 )
 def agent_message(req: MessageRequest) -> MessageResponse:
-    agent: Agent | None = _state.get("agent")
-    if agent is None:
-        raise HTTPException(status_code=503, detail="agent not ready")
+    agent = _agent_for(req.org_id)
 
     if not settings.anthropic_api_key:
         raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY is not configured")
@@ -260,9 +319,9 @@ def agent_message(req: MessageRequest) -> MessageResponse:
 
 @app.post("/agent/message/stream", dependencies=[Depends(require_service_token)])
 def agent_message_stream(req: MessageRequest) -> StreamingResponse:
-    agent: Agent | None = _state.get("agent")
-    if agent is None:
-        raise HTTPException(status_code=503, detail="agent not ready")
+    # ★ 인격은 스트림을 열기 **전에** 고른다. 제너레이터 안에서 고르면 예외가
+    #   200 헤더 뒤에 터진다.
+    agent = _agent_for(req.org_id)
 
     if not settings.anthropic_api_key:
         raise HTTPException(status_code=503, detail="ANTHROPIC_API_KEY is not configured")

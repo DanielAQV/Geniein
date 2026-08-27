@@ -35,6 +35,9 @@ services:
       # 게이트웨이만 뇌를 부를 수 있게 하는 공유 토큰. 기본값을 주지 않는다 —
       # 없으면 기동 자체가 실패해야 한다 (ANTHROPIC_API_KEY 와 같은 규칙).
       AGENT_SERVICE_TOKEN: ${AGENT_SERVICE_TOKEN:?AGENT_SERVICE_TOKEN is required — openssl rand -base64 32}
+      # 테넌트(tid) → 인격. 비면 모든 테넌트가 코어 인격(지니)을 쓴다.
+      # 마이키(AQV)를 태우려면 여기에 AQV 테넌트 tid 를 넣는다.
+      PERSONA_ORG_MAP: ${PERSONA_ORG_MAP:-}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     # ⚠ 이 포트 퍼블리시는 **로컬 개발 편의**다. 8000 이 호스트에 열려 있으므로
     #   "내부망에서만 호출된다"는 전제가 배치만으로는 성립하지 않는다.
