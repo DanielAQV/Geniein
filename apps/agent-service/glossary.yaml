@@ -26,21 +26,17 @@ groups:
   #   "AL Balance ... Annual Leave"
   #   PR / PPL / PMR 은 담당자 확인 (2026-08-27). 방에서는 PPL 을 'PL' 로도 쓴다.
   - [승인, 결재, approval, approve, approved, phê duyệt, duyệt]
-  - [승인자, 결재자, approver]
-  - [요청자, 기안자, requester]
+  - [승인자, 결재자, approver, người phê duyệt]
+  - [요청자, 기안자, requester, người làm đơn]
   - [반려, reject, rejected, từ chối]
-  - [지급, 정산, payment, thanh toán]
-  - [OTP, OT plan]
+  - [지급, 정산, payment, thanh toán, tt]
+  - [OTP, OT plan, OTPL]
   - [OTPR, OT payment request]
-  - [PB, performance bonus, 성과급]
   - [PR, purchase request, 구매요청]
   - [PPL, PL, purchasing plan, 구매계획]
   - [PMR, payment request, 지급요청]
 
   # ── 조직 ─────────────────────────────────────────
-  # 팀 이름은 한국인도 영어 그대로 쓰지만, 한글로 적는 팀이 몇 개 있다. 그 팀들만
-  # 넣는다 — PMO 처럼 어느 언어에서나 같은 철자면 어휘 검색이 이미 잡는다.
-  # (조직 단위: BO·Admin·BD Infra·PMO·Engineering 팀, Warehouse 는 파트)
   - [BO, business operation]
   - [어드민, admin]
   - [인프라팀, 인프라, BD Infra]
@@ -48,5 +44,40 @@ groups:
   - [웨어하우스, warehouse]
 
   # ── 증빙 ─────────────────────────────────────────
-  - [세금계산서, 적격증빙, red invoice, hóa đơn đỏ]
-  - [대표이사, 총괄이사, General Director, Tổng Giám đốc]
+  - [세금계산서, 적격증빙, red invoice, hóa đơn đỏ, hóa đơn VAT]
+  - [법인장, General Director, Tổng Giám đốc, TGD, TGĐ]
+
+  # ── 인사·노무 (베트남 노동법 표준 용어) ──────────────
+  # 앞의 묶음들과 출처가 다르다. 위쪽은 우리 방·담당자에게서 나온 사내 표기이고,
+  # 여기는 베트남 노동법(2019)과 그 한국어 번역에서 쓰는 **표준 용어**다. 사규가
+  # 법을 인용하거나 베껴 쓰는 자리가 많아서, 직원이 한국어로 묻는 개념이 문서에는
+  # 법률 표기로 적혀 있는 경우가 흔하다.
+  #
+  # ★ 우리 코퍼스에 없는 개념도 섞여 있을 수 있다. 그건 무해하다 — 없는 표기는
+  #   어휘 갈래가 못 찾을 뿐 엉뚱한 것을 끌어오지 않는다. 반대로 틀린 짝은 해로우니
+  #   법령에서 쓰는 표기만 적는다.
+  # ★ 베트남어 약어를 같이 적는다. 실무 문서는 BHXH·HĐLĐ 처럼 약어로 적는 일이 많다.
+  - [근로계약, 노동계약, labor contract, labour contract, hợp đồng lao động, HĐLĐ]
+  - [수습, 시용, probation, thử việc]
+  - [취업규칙, 사규, 내부규정, internal labor regulations, nội quy lao động]
+  - [단체협약, collective labour agreement, thỏa ước lao động tập thể]
+  - [사회보험, social insurance, bảo hiểm xã hội, BHXH]
+  - [건강보험, 의료보험, health insurance, bảo hiểm y tế, BHYT]
+  - [실업보험, unemployment insurance, bảo hiểm thất nghiệp, BHTN]
+  - [퇴직금, 퇴직수당, severance allowance, trợ cấp thôi việc]
+  - [해지, 해고, termination, chấm dứt hợp đồng]
+  - [징계, disciplinary, kỷ luật lao động]
+  - [노동조합, trade union, công đoàn]
+  - [급여, 임금, salary, wage, lương]
+  - [급여명세서, payslip, phiếu lương]
+  - [소득세, 개인소득세, personal income tax, PIT, thuế thu nhập cá nhân, thuế TNCN]
+  - [근태, 출퇴근, timekeeping, attendance, chấm công]
+  - [병가, sick leave, nghỉ ốm]
+  - [출산휴가, maternity leave, nghỉ thai sản]
+  - [경조휴가, personal leave, nghỉ việc riêng]
+  - [무급휴가, unpaid leave, nghỉ không lương]
+  - [상여, 보너스, bonus, thưởng]
+  - [설 상여, 뗏 보너스, Tet bonus, thưởng Tết, lương tháng 13]
+  - [노동허가서, work permit, giấy phép lao động]
+  - [거주증, temporary residence card, thẻ tạm trú]
+  - [산업안전, 안전보건, occupational safety, an toàn lao động]

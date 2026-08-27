@@ -41,16 +41,20 @@ CASES: list[tuple[str, set[str]]] = [
     # ── M365 TF 채팅방에서 나온 결재 어휘. 직원은 폼 이름으로 묻고 문서는 다르게 적는다.
     ("OTPR 반려되면 다시 올려야 하나요?",
      {"ot<->payment<->request", "reject", "từ<->chối"}),
-    ("PB 는 누가 승인하나요?", {"performance<->bonus", "approval", "duyệt"}),
+    ("보너스는 누가 승인하나요?", {"thưởng", "approval", "duyệt"}),
     ("OTP 를 매달 올려야 합니까?", {"ot<->plan"}),
     # ── 결재 폼 약어 (담당자 확인). 직원은 이렇게 쓰고 문서는 풀어서 적는다.
-    ("PR 은 얼마부터 대표이사 승인이 필요한가요?",
+    ("PR 은 얼마부터 법인장 승인이 필요한가요?",
      {"purchase<->request", "구매요청", "general<->director"}),
     ("PMR 에 red invoice 를 꼭 붙여야 하나요?", {"payment<->request", "지급요청"}),
     # ── 팀 이름. 한국인은 한글로 적고 문서는 영어로 적는다.
     ("웨어하우스 파트도 같은 규정을 따르나요?", {"warehouse"}),
     ("인프라팀 출장 승인 라인이 어떻게 되나요?",
      {"bd<->infra", "business<->trip", "approval"}),
+    # ── 베트남 노동법 표준 용어. 직원은 한국어로 묻고 문서는 법률 표기로 적는다.
+    ("수습 기간에도 사회보험을 내나요?", {"thử<->việc", "probation", "bhxh", "bảo<->hiểm<->xã<->hội"}),
+    ("퇴직금은 어떻게 계산합니까?", {"trợ<->cấp<->thôi<->việc", "severance<->allowance"}),
+    ("Nghỉ thai sản được bao nhiêu tháng?", {"출산휴가", "maternity<->leave"}),
 ]
 
 #: 확장이 **일어나면 안 되는** 발언. 잘못된 확장은 엉뚱한 조항을 근거로 끌어올린다.
