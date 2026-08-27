@@ -8,6 +8,11 @@
  *
  * ★ 프론트매터 파서를 직접 쓴다. 필요한 것이 `key: value` 와 `[a, b]` 뿐이라
  *   의존성을 하나 더 들일 이유가 없다.
+ *
+ * ★ 키 이름은 **색인기(agent-service/src/kb/ingest.py)의 규약을 따른다** —
+ *   `role_scope` · `source` · `lang` · `effective_date`. 같은 파일을 화면과
+ *   마이키가 함께 읽으므로, 키를 하나만 두고 이름은 먼저 있던 쪽에 맞춘다.
+ *   (여기서 `roles` 같은 다른 이름을 쓰면 두 벌이 되고, 둘이 어긋나는 날이 온다.)
  */
 
 import { readFile, readdir } from 'node:fs/promises'
@@ -68,9 +73,9 @@ function toGuide(slug: string, raw: string): Guide {
     slug,
     title: text('title', slug),
     summary: text('summary'),
-    roles: list('roles'),
+    roles: list('role_scope'),
     order: Number.parseInt(text('order', '99'), 10) || 99,
-    updated: text('updated'),
+    updated: text('effective_date'),
     supersedes: text('supersedes') || undefined,
     body,
   }

@@ -1,9 +1,12 @@
 ---
 title: Repair Request
 summary: How to submit a repair request through the Purchase Request form.
-roles: [requester, approver]
+role_scope: [requester, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 4
-updated: 2026-08-27
 supersedes: Repair_Request_Guide_v1.pdf (23 Apr 2026)
 ---
 

@@ -1,9 +1,12 @@
 ---
 title: Purchasing Plan
 summary: How to submit a purchasing plan for an approved purchase request.
-roles: [requester, approver]
+role_scope: [requester, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 2
-updated: 2026-08-27
 supersedes: Purchasing_Plan_Guide_v1.pdf (23 Apr 2026)
 ---
 

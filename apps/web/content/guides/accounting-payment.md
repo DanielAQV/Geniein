@@ -1,9 +1,12 @@
 ---
 title: Accounting Payment
 summary: How Admin submits a payment that doesn't come from a team's payment request.
-roles: [admin, approver]
+role_scope: [admin, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 12
-updated: 2026-08-27
 ---
 
 ## Before you start

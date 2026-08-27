@@ -1,9 +1,12 @@
 ---
 title: Budget Planning
 summary: How to submit your team's budget plan for the month.
-roles: [requester, approver]
+role_scope: [requester, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 11
-updated: 2026-08-27
 ---
 
 ## Before you start

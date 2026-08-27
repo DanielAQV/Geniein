@@ -1,9 +1,12 @@
 ---
 title: Purchase Request
 summary: How to submit a purchase or repair request, and what each status means.
-roles: [requester, approver]
+role_scope: [requester, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 1
-updated: 2026-08-27
 supersedes: Purchase_Request_Guide_v1.pdf (23 Apr 2026)
 ---
 

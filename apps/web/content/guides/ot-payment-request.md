@@ -1,9 +1,12 @@
 ---
 title: OT Payment Request
 summary: How to claim payment for overtime that has already been worked.
-roles: [requester, approver]
+role_scope: [requester, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 7
-updated: 2026-08-27
 supersedes: Overtime(OT) Payment Approval_User Guide_Requester_19Jan.pdf (19 Jan 2026)
 ---
 

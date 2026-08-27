@@ -1,9 +1,12 @@
 ---
 title: Payment Request
 summary: How to request a payment for an approved purchasing plan or purchase request.
-roles: [requester, approver]
+role_scope: [requester, approver]
+source: guide
+source_format: markdown
+lang: [en]
+effective_date: 2026-08-27
 order: 3
-updated: 2026-08-27
 supersedes: Payment_Request_Guide_v1.pdf (23 Apr 2026)
 ---
 
