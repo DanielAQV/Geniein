@@ -51,6 +51,8 @@ Right after saving, the request sits as **Pending** until the system picks it up
 
 The status changes to **In Progress** and the system reads your Excel file. Open your request and scroll down to **Payment Detail** to see each line — account name, amount, details — as the system read it.
 
+!note **Payment Detail** is visible to your own team and to the Approval admin. Other teams can't see it.
+
 ### Step 6 — Approvers review, one after another
 
 Each approver gets a card in Microsoft Teams and approves or rejects. The next approver is notified after the previous one approves. A comment written by an approver also appears on the request.
