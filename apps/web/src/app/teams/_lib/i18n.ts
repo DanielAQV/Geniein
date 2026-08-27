@@ -67,6 +67,8 @@ export interface Strings {
   /** 언어 선택기의 접근성 라벨. 라벨 자체도 언어를 타야 한다 */
   languageLabel: string
   newChat: string
+  /** 가이드 문서로 가는 링크. 문서 자체는 영어 한 벌이고 마이키가 각 언어로 답한다. */
+  guides: string
   emptyTitle: string
   emptyBody: string
   placeholder: string
@@ -105,6 +107,7 @@ const ko: Strings = {
   title: '사규 검색',
   languageLabel: '언어',
   newChat: '새 대화',
+  guides: '가이드',
   emptyTitle: '무엇이 궁금하세요?',
   emptyBody: '평소 말하듯 물어보세요. 근거가 된 규정과 시행일을 함께 알려드립니다.',
   placeholder: '예: 해외 출장 숙박비 한도가 얼마인가요?',
@@ -141,6 +144,7 @@ const vi: Strings = {
   title: 'Tra cứu quy định',
   languageLabel: 'Ngôn ngữ',
   newChat: 'Cuộc trò chuyện mới',
+  guides: 'Hướng dẫn',
   emptyTitle: 'Bạn muốn hỏi điều gì?',
   emptyBody:
     'Hãy hỏi như khi bạn nói chuyện thường ngày. Chúng tôi sẽ kèm theo điều khoản và ngày hiệu lực làm căn cứ.',
@@ -178,6 +182,7 @@ const en: Strings = {
   title: 'Policy Search',
   languageLabel: 'Language',
   newChat: 'New chat',
+  guides: 'Guides',
   emptyTitle: 'What would you like to know?',
   emptyBody:
     'Ask in plain language. Answers come with the regulation and its effective date.',

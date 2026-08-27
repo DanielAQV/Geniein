@@ -21,7 +21,8 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react'
-import { AlertCircle, Loader2, RotateCcw, Send, Sparkles } from 'lucide-react'
+import { AlertCircle, BookOpen, Loader2, RotateCcw, Send, Sparkles } from 'lucide-react'
+import Link from 'next/link'
 import { RichText } from './rich-text'
 import {
   LANGUAGES,
@@ -383,6 +384,15 @@ export function ChatView({
           <h1 className="text-sm font-semibold">{strings.title}</h1>
 
           <div className="ml-auto flex items-center gap-1">
+            {/* 가이드는 같은 탭 안의 다른 화면이다. 매니페스트에 탭을 하나 더
+                추가하려면 앱 재업로드와 관리자 승인이 필요해서, 우선 여기 링크로 붙인다. */}
+            <Link
+              href="/teams/guide"
+              className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              {strings.guides}
+            </Link>
             <LanguagePicker
               lang={lang}
               onChange={onLangChange}
