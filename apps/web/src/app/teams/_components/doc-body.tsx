@@ -45,6 +45,38 @@ const CALLOUT_STYLE: Record<string, string> = {
   stop: 'border-rose-500/40 bg-rose-500/10',
 }
 
+/**
+ * 상태 알약 — **SharePoint 리스트가 실제로 쓰는 색**을 그대로 가져왔다.
+ *
+ * 값의 출처는 `Purchase Request` 리스트 `Status` 컬럼의 서식(BgColorChoicePill)이
+ * 지정한 테마 클래스다: BgGold / BgCornflowerBlue / BgMintGreen / BgDustRose.
+ * 문서에서 다른 색을 쓰면 읽는 사람이 화면과 문서를 머릿속에서 다시 맞춰야 한다.
+ *
+ * ★ 다크 테마에서도 같은 색을 쓴다. 알약은 자기 배경을 깔고 그 위에 글자를 얹어서
+ *   주변 테마와 무관하게 대비가 유지되고, 무엇보다 **리스트에서 본 그 색**이어야
+ *   알아볼 수 있다.
+ */
+const STATUS_PILL: Record<string, { bg: string; fg: string }> = {
+  Pending: { bg: '#FFEBC0', fg: '#8F6200' },
+  'In Progress': { bg: '#D4E7F6', fg: '#0068B8' },
+  Approved: { bg: '#CAF0CC', fg: '#437406' },
+  Rejected: { bg: '#F5CCCF', fg: '#AA272B' },
+  Modifying: { bg: '#E5E5E5', fg: '#666666' },
+}
+
+function statusPill(text: string) {
+  const pill = STATUS_PILL[text.trim()]
+  if (!pill) return null
+  return (
+    <span
+      className="inline-flex h-6 items-center whitespace-nowrap rounded-full px-2.5 text-[12.5px] font-semibold"
+      style={{ backgroundColor: pill.bg, color: pill.fg }}
+    >
+      {text.trim()}
+    </span>
+  )
+}
+
 const isTableRow = (line: string) => line.trim().startsWith('|') && line.includes('|', 1)
 const isDivider = (line: string) => /^\s*\|?[\s:|-]+\|[\s:|-]*$/.test(line)
 const cells = (line: string) =>
@@ -172,7 +204,7 @@ export function DocBody({ markdown }: { markdown: string }) {
                       key={k}
                       className="border-b border-border px-4 py-3 align-top text-muted-foreground last:border-r-0"
                     >
-                      {inline(c)}
+                      {statusPill(c) ?? inline(c)}
                     </td>
                   ))}
                 </tr>
