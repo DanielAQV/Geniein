@@ -23,8 +23,7 @@ In the Annual Leave list, click **+ Add new item**.
 | Field | What to enter |
 |---|---|
 | Title | A name for this request. |
-| Name | Who the leave is for. |
-| Team | Filled in automatically. |
+| Name · Team | Filled in automatically from your account. |
 | Leave Type | `Annual Leave`, `Sick Leave`, `Unpaid Leave`, `Maternity Leave`, `Work From Home` or `Others`. |
 | Start date · Start type | The first day, and whether it is a `Full day`, `Morning` or `Afternoon`. |
 | End date · End type | The last day, and the same choice for that day. |

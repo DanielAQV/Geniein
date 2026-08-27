@@ -8,7 +8,9 @@ updated: 2026-08-27
 
 ## Before you start
 
-Overtime beyond the normal limit is submitted here instead of the usual OT payment request. The form is the same as OT Payment Request, and it refers back to the approved **Overtime Plan** the work was registered under.
+Use this form when someone goes past the legal overtime limit — **more than 40 hours in a month, or 200 hours in a year**. Overtime within those limits goes on the normal OT Payment Request.
+
+The form is the same as OT Payment Request, and it refers back to the approved **Overtime Plan** the work was registered under.
 
 - Approvals run one after another, in the order you list the approvers.
 - One request can cover several people and several dates.
