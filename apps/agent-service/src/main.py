@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field
 from .agent import CORE_PERSONA, Agent, AgentContext, load_org_personas, parse_org_map
 from .agent.wire import error_json, event_json
 from .config import get_settings
+from .glossary import load_groups as load_glossary
 from .llm.anthropic_llm import AnthropicLLM
 from .tools.registry import ToolRegistry
 
@@ -41,6 +42,11 @@ async def lifespan(app: FastAPI):
     # 대화 중 도구를 동적으로 추가/제거하지 않는다 — 프롬프트 캐시가 전멸한다 (3.2.1).
     registry = ToolRegistry.load(settings.tools_dir)
     llm = AnthropicLLM(settings)
+
+    # 어휘 사전도 기동 시 한 번 읽는다. 지연 때문이 아니라 **깨진 사전을 첫 검색이
+    # 아니라 기동 로그에서 보기 위해서다.** 없으면 없다고 찍고 그냥 돈다 (검색 품질
+    # 장치라 뇌를 못 뜨게 할 이유가 없다).
+    load_glossary(str(settings.glossary_path))
 
     # ★ 인격은 **테넌트마다 다르다.** 지니(코어)와 마이키(AQV)는 같은 뇌·같은 성격을
     #   쓰고 이름과 소속만 다르다 (personas/aqv.yaml). 어느 테넌트가 누구인지는

@@ -49,6 +49,7 @@ services:
       # 바인드 마운트로 두면 컨테이너 재빌드 없이 수정·재기동만으로 반영된다.
       - ./apps/agent-service/tools:/app/tools:ro
       - ./apps/agent-service/personas:/app/personas:ro
+      - ./apps/agent-service/glossary.yaml:/app/glossary.yaml:ro
     depends_on:
       postgres:
         condition: service_healthy

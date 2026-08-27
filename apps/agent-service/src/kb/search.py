@@ -9,6 +9,8 @@
 
   ② BM25 (tsvector, 'simple')
      고유번호·금액·영문 용어처럼 **철자가 정확히 일치해야 하는 것**을 잡는다.
+     ★ 회사 어휘 사전이 만든 확장어도 이 갈래로 들어간다 — '일비' 로 물으면
+       'daily allowance' 가 함께 검색어가 된다 (src/glossary.py).
      벡터가 가장 약한 지점이다. 실측 토큰화:
          'Decision No. 06/2025/QĐTCAC — 40,000 VND' → '06/2025/q' 'đtcac' '40' '000'
 
@@ -45,7 +47,9 @@ from dataclasses import dataclass
 from datetime import date
 from functools import lru_cache
 
+from ..config import get_settings
 from ..db import connect, to_vector_literal
+from ..glossary import expand as expand_terms
 from . import embed
 
 logger = logging.getLogger(__name__)
@@ -278,6 +282,11 @@ def search(
     terms = _terms(query)
     trigram_terms = [t for t in terms if len(t) >= MIN_TRIGRAM_TERM]
 
+    # 회사 어휘 사전. **어휘 갈래에만** 넣는다 — 벡터는 원 질의를 그대로 임베딩하고,
+    # 트라이그램은 사용자가 친 단어만 쓴다 (이유는 glossary.py 머리말).
+    extra_terms = expand_terms(query, path=str(get_settings().glossary_path))
+    lexical_terms = terms + extra_terms
+
     vector = embed.encode([query], is_query=True)[0]
 
     params = {
@@ -286,7 +295,7 @@ def search(
         "org_id": org_id,
         # 단어가 하나도 없으면 to_tsquery('') 가 에러다. 아무것도 안 맞는 값을 넣어
         # 그 갈래만 비게 한다 — 나머지 두 갈래는 정상 동작해야 한다.
-        "terms": terms or ["__no_terms__"],
+        "terms": lexical_terms or ["__no_terms__"],
         "trigram_terms": trigram_terms or ["__no_terms__"],
         "trigram_floor": TRIGRAM_FLOOR,
         "pool": CANDIDATE_POOL,
@@ -324,7 +333,10 @@ def search(
     contributions = {src: sum(1 for h in hits if src in h.sources)
                      for src in ("vector", "lexical", "trigram")}
     logger.info(
-        "검색 %r org=%s roles=%s → %d건 (갈래별 %s)",
+        "검색 %r org=%s roles=%s → %d건 (갈래별 %s)%s",
         query[:40], org_id, effective_roles, len(hits), contributions,
+        # 확장어를 같이 남긴다. 엉뚱한 근거가 올라왔을 때 사전이 범인인지
+        # 한 줄로 가려내야 한다.
+        f" 사전확장={extra_terms}" if extra_terms else "",
     )
     return hits

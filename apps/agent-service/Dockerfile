@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY tools/ ./tools/
 COPY personas/ ./personas/
+COPY glossary.yaml .
 
 EXPOSE 8000
 

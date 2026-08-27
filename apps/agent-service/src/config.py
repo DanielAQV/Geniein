@@ -47,6 +47,8 @@ class Settings(BaseSettings):
     # 설정 디렉터리 — 도구와 인격은 코드가 아니라 설정이다
     tools_dir: Path = SERVICE_ROOT / "tools"
     personas_dir: Path = SERVICE_ROOT / "personas"
+    # 회사 어휘 사전 (glossary.py). 없어도 검색은 돈다 — 질의 확장만 꺼진다.
+    glossary_path: Path = SERVICE_ROOT / "glossary.yaml"
 
     # 테넌트(Entra tid) → 인격 파일 키. `tid:키` 를 쉼표로 잇는다.
     #
