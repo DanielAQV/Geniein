@@ -4,6 +4,9 @@
 !.env.example
 *.pem
 *.key
+*.cer
+# 뇌의 SharePoint 인증서가 사는 곳 (개인키 포함)
+secrets/
 
 # ── 사내 문서 (절대 커밋 금지) ──────────────────────
 # 사규·가이드 원본. RAG ingest 입력이지 소스코드가 아니다.
