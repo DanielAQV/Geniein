@@ -129,10 +129,33 @@ manifest = manifest.replace(/\$\{([A-Z_]+)\}/g, (whole, key) => {
 
 // 조립 결과가 유효한 JSON 인지 확인하고 나간다. 매니페스트가 깨지면 Teams 는
 // "앱 패키지가 올바르지 않습니다" 한 줄만 말하고 어디가 문제인지 알려주지 않는다.
-JSON.parse(manifest)
+const parsed = JSON.parse(manifest)
+
+/**
+ * 봇은 **있을 때만** 선언한다.
+ *
+ * 템플릿에 `${BOT_APP_ID}` 를 박아두면 봇을 아직 안 만든 환경에서 빌드가 멈춘다.
+ * 봇 없이 탭만 쓰는 상태가 정상이므로, 값이 있을 때만 블록을 얹는다.
+ *
+ * ★ 여기 들어가는 것은 **봇의 Microsoft 앱 ID** 다. 탭 SSO 가 쓰는
+ *   ENTRA_CLIENT_ID 와 다른 값이다 — 같은 값을 넣으면 Teams 가 받긴 하지만
+ *   봇 자격증명이 탭 앱에 묶여서 하나가 새면 둘 다 샌다.
+ */
+const botAppId = get('BOT_APP_ID')
+if (botAppId) {
+  parsed.bots = [
+    {
+      botId: botAppId,
+      scopes: ['personal'],
+      // 사람이 말을 걸 수 있어야 한다. 알림 전용이면 마이키가 통보기가 된다.
+      isNotificationOnly: false,
+      supportsFiles: false,
+    },
+  ]
+}
 
 mkdirSync(DIST, { recursive: true })
-writeFileSync(join(DIST, 'manifest.json'), manifest)
+writeFileSync(join(DIST, 'manifest.json'), JSON.stringify(parsed, null, 2))
 for (const icon of ['color.png', 'outline.png']) copyFileSync(join(HERE, icon), join(DIST, icon))
 
 console.log('dist/ 생성 완료')
@@ -141,6 +164,7 @@ console.log(`  앱 ID      ${clientId}`)
 console.log(`  콘텐츠 호스트 ${contentHost}${contentHost === serviceHost ? '' : '  (터널)'}`)
 console.log(`  서비스 링크 ${values.WEBSITE_URL}  (게시자 AirQuay Vina, 서비스 Geniein)`)
 console.log(`  리소스     ${audience}`)
+console.log(`  봇         ${botAppId || '없음 — 탭만 (BOT_APP_ID 미설정)'}`)
 console.log('')
 console.log('업로드용 zip 만들기 (파일 3개가 zip 최상위에 있어야 한다):')
 console.log(

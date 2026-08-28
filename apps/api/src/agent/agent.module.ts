@@ -10,5 +10,7 @@ import { AgentService } from './agent.service';
 @Module({
   controllers: [AgentController],
   providers: [AgentService],
+  // 봇 채널도 같은 뇌를 부른다 — 경로가 둘이어도 뇌를 부르는 방법은 하나여야 한다
+  exports: [AgentService],
 })
 export class AgentModule {}

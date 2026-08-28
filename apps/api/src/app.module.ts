@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { InsightsModule } from './insights/insights.module';
 import { AgentModule } from './agent/agent.module';
+import { BotModule } from './bot/bot.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AgentModule } from './agent/agent.module';
     }),
     InsightsModule,
     AgentModule,
+    BotModule,
   ],
   controllers: [AppController],
   providers: [AppService],
