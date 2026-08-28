@@ -76,6 +76,24 @@ class Settings(BaseSettings):
     # 빈 값은 "인증 없음"이 아니라 "설정 오류"로 취급한다 (main.require_service_token).
     agent_service_token: str = ""
 
+    # ── SharePoint 앱 전용 읽기 (Sites.Selected) ──────────────────
+    #
+    # 앱 등록은 geniein 테넌트에 있고(다중 테넌트), 토큰은 자원이 있는 **AQV
+    # 테넌트**에서 받는다. 그래서 graph_tenant_id 는 AQV 의 tid 다.
+    #
+    # ★ 이 앱은 Teams SSO(위임)에도 쓰인다. 여기 시크릿이 붙으면 같은 앱이 사용자
+    #   없이도 움직일 수 있게 되므로, 값은 뇌의 .env 에만 두고 만료를 짧게 잡는다.
+    #
+    # 비어 있으면 SharePoint 도구가 조용히 꺼진다 — 설정이 없다고 서비스가
+    # 안 뜨면 안 된다. 대화는 SharePoint 없이도 돌아야 한다.
+    graph_client_id: str = ""
+    graph_client_secret: str = ""
+    graph_tenant_id: str = ""
+    # "<host>,<siteId>,<webId>" 형식. _api/site/id 와 _api/web/id 로 뽑는다.
+    graph_site_id: str = ""
+    # SharePoint REST 용 주소 (첨부파일은 Graph 에 엔드포인트가 없다).
+    sharepoint_site_url: str = ""
+
     log_level: str = "INFO"
 
     # 에이전트 루프 안전장치. 도구 연쇄가 무한히 돌지 않게.
