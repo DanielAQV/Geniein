@@ -13,7 +13,7 @@ order: 8
 
 Use this form when someone goes past the legal overtime limit — **more than 40 hours in a month, or 200 hours in a year**. Overtime within those limits goes on the normal OT Payment Request.
 
-The form is the same as OT Payment Request, and it refers back to the approved **Overtime Plan** the work was registered under.
+The form is the same as OT Payment Request, and it refers back to the **Overtime Plan** the work was registered under.
 
 - Approvals run one after another, in the order you list the approvers.
 - One request can cover several people and several dates.
@@ -28,7 +28,7 @@ In the OT Over Limit list, click **+ Add new item**.
 |---|---|
 | Title | A name for this request. |
 | Applicant · Team | Filled in automatically. |
-| OT Plan | The approved Overtime Plan this work was registered under. |
+| OT Plan | The Overtime Plan this work was registered under. Plans still being approved can be picked too — you don't have to wait for the plan to be approved first. |
 | Staff | Everyone the request is for. |
 | OT Date · Start time · End time | When the overtime was actually worked. |
 | OT Hour | The hours claimed. |

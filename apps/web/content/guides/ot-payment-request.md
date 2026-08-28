@@ -12,7 +12,7 @@ supersedes: Overtime(OT) Payment Approval_User Guide_Requester_19Jan.pdf (19 Jan
 
 ## Before you start
 
-Submit this after the overtime has been worked. It refers back to the approved **Overtime Plan** the work was registered under.
+Submit this after the overtime has been worked. It refers back to the **Overtime Plan** the work was registered under.
 
 - Approvals run one after another, in the order you list the approvers.
 - One payment request can cover several people and several dates.
@@ -27,7 +27,7 @@ In the OT Payment Request list, click **+ Add new item**.
 |---|---|
 | Title | A name for this request. |
 | Applicant · Team | Filled in automatically. |
-| OT Plan | The approved Overtime Plan this work was registered under. |
+| OT Plan | The Overtime Plan this work was registered under. Plans still being approved can be picked too — you don't have to wait for the plan to be approved first. |
 | Staff | Everyone the payment is for. |
 | OT Date · Start time · End time | When the overtime was actually worked. |
 | OT Hour | The hours claimed. |
