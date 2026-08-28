@@ -225,6 +225,12 @@ def list_items(
     return get(url, params=params).get("value", [])
 
 
+def get_item(list_name: str, item_id: int) -> dict[str, Any]:
+    """항목 하나. `fields` 를 펼쳐 컬럼 값이 바로 보이게 한다."""
+    url = f"{site_url()}/lists/{quote(list_name)}/items/{item_id}"
+    return get(url, params={"$expand": "fields"})
+
+
 # ── SharePoint REST ──────────────────────────────────────────────────
 #
 # ★ 첨부파일은 Graph 에 없다. 여기만이 경로다.

@@ -18,13 +18,24 @@
 
 from __future__ import annotations
 
+import base64
 import logging
 from typing import Any, Iterator
 
 import anthropic
 
 from ..config import Settings
-from .base import LLM, TextDelta, ToolCall, ToolResult, Turn, TurnComplete, TurnEvent, Usage
+from .base import (
+    LLM,
+    Document,
+    TextDelta,
+    ToolCall,
+    ToolResult,
+    Turn,
+    TurnComplete,
+    TurnEvent,
+    Usage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +131,33 @@ class AnthropicLLM(LLM):
         # 돌려주면 "모델이 아무 말도 안 했다"로 보이므로 여기서 터뜨린다.
         raise RuntimeError("스트림이 TurnComplete 없이 끝났습니다")
 
+    def read_documents(
+        self,
+        *,
+        system: str,
+        instruction: str,
+        documents: list[Document],
+        effort: str | None = None,
+    ) -> str:
+        content: list[dict[str, Any]] = []
+        for doc in documents:
+            block = _document_block(doc)
+            if block is None:
+                logger.warning("모델에 넣을 수 없는 형식이라 건너뜁니다: %s (%s)", doc.name, doc.media_type)
+                continue
+            # 파일마다 이름을 붙여 준다. "두 번째 첨부에서" 라고 말할 수 있어야
+            # 사람이 그 파일을 찾아갈 수 있다.
+            content.append({"type": "text", "text": f"[{doc.name}]"})
+            content.append(block)
+
+        content.append({"type": "text", "text": instruction})
+        return self.run_agent_turn(
+            system=system,
+            messages=[{"role": "user", "content": content}],
+            tools=[],
+            effort=effort,
+        ).text
+
     def stream_agent_turn(
         self,
         *,
@@ -186,3 +224,37 @@ def _usage(response: Any) -> Usage:
         cache_read_tokens=getattr(u, "cache_read_input_tokens", 0) or 0,
         cache_write_tokens=getattr(u, "cache_creation_input_tokens", 0) or 0,
     )
+
+
+#: 모델이 그림으로 볼 수 있는 형식. 그 외 이미지는 텍스트도 그림도 아니라 버린다.
+_IMAGE_TYPES = ("image/png", "image/jpeg", "image/gif", "image/webp")
+
+
+def _document_block(doc: Document) -> dict[str, Any] | None:
+    """파일 하나를 provider 블록으로.
+
+    ★ 엑셀·워드는 여기서 걸러진다. 모델이 바이너리를 못 읽기 때문인데, 우리
+      경우엔 손해가 없다 — 결재 엑셀은 이미 플로우가 파싱해서 리스트 컬럼에
+      들어와 있고, 그 값을 텍스트로 함께 넣는다.
+    """
+    if doc.media_type == "application/pdf":
+        return {
+            "type": "document",
+            "source": {
+                "type": "base64",
+                "media_type": "application/pdf",
+                "data": base64.b64encode(doc.data).decode(),
+            },
+        }
+    if doc.media_type in _IMAGE_TYPES:
+        return {
+            "type": "image",
+            "source": {
+                "type": "base64",
+                "media_type": doc.media_type,
+                "data": base64.b64encode(doc.data).decode(),
+            },
+        }
+    if doc.media_type.startswith("text/"):
+        return {"type": "text", "text": doc.data.decode("utf-8", errors="replace")}
+    return None

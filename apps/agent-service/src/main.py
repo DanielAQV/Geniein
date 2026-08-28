@@ -23,6 +23,7 @@ from .agent import CORE_PERSONA, Agent, AgentContext, load_org_personas, parse_o
 from .agent.wire import error_json, event_json
 from .config import get_settings
 from .glossary import load_groups as load_glossary
+from .checks import purchase_request
 from .llm.anthropic_llm import AnthropicLLM
 from .tools.registry import ToolRegistry
 
@@ -358,3 +359,37 @@ def agent_message_stream(req: MessageRequest) -> StreamingResponse:
         media_type="application/x-ndjson",
         headers={"X-Accel-Buffering": "no", "Cache-Control": "no-store"},
     )
+
+
+class PurchaseCheckRequest(BaseModel):
+    """제출된 구매요청 하나를 대조해 달라는 요청.
+
+    부르는 쪽은 Power Automate → 게이트웨이다. 사용자가 아니므로 Entra 토큰이 없고,
+    서비스 토큰이 경계다.
+    """
+
+    item_id: int = Field(gt=0)
+
+    # 누가 냈는가. **허용목록 판정에만** 쓴다 — 지금은 시험 계정 몇 개로 묶어 둔
+    # 상태라, 이 값이 없으면 아무 일도 일어나지 않는다.
+    requester_email: str | None = Field(default=None, max_length=320)
+
+
+class PurchaseCheckResponse(BaseModel):
+    # 어긋난 게 없으면 False 다. 플로우는 이 값이 True 일 때만 메시지를 보낸다 —
+    # 정상 요청에는 아무 일도 일어나지 않아야 한다.
+    notify: bool
+    message: str | None = None
+    # 왜 조용한지. 사람이 읽는 값이 아니라 로그에서 "안 돈 건가 / 볼 게 없던 건가"를
+    # 가르기 위한 값이다.
+    reason: str | None = None
+
+
+@app.post(
+    "/check/purchase-request",
+    response_model=PurchaseCheckResponse,
+    dependencies=[Depends(require_service_token)],
+)
+def check_purchase_request(req: PurchaseCheckRequest) -> PurchaseCheckResponse:
+    result = purchase_request.check(req.item_id, req.requester_email, _state["llm"])
+    return PurchaseCheckResponse(**result)

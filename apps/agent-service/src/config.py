@@ -99,6 +99,12 @@ class Settings(BaseSettings):
     # SharePoint REST 용 주소 (첨부파일은 Graph 에 엔드포인트가 없다).
     sharepoint_site_url: str = ""
 
+    # 첨부 대조를 받을 사람 (쉼표 구분 이메일).
+    #
+    # ★ 비어 있으면 **아무에게도 안 보낸다.** 전원 허용이 아니다 — 설정을 깜빡한
+    #   환경에서 전 직원에게 메시지가 나가는 쪽이 훨씬 비싼 사고다.
+    pr_check_allowed_emails: str = ""
+
     log_level: str = "INFO"
 
     # 에이전트 루프 안전장치. 도구 연쇄가 무한히 돌지 않게.

@@ -36,6 +36,19 @@ class ToolResult:
 
 
 @dataclass(frozen=True)
+class Document:
+    """모델에게 **원본 그대로** 보여줄 파일.
+
+    텍스트로 먼저 뽑지 않는 것이 요점이다. 견적서는 표와 도장과 손글씨가 섞여
+    있어서, 텍스트만 남기면 "어느 줄이 어느 품목의 단가인가" 가 사라진다.
+    """
+
+    name: str
+    media_type: str
+    data: bytes
+
+
+@dataclass(frozen=True)
 class Usage:
     input_tokens: int = 0
     output_tokens: int = 0
@@ -121,6 +134,21 @@ class LLM(Protocol):
 
     def append_tool_results(self, messages: list[Any], results: list[ToolResult]) -> list[Any]:
         """도구 결과를 대화 이력에 추가. 여러 결과는 한 턴에 함께 넣는다."""
+        ...
+
+    def read_documents(
+        self,
+        *,
+        system: str,
+        instruction: str,
+        documents: list[Document],
+        effort: str | None = None,
+    ) -> str:
+        """파일 몇 개를 보여주고 한 번 묻는다. 도구도 이력도 없는 단발 호출.
+
+        ★ provider 의 문서 블록 형태는 어댑터 안에 남는다. 호출부가 base64 나
+          media_type 블록을 조립하기 시작하면 어댑터 경계가 사라진다 (3.5).
+        """
         ...
 
     def user_message(self, text: str) -> Any:
