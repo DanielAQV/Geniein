@@ -1189,6 +1189,8 @@ DELETE /sites/{siteId}/permissions/aTowaS50fG1zLnNwLmV4dHw2MmE0NjE5MS0zZGNiLTQwN
 
 ⚠ **같은 앱이 Teams SSO(위임)에도 쓰인다.** 시크릿이 붙는 순간 이 앱은 사용자 없이도 움직일 수 있게 되므로, 값은 뇌의 `.env` 에만 두고 만료를 짧게(6개월) 잡는다. 뇌 밖으로 복제하지 않는다.
 
+⚠ **SharePoint REST 는 시크릿으로 받은 앱 전용 토큰을 거부한다.** 권한이 전부 맞아도 401 `Unsupported app only token` 이 온다 — 토큰의 `appidacr` 가 1(시크릿)이기 때문이고, SharePoint 는 2(인증서)만 받는다. 그래서 자격증명이 자원별로 갈린다: **Graph 는 시크릿, SharePoint 는 인증서**. 인증서는 서버에서 자체 서명으로 만들고 공개키만 앱 등록에 올린다 — 개인키는 뇌를 떠나지 않는다 (`GRAPH_CERT_PATH`, 파일 권한 600).
+
 ⚠ **리스트 항목의 첨부파일은 Graph 에 엔드포인트가 없다.** SharePoint REST(`_api/web/lists/.../AttachmentFiles`)로만 읽히고, 그건 Graph 가 아니라 **Office 365 SharePoint Online** API 쪽 `Sites.Selected` 를 따로 요구한다. 사이트 부여는 앱 단위라 다시 하지 않아도 되지만, 권한과 동의는 API 별로 따로다. 점검: `python -m src.graph.check "<리스트>" <항목ID>`.
 
 **Power Automate ↔ API 인증**: 공유 시크릿 HMAC 서명(`x-agent-signature`) + 타임스탬프 검증. Power Automate는 고정 IP가 아니므로 IP 화이트리스트만으로는 불충분.

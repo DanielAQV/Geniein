@@ -88,6 +88,11 @@ class Settings(BaseSettings):
     # 안 뜨면 안 된다. 대화는 SharePoint 없이도 돌아야 한다.
     graph_client_id: str = ""
     graph_client_secret: str = ""
+    # ★ SharePoint REST 는 **인증서 토큰만** 받는다. 시크릿으로 받은 앱 전용 토큰은
+    #   권한이 다 맞아도 401 "Unsupported app only token" 이 온다 (appidacr=1).
+    #   그래서 Graph 는 시크릿, SharePoint 는 인증서로 갈린다.
+    #   개인키와 인증서가 함께 든 PEM 경로. 파일 권한은 600 으로 둔다.
+    graph_cert_path: str = ""
     graph_tenant_id: str = ""
     # "<host>,<siteId>,<webId>" 형식. _api/site/id 와 _api/web/id 로 뽑는다.
     graph_site_id: str = ""

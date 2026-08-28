@@ -15,9 +15,14 @@
 
 from __future__ import annotations
 
+import base64
+import hashlib
+import json
 import logging
 import threading
 import time
+import uuid
+from pathlib import Path
 from typing import Any
 from urllib.parse import quote
 
@@ -48,16 +53,82 @@ def _resource_of(url: str) -> str:
     return "/".join(url.split("/", 3)[:3])
 
 
+def _b64url(raw: bytes) -> str:
+    return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+
+
+def _client_assertion(tenant_id: str, client_id: str, pem_path: Path) -> str:
+    """인증서로 서명한 클라이언트 어서션(JWT).
+
+    ★ **SharePoint REST/CSOM 은 시크릿으로 받은 앱 전용 토큰을 거부한다.**
+      토큰의 `appidacr` 가 1(시크릿)이면 권한이 다 맞아도 401 "Unsupported app
+      only token" 이 온다. 인증서(2)여야 받는다. Graph 는 시크릿으로도 되므로
+      여기서만 갈린다.
+
+    pem_path 는 개인키와 인증서가 함께 든 PEM 이다.
+    """
+    try:
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import padding
+        from cryptography.x509 import load_pem_x509_certificate
+    except ImportError as exc:  # noqa: TRY003
+        raise GraphUnavailable("cryptography 가 없습니다. requirements.txt 를 설치하세요.") from exc
+
+    pem = pem_path.read_bytes()
+    key = serialization.load_pem_private_key(pem, password=None)
+    cert = load_pem_x509_certificate(pem)
+
+    # x5t 는 인증서 DER 의 SHA-1 지문이다. Entra 가 이 값으로 올려둔 공개키를 찾는다.
+    thumbprint = hashlib.sha1(cert.public_bytes(serialization.Encoding.DER)).digest()  # noqa: S324
+
+    now = int(time.time())
+    header = {"alg": "RS256", "typ": "JWT", "x5t": _b64url(thumbprint)}
+    payload = {
+        "aud": f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token",
+        "iss": client_id,
+        "sub": client_id,
+        "jti": uuid.uuid4().hex,
+        "nbf": now - 60,  # 서버 시계가 조금 앞서도 죽지 않게
+        "exp": now + 600,
+    }
+    signing_input = ".".join(
+        _b64url(json.dumps(part, separators=(",", ":")).encode()) for part in (header, payload)
+    ).encode()
+    signature = key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())
+    return f"{signing_input.decode()}.{_b64url(signature)}"
+
+
+def _credential(resource: str, s: Any) -> dict[str, str]:
+    """이 자원에 쓸 자격증명. SharePoint 는 인증서만 받는다 (위 주석 참조)."""
+    is_sharepoint = resource != "https://graph.microsoft.com"
+    cert_path = Path(s.graph_cert_path) if s.graph_cert_path else None
+
+    if is_sharepoint:
+        if not (cert_path and cert_path.exists()):
+            raise GraphUnavailable(
+                "SharePoint REST 는 인증서 앱 전용 토큰만 받습니다. "
+                "GRAPH_CERT_PATH 에 개인키+인증서 PEM 을 지정하세요."
+            )
+    elif s.graph_client_secret:
+        return {"client_secret": s.graph_client_secret}
+
+    if not (cert_path and cert_path.exists()):
+        raise GraphUnavailable("GRAPH_CLIENT_SECRET 도 GRAPH_CERT_PATH 도 없습니다.")
+
+    return {
+        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "client_assertion": _client_assertion(s.graph_tenant_id, s.graph_client_id, cert_path),
+    }
+
+
 def _token(resource: str) -> str:
     cached = _tokens.get(resource)
     if cached and cached[1] - _EXPIRY_SKEW > time.time():
         return cached[0]
 
     s = get_settings()
-    if not (s.graph_client_id and s.graph_client_secret and s.graph_tenant_id):
-        raise GraphUnavailable(
-            "GRAPH_CLIENT_ID / GRAPH_CLIENT_SECRET / GRAPH_TENANT_ID 가 없습니다."
-        )
+    if not (s.graph_client_id and s.graph_tenant_id):
+        raise GraphUnavailable("GRAPH_CLIENT_ID / GRAPH_TENANT_ID 가 없습니다.")
 
     with _lock:
         cached = _tokens.get(resource)
@@ -69,9 +140,9 @@ def _token(resource: str) -> str:
             url,
             data={
                 "client_id": s.graph_client_id,
-                "client_secret": s.graph_client_secret,
                 "scope": f"{resource}/.default",
                 "grant_type": "client_credentials",
+                **_credential(resource, s),
             },
             timeout=20,
         )
