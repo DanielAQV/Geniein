@@ -29,6 +29,11 @@ ENV_FILE=${ENV_FILE:-/home/dev_admin/genie/.env}
 
 stamp() { date '+%Y-%m-%d %H:%M:%S'; }
 
+# 앞 회차가 아직 색인 중이면 이번 회차는 그냥 넘어간다. 같은 문서를 두 프로세스가
+# 동시에 지우고 넣으면 청크가 반쯤 빈 상태가 보일 수 있다.
+exec 9>/tmp/sync-guides.lock
+flock -n 9 || exit 0
+
 # 어느 법인의 문서인가. 색인기는 이 값 없이는 돌지 않는다 — 기본값을 주면 그 값이
 # 조용히 전사 기본이 되고, 그게 테넌트 격리가 무너지는 경로다.
 ORG_ID=$(grep -m1 '^GUIDE_ORG_ID=' "$ENV_FILE" 2>/dev/null | cut -d= -f2- | tr -d '"' || true)
