@@ -60,7 +60,8 @@ The status changes to **In Progress**, the system reads your Excel file, and the
 Each approver gets a card in Microsoft Teams and approves or rejects. The next approver is notified after the previous one approves. A comment written by an approver also appears on the request.
 
 - Everyone approved → **Approved**
-- Rejected by anyone → **Rejected**, and you get an email with the comment.
+- Rejected by anyone → **Rejected**, and you get an email saying who rejected it.
+  The reason isn't in the email — read it in the Teams approval card, or in the comments on the request.
 
 ## After approval
 
