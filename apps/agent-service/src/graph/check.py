@@ -11,16 +11,35 @@
 
 from __future__ import annotations
 
+import base64
+import json
 import sys
 
 from . import client
 
 
+def _roles(token: str) -> list[str]:
+    """토큰에 실제로 담긴 앱 역할.
+
+    앱 등록에 권한을 추가해도 **동의가 그보다 먼저였으면** 토큰에 안 담긴다.
+    동의는 그 시점의 권한 목록을 찍어 저장하기 때문이다. 그 경우 SharePoint 는
+    "Unsupported app only token" 을 준다 — 역할이 비어 있다는 뜻이다.
+    """
+    payload = token.split(".")[1]
+    payload += "=" * (-len(payload) % 4)
+    return json.loads(base64.urlsafe_b64decode(payload)).get("roles", [])
+
+
 def main() -> int:
     try:
         print("① 토큰 …", end=" ", flush=True)
-        client._token("https://graph.microsoft.com")  # noqa: SLF001 — 점검 스크립트다
-        print("ok")
+        graph_token = client._token("https://graph.microsoft.com")  # noqa: SLF001 — 점검이다
+        print(f"ok — Graph 역할 {_roles(graph_token) or '없음'}")
+
+        host = "/".join(client.get_settings().sharepoint_site_url.split("/", 3)[:3])
+        if host:
+            sp_token = client._token(host)  # noqa: SLF001
+            print(f"          SharePoint 역할 {_roles(sp_token) or '없음'}")
 
         print("② Graph 리스트 …", end=" ", flush=True)
         names = [x.get("displayName") for x in client.lists()]
