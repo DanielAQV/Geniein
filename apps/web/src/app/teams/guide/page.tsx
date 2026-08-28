@@ -9,9 +9,10 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FileText, AlertCircle } from 'lucide-react'
+import { FileText, AlertCircle, ArrowLeft } from 'lucide-react'
 import { initTeams } from '@/lib/teams/client'
 import { fetchGuide } from '../_lib/guide-client'
+import { DEFAULT_LANG, readStoredLang, stringsFor, type Lang } from '../_lib/i18n'
 
 interface GuideMeta {
   slug: string
@@ -24,6 +25,14 @@ interface GuideMeta {
 export default function GuideListPage() {
   const [guides, setGuides] = useState<GuideMeta[] | null>(null)
   const [failed, setFailed] = useState(false)
+  // 대화 화면에서 고른 언어를 그대로 따른다. 문서 본문은 영어 한 벌이고,
+  // 화면 문구만 각자 언어로 보인다.
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG)
+  const strings = stringsFor(lang)
+
+  useEffect(() => {
+    setLang(readStoredLang() ?? DEFAULT_LANG)
+  }, [])
 
   useEffect(() => {
     let alive = true
@@ -44,14 +53,15 @@ export default function GuideListPage() {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-5 py-8">
       <header className="flex flex-col gap-1.5">
-        <p className="font-mono text-[11.5px] uppercase tracking-[0.1em] text-primary">
-          AQV Approval
-        </p>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Guides</h1>
-        <p className="text-[15px] text-muted-foreground">
-          How each approval form works — what to fill in, what the system does, and what to do when
-          something goes wrong.
-        </p>
+        <Link
+          href="/teams/search"
+          className="inline-flex w-fit items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <ArrowLeft className="size-3.5" aria-hidden />
+          {strings.title}
+        </Link>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight text-foreground">{strings.guides}</h1>
+        <p className="text-[15px] text-muted-foreground">{strings.guidesLede}</p>
       </header>
 
       {failed && (

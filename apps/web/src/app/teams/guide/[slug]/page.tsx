@@ -8,6 +8,7 @@ import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { initTeams } from '@/lib/teams/client'
 import { DocBody } from '../../_components/doc-body'
 import { GuideNotFoundError, fetchGuide } from '../../_lib/guide-client'
+import { DEFAULT_LANG, readStoredLang, stringsFor, type Lang } from '../../_lib/i18n'
 
 interface Guide {
   slug: string
@@ -23,6 +24,12 @@ export default function GuidePage({ params }: { params: Promise<{ slug: string }
   const { slug } = use(params)
   const [guide, setGuide] = useState<Guide | null>(null)
   const [problem, setProblem] = useState<'none' | 'missing' | 'failed'>('none')
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG)
+  const strings = stringsFor(lang)
+
+  useEffect(() => {
+    setLang(readStoredLang() ?? DEFAULT_LANG)
+  }, [])
 
   useEffect(() => {
     let alive = true
@@ -47,7 +54,7 @@ export default function GuidePage({ params }: { params: Promise<{ slug: string }
         className="inline-flex w-fit items-center gap-1.5 font-mono text-[11.5px] uppercase tracking-[0.1em] text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         <ArrowLeft className="size-3.5" aria-hidden />
-        Guides
+        {strings.guides}
       </Link>
 
       {problem !== 'none' && (

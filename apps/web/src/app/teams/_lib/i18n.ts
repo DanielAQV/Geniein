@@ -69,6 +69,8 @@ export interface Strings {
   newChat: string
   /** 가이드 문서로 가는 링크. 문서 자체는 영어 한 벌이고 마이키가 각 언어로 답한다. */
   guides: string
+  /** 가이드 목록 화면의 한 줄 설명. 문서 본문은 영어 한 벌이다 */
+  guidesLede: string
   emptyTitle: string
   emptyBody: string
   placeholder: string
@@ -108,6 +110,7 @@ const ko: Strings = {
   languageLabel: '언어',
   newChat: '새 대화',
   guides: '가이드',
+  guidesLede: '결재 양식별 사용법 — 무엇을 채우고, 올린 뒤 어떻게 되고, 막혔을 때 어떻게 하는지.',
   emptyTitle: '무엇이 궁금하세요?',
   emptyBody: '평소 말하듯 물어보세요. 근거가 된 규정과 시행일을 함께 알려드립니다.',
   placeholder: '예: 해외 출장 숙박비 한도가 얼마인가요?',
@@ -145,6 +148,7 @@ const vi: Strings = {
   languageLabel: 'Ngôn ngữ',
   newChat: 'Cuộc trò chuyện mới',
   guides: 'Hướng dẫn',
+  guidesLede: 'Cách dùng từng biểu mẫu phê duyệt — điền gì, sau khi gửi thì sao, và làm gì khi bị kẹt.',
   emptyTitle: 'Bạn muốn hỏi điều gì?',
   emptyBody:
     'Hãy hỏi như khi bạn nói chuyện thường ngày. Chúng tôi sẽ kèm theo điều khoản và ngày hiệu lực làm căn cứ.',
@@ -183,6 +187,7 @@ const en: Strings = {
   languageLabel: 'Language',
   newChat: 'New chat',
   guides: 'Guides',
+  guidesLede: 'How each approval form works — what to fill in, what happens after you submit, and what to do when something goes wrong.',
   emptyTitle: 'What would you like to know?',
   emptyBody:
     'Ask in plain language. Answers come with the regulation and its effective date.',
