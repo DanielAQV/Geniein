@@ -43,6 +43,8 @@ Click **Download Template** and complete one row per item: `Item`, `Specificatio
 
 Attach the completed template with the paperclip icon and click **Save**. You can attach more than one file — quotations, drawings, photos — the system looks for the table inside them.
 
+!note Attachments are opened by downloading them — there is no preview.
+
 ### Step 4 — The request waits to be picked up (Pending)
 
 Right after saving, the request sits as **Pending** until the system picks it up.
@@ -62,7 +64,7 @@ Each approver gets a card in Microsoft Teams and approves or rejects. The next a
 
 ## After approval
 
-The request and its items are marked Approved, the item rows are added to the purchasing records, and you receive a confirmation email.
+The request and its items are marked Approved, the rows are added to the BO team's Excel database on the Approval site, and you receive a confirmation email.
 
 ## Changing a request you already submitted
 
@@ -82,6 +84,6 @@ Edit the request and save it again. The approval in progress is cancelled, and a
 | What you see | Why | Fix |
 |---|---|---|
 | **In Progress** but no items appear | The table couldn't be found — the table or a column header was renamed, or items were placed outside the table. | Download a fresh template, copy your rows into it, attach it again. |
-| A Flow bot message says **Invalid Unit Price Detected** | A Unit Price in your Excel isn't a plain number. VND must be whole numbers — `324000`, not `324,000` or `324000.0`. | Fix the value and save again. Processing stopped, so nothing went to the approvers yet. |
+| A Flow bot message says **Invalid Unit Price Detected** | A Unit Price in your Excel isn't a plain number. VND must be whole numbers — `324000`, not `324,000` or `324000.0`. | The request is set to **Rejected** and Flow bot tells you. Fix the value and submit again. |
 | Stuck on **Pending** | The system hasn't picked the request up yet. | Wait a few minutes. If it stays, tell the Approval admin — saving again restarts the approval. |
 | You want to know whose turn it is | | Open **Sent** in the Teams Approvals app. |

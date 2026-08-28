@@ -44,6 +44,8 @@ Click **Download Template** and complete one row per payment: `Account Name`, `B
 
 Attach the completed template with the paperclip icon and click **Save**. You can attach more than one file — invoices, quotations — the system looks for the table inside them.
 
+!note Attachments are opened by downloading them — there is no preview.
+
 ### Step 4 — The request waits to be picked up (Pending)
 
 Right after saving, the request sits as **Pending** until the system picks it up.
@@ -81,6 +83,6 @@ Edit the request and save it again. The approval in progress is cancelled, and a
 | What you see | Why | Fix |
 |---|---|---|
 | **Payment Detail** is empty | The table couldn't be found — the table or a column header was renamed, or rows were placed outside the table. | Download a fresh template, copy your rows into it, attach it again. |
-| A Flow bot message says **Invalid Unit Price Detected** | A Unit Price in your Excel isn't a plain number. VND must be whole numbers — `324000`, not `324,000` or `324000.0`. | Fix the value and save again. Processing stopped, so nothing went to the approvers yet. |
+| A Flow bot message says **Invalid Unit Price Detected** | A Unit Price in your Excel isn't a plain number. VND must be whole numbers — `324000`, not `324,000` or `324000.0`. | The request is set to **Rejected** and Flow bot tells you. Fix the value and submit again. |
 | Stuck on **Pending** | The system hasn't picked the request up yet. | Wait a few minutes. If it stays, tell the Approval admin — saving again restarts the approval. |
 | You want to know whose turn it is | | Open **Sent** in the Teams Approvals app. |
