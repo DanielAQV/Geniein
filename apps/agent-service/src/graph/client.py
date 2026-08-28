@@ -88,9 +88,16 @@ def _token(resource: str) -> str:
 
 def get(url: str, *, params: dict[str, Any] | None = None) -> dict[str, Any]:
     """GET 하나. 읽기만 한다 — 이 모듈에 쓰기 경로는 두지 않는다."""
+    resource = _resource_of(url)
+    # ★ Accept 문법이 두 API 사이에 다르다. SharePoint REST 는 `odata=nometadata`,
+    #   Graph 는 `odata.metadata=` 다 (점 하나 차이). 섞으면 Graph 가 400 을 준다.
     headers = {
-        "Authorization": f"Bearer {_token(_resource_of(url))}",
-        "Accept": "application/json;odata=nometadata",
+        "Authorization": f"Bearer {_token(resource)}",
+        "Accept": (
+            "application/json"
+            if resource == "https://graph.microsoft.com"
+            else "application/json;odata=nometadata"
+        ),
     }
     response = httpx.get(url, headers=headers, params=params, timeout=60)
     if response.status_code == 403:
