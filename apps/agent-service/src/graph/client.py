@@ -97,7 +97,12 @@ def get(url: str, *, params: dict[str, Any] | None = None) -> dict[str, Any]:
         raise GraphUnavailable(
             f"403 — 이 사이트에 앱 권한이 없습니다. Sites.Selected 부여를 확인하세요: {url}"
         )
-    response.raise_for_status()
+    if response.status_code >= 400:
+        # ★ 본문을 함께 던진다. Graph 의 400 은 상태코드만 봐서는 아무것도 알 수 없고,
+        #   원인(`innerError.code`, 잘못된 $select 이름 등)이 전부 본문에 있다.
+        raise GraphUnavailable(
+            f"{response.status_code} {response.request.url} — {response.text[:600]}"
+        )
     return response.json()
 
 
@@ -119,7 +124,7 @@ def site_url() -> str:
 
 
 def lists() -> list[dict[str, Any]]:
-    return get(f"{site_url()}/lists", params={"$select": "id,name,displayName"}).get("value", [])
+    return get(f"{site_url()}/lists").get("value", [])
 
 
 def list_items(
