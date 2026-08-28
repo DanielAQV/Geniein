@@ -139,6 +139,7 @@ def list_items(
     *,
     select: str | None = None,
     filter: str | None = None,  # noqa: A002 — OData 이름을 그대로 쓴다
+    order_by: str | None = None,
     top: int = 50,
 ) -> list[dict[str, Any]]:
     """리스트 항목. `fields` 를 펼쳐서 컬럼 값이 바로 보이게 한다."""
@@ -147,6 +148,8 @@ def list_items(
         params["$expand"] = f"fields($select={select})"
     if filter:
         params["$filter"] = filter
+    if order_by:
+        params["$orderby"] = order_by
     url = f"{site_url()}/lists/{quote(list_name)}/items"
     return get(url, params=params).get("value", [])
 

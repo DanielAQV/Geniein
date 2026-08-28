@@ -32,9 +32,19 @@ def main() -> int:
         return 1
 
     # 첨부는 실패해도 치명적이지 않다. 리스트 이름을 인자로 받아 있을 때만 본다.
-    if len(sys.argv) > 2:
-        list_name, item_id = sys.argv[1], int(sys.argv[2])
+    # 항목 ID 를 생략하면 최신 항목을 잡는다 — 사람이 ID 를 알고 있을 이유가 없다.
+    if len(sys.argv) > 1:
+        list_name = sys.argv[1]
         try:
+            if len(sys.argv) > 2:
+                item_id = int(sys.argv[2])
+            else:
+                items = client.list_items(list_name, top=1, order_by="id desc")
+                if not items:
+                    print(f"③ 첨부 — {list_name} 에 항목이 없습니다")
+                    return 0
+                item_id = int(items[0]["id"])
+
             print(f"③ 첨부 ({list_name} #{item_id}) …", end=" ", flush=True)
             files = client.attachments(list_name, item_id)
             print(f"ok — {len(files)}개")
