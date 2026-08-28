@@ -18,6 +18,12 @@ import sys
 from . import client
 
 
+def _claims(token: str) -> dict:
+    payload = token.split(".")[1]
+    payload += "=" * (-len(payload) % 4)
+    return json.loads(base64.urlsafe_b64decode(payload))
+
+
 def _roles(token: str) -> list[str]:
     """토큰에 실제로 담긴 앱 역할.
 
@@ -36,10 +42,17 @@ def main() -> int:
         graph_token = client._token("https://graph.microsoft.com")  # noqa: SLF001 — 점검이다
         print(f"ok — Graph 역할 {_roles(graph_token) or '없음'}")
 
-        host = "/".join(client.get_settings().sharepoint_site_url.split("/", 3)[:3])
+        site = client.get_settings().sharepoint_site_url
+        host = "/".join(site.split("/", 3)[:3])
         if host:
             sp_token = client._token(host)  # noqa: SLF001
+            c = _claims(sp_token)
             print(f"          SharePoint 역할 {_roles(sp_token) or '없음'}")
+            # ver/aud 가 어긋나면 역할이 있어도 SharePoint 가 토큰을 안 받는다.
+            print(
+                f"          aud={c.get('aud')} ver={c.get('ver')} "
+                f"appidacr={c.get('appidacr')} tid={str(c.get('tid'))[:8]}"
+            )
 
         print("② Graph 리스트 …", end=" ", flush=True)
         names = [x.get("displayName") for x in client.lists()]
@@ -49,6 +62,15 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001 — 점검이므로 원인을 그대로 보여준다
         print(f"실패\n     {exc}")
         return 1
+
+    # SharePoint REST 가 열리는지 먼저 가장 단순한 것으로 본다. 여기서 막히면
+    # 첨부의 문제가 아니라 토큰이 REST 에 통째로 거부되는 것이다.
+    try:
+        print("③ SP REST (_api/web) …", end=" ", flush=True)
+        web = client.get(f"{client.get_settings().sharepoint_site_url}/_api/web")
+        print(f"ok — {web.get('Title')}")
+    except Exception as exc:  # noqa: BLE001
+        print(f"실패\n     {exc}")
 
     # 첨부는 실패해도 치명적이지 않다. 리스트 이름을 인자로 받아 있을 때만 본다.
     # 항목 ID 를 생략하면 최신 항목을 잡는다 — 사람이 ID 를 알고 있을 이유가 없다.
@@ -60,11 +82,11 @@ def main() -> int:
             else:
                 items = client.list_items(list_name, top=1, order_by="id desc")
                 if not items:
-                    print(f"③ 첨부 — {list_name} 에 항목이 없습니다")
+                    print(f"④ 첨부 — {list_name} 에 항목이 없습니다")
                     return 0
                 item_id = int(items[0]["id"])
 
-            print(f"③ 첨부 ({list_name} #{item_id}) …", end=" ", flush=True)
+            print(f"④ 첨부 ({list_name} #{item_id}) …", end=" ", flush=True)
             files = client.attachments(list_name, item_id)
             print(f"ok — {len(files)}개")
             for f in files:
