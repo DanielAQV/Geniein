@@ -29,7 +29,7 @@ In the Payment Request list, click **+ Add new item**.
 | Title | A name for this payment request. |
 | Team | Filled in automatically. |
 | Approver | One or more people, in the order they should approve. |
-| CC List | Optional. These people get a notification. They don't approve. |
+| CC List | Optional. They get a Teams notification when you submit, and can follow the status on the CC Dashboard. They don't approve. |
 | Reference Purchasing Plan | The approved Purchasing Plan or Purchase Request this payment is for. |
 | Total Amount | The total of your payment lines. |
 | Remark | Anything the approvers should know. |
@@ -81,5 +81,6 @@ Edit the request and save it again. The approval in progress is cancelled, and a
 | What you see | Why | Fix |
 |---|---|---|
 | **Payment Detail** is empty | The table couldn't be found — the table or a column header was renamed, or rows were placed outside the table. | Download a fresh template, copy your rows into it, attach it again. |
+| A Flow bot message says **Invalid Unit Price Detected** | A Unit Price in your Excel isn't a plain number. VND must be whole numbers — `324000`, not `324,000` or `324000.0`. | Fix the value and save again. Processing stopped, so nothing went to the approvers yet. |
 | Stuck on **Pending** | The system hasn't picked the request up yet. | Wait a few minutes. If it stays, tell the Approval admin — saving again restarts the approval. |
 | You want to know whose turn it is | | Open **Sent** in the Teams Approvals app. |

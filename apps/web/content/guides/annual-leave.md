@@ -34,7 +34,7 @@ In the Annual Leave list, click **+ Add new item**.
 | Reason | Why you are away. |
 | Handover to | Who covers your work while you are out. |
 | Approver | One or more people, in the order they should approve. |
-| CC List | Optional. These people get a notification. They don't approve. |
+| CC List | Optional. They get a Teams notification when you submit, and can follow the status on the CC Dashboard. They don't approve. |
 
 !note A half day is a full date range with the type set to `Morning` or `Afternoon` — for example 15 Oct, start type `Afternoon`, end type `Afternoon`, 0.5 days.
 

@@ -29,7 +29,7 @@ In the Purchase Request list, click **+ Add new item**, then change **Request Ty
 | Title | A name for this repair request. |
 | Team | Filled in automatically. |
 | Approver | One or more people, in the order they should approve. |
-| CC List | Optional. These people get a notification. They don't approve. |
+| CC List | Optional. They get a Teams notification when you submit, and can follow the status on the CC Dashboard. They don't approve. |
 | Attachments | Optional — photos, quotations, anything that helps the approvers. |
 
 ### Step 3 — Add the repair items

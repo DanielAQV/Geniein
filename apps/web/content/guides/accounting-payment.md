@@ -75,5 +75,6 @@ Edit the request and save it again. The approval in progress is cancelled, and a
 | What you see | Why | Fix |
 |---|---|---|
 | No payment lines appear | The table couldn't be found — the table or a column header was renamed, or rows were placed outside the table. | Download a fresh template, copy your rows into it, attach it again. |
+| Stuck on **Pending** and nothing happens | A number in the template couldn't be read — an amount with commas or a stray character stops processing, and this form doesn't send a message when that happens. | Check the amounts are plain numbers, then save again. |
 | Stuck on **Pending** | The system hasn't picked the request up yet. | Wait a few minutes. If it stays, tell the Approval admin — saving again restarts the approval. |
 | You want to know whose turn it is | | Open **Sent** in the Teams Approvals app. |

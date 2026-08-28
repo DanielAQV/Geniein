@@ -36,7 +36,7 @@ In the OT Over Limit list, click **+ Add new item**.
 | Work | What was done. |
 | Alternative-off | Whether time off is taken instead of payment. |
 | Approver | One or more people, in the order they should approve. |
-| CC List | Optional. These people get a notification. They don't approve. |
+| CC List | Optional. They get a Teams notification when you submit, and can follow the status on the CC Dashboard. They don't approve. |
 
 ### Step 2 — Save and wait to be picked up (Pending)
 
