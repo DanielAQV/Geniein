@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { Footer } from "@/components/footer"
+import { SectionDivider } from "@/components/section-divider";
 import { motion } from "framer-motion";
 import { ContactForm } from "@/components/contact/contact-form";
 import { OfficeInfo } from "@/components/contact/office-info";
@@ -32,7 +33,7 @@ export default function ContactPage() {
       <Header />
 
       {/* Contact Hero */}
-      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
+      <section className="relative pt-28 pb-16 min-h-[320px] md:pt-32 md:pb-24 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
           <img
@@ -87,10 +88,9 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Signature Gradient Beam Separator */}
-      <div className="relative h-px w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
-      </div>
+      {/* 배너 아래 시그니처 구분선. 메인과 같은 컴포넌트를 쓴다 —
+          인라인으로 복사해두면 한쪽만 바뀌어 페이지마다 달라진다. */}
+      <SectionDivider />
 
       <section className="pt-16 pb-52">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

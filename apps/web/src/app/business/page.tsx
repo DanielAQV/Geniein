@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { SectionDivider } from "@/components/section-divider"
 import { BusinessNav } from "@/components/business/business-nav"
 import { OdaServices } from "@/components/business/oda-services"
 import { PlatformServices } from "@/components/business/platform-services"
@@ -42,9 +43,11 @@ function BusinessContent() {
 
   return (
     <>
-      <div ref={navRef}>
-        <BusinessNav />
-      </div>
+      {/* 스크롤 기준점만 잡는 0px 마커.
+          네비를 감싸면 sticky 가 죽는다 — 래퍼 높이가 네비와 같아서 빠져나갈
+          공간이 없다. 그리고 네비 자체를 재면 상단에 붙은 뒤 위치가 틀어진다. */}
+      <div ref={navRef} aria-hidden className="h-0" />
+      <BusinessNav />
 
       {/* Mutually Exclusive Content with Animation */}
       <div className="relative min-h-[600px]">
@@ -87,7 +90,7 @@ export default function BusinessPage() {
       <Header />
       
       {/* Business Hero */}
-      <section className="relative pt-32 pb-24 min-h-[400px] flex flex-col justify-center overflow-hidden">
+      <section className="relative pt-28 pb-16 min-h-[320px] md:pt-32 md:pb-24 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/heroes/business.png" 
@@ -130,6 +133,10 @@ export default function BusinessPage() {
         </div>
         
       </section>
+
+      {/* 배너 아래 시그니처 구분선. 메인과 같은 컴포넌트를 쓴다 —
+          인라인으로 복사해두면 한쪽만 바뀌어 페이지마다 달라진다. */}
+      <SectionDivider />
 
 
 

@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { SectionDivider } from "@/components/section-divider"
 import { IdentitySection } from "@/components/about/identity-section"
 import { OrganizationSection } from "@/components/about/organization-section"
 import { ProjectsShowcase } from "@/components/about/projects-showcase"
@@ -62,10 +63,9 @@ export default function AboutPage() {
         </div>
       </section>
       
-      {/* Signature Gradient Beam Separator */}
-      <div className="relative h-px w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
-      </div>
+      {/* 배너 아래 시그니처 구분선. 메인과 같은 컴포넌트를 쓴다 —
+          인라인으로 복사해두면 한쪽만 바뀌어 페이지마다 달라진다. */}
+      <SectionDivider />
 
       {/* Identity Section */}
       <IdentitySection />
