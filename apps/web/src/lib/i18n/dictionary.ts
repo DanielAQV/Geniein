@@ -553,7 +553,9 @@ export const dictionary = {
       studio: {
         name: { kr: "Studio", en: "Studio", vn: "Studio" },
         set: { kr: "한 문장으로", en: "From one sentence", vn: "Chỉ với một câu" },
-        hit: { kr: "앱이 만들어집니다", en: "You get a working app", vn: "Bạn nhận được ứng dụng chạy được" }
+        /* \u00A0 는 줄바꿈 금지 공백(NBSP)이다. balance 가 여기서 끊으면 "ứng / dụng" 으로
+           단어가 쪼개진다 — 붙여두면 "Bạn nhận được / ứng dụng chạy được" 로 나뉜다. */
+        hit: { kr: "앱이 만들어집니다", en: "You get a working app", vn: "Bạn nhận được ứng\u00A0dụng chạy được" }
       },
       fx: {
         cost: {

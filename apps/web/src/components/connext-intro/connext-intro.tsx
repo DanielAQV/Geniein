@@ -157,10 +157,17 @@ const beats = useMemo<Beat[]>(
       const s = Math.min(1, (w - 40) / 900, (h - 80) / 760);
       /* 좁을 때는 눈을 액자 높이의 34% 로 묶어 문구 자리를 남긴다.
          184px 액자에서 눈 63px, 문구 시작 100px, 문구 53px -> 31px 여유. */
-      eyeScale = narrow ? (h * 0.34) / 154 : EYE_BIG * Math.max(0.5, s);
-      introCY = h * (narrow ? 0.3 : 0.4);
+      /* 아래 세 숫자(0.32 / 0.215 / 10)는 브라우저에서 실측해 맞춘 값이다.
+         EN/VN 은 좁은 액자에서 hit 이 두 줄이 된다 — 302px 폭 19px 에서
+         "You get an estimate and a dev partner" 가 43px 이다. 그때 문구 블록
+         전체가 95px 이다 (태그 17 + 8 + set 20 + 3 + hit 43, 그리고 say 상단에
+         인라인 플렉스 오프셋 4). 계산으로 86px 을 잡았다가 실측에서 액자
+         바닥에 정확히 닿는 것을 확인하고 고쳤다.
+         결과: 눈 10~69px, 문구 79~174px, 위아래 여백 각 10px (액자 184px). */
+      eyeScale = narrow ? (h * 0.32) / 154 : EYE_BIG * Math.max(0.5, s);
+      introCY = h * (narrow ? 0.215 : 0.4);
       say.style.transform =
-        `translateY(${introCY + (154 * eyeScale) / 2 + (narrow ? 14 : 28)}px)`;
+        `translateY(${introCY + (154 * eyeScale) / 2 + (narrow ? 10 : 28)}px)`;
       fx.style.top = `${introCY}px`;
       /* 눈 반지름 + 카드 절반 + 여백.
          157 이던 값을 200 으로 올렸다. 액자 폭에서 eyeScale 이 1.365 쯤

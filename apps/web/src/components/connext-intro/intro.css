@@ -153,6 +153,10 @@
 .gi-set {
   margin-top: clamp(5px, 1.3cqw, 13px);
   font-size: clamp(13px, 2.5cqw, 25px);
+  /* 두 줄이 될 때 줄 길이를 고르게 나눈다. 좁은 액자에서 EN/VN 이 넘어가는데,
+     기본 줄바꿈은 마지막 단어 하나만 떨어뜨려 놓는다 ("... a dev / partner").
+     한 줄에 들어가면 아무 일도 하지 않으므로 데스크톱은 그대로다. */
+  text-wrap: balance;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: #cfe3fb;
@@ -163,6 +167,7 @@
   margin: 3px auto 0;
   max-width: min(1080px, 94cqw);
   font-size: clamp(19px, 4.9cqw, 50px);
+  text-wrap: balance;
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.14;

@@ -40,7 +40,7 @@ export function ConnextLanding() {
         </div>
 
         <div className="flex flex-col items-center gap-[1.5%]" data-intro-rise="1">
-          <p className="text-[clamp(15px,3.3cqw,34px)] font-bold leading-tight text-white">
+          <p className="text-[clamp(15px,3.3cqw,34px)] font-bold leading-tight text-white [text-wrap:balance]">
             {t("connext.landing.title")}
           </p>
           <p className="max-w-[42em] text-[clamp(9px,1.45cqw,15px)] font-light leading-relaxed text-white/70 break-keep">
