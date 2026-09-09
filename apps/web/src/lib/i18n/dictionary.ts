@@ -216,7 +216,7 @@ export const dictionary = {
       items: [
         {
           country: "ph",
-          image: "/images/about/projects/ph-ews4.png",
+          image: "/images/about/projects/ph-ews4.jpg",
           title: { kr: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업", en: "THE PROJECT \"DEVELOPMENT OF FLOOD FORECASTING AND EARLY WARNING SYSTEM FOR THE GREATER METRO MANILA AND SURROUNDING PROVINCES OF LAGUNA LAKE COMPLEX FOR DISASTER MITIGATION (EWS 4)\"", vn: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업" },
           official: "THE PROJECT \"DEVELOPMENT OF FLOOD FORECASTING AND EARLY WARNING SYSTEM FOR THE GREATER METRO MANILA AND SURROUNDING PROVINCES OF LAGUNA LAKE COMPLEX FOR DISASTER MITIGATION (EWS 4)\"",
           category: { kr: "ODA · 재해관리", en: "ODA · Disaster Management", vn: "ODA · Quản lý thiên tai" },
@@ -240,7 +240,7 @@ export const dictionary = {
         },
         {
           country: "vn",
-          image: "",
+          image: "/images/about/projects/vn-vku-ict.jpg",
           title: { kr: "베트남 한베 ICT 대학교 교육역량 강화 지원사업", en: "Project for Strengthening Academic Development of the Vietnam-Korea University of Information and Communication Technology (VKU) with regard to ICT Education, Research, and Governance", vn: "베트남 한베 ICT 대학교 교육역량 강화 지원사업" },
           official: "Project for Strengthening Academic Development of the Vietnam-Korea University of Information and Communication Technology (VKU) with regard to ICT Education, Research, and Governance",
           category: { kr: "ODA · 고등교육 ICT", en: "ODA · Higher Education ICT", vn: "ODA · CNTT Giáo dục Đại học" },
@@ -256,7 +256,7 @@ export const dictionary = {
         },
         {
           country: "vn",
-          image: "",
+          image: "/images/about/projects/vn-nontraditional-security.jpg",
           title: { kr: "베트남 사이버보안 전문인력 양성을 위한 비전통보안연구소 지원 사업", en: "Support to Institute of Non-traditional Security of Viet Nam for cybersecurity Capacity building for professionals", vn: "베트남 사이버보안 전문인력 양성을 위한 비전통보안연구소 지원 사업" },
           official: "Support to Institute of Non-traditional Security of Viet Nam for cybersecurity Capacity building for professionals",
           category: { kr: "ODA · 사이버보안 인력양성", en: "ODA · Cyber Workforce", vn: "ODA · Nhân lực An ninh mạng" },
@@ -280,7 +280,7 @@ export const dictionary = {
         },
         {
           country: "uz",
-          image: "",
+          image: "/images/about/projects/uz-cultural-heritage.jpg",
           title: { kr: "우즈베키스탄 문화유산 디지털 통합 관리 및 활용 역량강화사업", en: "Integrated Digital Management and Utilization of Cultural Heritage and Capacity Building Project in Uzbekistan", vn: "우즈베키스탄 문화유산 디지털 통합 관리 및 활용 역량강화사업" },
           official: "Integrated Digital Management and Utilization of Cultural Heritage and Capacity Building Project in Uzbekistan",
           category: { kr: "ODA · 문화유산 DX", en: "ODA · Cultural Heritage DX", vn: "ODA · DX Di sản Văn hóa" },
@@ -536,75 +536,7 @@ export const dictionary = {
         submit: { kr: "전송에 실패했습니다. 잠시 후 다시 시도해주세요.", en: "Sending failed. Please try again in a moment.", vn: "Gửi không thành công. Vui lòng thử lại sau." },
       }
     },
-    items: [
-      {
-        id: "oda-planning-pm",
-        department_key: "oda",
-        location_key: "seongnam",
-        employment_key: "fulltime",
-        deadline: "2026-10-31",
-        title: { kr: "ODA 사업기획 PM", en: "ODA Program Planning PM", vn: "PM Quy hoạch dự án ODA" },
-        department: { kr: "ODA 컨설팅", en: "ODA Consulting", vn: "Tư vấn ODA" },
-        location: { kr: "한국 본사", en: "Korea HQ", vn: "Trụ sở chính Hàn Quốc" },
-        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
-        experience: { kr: "경력 5년 이상", en: "5+ years", vn: "Trên 5 năm kinh nghiệm" },
-        tags: [
-          { kr: "사업 기획", en: "Program Planning", vn: "Quy hoạch dự án" },
-          { kr: "타당성 조사", en: "Feasibility Study", vn: "Nghiên cứu khả thi" },
-          { kr: "해외 출장", en: "Overseas Travel", vn: "Công tác nước ngoài" }
-        ],
-        responsibilities: [
-          { kr: "KOICA·EDCF 등 공적개발원조 사업의 제안서 작성과 수주 전략 수립", en: "Writing proposals and shaping win strategies for KOICA/EDCF and other ODA programs", vn: "Soạn đề xuất và xây dựng chiến lược đấu thầu cho các dự án ODA như KOICA, EDCF" },
-          { kr: "사업 타당성 조사(F/S)와 기본 설계 단계의 현지 조사 수행", en: "Running feasibility studies and on-site surveys through the basic design phase", vn: "Thực hiện nghiên cứu khả thi (F/S) và khảo sát hiện trường ở giai đoạn thiết kế cơ bản" },
-          { kr: "발주처·현지 정부 기관과의 협의 및 이해관계자 관리", en: "Coordinating with client agencies and local governments, and managing stakeholders", vn: "Phối hợp với chủ đầu tư, cơ quan chính phủ địa phương và quản lý các bên liên quan" },
-          { kr: "프로젝트 일정·예산·산출물 관리와 사후 평가 대응", en: "Managing schedule, budget and deliverables, and handling post-project evaluation", vn: "Quản lý tiến độ, ngân sách, sản phẩm bàn giao và xử lý đánh giá sau dự án" }
-        ],
-        requirements: [
-          { kr: "ODA 또는 공공 SI 사업 기획·수행 경력 5년 이상", en: "5+ years planning or delivering ODA or public sector SI projects", vn: "Trên 5 năm kinh nghiệm quy hoạch hoặc triển khai dự án ODA / SI khu vực công" },
-          { kr: "제안서 및 사업계획서 작성 경험", en: "Experience writing proposals and business plans", vn: "Kinh nghiệm soạn đề xuất và kế hoạch kinh doanh" },
-          { kr: "영어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in English", vn: "Có khả năng giao tiếp công việc bằng tiếng Anh" },
-          { kr: "연 2~3회 해외 출장이 가능한 분", en: "Able to travel overseas two to three times a year", vn: "Có thể công tác nước ngoài 2-3 lần mỗi năm" }
-        ],
-        preferred: [
-          { kr: "동남아시아·중앙아시아 지역 사업 수행 경험", en: "Experience delivering projects in Southeast or Central Asia", vn: "Kinh nghiệm triển khai dự án tại Đông Nam Á hoặc Trung Á" },
-          { kr: "전자정부·정보화 사업 이해도", en: "Understanding of e-government and public digitalization programs", vn: "Hiểu biết về chính phủ điện tử và các dự án số hóa công" },
-          { kr: "PMP 등 프로젝트 관리 자격 보유", en: "PMP or an equivalent project management certification", vn: "Có chứng chỉ quản lý dự án như PMP" }
-        ]
-      },
-      {
-        id: "vn-operations-manager",
-        department_key: "operations",
-        location_key: "hanoi",
-        employment_key: "fulltime",
-        deadline: "2026-10-15",
-        title: { kr: "베트남 현지 운영 매니저", en: "Vietnam Operations Manager", vn: "Quản lý Vận hành tại Việt Nam" },
-        department: { kr: "현지 운영", en: "Operations", vn: "Vận hành" },
-        location: { kr: "하노이 법인", en: "Hanoi Subsidiary", vn: "Công ty tại Hà Nội" },
-        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
-        experience: { kr: "경력 3년 이상", en: "3+ years", vn: "Trên 3 năm kinh nghiệm" },
-        tags: [
-          { kr: "현지 운영", en: "Local Operations", vn: "Vận hành địa phương" },
-          { kr: "한국어·베트남어", en: "KR / VN Bilingual", vn: "Song ngữ Hàn - Việt" },
-          { kr: "파트너 관리", en: "Partner Management", vn: "Quản lý đối tác" }
-        ],
-        responsibilities: [
-          { kr: "하노이 법인의 일상 운영과 인사·총무 실무 관리", en: "Running day-to-day operations, HR and general affairs at the Hanoi subsidiary", vn: "Quản lý vận hành hằng ngày, nhân sự và hành chính tại công ty Hà Nội" },
-          { kr: "현지 고객사·파트너사와의 커뮤니케이션 창구 역할", en: "Acting as the communication channel with local clients and partners", vn: "Là đầu mối liên lạc với khách hàng và đối tác tại địa phương" },
-          { kr: "한국 본사와 현지 팀 사이의 업무 조율 및 통번역 지원", en: "Coordinating between the Korean HQ and the local team, including interpretation", vn: "Điều phối giữa trụ sở Hàn Quốc và đội ngũ địa phương, hỗ trợ phiên dịch" },
-          { kr: "현지 법인 행정·계약 관련 문서 관리", en: "Managing local entity administration and contract documentation", vn: "Quản lý hành chính pháp nhân địa phương và hồ sơ hợp đồng" }
-        ],
-        requirements: [
-          { kr: "베트남 현지 기업 또는 한국계 법인에서의 운영·관리 경력 3년 이상", en: "3+ years in operations or management at a Vietnamese or Korean-owned company", vn: "Trên 3 năm kinh nghiệm vận hành hoặc quản lý tại doanh nghiệp Việt Nam hoặc công ty Hàn Quốc" },
-          { kr: "한국어와 베트남어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in both Korean and Vietnamese", vn: "Có thể làm việc bằng cả tiếng Hàn và tiếng Việt" },
-          { kr: "하노이 근무가 가능한 분", en: "Able to work from Hanoi", vn: "Có thể làm việc tại Hà Nội" }
-        ],
-        preferred: [
-          { kr: "IT·엔지니어링 조직에서의 근무 경험", en: "Experience working in an IT or engineering organization", vn: "Kinh nghiệm làm việc trong tổ chức CNTT hoặc kỹ thuật" },
-          { kr: "베트남 노무·세무 행정 실무 이해", en: "Familiarity with Vietnamese labor and tax administration", vn: "Hiểu biết thực tế về hành chính lao động và thuế tại Việt Nam" },
-          { kr: "영어 커뮤니케이션 가능", en: "Able to communicate in English", vn: "Có thể giao tiếp bằng tiếng Anh" }
-        ]
-      }
-    ]
+    items: []
   },
   /**
    * Connext 인트로. 문구는 Connext 저장소(messages/*.json 의 gnom.intro)에서
