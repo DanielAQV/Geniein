@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#121826] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="admin-light min-h-screen bg-background text-foreground flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Glows */}
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-accent/10 rounded-full blur-[120px] pointer-events-none" />
@@ -66,12 +66,12 @@ export default function AdminLoginPage() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="bg-[#1c2436]/80 backdrop-blur-2xl border border-white/10 p-10 rounded-[2.5rem] shadow-2xl">
+        <div className="bg-card/80 backdrop-blur-2xl border border-border p-10 rounded-[2.5rem] shadow-2xl">
           <div className="text-center mb-10">
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-6 ring-1 ring-primary/20">
               <ShieldCheck className="h-8 w-8" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tighter text-white mb-2">Admin Access</h1>
+            <h1 className="text-3xl font-bold tracking-tighter text-foreground mb-2">Admin Access</h1>
             <p className="text-muted-foreground font-light">Enter credentials to manage Geniein</p>
           </div>
 
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
                   placeholder="Username" 
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-white/8 border border-white/15 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                  className="w-full bg-muted border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                   required
                 />
               </div>
@@ -95,7 +95,7 @@ export default function AdminLoginPage() {
                   placeholder="Password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white/8 border border-white/15 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                  className="w-full bg-muted border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                   required
                 />
               </div>
