@@ -2,6 +2,7 @@
 
 import { useLanguage } from "@/lib/i18n/language-context"
 import { LogoGnom } from "./logo-gnom"
+import { CONNEXT_URL } from "./connext-url"
 
 /**
  * 액자 안에 놓이는 Connext 랜딩 화면.
@@ -47,15 +48,22 @@ export function ConnextLanding() {
           </p>
         </div>
 
-        {/* 실제 입력창이 아니라 생김새만. 누르면 CTA 로 안내한다. */}
+        {/* 입력창은 생김새만이다 — 여기서 프로젝트를 적게 하면 두 서비스의
+            경계가 무너진다. 버튼만 실제 링크로, 새 탭에서 Connext 를 연다.
+            색·모양은 Connext 메인의 버튼과 같다 (bg-[#4A6DF2], hover/active 포함). */}
         <div className="w-full max-w-[560px]" data-intro-rise="2">
           <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-[3%] py-[1.6%] backdrop-blur-sm">
             <span className="flex-1 truncate text-left text-[clamp(9px,1.05vw,14px)] text-white/45">
               {t("connext.landing.placeholder")}
             </span>
-            <span className="shrink-0 rounded-full bg-[#2f6bff] px-[10px] py-[5px] text-[clamp(8px,0.9vw,12px)] font-bold text-white">
+            <a
+              href={CONNEXT_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="shrink-0 rounded-lg bg-[#4A6DF2] px-[14px] py-[7px] text-[clamp(8px,0.9vw,12px)] font-bold text-white transition-colors hover:bg-[#4262D9] active:bg-[#334CA9]"
+            >
               {t("connext.landing.button")}
-            </span>
+            </a>
           </div>
         </div>
       </div>

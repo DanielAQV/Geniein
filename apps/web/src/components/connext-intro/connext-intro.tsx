@@ -152,8 +152,12 @@ const beats = useMemo<Beat[]>(
       introCY = boxH() * 0.4;
       say.style.transform = `translateY(${introCY + (154 * eyeScale) / 2 + 28}px)`;
       fx.style.top = `${introCY}px`;
-      /* Eye radius plus half a card. */
-      root.style.setProperty("--gi-d", `${Math.round(eyeScale * 157)}px`);
+      /* 눈 반지름 + 카드 절반 + 여백.
+         157 이던 값을 200 으로 올렸다. 액자 폭에서 eyeScale 이 1.365 쯤
+         나오는데, 그때 --gi-d 가 214px 이고 왼쪽 Estimator 텍스트의 안쪽
+         끝이 중심에서 130px(= 214 - 카드 절반 84)이었다. 눈 그래픽의
+         반폭이 102 * 1.365 = 139px 이라 숫자가 눈 안으로 들어와 붙었다. */
+      root.style.setProperty("--gi-d", `${Math.round(eyeScale * 200)}px`);
       place();
     };
     addEventListener("resize", layout);

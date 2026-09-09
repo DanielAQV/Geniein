@@ -2,11 +2,11 @@
 
 import { useRef, useState } from "react"
 import { motion, useInView } from "framer-motion"
-import { ArrowUpRight, RotateCcw } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { ConnextIntro } from "@/components/connext-intro/connext-intro"
 import { ConnextLanding } from "@/components/connext-intro/connext-landing"
 import { INTRO_SEEN_KEY } from "@/components/connext-intro/intro-boot"
+import { CONNEXT_URL } from "@/components/connext-intro/connext-url"
 
 /**
  * 플랫폼 서비스 상단의 Connext 소개.
@@ -21,8 +21,6 @@ import { INTRO_SEEN_KEY } from "@/components/connext-intro/intro-boot"
  * 내보낸다 — 흉내 내기 시작하면 원본이 바뀔 때마다 따라가야 한다.
  */
 
-/* 배포 주소가 정해지면 이 상수만 고치면 된다. */
-const CONNEXT_URL = "https://dev.connex-t.com"
 
 export function ConnextCta() {
   const { t } = useLanguage()
@@ -77,7 +75,6 @@ export function ConnextCta() {
               className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-primary/90"
             >
               {t("connext.cta.button")}
-              <ArrowUpRight className="h-4 w-4" />
             </a>
 
             <button
@@ -85,7 +82,6 @@ export function ConnextCta() {
               onClick={replay}
               className="inline-flex items-center gap-2 rounded-full border border-[var(--border-card-strong)] px-6 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
               {t("connext.cta.replay")}
             </button>
           </div>
