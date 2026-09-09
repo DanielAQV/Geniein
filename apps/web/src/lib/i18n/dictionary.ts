@@ -249,7 +249,7 @@ export const dictionary = {
         {
           country: "ph",
           image: "",
-          title: { kr: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업('26-'31/1,450만불)", en: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts", vn: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업('26-'31/1,450만불)" },
+          title: { kr: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업", en: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts", vn: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업" },
           official: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts",
           category: { kr: "ODA · 사법 디지털화", en: "ODA · Judicial Digitalization", vn: "ODA · Số hóa Tư pháp" },
           description: { kr: "필리핀 사법 시스템의 디지털 혁신을 통해 법원 서비스의 신속한 제공을 촉진하고, 사법 절차의 투명성 및 효율성을 강화하여 모든 시민이 공정하고 신속한 사법 서비스를 받을 수 있도록 함", en: "Promoting the prompt delivery of court services through digital innovation of the Philippine judicial system, and strengthening the transparency and efficiency of judicial procedures so that every citizen can receive fair and timely judicial services", vn: "Thúc đẩy việc cung cấp dịch vụ tòa án nhanh chóng thông qua đổi mới số hệ thống tư pháp Philippines, và tăng cường tính minh bạch, hiệu quả của thủ tục tư pháp để mọi công dân được hưởng dịch vụ tư pháp công bằng và kịp thời" }
