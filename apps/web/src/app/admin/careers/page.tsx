@@ -148,7 +148,7 @@ function StatusBadge({ status }: { status: string }) {
   }
   if (status === "archived") {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 text-muted-foreground text-xs font-medium border border-white/10">
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/8 text-muted-foreground text-xs font-medium border border-white/15">
         <Archive className="h-3 w-3" /> Archived
       </span>
     )
@@ -161,7 +161,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 const inputClass =
-  "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+  "w-full bg-white/8 border border-white/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary/50 transition-colors"
 
 export default function AdminCareersPage() {
   const { data, isLoading, error, mutate } = useSWR<JobPostingRow[]>(
@@ -274,7 +274,7 @@ export default function AdminCareersPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-[#050810] border border-white/5 p-6 rounded-2xl">
+          <div key={stat.label} className="bg-[#1c2436] border border-white/10 p-6 rounded-2xl">
             <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
             <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
@@ -290,11 +290,11 @@ export default function AdminCareersPage() {
       )}
 
       {/* Table */}
-      <div className="bg-[#050810] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-[#1c2436] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/5 bg-white/[0.02]">
+              <tr className="border-b border-white/10 bg-white/[0.02]">
                 {["Title", "Team", "Location", "Type", "Status", "Deadline", ""].map((head, i) => (
                   <th
                     key={i}
@@ -307,15 +307,15 @@ export default function AdminCareersPage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-white/10">
               {isLoading ? (
                 Array(3)
                   .fill(0)
                   .map((_, i) => (
                     <tr key={i} className="animate-pulse">
                       <td colSpan={7} className="px-6 py-8">
-                        <div className="h-4 bg-white/5 rounded w-3/4 mb-2" />
-                        <div className="h-3 bg-white/5 rounded w-1/2" />
+                        <div className="h-4 bg-white/8 rounded w-3/4 mb-2" />
+                        <div className="h-3 bg-white/8 rounded w-1/2" />
                       </td>
                     </tr>
                   ))
@@ -354,7 +354,7 @@ export default function AdminCareersPage() {
                         <button
                           onClick={() => openEdit(row)}
                           aria-label="Edit"
-                          className="p-2 hover:bg-white/5 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                          className="p-2 hover:bg-white/8 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
                         >
                           <Edit3 className="h-4 w-4" />
                         </button>
@@ -378,7 +378,7 @@ export default function AdminCareersPage() {
       {/* Editor drawer */}
       {formOpen && (
         <div className="fixed inset-0 z-[120] flex justify-end bg-black/60 backdrop-blur-sm">
-          <div className="h-full w-full max-w-2xl overflow-y-auto border-l border-white/10 bg-[#050810] p-8">
+          <div className="h-full w-full max-w-2xl overflow-y-auto border-l border-white/15 bg-[#1c2436] p-8">
             <div className="mb-6 flex items-start justify-between">
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">
@@ -391,7 +391,7 @@ export default function AdminCareersPage() {
               <button
                 onClick={() => setFormOpen(false)}
                 aria-label="Close"
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/8 hover:text-foreground"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -472,7 +472,7 @@ export default function AdminCareersPage() {
                   className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
                     lang === code
                       ? "bg-primary text-primary-foreground"
-                      : "border border-white/10 text-muted-foreground hover:text-foreground"
+                      : "border border-white/15 text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {code}
@@ -529,7 +529,7 @@ export default function AdminCareersPage() {
             <div className="mt-8 flex justify-end gap-3">
               <button
                 onClick={() => setFormOpen(false)}
-                className="rounded-xl border border-white/10 px-6 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                className="rounded-xl border border-white/15 px-6 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
               >
                 Cancel
               </button>
