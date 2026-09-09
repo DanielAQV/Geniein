@@ -21,6 +21,10 @@ export default function ContactPage() {
       title: "Geniein Hanoi Location (Pearl Tower, 1 Chau Van Liem)",
       src: "https://www.google.com/maps?q=Pearl%20Tower%2C%201%20Ch%C3%A2u%20V%C4%83n%20Li%C3%AAm%2C%20T%E1%BB%AB%20Li%C3%AAm%2C%20H%C3%A0%20N%E1%BB%99i%2C%20Vi%E1%BB%87t%20Nam&hl=ko&z=17&output=embed",
     },
+    {
+      title: "Geniein Manila Location (Marvin Plaza Bldg.)",
+      src: "https://www.google.com/maps?q=Marvin%20Plaza%20Building%2C%202153%20Chino%20Roces%20Ave%2C%20Makati%2C%20Metro%20Manila%2C%20Philippines&hl=ko&z=17&output=embed",
+    },
   ];
 
   return (

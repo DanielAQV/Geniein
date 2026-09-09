@@ -1,7 +1,6 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ShieldCheck } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
 
@@ -48,10 +47,7 @@ export function PatentsSection() {
               transition={{ delay: index * 0.15 }}
               className="flex flex-col gap-5 rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] p-6 shadow-md transition-all duration-500 hover:shadow-lg hover:border-primary/40 lg:p-8"
             >
-              <div className="flex items-center justify-between gap-4">
-                <div className="rounded-xl border border-[var(--border-card-strong)] bg-[var(--card-glass)] p-3 text-[#5874ea] shadow-[inset_0px_2px_4px_0px_rgba(0,0,0,0.05)]">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
+              <div className="flex items-center">
                 <span className="inline-flex items-center rounded-full border border-[var(--border-card-strong)] bg-[#5874ea] px-[17px] py-[7px] text-xs font-medium text-white">
                   {t('about.patents.status')}
                 </span>

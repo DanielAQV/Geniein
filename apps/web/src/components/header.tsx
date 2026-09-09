@@ -63,7 +63,7 @@ export function Header() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 cursor-pointer group"
+              className="flex items-center gap-2 cursor-pointer group lg:flex-1"
             >
               <div className="relative h-8 w-8 overflow-hidden rounded-lg transition-transform group-hover:scale-110">
                 <img
@@ -79,7 +79,7 @@ export function Header() {
 
             {/* Desktop Navigation */}
             {/* 채용 추가로 항목이 5개가 됐다. lg 폭에서 넘치지 않도록 간격을 단계화한다. */}
-            <div className="hidden lg:flex lg:items-center lg:gap-6 xl:gap-12">
+            <div className="hidden lg:flex lg:items-center lg:justify-center lg:gap-6 xl:gap-12">
               <Link
                 href="/about"
                 className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
@@ -234,7 +234,7 @@ export function Header() {
             </div>
 
             {/* Right Side Actions */}
-            <div className="hidden lg:flex lg:items-center lg:gap-4">
+            <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-4">
               <DropdownMenu
                 open={langOpen}
                 onOpenChange={setLangOpen}
