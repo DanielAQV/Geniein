@@ -1,11 +1,10 @@
 "use client"
 
-import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 
-export function ApplyCta() {
+export function ApplyCta({ onApply }: { onApply: () => void }) {
   const { t } = useLanguage()
 
   return (
@@ -26,14 +25,14 @@ export function ApplyCta() {
           <p className="max-w-2xl text-sm leading-[23px] md:text-base lg:text-[18px] font-light lg:leading-relaxed text-[var(--text-sub)] break-keep whitespace-pre-line">
             {t("careers.cta.desc")}
           </p>
-          <Link
-            href="/contact"
+          <button
+            type="button"
+            onClick={onApply}
             className="inline-flex items-center gap-2 rounded-full bg-[#5874ea] px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#5874ea]/90"
           >
             {t("careers.cta.button")}
             <ArrowRight className="h-4 w-4" />
-          </Link>
-          <p className="text-xs font-light text-muted-foreground">{t("careers.cta.note")}</p>
+          </button>
         </motion.div>
       </div>
     </section>

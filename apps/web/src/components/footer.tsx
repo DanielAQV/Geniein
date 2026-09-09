@@ -53,14 +53,14 @@ export function Footer() {
               <Link
                 href="/business?category=oda"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.oda")}
               </Link>
               <Link
                 href="/business?category=platform"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.platform")}
               </Link>
@@ -73,14 +73,14 @@ export function Footer() {
               <Link
                 href="/insights?category=oda"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.insights_oda")}
               </Link>
               <Link
                 href="/insights?category=it"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.insights_it")}
               </Link>

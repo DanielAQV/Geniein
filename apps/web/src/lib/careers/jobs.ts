@@ -8,14 +8,31 @@
 
 import { dictionary } from "@/lib/i18n/dictionary"
 
-/** kr/en/vn 3개 언어를 담는 텍스트. dictionary 의 다른 블록과 같은 모양이다. */
-export type Localized = { kr: string; en: string; vn: string }
+export type Lang = "kr" | "en" | "vn"
+
+/**
+ * 채용 텍스트. KR 만 필수고 EN/VN 은 비어 있을 수 있다 —
+ * admin 에서 한국어만 쓰고 올리는 경우가 정상 경로다.
+ */
+export type Localized = { kr: string; en?: string | null; vn?: string | null }
+
+/**
+ * 언어 선택 + KR 폴백.
+ *
+ * ★ 전역 `t()` 를 고치지 않는다. 폴백은 채용 데이터에만 적용되는 규칙이고,
+ *   사이트 전체 사전은 3개 언어가 다 채워져 있는 걸 전제로 하기 때문에
+ *   거기에 폴백을 넣으면 빠진 번역이 조용히 한국어로 나가버린다.
+ */
+export function pick(field: Localized, lang: Lang): string {
+  return field[lang] || field.kr
+}
 
 export type JobPosting = {
   id: string
   /** 필터용 안정 키. 표시 문구(department)와 분리해 언어가 바뀌어도 필터가 유지된다. */
   departmentKey: string
   locationKey: string
+  /** 카드 뱃지로만 쓴다. 필터 축에서는 쓰지 않는다. */
   employmentKey: string
   /** ISO 날짜(2026-10-31) 또는 상시 채용을 뜻하는 "rolling" */
   deadline: string

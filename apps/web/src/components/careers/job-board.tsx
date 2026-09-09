@@ -1,12 +1,18 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import Link from "next/link"
 import { AnimatePresence, motion } from "framer-motion"
 import { Briefcase, CalendarDays, ChevronDown, MapPin, RotateCcw, UserRound } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { cn } from "@/lib/utils"
-import { LOCATION_FLAGS, ROLLING_DEADLINE, type JobPosting, type Localized } from "@/lib/careers/jobs"
+import {
+  LOCATION_FLAGS,
+  ROLLING_DEADLINE,
+  pick,
+  type JobPosting,
+  type Lang,
+  type Localized,
+} from "@/lib/careers/jobs"
 
 type FilterOption = { key: string; label: Localized }
 
@@ -60,7 +66,7 @@ function FilterRow({
                   : "border-[var(--border-card-strong)] bg-[var(--card-glass)] text-[var(--text-heading)] hover:border-primary/40",
               )}
             >
-              {option.label ? option.label[language] : t("careers.jobs.filter_all")}
+              {option.label ? pick(option.label, language) : t("careers.jobs.filter_all")}
             </button>
           )
         })}
@@ -69,7 +75,7 @@ function FilterRow({
   )
 }
 
-function DetailList({ title, items, language }: { title: string; items: Localized[]; language: "kr" | "en" | "vn" }) {
+function DetailList({ title, items, language }: { title: string; items: Localized[]; language: Lang }) {
   return (
     <div className="flex flex-col gap-3">
       <h4 className="text-xs font-bold uppercase tracking-[0.15em] text-[#5874ea]">{title}</h4>
@@ -77,7 +83,7 @@ function DetailList({ title, items, language }: { title: string; items: Localize
         {items.map((item, index) => (
           <li key={index} className="flex gap-2 text-sm font-light leading-relaxed text-[var(--text-sub)] break-keep">
             <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#5874ea]" />
-            <span>{item[language]}</span>
+            <span>{pick(item, language)}</span>
           </li>
         ))}
       </ul>
@@ -85,39 +91,35 @@ function DetailList({ title, items, language }: { title: string; items: Localize
   )
 }
 
-export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
+export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job: JobPosting) => void }) {
   const { t, language } = useLanguage()
   const [department, setDepartment] = useState(ALL)
   const [location, setLocation] = useState(ALL)
-  const [employment, setEmployment] = useState(ALL)
   const [expanded, setExpanded] = useState<string | null>(null)
 
   const departments = useMemo(() => optionsOf(jobs, (j) => j.departmentKey, (j) => j.department), [jobs])
   const locations = useMemo(() => optionsOf(jobs, (j) => j.locationKey, (j) => j.location), [jobs])
-  const employments = useMemo(() => optionsOf(jobs, (j) => j.employmentKey, (j) => j.employment), [jobs])
 
   const filtered = useMemo(
     () =>
       jobs.filter(
         (job) =>
           (department === ALL || job.departmentKey === department) &&
-          (location === ALL || job.locationKey === location) &&
-          (employment === ALL || job.employmentKey === employment),
+          (location === ALL || job.locationKey === location),
       ),
-    [jobs, department, location, employment],
+    [jobs, department, location],
   )
 
-  const dirty = department !== ALL || location !== ALL || employment !== ALL
-
-  // "총 {count}건의 공고" — 언어마다 숫자 위치가 달라서 템플릿을 쪼개 쓴다.
-  // (t() 는 빈 문자열을 '키 없음'으로 취급하므로 접두/접미를 따로 두면 안 된다)
-  const [countBefore, countAfter = ""] = t("careers.jobs.count_template").split("{count}")
+  const dirty = department !== ALL || location !== ALL
 
   const reset = () => {
     setDepartment(ALL)
     setLocation(ALL)
-    setEmployment(ALL)
   }
+
+  // "총 {count}건의 공고" — 언어마다 숫자 위치가 달라서 템플릿을 쪼개 쓴다.
+  // (t() 는 빈 문자열을 '키 없음'으로 취급하므로 접두/접미를 따로 두면 안 된다)
+  const [countBefore, countAfter = ""] = t("careers.jobs.count_template").split("{count}")
 
   return (
     <section id="positions" className="py-14 md:py-20 lg:py-28 bg-background">
@@ -142,7 +144,7 @@ export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
           </p>
         </div>
 
-        {/* Filters */}
+        {/* Filters — 부문 · 근무지 2축만 쓴다. 고용형태는 카드 뱃지로만 보여준다 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -160,12 +162,6 @@ export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
             options={locations}
             value={location}
             onChange={setLocation}
-          />
-          <FilterRow
-            label={t("careers.jobs.filter_employment")}
-            options={employments}
-            value={employment}
-            onChange={setEmployment}
           />
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/30 pt-5">
@@ -218,10 +214,10 @@ export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex flex-col gap-2">
                         <span className="text-xs font-bold uppercase tracking-[0.1em] text-[#5874ea]">
-                          {job.department[language]}
+                          {pick(job.department, language)}
                         </span>
                         <h3 className="text-[20px] md:text-2xl lg:text-[28px] font-bold leading-snug tracking-[-0.5px] text-[var(--text-heading)] break-keep">
-                          {job.title[language]}
+                          {pick(job.title, language)}
                         </h3>
                       </div>
                       <span
@@ -247,15 +243,15 @@ export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
                         ) : (
                           <MapPin className="h-4 w-4" />
                         )}
-                        {job.location[language]}
+                        {pick(job.location, language)}
                       </span>
                       <span className="inline-flex items-center gap-2">
                         <Briefcase className="h-4 w-4" />
-                        {job.employment[language]}
+                        {pick(job.employment, language)}
                       </span>
                       <span className="inline-flex items-center gap-2">
                         <UserRound className="h-4 w-4" />
-                        {job.experience[language]}
+                        {pick(job.experience, language)}
                       </span>
                       <span className="inline-flex items-center gap-2">
                         <CalendarDays className="h-4 w-4" />
@@ -272,7 +268,7 @@ export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
                           key={tIdx}
                           className="rounded-full border border-[var(--border-card-strong)] bg-[var(--card-glass)] px-[17px] py-[7px] text-xs font-medium text-[var(--text-heading)]"
                         >
-                          {tag[language]}
+                          {pick(tag, language)}
                         </span>
                       ))}
                     </div>
@@ -308,12 +304,13 @@ export function JobBoard({ jobs }: { jobs: JobPosting[] }) {
                           </div>
 
                           <div className="mt-8 flex justify-start">
-                            <Link
-                              href="/contact"
+                            <button
+                              type="button"
+                              onClick={() => onApply(job)}
                               className="inline-flex items-center rounded-full bg-[#5874ea] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#5874ea]/90"
                             >
                               {t("careers.jobs.apply")}
-                            </Link>
+                            </button>
                           </div>
                         </div>
                       </motion.div>

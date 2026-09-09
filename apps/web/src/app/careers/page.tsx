@@ -1,13 +1,14 @@
 "use client"
 
+import { useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { CultureSection } from "@/components/careers/culture-section"
 import { JobBoard } from "@/components/careers/job-board"
 import { ApplyCta } from "@/components/careers/apply-cta"
+import { ApplyModal } from "@/components/careers/apply-modal"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { getJobPostings } from "@/lib/careers/jobs"
+import { getJobPostings, type JobPosting } from "@/lib/careers/jobs"
 
 // 공고 배열은 컴포넌트 밖에서 주입한다. admin 이 붙으면 이 한 줄만
 // 서버 fetch(또는 SWR)로 바꾸면 되고 JobBoard 는 그대로 쓴다.
@@ -15,6 +16,15 @@ const jobs = getJobPostings()
 
 export default function CareersPage() {
   const { t } = useLanguage()
+
+  // 지원 폼은 라우트를 추가하지 않고 모달로 띄운다. 공고 카드와 하단 CTA 가 같이 쓴다.
+  const [applyOpen, setApplyOpen] = useState(false)
+  const [applyJob, setApplyJob] = useState<JobPosting | null>(null)
+
+  const openApply = (job: JobPosting | null) => {
+    setApplyJob(job)
+    setApplyOpen(true)
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -70,13 +80,13 @@ export default function CareersPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
       </div>
 
-      <CultureSection />
+      <JobBoard jobs={jobs} onApply={openApply} />
 
-      <JobBoard jobs={jobs} />
-
-      <ApplyCta />
+      <ApplyCta onApply={() => openApply(null)} />
 
       <Footer />
+
+      <ApplyModal open={applyOpen} job={applyJob} onClose={() => setApplyOpen(false)} />
     </main>
   )
 }
