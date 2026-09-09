@@ -53,11 +53,13 @@ export function Hero() {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4">
+            {/* 같은 폭의 두 칸. sm:flex-none 이던 시절에는 데스크톱에서 글자
+                길이대로 폭이 갈렸다 (지니인 소개 189px / 문의하기 141px). */}
+            <div className="mx-auto grid w-full max-w-md grid-cols-2 items-center gap-3 sm:gap-4">
               <Button
                 asChild
                 size="pill"
-                className="flex-1 sm:flex-none min-w-0 shadow-lg shadow-primary/25"
+                className="w-full min-w-0 shadow-lg shadow-primary/25"
               >
                 <Link href="/about">
                   {t("hero.btn_projects")}
@@ -68,7 +70,7 @@ export function Hero() {
                 asChild
                 variant="glass"
                 size="pill"
-                className="flex-1 sm:flex-none min-w-0 font-bold"
+                className="w-full min-w-0 font-bold"
               >
                 <Link href="/contact">{t("hero.btn_contact")}</Link>
               </Button>
