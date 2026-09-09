@@ -22,12 +22,19 @@
          word_similarity('일비', 본문)                                  → 0.333
        질문이 길수록 트라이그램 집합이 희석돼서 전부 고만고만해진다.
 
-필터 두 개는 **모든 갈래에** 건다. 한 갈래라도 새면 인가가 뚫린다:
+필터 세 개는 **모든 갈래에** 건다. 한 갈래라도 새면 인가가 뚫린다:
 
   · `superseded_at IS NULL`  — 유효본만. 구버전 사규를 자신 있게 인용하는 것이
                                 read 티어의 진짜 위험이다.
   · `role_scope && :roles`   — 편의가 아니라 정확도 요구사항이다. 일반 직원에게
                                 Admin 가이드가 걸리면 존재하지 않는 메뉴를 설명한다.
+  · `org_id = :org_id`       — 테넌트 격리. 에어키와 지니는 **다른 법인**이고,
+                                한쪽 직원에게 다른 쪽 사규가 걸리면 버그가 아니라
+                                사고다 (docs/TEAMS_TAB_DESIGN.md 4.4).
+
+★ `org_id` 에 기본값을 두지 않는다. 기본값이 있으면 호출자가 안 넘겨도 통과하고,
+  그게 정확히 이 필터가 막으려는 상황이다. 누구의 문서를 찾는지 말하지 않고는
+  이 함수를 부를 수 없다.
 """
 
 from __future__ import annotations
@@ -112,6 +119,7 @@ _SCOPED = """
     JOIN kb_documents d ON d.id = c.document_id
     WHERE d.superseded_at IS NULL
       AND d.role_scope && %(roles)s
+      AND d.org_id = %(org_id)s
 """
 
 _LEX_RANK = f"ts_rank_cd(to_tsvector('simple', {BODY_SQL}), tsq.q)"
@@ -138,6 +146,7 @@ lex AS (
     CROSS JOIN tsq
     WHERE d.superseded_at IS NULL
       AND d.role_scope && %(roles)s
+      AND d.org_id = %(org_id)s
       AND c.tsv @@ tsq.q
     ORDER BY {_LEX_RANK} DESC, c.id
     LIMIT %(pool)s
@@ -252,7 +261,18 @@ def _terms(query: str) -> list[str]:
     return re.findall(r"\w+", query, flags=re.UNICODE)
 
 
-def search(query: str, *, roles: list[str] | None = None, limit: int = DEFAULT_LIMIT) -> list[Hit]:
+def search(
+    query: str,
+    *,
+    org_id: str,
+    roles: list[str] | None = None,
+    limit: int = DEFAULT_LIMIT,
+) -> list[Hit]:
+    # roles 는 비면 최소 권한으로 떨어지지만, org_id 는 그렇게 할 수 없다.
+    # "최소 권한 org" 같은 건 없고, 빈 값을 허용하면 그 순간 필터가 사라진다.
+    if not org_id:
+        raise ValueError("org_id 없이 검색할 수 없습니다 — 어느 법인의 문서인지 지정해야 합니다")
+
     effective_roles = list(roles) if roles else list(FALLBACK_ROLES)
 
     terms = _terms(query)
@@ -263,6 +283,7 @@ def search(query: str, *, roles: list[str] | None = None, limit: int = DEFAULT_L
     params = {
         "vec": to_vector_literal(vector),
         "roles": effective_roles,
+        "org_id": org_id,
         # 단어가 하나도 없으면 to_tsquery('') 가 에러다. 아무것도 안 맞는 값을 넣어
         # 그 갈래만 비게 한다 — 나머지 두 갈래는 정상 동작해야 한다.
         "terms": terms or ["__no_terms__"],
@@ -303,7 +324,7 @@ def search(query: str, *, roles: list[str] | None = None, limit: int = DEFAULT_L
     contributions = {src: sum(1 for h in hits if src in h.sources)
                      for src in ("vector", "lexical", "trigram")}
     logger.info(
-        "검색 %r roles=%s → %d건 (갈래별 %s)",
-        query[:40], effective_roles, len(hits), contributions,
+        "검색 %r org=%s roles=%s → %d건 (갈래별 %s)",
+        query[:40], org_id, effective_roles, len(hits), contributions,
     )
     return hits

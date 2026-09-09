@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.17",
+  "version": "${APP_VERSION}",
+  "id": "${ENTRA_CLIENT_ID}",
+  "developer": {
+    "name": "AirQuay Vina",
+    "websiteUrl": "${WEBSITE_URL}",
+    "privacyUrl": "${PRIVACY_URL}",
+    "termsOfUseUrl": "${TERMS_URL}"
+  },
+  "name": {
+    "short": "Policy Search",
+    "full": "Policy Search — Company Regulations"
+  },
+  "description": {
+    "short": "Ask about company policies in plain language and get answers with sources.",
+    "full": "Ask about travel expenses, allowances, attendance and other company policies in plain language. Every answer cites the source document, article and effective date. You are signed in automatically with your company account, and only your own entity's policies are searched."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#02040A",
+  "staticTabs": [
+    {
+      "entityId": "genie-search",
+      "name": "Policy Search",
+      "contentUrl": "${CONTENT_HOST}/teams/search?theme={theme}",
+      "websiteUrl": "${CONTENT_HOST}/teams/search",
+      "scopes": ["personal"]
+    }
+  ],
+  "permissions": ["identity"],
+  "validDomains": ["${CONTENT_DOMAIN}"],
+  "webApplicationInfo": {
+    "id": "${ENTRA_CLIENT_ID}",
+    "resource": "${ENTRA_API_AUDIENCE}"
+  }
+}

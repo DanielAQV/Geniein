@@ -10,6 +10,7 @@ export const dictionary = {
     insights: { kr: "비즈니스 인사이트", en: "Business Insights", vn: "Góc nhìn Kinh doanh" },
     insights_oda: { kr: "글로벌 ODA", en: "Global ODA", vn: "ODA Toàn cầu" },
     insights_it: { kr: "IT 트렌드", en: "IT Trends", vn: "Xu hướng CNTT" },
+    careers: { kr: "채용", en: "Careers", vn: "Tuyển dụng" },
     contact: { kr: "문의하기", en: "Contact Us", vn: "Liên hệ" },
     consulting_btn: { kr: "파트너십 상담", en: "Partnership", vn: "Tư vấn" },
     language: { kr: "언어", en: "Language", vn: "Ngôn ngữ" },
@@ -459,5 +460,150 @@ export const dictionary = {
         }
       ]
     }
+  },
+  careers: {
+    hero: {
+      label: { kr: "Careers at Geniein", en: "Careers at Geniein", vn: "Careers at Geniein" },
+      title_1: { kr: "BEYOND", en: "BEYOND", vn: "BEYOND" },
+      title_2: { kr: "BORDERS", en: "BORDERS", vn: "BORDERS" },
+      description: {
+        kr: "지역과 분야의 경계를 넘어, 현장과 기술을 함께 만들어갈 인재를 찾습니다.",
+        en: "Beyond the borders of geography and discipline — we are looking for people to build the field and the technology with us.",
+        vn: "Vượt qua ranh giới của địa lý và lĩnh vực, chúng tôi tìm kiếm những người cùng xây dựng hiện trường và công nghệ."
+      }
+    },
+    jobs: {
+      label: { kr: "Open Positions", en: "Open Positions", vn: "Vị trí đang tuyển" },
+      title: { kr: "채용 중인 포지션", en: "Positions We Are Hiring", vn: "Các vị trí đang tuyển dụng" },
+      desc: {
+        kr: "관심 있는 근무지를 선택해 공고를 확인하세요.\n지원 절차와 상세 요건은 각 공고를 펼치면 볼 수 있습니다.",
+        en: "Pick a location to narrow the list.\nExpand a posting to see the full requirements and how to apply.",
+        vn: "Chọn địa điểm bạn quan tâm để lọc danh sách.\nMở rộng tin tuyển dụng để xem yêu cầu chi tiết và cách ứng tuyển."
+      },
+      filter_all: { kr: "전체", en: "All", vn: "Tất cả" },
+      filter_department: { kr: "부문", en: "Team", vn: "Bộ phận" },
+      filter_location: { kr: "근무지", en: "Location", vn: "Địa điểm" },
+      filter_reset: { kr: "필터 초기화", en: "Reset filters", vn: "Đặt lại bộ lọc" },
+      count_template: { kr: "총 {count}건의 공고", en: "{count} open positions", vn: "{count} vị trí đang tuyển" },
+      deadline_label: { kr: "마감일", en: "Deadline", vn: "Hạn nộp" },
+      rolling: { kr: "상시 채용", en: "Rolling", vn: "Tuyển liên tục" },
+      responsibilities: { kr: "주요 업무", en: "What You Will Do", vn: "Nhiệm vụ chính" },
+      requirements: { kr: "자격 요건", en: "Requirements", vn: "Yêu cầu" },
+      preferred: { kr: "우대 사항", en: "Nice to Have", vn: "Ưu tiên" },
+      apply: { kr: "이 포지션 지원하기", en: "Apply for this role", vn: "Ứng tuyển vị trí này" }
+    },
+    cta: {
+      label: { kr: "Join Us", en: "Join Us", vn: "Gia nhập" },
+      title: { kr: "맞는 공고가 없어도 괜찮습니다", en: "No Matching Role? Apply Anyway", vn: "Chưa có vị trí phù hợp? Cứ ứng tuyển" },
+      desc: {
+        kr: "지금 열려 있는 공고가 아니더라도, 지니인과 함께하고 싶은 이유가 있다면 먼저 이야기해 주세요.\n지원서를 남겨 주시면 담당자가 검토 후 연락드립니다.",
+        en: "Even if none of the open roles fit, tell us why you want to work with Geniein.\nLeave an application and our team will review it and get back to you.",
+        vn: "Ngay cả khi chưa có vị trí phù hợp, hãy cho chúng tôi biết lý do bạn muốn làm việc cùng Geniein.\nHãy gửi hồ sơ và đội ngũ của chúng tôi sẽ xem xét rồi phản hồi bạn."
+      },
+      button: { kr: "일반 지원하기", en: "Submit an open application", vn: "Ứng tuyển tự do" }
+    },
+    apply: {
+      title: { kr: "지원서 작성", en: "Apply", vn: "Đơn ứng tuyển" },
+      subtitle: { kr: "아래 정보를 남겨 주시면 담당자가 검토 후 연락드립니다.", en: "Leave your details and our team will review and get back to you.", vn: "Để lại thông tin của bạn, đội ngũ của chúng tôi sẽ xem xét và phản hồi." },
+      position: { kr: "지원 포지션", en: "Position", vn: "Vị trí ứng tuyển" },
+      general: { kr: "일반 지원 (포지션 미지정)", en: "Open application (no specific role)", vn: "Ứng tuyển tự do (không chỉ định vị trí)" },
+      name: { kr: "이름", en: "Name", vn: "Họ và tên" },
+      name_ph: { kr: "홍길동", en: "Your name", vn: "Họ và tên của bạn" },
+      email: { kr: "이메일", en: "Email", vn: "Email" },
+      email_ph: { kr: "email@example.com", en: "email@example.com", vn: "email@example.com" },
+      phone: { kr: "연락처", en: "Phone", vn: "Số điện thoại" },
+      phone_ph: { kr: "010-0000-0000", en: "Phone number", vn: "Số điện thoại" },
+      intro: { kr: "간단한 자기소개", en: "Short introduction", vn: "Giới thiệu ngắn" },
+      intro_ph: { kr: "지원 동기와 관련 경험을 간단히 적어 주세요.", en: "Briefly tell us why you are applying and what you have done.", vn: "Hãy cho chúng tôi biết lý do ứng tuyển và kinh nghiệm của bạn." },
+      resume: { kr: "이력서 첨부", en: "Resume", vn: "Hồ sơ" },
+      resume_hint: { kr: "PDF · DOC · DOCX, 10MB 이하", en: "PDF, DOC or DOCX, up to 10MB", vn: "PDF, DOC hoặc DOCX, tối đa 10MB" },
+      resume_button: { kr: "파일 선택", en: "Choose file", vn: "Chọn tệp" },
+      resume_none: { kr: "선택된 파일 없음", en: "No file selected", vn: "Chưa chọn tệp" },
+      resume_clear: { kr: "첨부 취소", en: "Remove", vn: "Bỏ tệp" },
+      submit: { kr: "지원서 제출", en: "Submit application", vn: "Gửi hồ sơ" },
+      cancel: { kr: "취소", en: "Cancel", vn: "Hủy" },
+      close: { kr: "닫기", en: "Close", vn: "Đóng" },
+      mock_notice: { kr: "※ 목업 화면입니다. 제출해도 실제로 전송·저장되지 않습니다.", en: "Note: this is a mockup. Nothing is actually sent or stored.", vn: "Lưu ý: đây là bản mô phỏng. Không có dữ liệu nào được gửi hay lưu." },
+      success_title: { kr: "지원서가 접수되었습니다", en: "Application received", vn: "Đã nhận hồ sơ" },
+      success_desc: { kr: "검토 후 기재해 주신 연락처로 회신드리겠습니다.\n(현재는 목업이라 실제로 전송되지 않았습니다.)", en: "We will review it and reply to the contact you provided.\n(This is a mockup, so nothing was actually sent.)", vn: "Chúng tôi sẽ xem xét và phản hồi qua thông tin liên hệ bạn cung cấp.\n(Đây là bản mô phỏng nên không có gì được gửi đi.)" },
+      errors: {
+        name: { kr: "이름을 입력해주세요", en: "Please enter your name", vn: "Vui lòng nhập tên của bạn" },
+        email: { kr: "올바른 이메일 주소를 입력해주세요", en: "Please enter a valid email address", vn: "Vui lòng nhập địa chỉ email hợp lệ" },
+        phone: { kr: "연락처를 입력해주세요", en: "Please enter your phone number", vn: "Vui lòng nhập số điện thoại của bạn" },
+        intro: { kr: "간단한 자기소개를 입력해주세요", en: "Please write a short introduction", vn: "Vui lòng viết giới thiệu ngắn" },
+        resume: { kr: "이력서 파일을 첨부해주세요", en: "Please attach your resume", vn: "Vui lòng đính kèm hồ sơ của bạn" },
+        resume_type: { kr: "PDF, DOC, DOCX 파일만 첨부할 수 있습니다", en: "Only PDF, DOC and DOCX files are accepted", vn: "Chỉ chấp nhận tệp PDF, DOC và DOCX" },
+        resume_size: { kr: "파일 용량은 10MB 를 넘을 수 없습니다", en: "The file must be 10MB or smaller", vn: "Tệp không được vượt quá 10MB" },
+      }
+    },
+    items: [
+      {
+        id: "oda-planning-pm",
+        department_key: "oda",
+        location_key: "seongnam",
+        employment_key: "fulltime",
+        deadline: "2026-10-31",
+        title: { kr: "ODA 사업기획 PM", en: "ODA Program Planning PM", vn: "PM Quy hoạch dự án ODA" },
+        department: { kr: "ODA 컨설팅", en: "ODA Consulting", vn: "Tư vấn ODA" },
+        location: { kr: "한국 본사", en: "Korea HQ", vn: "Trụ sở chính Hàn Quốc" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 5년 이상", en: "5+ years", vn: "Trên 5 năm kinh nghiệm" },
+        tags: [
+          { kr: "사업 기획", en: "Program Planning", vn: "Quy hoạch dự án" },
+          { kr: "타당성 조사", en: "Feasibility Study", vn: "Nghiên cứu khả thi" },
+          { kr: "해외 출장", en: "Overseas Travel", vn: "Công tác nước ngoài" }
+        ],
+        responsibilities: [
+          { kr: "KOICA·EDCF 등 공적개발원조 사업의 제안서 작성과 수주 전략 수립", en: "Writing proposals and shaping win strategies for KOICA/EDCF and other ODA programs", vn: "Soạn đề xuất và xây dựng chiến lược đấu thầu cho các dự án ODA như KOICA, EDCF" },
+          { kr: "사업 타당성 조사(F/S)와 기본 설계 단계의 현지 조사 수행", en: "Running feasibility studies and on-site surveys through the basic design phase", vn: "Thực hiện nghiên cứu khả thi (F/S) và khảo sát hiện trường ở giai đoạn thiết kế cơ bản" },
+          { kr: "발주처·현지 정부 기관과의 협의 및 이해관계자 관리", en: "Coordinating with client agencies and local governments, and managing stakeholders", vn: "Phối hợp với chủ đầu tư, cơ quan chính phủ địa phương và quản lý các bên liên quan" },
+          { kr: "프로젝트 일정·예산·산출물 관리와 사후 평가 대응", en: "Managing schedule, budget and deliverables, and handling post-project evaluation", vn: "Quản lý tiến độ, ngân sách, sản phẩm bàn giao và xử lý đánh giá sau dự án" }
+        ],
+        requirements: [
+          { kr: "ODA 또는 공공 SI 사업 기획·수행 경력 5년 이상", en: "5+ years planning or delivering ODA or public sector SI projects", vn: "Trên 5 năm kinh nghiệm quy hoạch hoặc triển khai dự án ODA / SI khu vực công" },
+          { kr: "제안서 및 사업계획서 작성 경험", en: "Experience writing proposals and business plans", vn: "Kinh nghiệm soạn đề xuất và kế hoạch kinh doanh" },
+          { kr: "영어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in English", vn: "Có khả năng giao tiếp công việc bằng tiếng Anh" },
+          { kr: "연 2~3회 해외 출장이 가능한 분", en: "Able to travel overseas two to three times a year", vn: "Có thể công tác nước ngoài 2-3 lần mỗi năm" }
+        ],
+        preferred: [
+          { kr: "동남아시아·중앙아시아 지역 사업 수행 경험", en: "Experience delivering projects in Southeast or Central Asia", vn: "Kinh nghiệm triển khai dự án tại Đông Nam Á hoặc Trung Á" },
+          { kr: "전자정부·정보화 사업 이해도", en: "Understanding of e-government and public digitalization programs", vn: "Hiểu biết về chính phủ điện tử và các dự án số hóa công" },
+          { kr: "PMP 등 프로젝트 관리 자격 보유", en: "PMP or an equivalent project management certification", vn: "Có chứng chỉ quản lý dự án như PMP" }
+        ]
+      },
+      {
+        id: "vn-operations-manager",
+        department_key: "operations",
+        location_key: "hanoi",
+        employment_key: "fulltime",
+        deadline: "2026-10-15",
+        title: { kr: "베트남 현지 운영 매니저", en: "Vietnam Operations Manager", vn: "Quản lý Vận hành tại Việt Nam" },
+        department: { kr: "현지 운영", en: "Operations", vn: "Vận hành" },
+        location: { kr: "하노이 법인", en: "Hanoi Subsidiary", vn: "Công ty tại Hà Nội" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 3년 이상", en: "3+ years", vn: "Trên 3 năm kinh nghiệm" },
+        tags: [
+          { kr: "현지 운영", en: "Local Operations", vn: "Vận hành địa phương" },
+          { kr: "한국어·베트남어", en: "KR / VN Bilingual", vn: "Song ngữ Hàn - Việt" },
+          { kr: "파트너 관리", en: "Partner Management", vn: "Quản lý đối tác" }
+        ],
+        responsibilities: [
+          { kr: "하노이 법인의 일상 운영과 인사·총무 실무 관리", en: "Running day-to-day operations, HR and general affairs at the Hanoi subsidiary", vn: "Quản lý vận hành hằng ngày, nhân sự và hành chính tại công ty Hà Nội" },
+          { kr: "현지 고객사·파트너사와의 커뮤니케이션 창구 역할", en: "Acting as the communication channel with local clients and partners", vn: "Là đầu mối liên lạc với khách hàng và đối tác tại địa phương" },
+          { kr: "한국 본사와 현지 팀 사이의 업무 조율 및 통번역 지원", en: "Coordinating between the Korean HQ and the local team, including interpretation", vn: "Điều phối giữa trụ sở Hàn Quốc và đội ngũ địa phương, hỗ trợ phiên dịch" },
+          { kr: "현지 법인 행정·계약 관련 문서 관리", en: "Managing local entity administration and contract documentation", vn: "Quản lý hành chính pháp nhân địa phương và hồ sơ hợp đồng" }
+        ],
+        requirements: [
+          { kr: "베트남 현지 기업 또는 한국계 법인에서의 운영·관리 경력 3년 이상", en: "3+ years in operations or management at a Vietnamese or Korean-owned company", vn: "Trên 3 năm kinh nghiệm vận hành hoặc quản lý tại doanh nghiệp Việt Nam hoặc công ty Hàn Quốc" },
+          { kr: "한국어와 베트남어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in both Korean and Vietnamese", vn: "Có thể làm việc bằng cả tiếng Hàn và tiếng Việt" },
+          { kr: "하노이 근무가 가능한 분", en: "Able to work from Hanoi", vn: "Có thể làm việc tại Hà Nội" }
+        ],
+        preferred: [
+          { kr: "IT·엔지니어링 조직에서의 근무 경험", en: "Experience working in an IT or engineering organization", vn: "Kinh nghiệm làm việc trong tổ chức CNTT hoặc kỹ thuật" },
+          { kr: "베트남 노무·세무 행정 실무 이해", en: "Familiarity with Vietnamese labor and tax administration", vn: "Hiểu biết thực tế về hành chính lao động và thuế tại Việt Nam" },
+          { kr: "영어 커뮤니케이션 가능", en: "Able to communicate in English", vn: "Có thể giao tiếp bằng tiếng Anh" }
+        ]
+      }
+    ]
   }
 } as const

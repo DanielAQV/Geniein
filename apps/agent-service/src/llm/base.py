@@ -16,7 +16,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any, Iterator, Protocol
 
 
 @dataclass(frozen=True)
@@ -66,6 +66,25 @@ class Turn:
         return self.stop_reason == "refusal"
 
 
+@dataclass(frozen=True)
+class TextDelta:
+    """모델이 방금 쓴 글자들. 화면에 그대로 이어 붙인다."""
+
+    text: str
+
+
+@dataclass(frozen=True)
+class TurnComplete:
+    """한 턴의 끝. 스트리밍 중에도 호출부는 결국 `Turn` 이 필요하다 —
+    도구 호출 목록과 `raw_content`(thinking 블록 포함)가 다음 턴의 입력이기 때문이다."""
+
+    turn: Turn
+
+
+#: 스트리밍 한 턴이 내보내는 것. 마지막은 반드시 `TurnComplete` 다.
+TurnEvent = TextDelta | TurnComplete
+
+
 class LLM(Protocol):
     """유나의 언어능력. 교체 가능한 부품 (3.5)."""
 
@@ -78,6 +97,22 @@ class LLM(Protocol):
         effort: str | None = None,
     ) -> Turn:
         """도구를 쥔 한 턴. 툴콜 판단이 이 호출 안에서 일어난다 (별도 분류 호출 없음)."""
+        ...
+
+    def stream_agent_turn(
+        self,
+        *,
+        system: str,
+        messages: list[Any],
+        tools: list[dict[str, Any]],
+        effort: str | None = None,
+    ) -> Iterator[TurnEvent]:
+        """`run_agent_turn` 과 같은 한 턴을, 쓰이는 대로 내보내면서.
+
+        ★ 두 메서드가 따로 있는 것은 어댑터의 사정이다. 위쪽(agent/core.py)에는
+          루프가 하나뿐이고, 그 루프는 항상 이 스트리밍 쪽을 쓴다 — `run_agent_turn`
+          은 그 결과를 모아 주는 얇은 껍데기로 남는다. 루프가 둘이면 반드시 갈라진다.
+        """
         ...
 
     def append_assistant_turn(self, messages: list[Any], turn: Turn) -> list[Any]:

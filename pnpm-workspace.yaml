@@ -1,3 +1,17 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+# 설치 시 postinstall 스크립트를 돌릴 패키지. pnpm 10+ 는 기본으로 전부 막고
+# 여기서 명시적으로 허용하게 한다 — 의존성 설치가 임의 코드를 실행하는 경로였다.
+#
+# 셋 다 false 다. 각각 없어도 되는 이유가 분명하다:
+#   @nestjs/core   postinstall 이 후원 안내 메시지 출력뿐이다
+#   sharp          Next.js 이미지 최적화용인데 next.config.mjs 가 images.unoptimized=true 다
+#   unrs-resolver  플랫폼별 바이너리를 optionalDependencies 로 받으므로 빌드가 필요없다
+#
+# ⚠ 값을 자리표시자('set this to true or false')로 두면 pnpm 이
+#   ERR_PNPM_IGNORED_BUILDS 로 **모든 명령을 exit 1** 로 만든다. lint 도 test 도 안 돈다.
+allowBuilds:
+  '@nestjs/core': false
+  sharp: false
+  unrs-resolver: false

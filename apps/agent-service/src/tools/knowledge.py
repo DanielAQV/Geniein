@@ -62,8 +62,21 @@ def search(query: str, roles: Any = None, internal_user_id: Any = None, org_id: 
     """사내 문서 검색. 인자 중 query 만 모델이 채우고 나머지는 서버가 주입한다."""
     role_list = [str(r) for r in roles] if roles else None
 
+    # ★ 여기가 인가 경계다. org_id 는 게이트웨이가 Entra 토큰의 tid 에서 확정해
+    #   inject_context 로 넣어준다 (search_knowledge.yaml). 비어 있다는 건 신원이
+    #   확인되지 않은 호출이라는 뜻이므로, 전사 검색으로 넘어가지 않고 막는다.
+    #
+    #   "결과 없음"으로 처리하지 않는 이유: 모델이 그걸 "그런 규정이 없다"로 읽고
+    #   자신 있게 없다고 답한다. 조회를 못 한 것과 없는 것은 다르다.
+    if not org_id:
+        logger.error("org_id 없이 search_knowledge 가 호출됐습니다 — 인가 경계 위반")
+        return (
+            "소속 정보가 확인되지 않아 검색할 수 없습니다. "
+            "내용을 추측해서 답하지 말고, 조회에 실패했다고 알려주세요."
+        )
+
     try:
-        hits = search_kb(query, roles=role_list, limit=MAX_RESULTS)
+        hits = search_kb(query, org_id=str(org_id), roles=role_list, limit=MAX_RESULTS)
     except Exception as exc:  # noqa: BLE001
         logger.exception("지식베이스 검색 실패")
         return (

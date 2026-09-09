@@ -4,6 +4,7 @@ import { ReactNode } from "react"
 import { 
   LayoutDashboard, 
   FileText, 
+  Briefcase, 
   Settings, 
   Search, 
   Bell,
@@ -35,6 +36,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/admin" },
     { name: "AI Insights", icon: FileText, href: "/admin/insights" },
+    { name: "Careers", icon: Briefcase, href: "/admin/careers" },
     { name: "AI Settings", icon: Sparkles, href: "/admin/settings" },
     { name: "General Settings", icon: Settings, href: "/admin/general" },
   ]

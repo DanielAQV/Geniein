@@ -60,10 +60,23 @@ wsl -d Ubuntu -u root -- bash -c \
    /opt/geniein/venv/bin/python -m uvicorn src.main:app --host 0.0.0.0 --port 8000"
 
 # 확인 (WSL 안에서)
-curl -s http://127.0.0.1:8000/health
+curl -s http://127.0.0.1:8000/health          # /health 만 토큰 없이 열려 있다
+
+# /agent/message 와 /tools 는 서비스 토큰이 필요하다.
+# 루트 .env 의 AGENT_SERVICE_TOKEN 과 같은 값을 헤더로 넘긴다.
+#   토큰 생성: openssl rand -base64 32
 curl -s -X POST http://127.0.0.1:8000/agent/message \
-  -H 'Content-Type: application/json' -d '{"text":"안녕"}'
+  -H 'Content-Type: application/json' \
+  -H "x-service-token: $AGENT_SERVICE_TOKEN" \
+  -d '{"text":"안녕","internal_user_id":"dev:local"}'
 ```
+
+> `internal_user_id` 는 **필수**다. 예전 기본값 `"dev-user"` 를 없앴다 — 신원을 안 붙인
+> 호출자가 통과하면 감사 로그와 테넌트 격리가 같이 무너진다. 운영에서는 게이트웨이가
+> Entra 토큰을 검증해 `{tid}:{oid}` 를 채운다 (`docs/TEAMS_TAB_DESIGN.md` 3.4).
+>
+> 토큰이 틀리면 `401`, 서버에 `AGENT_SERVICE_TOKEN` 자체가 없으면 `503` 이다.
+> 503 은 "인증이 꺼져 있다"가 아니라 "설정이 빠졌다"는 뜻이며, 그 상태에서도 열리지 않는다.
 
 ---
 
@@ -285,6 +298,31 @@ systemd-run --quiet --scope -p MemoryMax=2200M -p MemorySwapMax=0 \
 
 ```bash
 wsl -d Ubuntu -u root -- free -h     # total 이 7.8Gi 로 나오면 반영된 것
+```
+
+> 같은 벽을 배포에서도 만났다. EC2 t3.small(2GB)에는 BGE-M3 가 들어가지 않고,
+> **질의 경로가 임베딩을 무조건 호출하므로**(`kb/search.py` — 어휘 검색 폴백이 없다)
+> "색인만 GPU 로" 로는 해결되지 않는다. `docs/TEAMS_DEPLOY.md` 5장 참조.
+
+### 7. git worktree 는 `.env` 를 공유하지 않는다
+
+브랜치를 워크트리로 나눠 쓰면(`C:\Projects\Geniein` / `Geniein-teams`) git 히스토리는
+공유하지만 **작업 디렉터리는 완전히 별개**다. `.env` 는 애초에 추적되지 않으므로
+워크트리마다 자기 사본을 갖는다. 한쪽에서 고친 값이 다른 쪽에 반영되지 않는다.
+
+대부분은 **의도한 차이**다 — 예를 들어 두 세션이 각자 뇌를 띄우면 포트를 갈라야 하고
+(`RAG_SERVICE_URL` 8000 vs 8001), 한쪽에만 있는 기능의 토큰은 한쪽에만 있어야 맞다.
+실제로 포트를 안 갈랐다면 새 코드의 검증이 **옛 프로세스를 상대로 조용히 통과**했을 것이다.
+
+위험한 것은 **공유돼야 할 값**(DB 접속, 임베딩 설정)이 한쪽에서만 바뀌는 경우다.
+값이 아니라 **키 목록과 값의 일치 여부만** 비교하면 비밀을 화면에 띄우지 않고 확인할 수 있다:
+
+```bash
+for f in .env apps/api/.env apps/web/.env; do
+  echo "=== $f ==="
+  diff <(grep -oE '^[A-Z_]+=' ../Geniein/$f | sort) \
+       <(grep -oE '^[A-Z_]+=' ./$f          | sort)
+done
 ```
 
 ---
