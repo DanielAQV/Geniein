@@ -42,7 +42,7 @@ describe('ServiceTokenGuard', () => {
     ).toThrow(UnauthorizedException);
   });
 
-  // ★ 가장 중요한 케이스. "설정 안 했으니 열어둔다"가 원래의 취약점이었다.
+  // 가장 중요한 케이스. "설정 안 했으니 열어둔다"가 원래의 취약점이었다.
   it('ADMIN_SERVICE_TOKEN 이 설정되지 않으면 통과시키지 않는다', () => {
     expect(() =>
       guardWith(undefined).canActivate(contextWith({ 'x-service-token': 'anything' })),

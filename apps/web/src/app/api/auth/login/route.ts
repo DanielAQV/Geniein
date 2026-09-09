@@ -1,10 +1,3 @@
-/**
- * 로그인 — 자격증명은 서버에서만 검증된다.
- *
- * 이전에는 admin/login/page.tsx 안에서 문자열 비교를 했다.
- * 클라이언트 컴포넌트이므로 그 비교식이 JS 번들에 그대로 실려 배포됐다.
- * 이제 브라우저는 아이디/비밀번호를 보낼 뿐 정답을 받지 못한다.
- */
 
 import { NextResponse } from 'next/server'
 import { verifyAdminCredentials } from '@/lib/auth/credentials'

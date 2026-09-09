@@ -1,59 +1,28 @@
-/**
- * Teams 탭 문구.
- *
- * ★ 사이트 사전(`src/lib/i18n/dictionary.ts`)에 섞지 않는다. 그쪽은 회사 소개
- *   페이지의 마케팅 문구이고 코드도 `kr/en/vn` 이라 표준 태그와 어긋난다.
- *   여기서는 `ko/vi/en` 을 쓴다 — 계정 언어(`ko-kr`)와 Teams locale(`vi-vn`)에서
- *   앞부분만 잘라 바로 대응시키기 위해서다. 두 체계를 오가며 변환하면 그 사이에
- *   반드시 오역이 생긴다.
- *
- * 언어를 정하는 근거는 셋이고 순서가 있다:
- *
- *   1. 사용자가 탭에서 고른 값     자동 판정이 틀렸을 때의 탈출구. 가장 우선한다
- *   2. Entra 계정 언어 (xms_pl)    검증된 토큰에서 온다. 다만 **없을 수 있다**
- *   3. Teams 클라이언트 locale     항상 있지만 UI 설정일 뿐이다
- *
- * ★ 답변 언어는 이것과 별개다. 그쪽은 **질문한 언어**가 우선이고(인격 규칙),
- *   계정 언어는 판단이 안 설 때만 쓰인다. 화면 문구는 물어볼 질문이 없으니
- *   위 사슬로 정할 수밖에 없다.
- */
 
 export const LANGUAGES = ['ko', 'vi', 'en'] as const
 export type Lang = (typeof LANGUAGES)[number]
 
 export const DEFAULT_LANG: Lang = 'ko'
 
-/** 언어 이름. 각 언어를 **그 언어로** 적는다 — 못 읽는 이름은 소용없다. */
 export const LANGUAGE_LABELS: Record<Lang, string> = {
   ko: '한국어',
   vi: 'Tiếng Việt',
   en: 'English',
 }
 
-/**
- * 선택기 버튼에 보일 두 글자.
- *
- * ★ 헤더에 세 언어를 한 줄로 늘어놓으려면 이름 전체는 너무 넓다 ("Tiếng Việt" 하나가
- *   72px 다). 두 글자 코드는 어느 언어 사용자에게나 같은 모양으로 읽히고, 못 읽는
- *   사람을 위한 이름 전체는 `title`·`aria-label` 로 함께 준다 (chat-view.tsx).
- */
 export const LANGUAGE_SHORT: Record<Lang, string> = {
   ko: 'KO',
   vi: 'VI',
   en: 'EN',
 }
 
-/** `ko-KR`, `vi-vn`, `en` → `Lang`. 모르는 값이면 null (다음 근거로 넘어간다). */
 export function toLang(tag: unknown): Lang | null {
   if (typeof tag !== 'string') return null
   const primary = tag.trim().toLowerCase().split(/[-_]/)[0]
   return (LANGUAGES as readonly string[]).includes(primary) ? (primary as Lang) : null
 }
 
-/**
- * 근거 셋을 순서대로 훑어 언어를 정한다. 전부 비면 기본값.
- * 인자를 순서대로 받는 것이 곧 우선순위다 — 호출부가 순서를 바꾸면 정책이 바뀐다.
- */
+// 인자 순서가 곧 우선순위다 (고른 값 > 계정 언어 > Teams locale).
 export function resolveLang(...candidates: unknown[]): Lang {
   for (const candidate of candidates) {
     const lang = toLang(candidate)
@@ -64,24 +33,16 @@ export function resolveLang(...candidates: unknown[]): Lang {
 
 export interface Strings {
   title: string
-  /** 언어 선택기의 접근성 라벨. 라벨 자체도 언어를 타야 한다 */
   languageLabel: string
   newChat: string
   emptyTitle: string
   emptyBody: string
   placeholder: string
   send: string
-  /** 검색 중 문구. **시간을 약속하지 않는다** — 실측이 45초에서 10초로 바뀌었고,
-   *  또 바뀔 값이다. 근거 없는 숫자를 적으면 그게 곧 틀린 안내가 된다.
-   *
-   *  스트리밍에서는 아래 단계별 문구가 이 자리를 대신한다. 이 값은 비스트리밍
-   *  경로(`/teams/preview`)와, 단계를 아직 못 받은 첫 순간에 쓰인다. */
+  /** 검색 중 문구. 시간을 약속하지 않는다 — 근거 없는 숫자는 곧 틀린 안내가 된다 */
   searching: string
-  /** 모델을 부르는 중 — 아직 아무것도 안 왔다 */
   phaseThinking: string
-  /** 도구가 도는 중. 검색어가 있으면 뒤에 붙여 보여준다 */
   phaseSearching: string
-  /** 도구 결과를 받아 다시 모델을 부르는 중 */
   phaseReading: string
   toolSearch: string
   toolFailed: string
@@ -217,7 +178,6 @@ export function stringsFor(lang: Lang): Strings {
   return DICTIONARY[lang] ?? DICTIONARY[DEFAULT_LANG]
 }
 
-/** 사용자가 고른 언어를 기억한다. 자동 판정이 틀린 사람에게 매번 고르게 하지 않는다. */
 const STORAGE_KEY = 'genie.teams.lang'
 
 export function readStoredLang(): Lang | null {
@@ -225,8 +185,7 @@ export function readStoredLang(): Lang | null {
   try {
     return toLang(window.localStorage.getItem(STORAGE_KEY))
   } catch {
-    // 사생활 보호 모드 등에서 localStorage 접근이 막힐 수 있다. 저장은 부가 기능이라
-    // 여기서 실패해도 화면은 그대로 동작해야 한다.
+    // 사생활 보호 모드 등에서 localStorage 접근이 막힐 수 있다. 저장은 부가 기능이다.
     return null
   }
 }
@@ -235,6 +194,5 @@ export function storeLang(lang: Lang): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, lang)
   } catch {
-    /* 위와 같은 이유로 무시한다 */
   }
 }

@@ -1,12 +1,3 @@
-/**
- * 서버사이드 게이팅.
- *
- * 이전 구조는 admin/layout.tsx 가 localStorage 를 읽어 클라이언트에서 막았다.
- * 그건 UI 를 가린 것이지 접근을 막은 게 아니다 — 번들과 데이터는 이미 내려간 뒤였다.
- * 여기서 막으면 인증되지 않은 요청은 페이지 렌더 자체에 도달하지 못한다.
- *
- * 설계문서 7장 "middleware.ts 로 서버사이드 차단".
- */
 
 import { NextResponse, type NextRequest } from 'next/server'
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth/session'
@@ -17,8 +8,7 @@ export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const session = await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value)
 
-  // BFF 라우트는 리다이렉트가 아니라 401 이어야 한다.
-  // 로그인 HTML 을 JSON 으로 파싱하려다 나는 에러만큼 디버깅을 방해하는 게 없다.
+  // BFF 라우트는 리다이렉트가 아니라 401 이어야 한다 — 로그인 HTML 을 JSON 으로 파싱하게 된다.
   if (pathname.startsWith('/api/admin')) {
     if (!session) {
       return NextResponse.json({ error: 'unauthorized' }, { status: 401 })

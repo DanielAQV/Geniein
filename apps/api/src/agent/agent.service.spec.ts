@@ -35,7 +35,6 @@ function serviceWith(env: Record<string, string | undefined>): AgentService {
   return new AgentService(config);
 }
 
-/** fetch 응답 흉내. 실제 Response 를 만들지 않고 필요한 표면만 준다. */
 function reply(
   body: unknown,
   { ok = true, status = 200 } = {},
@@ -54,7 +53,6 @@ function reply(
 
 const mockFetch = jest.fn();
 
-/** 마지막 호출의 (url, init) 을 꺼낸다. */
 function lastCall(): { url: string; init: RequestInit } {
   const [url, init] = mockFetch.mock.calls.at(-1) as [string, RequestInit];
   return { url, init };
@@ -122,11 +120,6 @@ describe('AgentService', () => {
       expect(sentBody()).toMatchObject({ locale: 'vi-vn' });
     });
 
-    /**
-     * 고른 언어와 계정 언어는 **따로** 넘어간다. 뇌가 우선순위를 정하기 때문이다
-     * (발언 언어 > 고른 값 > 계정 언어). 게이트웨이에서 하나로 합치면 그 순서를
-     * 여기서 정해버리는 셈이 되고, 뇌는 사용자가 고른 것인지 알 수 없게 된다.
-     */
     it('고른 언어를 계정 언어와 별개로 넘긴다', async () => {
       await serviceWith(CONFIGURED).search(
         '일비',
@@ -140,7 +133,6 @@ describe('AgentService', () => {
 
     it('계정 언어가 없으면 null 로 넘긴다', async () => {
       // 뇌는 이 값이 없으면 인격의 기본 규칙(질문한 언어로 답한다)만 쓴다.
-      // 게이트웨이가 임의로 기본값을 만들어 넣으면 그 판단을 가로채게 된다.
       await serviceWith(CONFIGURED).search('일비', USER);
 
       expect(sentBody()).toMatchObject({ locale: null });
@@ -234,8 +226,8 @@ describe('AgentService', () => {
       ).rejects.toThrow(BadGatewayException);
     });
 
-    // ★ 뇌가 우리 토큰을 거절한 것은 사용자 문제가 아니다. 401 을 그대로 돌려주면
-    //   사용자가 "다시 로그인" 을 시도하게 되고, 진짜 원인(설정 오류)은 숨는다.
+    // 뇌가 우리 토큰을 거절한 것은 사용자 문제가 아니다. 401 을 그대로 돌려주면
+    // 사용자가 "다시 로그인" 을 시도하고 진짜 원인(설정 오류)은 숨는다.
     it('뇌의 401 을 사용자에게 401 로 돌려주지 않는다', async () => {
       mockFetch.mockReturnValue(
         reply({ detail: 'unauthorized' }, { ok: false, status: 401 }),
