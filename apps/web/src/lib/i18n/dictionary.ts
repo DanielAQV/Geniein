@@ -217,8 +217,8 @@ export const dictionary = {
         {
           country: "ph",
           image: "/images/about/projects/ph-ews4.jpg",
-          title: { kr: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업", en: "THE PROJECT \"DEVELOPMENT OF FLOOD FORECASTING AND EARLY WARNING SYSTEM FOR THE GREATER METRO MANILA AND SURROUNDING PROVINCES OF LAGUNA LAKE COMPLEX FOR DISASTER MITIGATION (EWS 4)\"", vn: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업" },
-          official: "THE PROJECT \"DEVELOPMENT OF FLOOD FORECASTING AND EARLY WARNING SYSTEM FOR THE GREATER METRO MANILA AND SURROUNDING PROVINCES OF LAGUNA LAKE COMPLEX FOR DISASTER MITIGATION (EWS 4)\"",
+          title: { kr: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업", en: "Development of Flood Forecasting and Early Warning System for the Greater Metro Manila and Surrounding Provinces of Laguna Lake Complex for Disaster Mitigation (EWS 4)", vn: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업" },
+          official: "Development of Flood Forecasting and Early Warning System for the Greater Metro Manila and Surrounding Provinces of Laguna Lake Complex for Disaster Mitigation (EWS 4)",
           category: { kr: "ODA · 재해관리", en: "ODA · Disaster Management", vn: "ODA · Quản lý thiên tai" },
           description: { kr: "(장기) 필리핀 지속가능한 개발을 위한 재해대비 복원력과 적응능력 강화\n(중기) 광역 메트로 마닐라의 홍수위험경감 및 재해관리 대응체계 강화\n(단기) 광역 메트로 마닐라의 홍수예경보 체계 구축 및 전문인력 양성", en: "(Long term) Strengthening disaster preparedness resilience and adaptive capacity for sustainable development in the Philippines\n(Medium term) Strengthening flood risk reduction and disaster management response systems in the Greater Metro Manila\n(Short term) Establishing a flood forecasting and early warning system and training specialists in the Greater Metro Manila", vn: "(Dài hạn) Tăng cường khả năng phục hồi và thích ứng với thiên tai vì sự phát triển bền vững của Philippines\n(Trung hạn) Tăng cường giảm nhẹ rủi ro lũ lụt và hệ thống ứng phó quản lý thiên tai tại Vùng Đô thị Manila mở rộng\n(Ngắn hạn) Xây dựng hệ thống dự báo, cảnh báo sớm lũ lụt và đào tạo nhân lực chuyên môn" }
         },
@@ -232,7 +232,7 @@ export const dictionary = {
         },
         {
           country: "ph",
-          image: "",
+          image: "/images/about/projects/ph-cyber-center.jpg",
           title: { kr: "필리핀 사이버 위기대응 역량강화를 위한 국가사이버안전센터 구축사업", en: "Establishment Project of National Cyber Security Center for Enhancing the Cyber Crisis Response Capabilities in the Philippines", vn: "필리핀 사이버 위기대응 역량강화를 위한 국가사이버안전센터 구축사업" },
           official: "Establishment Project of National Cyber Security Center for Enhancing the Cyber Crisis Response Capabilities in the Philippines",
           category: { kr: "ODA · 사이버보안", en: "ODA · Cybersecurity", vn: "ODA · An ninh mạng" },
@@ -248,7 +248,7 @@ export const dictionary = {
         },
         {
           country: "ph",
-          image: "",
+          image: "/images/about/projects/ph-judicial.jpg",
           title: { kr: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업", en: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts", vn: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업" },
           official: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts",
           category: { kr: "ODA · 사법 디지털화", en: "ODA · Judicial Digitalization", vn: "ODA · Số hóa Tư pháp" },
