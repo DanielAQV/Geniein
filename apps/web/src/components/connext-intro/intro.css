@@ -104,14 +104,17 @@
   overflow: visible;
 }
 
-/* ---- copy ---- */
+/* ---- copy ----
+   크기 기준은 액자 폭(cqw)이다. vw(뷰포트)를 쓰면 액자가 max-w-5xl 이라
+   둘이 따로 움직인다 — 넓은 화면의 좁은 액자에서 글자만 커져 넘쳤다.
+   컨테이너는 액자 div 에 [container-type:inline-size] 로 잡혀 있다. */
 .gi-say {
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   text-align: center;
-  padding: 0 24px;
+  padding: 0 clamp(12px, 3cqw, 24px);
 }
 .gi-say > * {
   transition:
@@ -122,8 +125,8 @@
 .gi-tag {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  font-size: 15px;
+  gap: clamp(5px, 0.9cqw, 9px);
+  font-size: clamp(11px, 1.7cqw, 15px);
   font-weight: 700;
   letter-spacing: -0.02em;
   text-shadow: 0 2px 14px rgba(0, 20, 60, 0.7);
@@ -136,8 +139,8 @@
 } /* "GNOM" sits a tone back */
 .gi-tico {
   display: inline-flex;
-  width: 26px;
-  height: 19px;
+  width: clamp(18px, 2.6cqw, 26px);
+  height: clamp(13px, 1.9cqw, 19px);
   flex: none;
 }
 .gi-tico > svg {
@@ -148,8 +151,8 @@
 
 /* Weight and colour already carry the hierarchy, so 2x size is enough. */
 .gi-set {
-  margin-top: 13px;
-  font-size: clamp(17px, 2.2vw, 25px);
+  margin-top: clamp(5px, 1.3cqw, 13px);
+  font-size: clamp(13px, 2.5cqw, 25px);
   font-weight: 600;
   letter-spacing: -0.01em;
   color: #cfe3fb;
@@ -158,8 +161,8 @@
 }
 .gi-hit {
   margin: 3px auto 0;
-  max-width: min(1080px, 94vw);
-  font-size: clamp(28px, 4vw, 50px);
+  max-width: min(1080px, 94cqw);
+  font-size: clamp(19px, 4.9cqw, 50px);
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.14;
@@ -363,18 +366,13 @@
     display: none;
   }
 }
+/* 폰트·아이콘 크기는 위에서 cqw(액자 폭) 로 잡는다. 여기서 뷰포트 기준으로
+   덮어쓰면 액자 폭과 어긋난다 — halo 만 남긴다. */
 @media (max-width: 720px) {
   .gi-halo {
     width: 560px;
     height: 560px;
     margin: -280px 0 0 -280px;
-  }
-  .gi-tag {
-    font-size: 13.5px;
-  }
-  .gi-tico {
-    width: 22px;
-    height: 16px;
   }
 }
 

@@ -89,7 +89,12 @@ export function ConnextCta() {
           {/* 모니터 비율 액자. 인트로는 여기 안에서만 움직인다. */}
           {/* 액자 안은 테마와 무관하게 어둡다 — Connext 화면 자체가 어두운 UI 라
               라이트 모드에서도 여기만 "모니터" 처럼 읽히는 편이 낫다. */}
-          <div ref={frameRef} className="relative aspect-video w-full overflow-hidden bg-[#03060f]">
+          {/* [container-type:inline-size] — 인트로·랜딩의 글자 크기 기준이 이 액자다.
+              vw(뷰포트)로 잡으면 액자가 max-w-5xl 이라 둘이 따로 움직인다. */}
+          <div
+            ref={frameRef}
+            className="relative aspect-video w-full overflow-hidden bg-[#03060f] [container-type:inline-size]"
+          >
             {/* 인트로가 끝나면 눈이 이 화면의 로고 자리로 날아가 앉는다 */}
             <ConnextLanding />
             {inView && <ConnextIntro key={replayKey} force={replayKey > 0} />}

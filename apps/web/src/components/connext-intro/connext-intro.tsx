@@ -147,10 +147,20 @@ const beats = useMemo<Beat[]>(
         ` scale(${eyeScale * pulse})`;
     };
     const layout = () => {
-      const s = Math.min(1, (boxW() - 40) / 900, (boxH() - 80) / 760);
-      eyeScale = EYE_BIG * Math.max(0.5, s);
-      introCY = boxH() * 0.4;
-      say.style.transform = `translateY(${introCY + (154 * eyeScale) / 2 + 28}px)`;
+      const w = boxW();
+      const h = boxH();
+      /* 좁은 액자(모바일)는 세로가 없다. 큰 화면 기준 상수를 그대로 쓰면
+         눈이 액자보다 커지고 문구가 액자 밖으로 밀려난다 — 326x184 에서
+         하한 0.5 는 눈 높이 162px 을 만들고(액자가 184px), 문구 블록이
+         182px 지점에서 시작해 통째로 잘렸다. */
+      const narrow = w < 560;
+      const s = Math.min(1, (w - 40) / 900, (h - 80) / 760);
+      /* 좁을 때는 눈을 액자 높이의 34% 로 묶어 문구 자리를 남긴다.
+         184px 액자에서 눈 63px, 문구 시작 100px, 문구 53px -> 31px 여유. */
+      eyeScale = narrow ? (h * 0.34) / 154 : EYE_BIG * Math.max(0.5, s);
+      introCY = h * (narrow ? 0.3 : 0.4);
+      say.style.transform =
+        `translateY(${introCY + (154 * eyeScale) / 2 + (narrow ? 14 : 28)}px)`;
       fx.style.top = `${introCY}px`;
       /* 눈 반지름 + 카드 절반 + 여백.
          157 이던 값을 200 으로 올렸다. 액자 폭에서 eyeScale 이 1.365 쯤
