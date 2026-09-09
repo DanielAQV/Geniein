@@ -37,3 +37,8 @@ Thumbs.db
 # ── 로컬 도구 ────────────────────────────────────
 .claude/settings.local.json
 coverage/
+
+# 리포 안에 만들어지는 에이전트 워크트리. git add -A 에 통째로 딸려가지 않게 막는다.
+.claude/worktrees/
+# 윈도우에서 `> nul` 리다이렉션이 남기는 잔해 파일
+nul

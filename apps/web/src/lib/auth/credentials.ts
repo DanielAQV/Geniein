@@ -50,26 +50,43 @@ export interface AdminIdentity {
   roles: string[]
 }
 
+/** 길이가 달라도 비교 시간이 입력에 따라 갈리지 않게 한다. */
+function constantTimeEquals(a: string, b: string): boolean {
+  const left = Buffer.from(a)
+  const right = Buffer.from(b)
+  if (left.length !== right.length) {
+    // 길이가 다르면 결과는 이미 정해졌지만, 비교는 그대로 한 번 돌린다.
+    timingSafeEqual(left, left)
+    return false
+  }
+  return timingSafeEqual(left, right)
+}
+
 export function verifyAdminCredentials(
   username: string,
   password: string,
 ): AdminIdentity | null {
   const expectedUser = process.env.ADMIN_USERNAME
   const expectedHash = process.env.ADMIN_PASSWORD_HASH
+  const expectedPlain = process.env.ADMIN_PASSWORD
 
-  if (!expectedUser || !expectedHash) {
+  if (!expectedUser || (!expectedHash && !expectedPlain)) {
     // 설정이 없으면 로그인은 항상 실패한다. 기본 계정을 만들어주지 않는다.
     throw new Error(
-      'ADMIN_USERNAME / ADMIN_PASSWORD_HASH 가 설정되지 않았습니다. ' +
-        'apps/web/scripts/hash-password.mjs 로 해시를 생성해 .env 에 넣으세요.',
+      'ADMIN_USERNAME 과 ADMIN_PASSWORD 또는 ADMIN_PASSWORD_HASH 가 설정되지 않았습니다. ' +
+        'apps/web/scripts/hash-password.mjs 로 해시를 생성해 .env 에 넣거나, ' +
+        'ADMIN_PASSWORD 에 평문을 넣으세요.',
     )
   }
 
-  const userMatches =
-    username.length === expectedUser.length &&
-    timingSafeEqual(Buffer.from(username), Buffer.from(expectedUser))
+  const userMatches = constantTimeEquals(username, expectedUser)
 
-  const passwordMatches = verifyPassword(password, userMatches ? expectedHash : DUMMY_HASH)
+  // ADMIN_PASSWORD 가 있으면 평문으로 비교한다. 서버 env 파일을 읽을 수 있는
+  // 사람이 곧 관리자가 된다는 뜻이다 — 로그·백업·docker inspect 에도 실린다.
+  // 해시로 돌아갈 때는 이 값을 지우기만 하면 된다.
+  const passwordMatches = expectedPlain
+    ? constantTimeEquals(password, expectedPlain)
+    : verifyPassword(password, userMatches ? expectedHash! : DUMMY_HASH)
 
   if (!userMatches || !passwordMatches) return null
 
