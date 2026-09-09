@@ -4,23 +4,11 @@ import { motion } from "framer-motion"
 import { MapPin } from "lucide-react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { dictionary } from "@/lib/i18n/dictionary"
+import { FallbackPanel } from "@/components/about/projects-showcase"
 
 export function OrganizationSection() {
   const { t, language } = useLanguage()
-  const hubData = dictionary.about.organization.hubs
-
-  const hubs = [
-    {
-      ...hubData[0],
-      image: "/images/about/org-korea.png",
-      address: hubData[0].address[language]
-    },
-    {
-      ...hubData[1],
-      image: "/images/about/org-hanoi.png",
-      address: hubData[1].address[language]
-    }
-  ]
+  const hubs = dictionary.about.organization.hubs
 
   return (
     <section id="organization" className="py-14 md:py-20 lg:py-28 bg-background/50 border-y border-border/50 relative overflow-hidden">
@@ -54,7 +42,7 @@ export function OrganizationSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
           {hubs.map((hub, index) => {
             const cityParts = hub.city[language].split("\n")
             return (
@@ -64,26 +52,30 @@ export function OrganizationSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.2 }}
-                className="relative overflow-hidden rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] shadow-md hover:shadow-lg hover:border-primary/40 transition-all duration-500 group"
+                className="relative flex flex-col overflow-hidden rounded-[16px] border border-[var(--border-card)] bg-[var(--card-dark)] shadow-md hover:shadow-lg hover:border-primary/40 transition-all duration-500 group"
               >
                 {/* Photo with role badge */}
                 <div className="relative h-40 md:h-[259px] w-full overflow-hidden">
-                  <img
-                    src={hub.image}
-                    alt={cityParts[0]}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {hub.image ? (
+                    <img
+                      src={hub.image}
+                      alt={cityParts[0]}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <FallbackPanel />
+                  )}
                   <span className="absolute left-4 top-4 inline-flex items-center rounded-full border border-[var(--border-card-strong)] bg-[#5874ea] px-[17px] py-[7px] text-xs font-medium text-white">
                     {hub.role[language]}
                   </span>
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col gap-6 px-4 py-8">
-                  <div className="flex items-start justify-between gap-4 pt-2">
-                    <h3 className="flex-1 text-lg md:text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[0]}</h3>
+                <div className="flex flex-1 flex-col gap-6 px-4 py-8">
+                  <div className="flex items-start justify-between gap-3 pt-2">
+                    <h3 className="min-w-0 text-lg md:text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)] whitespace-nowrap">{cityParts[0]}</h3>
                     {cityParts[1] && (
-                      <span className="flex-1 text-right text-lg md:text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)]">{cityParts[1]}</span>
+                      <span className="shrink-0 text-right text-base md:text-lg lg:text-xl font-bold tracking-[-0.5px] leading-7 text-[var(--text-heading)] whitespace-nowrap">{cityParts[1]}</span>
                     )}
                   </div>
 
@@ -95,12 +87,15 @@ export function OrganizationSection() {
                     ))}
                   </div>
 
-                  <div className="border-t border-border/30 pt-8">
-                    <div className="flex items-center gap-2 text-[var(--text-heading)]">
-                      <MapPin className="h-4 w-4 shrink-0" />
-                      <span className="text-sm font-light">{hub.address}</span>
+                  {/* 주소 미정인 거점은 줄 자체를 그리지 않는다 */}
+                  {hub.address[language] && (
+                    <div className="border-t border-border/30 pt-8">
+                      <div className="flex items-start gap-2 text-[var(--text-heading)]">
+                        <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                        <span className="text-sm font-light break-keep">{hub.address[language]}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </motion.div>
             )
