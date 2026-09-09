@@ -7,7 +7,6 @@ load_dotenv()
 
 class Database:
     def __init__(self):
-        # Psycopg 3 connection string or params
         self.conn = psycopg.connect(
             host=os.getenv('DB_HOST', 'localhost'),
             port=os.getenv('DB_PORT', '5432'),

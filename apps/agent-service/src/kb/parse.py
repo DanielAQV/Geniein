@@ -1,18 +1,4 @@
-"""문서 파싱 + 청킹 (설계문서 5.1 "색인 파이프라인").
-
-핵심 규율 두 개:
-
-  ① **구조를 보존한다.** heading 계층이 있어야 인용이 성립하고, 표가 표로 남아야
-     직급×금액 매트릭스가 무너지지 않는다. 그래서 docx 를 ZIP+XML 그대로 읽고
-     PDF 텍스트 추출을 A등급으로 취급하지 않는다.
-
-  ② **표를 청크 경계로 쪼개지 않는다.** 금액 표가 반으로 갈리면 직급과 금액이
-     서로 다른 청크로 흩어져 "부장 일비" 질문에 답할 수 없게 된다.
-
-②를 지키려면 청킹이 "글자 수로 자르기"일 수 없다. 그래서 섹션을 **블록 배열**로
-표현하고, `table` 블록은 크기와 무관하게 원자 단위로 둔다. markdown 전사본과
-docx 가 같은 블록 표현으로 수렴하므로 청킹 로직은 하나만 있으면 된다.
-"""
+"""문서 파싱 + 청킹 (설계문서 5.1 "색인 파이프라인")."""
 
 from __future__ import annotations
 
@@ -76,7 +62,6 @@ class Chunk:
     heading_path: tuple[str, ...]
 
 
-# ── markdown 전사본 (C등급 vision 전사 결과) ─────────────────────────────
 
 
 def parse_markdown(text: str) -> tuple[dict[str, Any], list[Section]]:
@@ -86,9 +71,7 @@ def parse_markdown(text: str) -> tuple[dict[str, Any], list[Section]]:
         metadata = yaml.safe_load(match.group(1)) or {}
         text = text[match.end() :]
 
-    # ★ 전사자 주석은 색인하지 않는다. 전사본에는 원문과 "우리가 원문에 대해 적어둔
-    #   메모"가 한 파일에 섞여 있는데, 후자가 색인되면 유나가 우리 코멘터리를
-    #   사규인 것처럼 인용하게 된다. 근거와 메모는 섞이면 안 된다.
+    # 전사자 주석은 색인하지 않는다. 우리 코멘터리를 사규처럼 인용하게 된다.
     text = IGNORE_MARKER_RE.split(text, maxsplit=1)[0]
     text = HTML_COMMENT_RE.sub("", text)
 
@@ -145,15 +128,8 @@ def load_transcript(path: Path) -> ParsedDoc:
     raw = path.read_text(encoding="utf-8")
     metadata, sections = parse_markdown(raw)
 
-    # ★ frontmatter 가 없으면 전사본이 아니라 우리가 쓴 노트다. 거부한다.
-    #
-    #   실제로 당했다: `python -m src.kb.ingest regulations/transcripts/*.md` 는
-    #   이 독스트링에 적힌 사용법 그대로인데, 글롭이 `README.md`(전사 작업 노트)까지
-    #   집어삼켜 색인해 버렸다. 그러면 유나가 "미해결 — 출장규정 유효본 판정" 같은
-    #   **우리 코멘터리를 사규처럼 인용**하게 된다. 근거와 메모는 섞이면 안 된다.
-    #
-    #   전사본은 ocr_used·citation_scheme·effective_date 를 frontmatter 로 들고
-    #   오므로, 그게 없다는 건 색인에 필요한 판정 정보가 없다는 뜻이기도 하다.
+    # frontmatter 가 없으면 전사본이 아니라 우리가 쓴 노트다. 거부한다 —
+    # 글롭이 README 를 집어삼켜 작업 노트를 사규로 색인한 적이 있다.
     if not metadata:
         raise ValueError(
             f"{path.name}: frontmatter 가 없습니다. 전사본이 아니라 노트로 보고 "
@@ -169,16 +145,10 @@ def load_transcript(path: Path) -> ParsedDoc:
     )
 
 
-# ── docx (A등급) ─────────────────────────────────────────────────────────
 
 
 def _iter_block_items(document: Any) -> Iterator[Any]:
-    """본문 요소를 **문서 순서대로** 훑는다.
-
-    python-docx 의 `document.paragraphs` / `document.tables` 는 각각 따로 주기
-    때문에 표가 어느 문단 사이에 있었는지가 사라진다. 그러면 "제12조 아래의 표"
-    라는 관계가 끊어져 heading 계층에 표를 붙일 수 없다.
-    """
+    """본문 요소를 **문서 순서대로** 훑는다."""
     from docx.document import Document as DocxDocument
     from docx.oxml.table import CT_Tbl
     from docx.oxml.text.paragraph import CT_P
@@ -212,12 +182,7 @@ def _table_to_markdown(table: Any) -> str:
 
 
 def _style_heading_level(paragraph: Any) -> int | None:
-    """Word heading 스타일에서 계층을 읽는다. 없으면 None.
-
-    ★ 이 코퍼스에는 하나도 없다 (22개 파일 전부 Normal / List Paragraph).
-    그래도 남겨둔다 — HR 이 앞으로 스타일을 제대로 쓴 문서를 올리면 그게 가장
-    강한 신호이고, 그때는 본문 관례 추측보다 우선해야 한다.
-    """
+    """Word heading 스타일에서 계층을 읽는다. 없으면 None."""
     name = (getattr(paragraph.style, "name", "") or "").strip()
     match = re.match(r"^Heading (\d)$", name)
     if match:
@@ -236,12 +201,7 @@ def _bold_ratio(paragraph: Any) -> float:
 
 
 def _is_auto_numbered(paragraph: Any) -> bool:
-    """Word 자동번호(`numPr`) 여부.
-
-    SOP 문서가 이 경우인데, 화면에는 "1. Mục đích / Purpose:" 로 보이지만
-    `paragraph.text` 에는 번호가 없다 — 번호를 Word 가 렌더링 시점에 붙이기
-    때문이다. 텍스트만 보면 계층 신호가 통째로 사라진다.
-    """
+    """Word 자동번호(`numPr`) 여부."""
     pr = paragraph._p.pPr
     return pr is not None and pr.numPr is not None
 
@@ -249,17 +209,7 @@ def _is_auto_numbered(paragraph: Any) -> bool:
 def _push_heading(
     stack: list[tuple[int, str]], heading: headings.Heading
 ) -> tuple[str, ...]:
-    """계층 스택을 갱신하고 새 heading_path 를 낸다.
-
-    ★ 스택은 레벨을 함께 들고 있어야 한다. 텍스트만 쌓고 `del stack[level-1:]` 로
-    자르면, 실제 문서처럼 깊이가 건너뛸 때(PART=1 다음에 곧바로 `1.`=3) 레벨과
-    인덱스가 어긋나 **형제가 자식으로 중첩된다.** 실측 증상:
-
-        PART II > 1. General Understanding > 2. Principles of Task Performance
-                                             ^ 2번은 1번의 하위가 아니라 형제다
-
-    레벨을 들고 있으면 "나보다 깊거나 같은 것을 모두 걷어낸다"로 정확히 처리된다.
-    """
+    """계층 스택을 갱신하고 새 heading_path 를 낸다."""
     while stack and stack[-1][0] >= heading.level:
         stack.pop()
     stack.append((heading.level, heading.text))
@@ -311,8 +261,7 @@ def load_docx(path: Path) -> ParsedDoc:
         ratio = _bold_ratio(item)
         numbered = _is_auto_numbered(item)
 
-        # ★ 문단 안에 줄바꿈이 있을 수 있다 — 2019 사규의 "PART II\nFORMATION OF
-        #   ORGANIZATION" 이 한 문단이다. 줄 단위로 봐야 번호와 제목이 이어진다.
+        # 문단 안에 줄바꿈이 있을 수 있어 줄 단위로 봐야 번호와 제목이 이어진다.
         for line in item.text.splitlines():
             text = line.strip()
             if not text:
@@ -347,9 +296,8 @@ def load_docx(path: Path) -> ParsedDoc:
     if current.blocks:
         sections.append(current)
 
-    # ★ 제목은 파일명으로 둔다. 첫 헤딩("PART I")은 문서 제목이 아니고, 본문 첫 줄은
-    #   레터헤드일 때가 있다. 그리고 파일명이 "[Draft]" 나 개정연도 같은 판정 정보를
-    #   들고 있어서(전사본 README 의 2018 vs 2025 Draft 문제) 버리면 손해다.
+    # 제목은 파일명으로 둔다. 첫 헤딩은 문서 제목이 아니고, 파일명이 개정연도 같은
+    # 판정 정보를 들고 있다.
     return ParsedDoc(
         title=path.stem,
         metadata={},
@@ -359,7 +307,6 @@ def load_docx(path: Path) -> ParsedDoc:
     )
 
 
-# ── PDF 텍스트본 (B등급) ─────────────────────────────────────────────────
 
 
 # 머리말·꼬리말 잡음. 조항 사이에 끼면 문단이 끊어진다.
@@ -384,22 +331,9 @@ def _is_cjk(ch: str) -> bool:
 def _join_wrapped(prev: str, nxt: str) -> str:
     """PDF 줄바꿈으로 갈린 한 문단을 다시 잇는다.
 
-    영문은 공백을 넣는다. 한국어는 붙인다 — 다만 이건 **깨끗한 규칙이 아니라 선택**이고,
-    근거를 남겨둔다:
-
-      · 시행세칙의 줄바꿈에는 단어 중간("해외법" + "인”이라", "처우" + "에")과
-        단어 경계("세칙이" + "정하는")가 섞여 있다. 붙이면 앞이 맞고 띄면 뒤가 맞다.
-      · 좌표로 갈라보려 했으나 안 된다. 양쪽정렬이라 두 경우 모두 오른쪽 여백이
-        0.1pt 로 똑같이 찍힌다 (실측: 줄바꿈 320곳 중 정렬된 이어짐 125곳이 전부
-        여백 ≈ 0). 어느 쪽에서 공백이 소비됐는지는 텍스트에도 좌표에도 없다.
-      · 대략 반반이라 정답이 없어서, **붙이는 쪽**을 골랐다. 붙여서 틀리면
-        "세칙이정하는" 처럼 흔한 단어 둘이 붙을 뿐이지만, 띄어서 틀리면
-        "해외법 인" 이 되어 이 코퍼스의 핵심 검색어가 사라지기 때문이다.
-        BGE-M3 는 서브워드 토크나이저라 붙은 쪽의 손해가 더 작다.
-
-    더 정확히 하려면 문서 자체에서 어휘집을 만들어(줄바꿈이 아닌 위치의 토큰들)
-    `앞꼬리+뒷머리` 가 그 어휘집에 있으면 붙이는 방법이 있다. 검색 품질이 이걸
-    요구하면 그때 넣는다.
+    영문은 공백을 넣고 한국어는 붙인다. 코퍼스의 줄바꿈은 단어 중간과 단어 경계가
+    대략 반반이고 좌표로도 못 가르는데, 붙여서 틀리면 흔한 두 단어가 붙을 뿐이지만
+    띄어서 틀리면 "해외법 인" 처럼 핵심 검색어가 사라진다.
     """
     if prev and nxt and _is_cjk(prev[-1]) and _is_cjk(nxt[0]):
         return prev + nxt
@@ -407,19 +341,7 @@ def _join_wrapped(prev: str, nxt: str) -> str:
 
 
 def _page_lines(path: Path) -> list[list[str]]:
-    """페이지별 정제된 줄 목록.
-
-    ★ pypdf 가 아니라 pdfplumber 를 쓴다. 실측에서 pypdf 는 이 코퍼스의 두 PDF 를
-    정반대 방식으로 망가뜨렸다:
-
-      · 기본 모드 — 구조가 사라진다. "제 1 장 총 칙제 1조 (목적)본 세칙은…" 처럼
-        장·조 제목과 본문이 한 줄에 붙는다.
-      · layout 모드 — 구조는 살지만 단어가 깨진다. "compan y", "s ystem",
-        "emplo yees" ('y' 글리프 위치가 원본에서 어긋나 있고 scale_weight 로도
-        복구되지 않는다).
-
-    pdfplumber 는 문자 좌표로 단어를 묶어 양쪽을 동시에 지킨다.
-    """
+    """페이지별 정제된 줄 목록."""
     import pdfplumber
 
     pages: list[list[str]] = []
@@ -436,17 +358,7 @@ def _page_lines(path: Path) -> list[list[str]]:
 
 
 def load_pdf_text(path: Path) -> ParsedDoc:
-    """텍스트 PDF (설계문서 5.1 B등급). **표 구조는 부분 손실을 감수한다.**
-
-    계층은 `PART I` · `제 1 장` · `제 1조 (목적)` 같은 본문 관례에서 읽는다
-    (`headings` 모듈). 관례가 하나도 없는 문서는 예전처럼 페이지를 섹션으로
-    쓴다 — 스크린샷 위주 가이드가 그렇고, 그 문서의 citation_scheme 은 조항이
-    아니라 `doc_no+page` 가 된다.
-
-    ★ PDF 에서는 서식을 볼 수 없으므로 모호한 번호(`1.`)를 제목으로 올리지 않는다.
-    시행세칙에는 조항 제목과 본문 열거항이 둘 다 `1.` 로 시작해서, 잘못 끊으면
-    조항 하나가 여러 섹션으로 흩어진다.
-    """
+    """텍스트 PDF (설계문서 5.1 B등급). **표 구조는 부분 손실을 감수한다.**"""
     pages = _page_lines(path)
 
     sections: list[Section] = []
@@ -521,7 +433,6 @@ def load_pdf_text(path: Path) -> ParsedDoc:
     )
 
 
-# ── 청킹 ────────────────────────────────────────────────────────────────
 
 
 def _split_text_block(text: str, max_chars: int) -> list[str]:
@@ -542,11 +453,7 @@ def _split_text_block(text: str, max_chars: int) -> list[str]:
 
 
 def chunk_document(doc: ParsedDoc, *, max_chars: int = DEFAULT_MAX_CHARS) -> list[Chunk]:
-    """섹션 → 청크. 표는 원자 단위로 남는다.
-
-    각 청크 앞에 heading 경로를 붙인다. 청크 하나만 떼어 봐도 어느 문서 어느
-    조항인지 읽히게 하려는 것이고, 임베딩 품질과 인용 정확도 양쪽에 기여한다.
-    """
+    """섹션 → 청크. 표는 원자 단위로 남는다."""
     chunks: list[Chunk] = []
     ordinal = 0
 
@@ -565,9 +472,8 @@ def chunk_document(doc: ParsedDoc, *, max_chars: int = DEFAULT_MAX_CHARS) -> lis
         for block in section.blocks:
             if block.atomic:
                 # 표는 그대로 하나의 청크로 (크기 무관).
-                # 단 표를 소개하는 직전 문장을 캡션으로 함께 넣는다 — "국내 일비 표"와
-                # "해외 일비 표"를 가르는 정보가 대개 그 문장에만 있어서, 떼어놓으면
-                # 표가 검색되고도 어느 표인지 알 수 없게 된다.
+                # 표를 소개하는 직전 문장을 캡션으로 함께 넣는다 — 어느 표인지 가르는
+                # 정보가 대개 그 문장에만 있다.
                 flush()
                 pieces.append(f"{caption}\n{block.text}" if caption else block.text)
                 continue

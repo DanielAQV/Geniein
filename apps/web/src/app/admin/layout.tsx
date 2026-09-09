@@ -21,9 +21,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
 
-  // 인증 검사는 여기 없다. src/middleware.ts 가 요청이 이 컴포넌트에
-  // 도달하기 전에 막는다. 클라이언트에서 한 번 더 검사하면 두 개의
-  // 진실이 생기고, 약한 쪽(이쪽)이 우회 경로가 된다.
+  // 인증 검사는 여기 없다. middleware.ts 가 이 컴포넌트에 닿기 전에 막는다 —
+  // 여기서 한 번 더 검사하면 약한 쪽이 우회 경로가 된다.
 
   const handleLogout = async () => {
     // httpOnly 쿠키라 클라이언트가 지울 수 없다 — 서버에 요청한다
@@ -39,7 +38,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: "General Settings", icon: Settings, href: "/admin/general" },
   ]
 
-  // 로그인 페이지는 사이드바 없이 렌더링
   if (pathname === "/admin/login") {
     return <>{children}</>
   }

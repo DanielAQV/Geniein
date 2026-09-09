@@ -1,13 +1,4 @@
-"""도구 레지스트리 — 도구는 코드가 아니라 선언(YAML)이다.
-
-설계 문서 3.2.1 / 3.2.2.
-
-로드 시점에 설계 원칙을 "검증으로" 강제한다. 문서로만 적어두면 지켜지지 않는다:
-  원칙③  inject_context 키가 input_schema 에 있으면 로드 거부
-          → 모델이 신원을 지정할 수 있는 경로를 애초에 만들 수 없다
-  원칙④  도구 이름은 ASCII snake_case (^[a-zA-Z0-9_-]{1,64}$)
-          → 한글 이름은 API 검증에서 막히고 로컬 LLM 스왑 시에도 위험
-"""
+"""도구 레지스트리 — 도구는 코드가 아니라 선언(YAML)이다."""
 
 from __future__ import annotations
 
@@ -78,7 +69,7 @@ def _validate(raw: dict[str, Any], source: Path) -> ToolSpec:
 
     inject = tuple(raw.get("inject_context") or ())
 
-    # ★ 원칙③ 강제 — 주입 대상이 모델에게 노출되면 인가 경계가 무너진다
+    # 원칙③ 강제 — 주입 대상이 모델에게 노출되면 인가 경계가 무너진다
     properties = schema.get("properties") or {}
     leaked = [k for k in inject if k in properties]
     if leaked:
@@ -100,8 +91,7 @@ def _validate(raw: dict[str, Any], source: Path) -> ToolSpec:
 
 class ToolRegistry:
     def __init__(self, specs: list[ToolSpec]) -> None:
-        # 이름순 정렬 — 도구 목록은 프롬프트 프리픽스 맨 앞에 렌더된다.
-        # 순서가 흔들리면 프롬프트 캐시가 매번 깨진다 (3.2.1 ①).
+        # 이름순 정렬 — 순서가 흔들리면 프롬프트 캐시가 매번 깨진다 (3.2.1 ①).
         self._specs = sorted(specs, key=lambda s: s.name)
         self._by_name = {s.name: s for s in self._specs}
         self._handlers: dict[str, Callable[..., Any]] = {}
@@ -122,7 +112,6 @@ class ToolRegistry:
         logger.info("도구 %d개 로드: %s", len(specs), [s.name for s in specs])
         return cls(specs)
 
-    # ── 조회 ──────────────────────────────────────────────────────
 
     def __len__(self) -> int:
         return len(self._specs)
@@ -145,7 +134,6 @@ class ToolRegistry:
             for s in self._specs
         ]
 
-    # ── 실행 ──────────────────────────────────────────────────────
 
     def _resolve(self, spec: ToolSpec) -> Callable[..., Any]:
         if spec.name not in self._handlers:
@@ -167,8 +155,7 @@ class ToolRegistry:
         if spec is None:
             return ToolResult(tool_call_id, f"알 수 없는 도구입니다: {name}", is_error=True)
 
-        # commit 등급은 승인 없이 성공할 수 없다.
-        # 유나는 승인되지 않은 실행 도구를 "성공적으로 호출"하는 것 자체가 불가능하다.
+        # commit 등급은 승인 없이 성공할 수 없다 — 승인되지 않은 실행 도구는 호출 자체가 불가능하다.
         if spec.requires_approval and not approval_granted:
             return ToolResult(
                 tool_call_id,
@@ -176,7 +163,6 @@ class ToolRegistry:
                 is_error=False,
             )
 
-        # ★ 신원은 서버가 주입한다. 모델 출력에서 오지 않는다 (원칙③)
         kwargs = dict(arguments)
         for key in spec.inject_context:
             kwargs[key] = context.get(key)

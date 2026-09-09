@@ -101,7 +101,5 @@ export class Insight {
   @UpdateDateColumn()
   updated_at: Date;
 
-  // Embedding column is usually handled via raw SQL or special extensions
-  // For now, we omit it from the TypeORM entity to avoid driver issues, 
-  // but it will exist in the actual DB table for pgvector.
+  // pgvector embedding 컬럼은 raw SQL 로 만든다. 드라이버 문제를 피하려고 엔티티에서는 뺀다.
 }
