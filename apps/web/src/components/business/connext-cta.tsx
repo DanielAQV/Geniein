@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react"
 import { motion, useInView } from "framer-motion"
+import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { ConnextIntro } from "@/components/connext-intro/connext-intro"
 import { ConnextLanding } from "@/components/connext-intro/connext-landing"
@@ -67,29 +68,38 @@ export function ConnextCta() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-3 px-6 pb-10 pt-6 sm:flex-row">
-            <a
-              href={CONNEXT_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-primary/90"
-            >
-              {t("connext.cta.button")}
-            </a>
+          {/* 두 버튼을 같은 폭의 그리드 칸에 넣는다.
+              전에는 손으로 쓴 클래스라 패딩(28/24)과 굵기(700/500)가 달랐고,
+              보조 버튼에만 border 가 있어 높이까지 2px 어긋났다. 무엇보다 폭이
+              글자 길이대로 정해져 KR 108/146, VN 115/202 로 벌어졌다.
+              공용 Button 으로 바꾸고(높이 고정) 그리드로 폭을 맞춘다. */}
+          <div className="mx-auto grid w-full max-w-md grid-cols-1 gap-3 px-6 pb-10 pt-6 sm:grid-cols-2">
+            <Button asChild size="pill-sm" className="w-full">
+              <a href={CONNEXT_URL} target="_blank" rel="noreferrer noopener">
+                {t("connext.cta.button")}
+              </a>
+            </Button>
 
-            <button
+            <Button
               type="button"
+              variant="glass"
+              size="pill-sm"
+              className="w-full"
               onClick={replay}
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--border-card-strong)] px-6 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {t("connext.cta.replay")}
-            </button>
+            </Button>
           </div>
 
           {/* 모니터 비율 액자. 인트로는 여기 안에서만 움직인다. */}
           {/* 액자 안은 테마와 무관하게 어둡다 — Connext 화면 자체가 어두운 UI 라
               라이트 모드에서도 여기만 "모니터" 처럼 읽히는 편이 낫다. */}
-          <div ref={frameRef} className="relative aspect-video w-full overflow-hidden bg-[#03060f]">
+          {/* [container-type:inline-size] — 인트로·랜딩의 글자 크기 기준이 이 액자다.
+              vw(뷰포트)로 잡으면 액자가 max-w-5xl 이라 둘이 따로 움직인다. */}
+          <div
+            ref={frameRef}
+            className="relative aspect-video w-full overflow-hidden bg-[#03060f] [container-type:inline-size]"
+          >
             {/* 인트로가 끝나면 눈이 이 화면의 로고 자리로 날아가 앉는다 */}
             <ConnextLanding />
             {inView && <ConnextIntro key={replayKey} force={replayKey > 0} />}

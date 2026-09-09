@@ -27,6 +27,10 @@ const buttonVariants = cva(
         sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
         lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
         pill: 'h-12 sm:h-14 rounded-full px-4 sm:px-10 gap-3 text-base hover:-translate-y-1',
+        /* 카드 안에 들어가는 작은 pill. 히어로의 pill 과 같은 골격이지만 높이가 낮다.
+           높이를 고정하는 게 중요하다 — 테두리가 있는 variant(glass)와 없는
+           variant(default)를 나란히 두면 h 가 없을 때 2px 어긋난다. */
+        'pill-sm': 'h-11 rounded-full px-6 gap-2 text-sm',
         icon: 'size-9',
         'icon-sm': 'size-8',
         'icon-lg': 'size-10',

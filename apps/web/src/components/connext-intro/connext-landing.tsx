@@ -40,10 +40,10 @@ export function ConnextLanding() {
         </div>
 
         <div className="flex flex-col items-center gap-[1.5%]" data-intro-rise="1">
-          <p className="text-[clamp(15px,2.6vw,34px)] font-bold leading-tight text-white">
+          <p className="text-[clamp(15px,3.3cqw,34px)] font-bold leading-tight text-white [text-wrap:balance]">
             {t("connext.landing.title")}
           </p>
-          <p className="max-w-[42em] text-[clamp(9px,1.15vw,15px)] font-light leading-relaxed text-white/70 break-keep">
+          <p className="max-w-[42em] text-[clamp(9px,1.45cqw,15px)] font-light leading-relaxed text-white/70 break-keep">
             {t("connext.landing.desc")}
           </p>
         </div>
@@ -62,10 +62,10 @@ export function ConnextLanding() {
             rel="noreferrer noopener"
             className="group flex cursor-pointer items-center gap-2 rounded-full border border-white/15 bg-white/10 px-[3%] py-[1.6%] backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/15"
           >
-            <span className="flex-1 truncate text-left text-[clamp(9px,1.05vw,14px)] text-white/45">
+            <span className="flex-1 truncate text-left text-[clamp(9px,1.35cqw,14px)] text-white/45">
               {t("connext.landing.placeholder")}
             </span>
-            <span className="shrink-0 rounded-lg bg-[#4A6DF2] px-[14px] py-[7px] text-[clamp(8px,0.9vw,12px)] font-bold text-white transition-colors group-hover:bg-[#4262D9] group-active:bg-[#334CA9]">
+            <span className="shrink-0 rounded-lg bg-[#4A6DF2] px-[14px] py-[7px] text-[clamp(8px,1.15cqw,12px)] font-bold text-white transition-colors group-hover:bg-[#4262D9] group-active:bg-[#334CA9]">
               {t("connext.landing.button")}
             </span>
           </a>
