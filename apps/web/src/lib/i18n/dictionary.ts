@@ -362,7 +362,6 @@ export const dictionary = {
       filter_location: { kr: "근무지", en: "Location", vn: "Địa điểm" },
       filter_reset: { kr: "필터 초기화", en: "Reset filters", vn: "Đặt lại bộ lọc" },
       count_template: { kr: "총 {count}건의 공고", en: "{count} open positions", vn: "{count} vị trí đang tuyển" },
-      empty: { kr: "선택한 조건에 맞는 공고가 없습니다.", en: "No positions match the selected filters.", vn: "Không có vị trí nào phù hợp với bộ lọc đã chọn." },
       deadline_label: { kr: "마감일", en: "Deadline", vn: "Hạn nộp" },
       rolling: { kr: "상시 채용", en: "Rolling", vn: "Tuyển liên tục" },
       responsibilities: { kr: "주요 업무", en: "What You Will Do", vn: "Nhiệm vụ chính" },

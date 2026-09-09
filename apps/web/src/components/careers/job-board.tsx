@@ -15,6 +15,7 @@ import {
 } from "@/lib/careers/jobs"
 
 type FilterOption = { key: string; label: Localized }
+type SelectableOption = FilterOption & { disabled: boolean }
 
 const ALL = "all"
 
@@ -39,7 +40,7 @@ function FilterRow({
   onChange,
 }: {
   label: string
-  options: FilterOption[]
+  options: SelectableOption[]
   value: string
   onChange: (next: string) => void
 }) {
@@ -51,19 +52,22 @@ function FilterRow({
         {label}
       </span>
       <div className="flex flex-wrap gap-2">
-        {[{ key: ALL, label: null }, ...options].map((option) => {
+        {[{ key: ALL, label: null, disabled: false }, ...options].map((option) => {
           const active = value === option.key
           return (
             <button
               key={option.key}
               type="button"
+              disabled={option.disabled}
               onClick={() => onChange(option.key)}
               aria-pressed={active}
               className={cn(
                 "rounded-full border px-[17px] py-[7px] text-xs font-medium transition-colors duration-300",
                 active
                   ? "border-[#5874ea] bg-[#5874ea] text-white"
-                  : "border-[var(--border-card-strong)] bg-[var(--card-glass)] text-[var(--text-heading)] hover:border-primary/40",
+                  : option.disabled
+                    ? "cursor-not-allowed border-[var(--border-card)] bg-transparent text-[var(--text-sub)]/40"
+                    : "border-[var(--border-card-strong)] bg-[var(--card-glass)] text-[var(--text-heading)] hover:border-primary/40",
               )}
             >
               {option.label ? pick(option.label, language) : t("careers.jobs.filter_all")}
@@ -97,16 +101,39 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
   const [location, setLocation] = useState(ALL)
   const [expanded, setExpanded] = useState<string | null>(null)
 
-  const departments = useMemo(() => optionsOf(jobs, (j) => j.departmentKey, (j) => j.department), [jobs])
-  const locations = useMemo(() => optionsOf(jobs, (j) => j.locationKey, (j) => j.location), [jobs])
+  const matches = (job: JobPosting, dept: string, loc: string) =>
+    (dept === ALL || job.departmentKey === dept) && (loc === ALL || job.locationKey === loc)
+
+  /**
+   * 다른 축의 현재 선택을 기준으로 각 옵션의 결과 건수를 미리 센다.
+   * 0건이 되는 옵션은 눌리지 않게 막는다 — 그래야 "결과 없음" 상태에
+   * 도달하는 경로 자체가 사라진다. 빈 화면에 "공고가 없습니다"를 띄우는 것보다
+   * 애초에 그 조합을 못 고르게 하는 편이 낫다.
+   */
+  const departments: SelectableOption[] = useMemo(
+    () =>
+      optionsOf(jobs, (j) => j.departmentKey, (j) => j.department).map((option) => ({
+        ...option,
+        disabled: !jobs.some((job) => matches(job, option.key, location)),
+      })),
+    [jobs, location],
+  )
+
+  const locations: SelectableOption[] = useMemo(
+    () =>
+      optionsOf(jobs, (j) => j.locationKey, (j) => j.location).map((option) => ({
+        ...option,
+        disabled: !jobs.some((job) => matches(job, department, option.key)),
+      })),
+    [jobs, department],
+  )
+
+  // 선택지가 하나뿐인 축은 필터가 아니다. 줄 전체를 감춘다.
+  const showDepartments = departments.length > 1
+  const showLocations = locations.length > 1
 
   const filtered = useMemo(
-    () =>
-      jobs.filter(
-        (job) =>
-          (department === ALL || job.departmentKey === department) &&
-          (location === ALL || job.locationKey === location),
-      ),
+    () => jobs.filter((job) => matches(job, department, location)),
     [jobs, department, location],
   )
 
@@ -120,6 +147,10 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
   // "총 {count}건의 공고" — 언어마다 숫자 위치가 달라서 템플릿을 쪼개 쓴다.
   // (t() 는 빈 문자열을 '키 없음'으로 취급하므로 접두/접미를 따로 두면 안 된다)
   const [countBefore, countAfter = ""] = t("careers.jobs.count_template").split("{count}")
+
+  // 공고가 하나도 없으면(admin 에서 전부 내렸을 때) 섹션 헤더까지 통째로 안 그린다.
+  // 빈 리스트를 보여주느니 없는 편이 낫다 — 하단 일반 지원 CTA 는 그대로 남는다.
+  if (jobs.length === 0) return null
 
   return (
     <section id="positions" className="py-14 md:py-20 lg:py-28 bg-background">
@@ -151,20 +182,29 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
           viewport={{ once: true }}
           className="flex flex-col gap-5 rounded-[20px] border border-[var(--border-card)] bg-[var(--card-dark)] p-5 md:p-8 shadow-md"
         >
-          <FilterRow
-            label={t("careers.jobs.filter_department")}
-            options={departments}
-            value={department}
-            onChange={setDepartment}
-          />
-          <FilterRow
-            label={t("careers.jobs.filter_location")}
-            options={locations}
-            value={location}
-            onChange={setLocation}
-          />
+          {showDepartments && (
+            <FilterRow
+              label={t("careers.jobs.filter_department")}
+              options={departments}
+              value={department}
+              onChange={setDepartment}
+            />
+          )}
+          {showLocations && (
+            <FilterRow
+              label={t("careers.jobs.filter_location")}
+              options={locations}
+              value={location}
+              onChange={setLocation}
+            />
+          )}
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/30 pt-5">
+          <div
+            className={cn(
+              "flex flex-wrap items-center justify-between gap-3",
+              (showDepartments || showLocations) && "border-t border-border/30 pt-5",
+            )}
+          >
             <span className="text-sm font-medium text-[var(--text-heading)]">
               {countBefore}
               <span className="text-[#5874ea]">{filtered.length}</span>
@@ -184,13 +224,10 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
         </motion.div>
 
         {/* Job list */}
+        {/* 0건 상태에는 도달할 수 없다(위 필터가 막는다). 혹시 남더라도
+            "공고가 없습니다" 같은 문구는 두지 않고 조용히 아무것도 그리지 않는다. */}
         <div className="mt-6 flex flex-col gap-4 md:mt-8 md:gap-5">
-          {filtered.length === 0 ? (
-            <div className="rounded-[20px] border border-dashed border-[var(--border-card-strong)] bg-[var(--card-glass)] px-6 py-16 text-center text-sm font-light text-[var(--text-sub)]">
-              {t("careers.jobs.empty")}
-            </div>
-          ) : (
-            filtered.map((job, index) => {
+          {filtered.map((job, index) => {
               const open = expanded === job.id
               const flag = LOCATION_FLAGS[job.locationKey]
               return (
@@ -317,9 +354,8 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
                     )}
                   </AnimatePresence>
                 </motion.article>
-              )
-            })
-          )}
+            )
+          })}
         </div>
       </div>
     </section>
