@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/language-context";
 import { cn } from "@/lib/utils";
+import { useHoverMenu } from "@/lib/use-hover-menu";
 import { Check, ChevronDown, Globe, Menu, Sun, Moon, X } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,9 +25,10 @@ const LANG_FLAGS: Record<string, string> = {
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [businessOpen, setBusinessOpen] = useState(false);
-  const [insightsOpen, setInsightsOpen] = useState(false);
-  const [langOpen, setLangOpen] = useState(false);
+  /* 호버 드롭다운. 닫힘을 조금 늦춰 트리거-패널 사이 틈에서 끊기지 않게 한다. */
+  const business = useHoverMenu();
+  const insights = useHoverMenu();
+  const lang = useHoverMenu();
   // Mobile/tablet sidebar: only one accordion tab open at a time
   const [mobileTab, setMobileTab] = useState<"business" | "insights" | null>(
     null,
@@ -89,36 +91,36 @@ export function Header() {
               </Link>
 
               <DropdownMenu
-                open={businessOpen}
-                onOpenChange={setBusinessOpen}
+                open={business.open}
+                onOpenChange={business.setOpen}
                 modal={false}
               >
                 <div
-                  className="relative"
-                  onMouseEnter={() => setBusinessOpen(true)}
-                  onMouseLeave={() => setBusinessOpen(false)}
+                  className="relative py-2 -my-2"
+                  onMouseEnter={business.onEnter}
+                  onMouseLeave={business.onLeave}
                 >
                   <DropdownMenuTrigger asChild>
                     <Link
                       href="/business"
                       className="flex items-center gap-1 text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none group relative py-2"
                     >
-                      <span className={businessOpen ? "text-foreground" : ""}>
+                      <span className={business.open ? "text-foreground" : ""}>
                         {t("common.business")}
                       </span>
                       <ChevronDown
-                        className={`h-4 w-4 transition-transform duration-200 ${businessOpen ? "rotate-180" : ""}`}
+                        className={`h-4 w-4 transition-transform duration-200 ${business.open ? "rotate-180" : ""}`}
                       />
                       <span
-                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${businessOpen ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${business.open ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
                       />
                     </Link>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="center"
                     className="min-w-[220px] w-auto bg-card/95 backdrop-blur-lg border border-white/10"
-                    onMouseEnter={() => setBusinessOpen(true)}
-                    onMouseLeave={() => setBusinessOpen(false)}
+                    onMouseEnter={business.onEnter}
+                    onMouseLeave={business.onLeave}
                   >
                     <DropdownMenuItem
                       asChild
@@ -153,36 +155,36 @@ export function Header() {
               </DropdownMenu>
 
               <DropdownMenu
-                open={insightsOpen}
-                onOpenChange={setInsightsOpen}
+                open={insights.open}
+                onOpenChange={insights.setOpen}
                 modal={false}
               >
                 <div
-                  className="relative"
-                  onMouseEnter={() => setInsightsOpen(true)}
-                  onMouseLeave={() => setInsightsOpen(false)}
+                  className="relative py-2 -my-2"
+                  onMouseEnter={insights.onEnter}
+                  onMouseLeave={insights.onLeave}
                 >
                   <DropdownMenuTrigger asChild>
                     <Link
                       href="/insights"
                       className="flex items-center gap-1 text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none group relative py-2"
                     >
-                      <span className={insightsOpen ? "text-foreground" : ""}>
+                      <span className={insights.open ? "text-foreground" : ""}>
                         {t("common.insights")}
                       </span>
                       <ChevronDown
-                        className={`h-4 w-4 transition-transform duration-200 ${insightsOpen ? "rotate-180" : ""}`}
+                        className={`h-4 w-4 transition-transform duration-200 ${insights.open ? "rotate-180" : ""}`}
                       />
                       <span
-                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${insightsOpen ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${insights.open ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
                       />
                     </Link>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="center"
                     className="min-w-[220px] w-auto bg-card/95 backdrop-blur-lg border border-white/10"
-                    onMouseEnter={() => setInsightsOpen(true)}
-                    onMouseLeave={() => setInsightsOpen(false)}
+                    onMouseEnter={insights.onEnter}
+                    onMouseLeave={insights.onLeave}
                   >
                     <DropdownMenuItem
                       asChild
@@ -236,34 +238,34 @@ export function Header() {
             {/* Right Side Actions */}
             <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-4">
               <DropdownMenu
-                open={langOpen}
-                onOpenChange={setLangOpen}
+                open={lang.open}
+                onOpenChange={lang.setOpen}
                 modal={false}
               >
                 <div
-                  className="relative"
-                  onMouseEnter={() => setLangOpen(true)}
-                  onMouseLeave={() => setLangOpen(false)}
+                  className="relative py-2 -my-2"
+                  onMouseEnter={lang.onEnter}
+                  onMouseLeave={lang.onLeave}
                 >
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-1.5 text-base font-medium text-muted-foreground hover:text-foreground transition-colors uppercase cursor-pointer outline-none group relative py-2">
                       <Globe className="h-4 w-4" />
-                      <span className={langOpen ? "text-foreground" : ""}>
+                      <span className={lang.open ? "text-foreground" : ""}>
                         {language}
                       </span>
                       <ChevronDown
-                        className={`h-3 w-3 transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`}
+                        className={`h-3 w-3 transition-transform duration-200 ${lang.open ? "rotate-180" : ""}`}
                       />
                       <span
-                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${langOpen ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+                        className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${lang.open ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
                       />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
                     className="bg-card/95 backdrop-blur-xl border border-white/10 min-w-[120px] p-1"
-                    onMouseEnter={() => setLangOpen(true)}
-                    onMouseLeave={() => setLangOpen(false)}
+                    onMouseEnter={lang.onEnter}
+                    onMouseLeave={lang.onLeave}
                   >
                     <DropdownMenuItem
                       onClick={() => setLanguage("kr")}

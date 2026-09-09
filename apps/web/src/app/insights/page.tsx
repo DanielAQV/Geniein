@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { SectionDivider } from "@/components/section-divider"
 import { AIInsights } from "@/components/ai-insights"
 import { InsightsNav } from "@/components/insights/insights-nav"
 import { motion, AnimatePresence } from "framer-motion"
@@ -41,9 +42,11 @@ function InsightsContent() {
 
   return (
     <>
-      <div ref={navRef}>
-        <InsightsNav />
-      </div>
+      {/* 스크롤 기준점만 잡는 0px 마커.
+          네비를 감싸면 sticky 가 죽는다 — 래퍼 높이가 네비와 같아서 빠져나갈
+          공간이 없다. 그리고 네비 자체를 재면 상단에 붙은 뒤 위치가 틀어진다. */}
+      <div ref={navRef} aria-hidden className="h-0" />
+      <InsightsNav />
       
       <section className="pt-14 pb-10 md:pt-20 md:pb-12 lg:pt-28 lg:pb-16 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -149,6 +152,10 @@ export default function InsightsPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* 배너 아래 시그니처 구분선. 메인과 같은 컴포넌트를 쓴다 —
+          인라인으로 복사해두면 한쪽만 바뀌어 페이지마다 달라진다. */}
+      <SectionDivider />
       
 
 

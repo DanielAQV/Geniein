@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { SectionDivider } from "@/components/section-divider"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
 import {
@@ -68,9 +69,9 @@ export default function PrivacyPage() {
         </div>
       </section>
 
-      <div className="relative h-px w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-      </div>
+      {/* 배너 아래 시그니처 구분선. 메인과 같은 컴포넌트를 쓴다 —
+          인라인으로 복사해두면 한쪽만 바뀌어 페이지마다 달라진다. */}
+      <SectionDivider />
 
       <section className="py-12 md:py-16 lg:py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">

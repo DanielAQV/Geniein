@@ -581,7 +581,7 @@ export const dictionary = {
       label: { kr: "Connext", en: "Connext", vn: "Connext" },
       title: { kr: "Connext의 AI 에이전트, GNOM", en: "GNOM, the AI agents of Connext", vn: "GNOM, tác nhân AI của Connext" },
       desc: { kr: "Estimator는 요구사항을 분석해 개발사를 추천하고,\nStudio는 아이디어만으로 앱을 만듭니다.", en: "Estimator analyses your requirements and recommends vendors,\nStudio turns an idea alone into a working app.", vn: "Estimator phân tích yêu cầu và giới thiệu nhà thầu,\nStudio biến ý tưởng thành ứng dụng." },
-      button: { kr: "Connext 둘러보기", en: "Explore Connext", vn: "Khám phá Connext" },
+      button: { kr: "방문하기", en: "Visit", vn: "Truy cập" },
       replay: { kr: "인트로 다시 보기", en: "Replay the intro", vn: "Xem lại phần giới thiệu" }
     }
   }

@@ -48,23 +48,27 @@ export function ConnextLanding() {
           </p>
         </div>
 
-        {/* 입력창은 생김새만이다 — 여기서 프로젝트를 적게 하면 두 서비스의
-            경계가 무너진다. 버튼만 실제 링크로, 새 탭에서 Connext 를 연다.
-            색·모양은 Connext 메인의 버튼과 같다 (bg-[#4A6DF2], hover/active 포함). */}
+        {/* 입력바 전체가 하나의 링크다.
+            입력칸처럼 보이는 것이 있으면 사람은 거기부터 쓴다. 그런데 여기서
+            실제로 입력받으면 두 서비스의 경계가 무너지고, 버튼만 링크로 두면
+            바의 나머지가 죽은 클릭 영역이 된다 — 눌러도 아무 일이 없다.
+            그래서 바를 통째로 Connext 로 가는 출구로 만든다. 흉내가 아니라
+            원본으로 내보내는 것이라 경계도 지켜진다.
+            버튼 색·모양은 Connext 메인의 원본과 같다 (bg-[#4A6DF2]). */}
         <div className="w-full max-w-[560px]" data-intro-rise="2">
-          <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-[3%] py-[1.6%] backdrop-blur-sm">
+          <a
+            href={CONNEXT_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group flex cursor-pointer items-center gap-2 rounded-full border border-white/15 bg-white/10 px-[3%] py-[1.6%] backdrop-blur-sm transition-colors hover:border-white/25 hover:bg-white/15"
+          >
             <span className="flex-1 truncate text-left text-[clamp(9px,1.05vw,14px)] text-white/45">
               {t("connext.landing.placeholder")}
             </span>
-            <a
-              href={CONNEXT_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="shrink-0 rounded-lg bg-[#4A6DF2] px-[14px] py-[7px] text-[clamp(8px,0.9vw,12px)] font-bold text-white transition-colors hover:bg-[#4262D9] active:bg-[#334CA9]"
-            >
+            <span className="shrink-0 rounded-lg bg-[#4A6DF2] px-[14px] py-[7px] text-[clamp(8px,0.9vw,12px)] font-bold text-white transition-colors group-hover:bg-[#4262D9] group-active:bg-[#334CA9]">
               {t("connext.landing.button")}
-            </a>
-          </div>
+            </span>
+          </a>
         </div>
       </div>
     </div>
