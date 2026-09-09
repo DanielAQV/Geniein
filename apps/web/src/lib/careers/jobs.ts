@@ -1,12 +1,15 @@
 /**
- * 채용 공고 데이터 소스.
+ * 채용 공고 데이터 소스. NestJS 의 공개 목록(`GET /careers`)을 읽는다.
  *
- * 지금은 목업이라 dictionary 의 더미 공고를 읽지만, 컴포넌트는 `JobPosting[]` 만
- * 받는다. admin 이 붙으면 이 파일의 `getJobPostings()` 하나만
- * `fetch('/api/careers')` 로 바꾸면 화면 코드는 손대지 않아도 된다.
+ * 예전에는 dictionary 의 더미 공고를 읽었다. 그래서 어드민에서 등록해도
+ * 공개 페이지에는 아무것도 안 떴다 — 쓰는 곳과 읽는 곳이 달랐다.
+ *
+ * ★ 서버에서만 부른다. UPSTREAM 이 내부 주소(127.0.0.1:3001)라 브라우저에서는
+ *   닿지 않고, nginx 의 /api/ 규칙에 얽히지 않는 것도 이 편이 낫다.
+ *
+ * ★ 실패하면 빈 배열을 준다. 회사 소개 사이트의 채용 섹션이 API 사정으로
+ *   500 을 내면 안 된다. JobBoard 가 공고 0건이면 섹션을 통째로 감춘다.
  */
-
-import { dictionary } from "@/lib/i18n/dictionary"
 
 export type Lang = "kr" | "en" | "vn"
 
@@ -52,50 +55,109 @@ export const ROLLING_DEADLINE = "rolling"
 
 /** 근무지 키 → 국기 이미지. header.tsx 가 이미 쓰는 flagcdn 을 그대로 재사용한다. */
 export const LOCATION_FLAGS: Record<string, string> = {
-  seongnam: "https://flagcdn.com/w40/kr.png",
-  hanoi: "https://flagcdn.com/w40/vn.png",
+  korea: "https://flagcdn.com/w40/kr.png",
+  vietnam: "https://flagcdn.com/w40/vn.png",
+  philippines: "https://flagcdn.com/w40/ph.png",
 }
 
 const localized = (value: Localized): Localized => ({ ...value })
 
+const UPSTREAM =
+  process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+
 /**
- * dictionary 쪽 공고의 생김새. 사전은 `as const` 라서 공고가 하나도 없으면
- * 원소 타입이 `never` 로 좁혀진다 — 그 상태로 map 을 돌면 필드마다 타입 에러가 난다.
- * 형태를 여기 적어두고 읽는 쪽에서 맞춰본다.
+ * NestJS 가 돌려주는 공고 한 건. 엔티티를 그대로 직렬화한 모양이라
+ * 표시 문구가 언어별 컬럼으로, 목록이 언어별 병렬 배열로 온다.
  */
-type DictionaryJob = {
+type ApiJobPosting = {
   id: string
   department_key: string
   location_key: string
-  employment_key: string
-  deadline: string
-  title: Localized
-  department: Localized
-  location: Localized
-  employment: Localized
-  experience: Localized
-  tags: readonly Localized[]
-  responsibilities: readonly Localized[]
-  requirements: readonly Localized[]
-  preferred: readonly Localized[]
+  employment_type: string
+  /** NULL = 상시 채용. 프론트의 ROLLING_DEADLINE 으로 바꿔서 넘긴다. */
+  deadline: string | null
+  title_kr: string
+  title_en: string | null
+  title_vn: string | null
+  department_kr: string
+  department_en: string | null
+  department_vn: string | null
+  location_kr: string
+  location_en: string | null
+  location_vn: string | null
+  employment_kr: string
+  employment_en: string | null
+  employment_vn: string | null
+  experience_kr: string
+  experience_en: string | null
+  experience_vn: string | null
+  tags_kr: string[]
+  tags_en: string[] | null
+  tags_vn: string[] | null
+  responsibilities_kr: string[]
+  responsibilities_en: string[] | null
+  responsibilities_vn: string[] | null
+  requirements_kr: string[]
+  requirements_en: string[] | null
+  requirements_vn: string[] | null
+  preferred_kr: string[]
+  preferred_en: string[] | null
+  preferred_vn: string[] | null
 }
 
-export function getJobPostings(): JobPosting[] {
-  const items = dictionary.careers.items as readonly DictionaryJob[]
-  return items.map((item) => ({
-    id: item.id,
-    departmentKey: item.department_key,
-    locationKey: item.location_key,
-    employmentKey: item.employment_key,
-    deadline: item.deadline,
-    title: localized(item.title),
-    department: localized(item.department),
-    location: localized(item.location),
-    employment: localized(item.employment),
-    experience: localized(item.experience),
-    tags: item.tags.map(localized),
-    responsibilities: item.responsibilities.map(localized),
-    requirements: item.requirements.map(localized),
-    preferred: item.preferred.map(localized),
+const text = (kr: string, en: string | null, vn: string | null): Localized => ({ kr, en, vn })
+
+/**
+ * 언어별 병렬 배열을 인덱스로 묶는다. KR 이 기준이다 — DB 에서 KR 만
+ * NOT NULL 이고, 어드민이 언어별 textarea 를 줄 단위로 나눠 보낸다.
+ * EN/VN 이 짧으면 그 줄만 KR 로 폴백된다(`pick`).
+ */
+const list = (kr: string[], en: string[] | null, vn: string[] | null): Localized[] =>
+  (kr ?? []).map((value, index) => ({
+    kr: value,
+    en: en?.[index] ?? null,
+    vn: vn?.[index] ?? null,
   }))
+
+function adapt(row: ApiJobPosting): JobPosting {
+  return {
+    id: row.id,
+    departmentKey: row.department_key,
+    locationKey: row.location_key,
+    employmentKey: row.employment_type,
+    deadline: row.deadline ?? ROLLING_DEADLINE,
+    title: text(row.title_kr, row.title_en, row.title_vn),
+    department: text(row.department_kr, row.department_en, row.department_vn),
+    location: text(row.location_kr, row.location_en, row.location_vn),
+    employment: text(row.employment_kr, row.employment_en, row.employment_vn),
+    experience: text(row.experience_kr, row.experience_en, row.experience_vn),
+    tags: list(row.tags_kr, row.tags_en, row.tags_vn),
+    responsibilities: list(row.responsibilities_kr, row.responsibilities_en, row.responsibilities_vn),
+    requirements: list(row.requirements_kr, row.requirements_en, row.requirements_vn),
+    preferred: list(row.preferred_kr, row.preferred_en, row.preferred_vn),
+  }
+}
+
+export async function fetchJobPostings(): Promise<JobPosting[]> {
+  let response: Response
+  try {
+    // 어드민에서 등록한 공고가 바로 보여야 한다 — 캐시하지 않는다.
+    response = await fetch(`${UPSTREAM}/careers`, { cache: "no-store" })
+  } catch (error) {
+    console.error("[careers] NestJS 호출 실패:", error)
+    return []
+  }
+
+  if (!response.ok) {
+    console.error("[careers] NestJS 응답 %d", response.status)
+    return []
+  }
+
+  try {
+    const rows = (await response.json()) as ApiJobPosting[]
+    return Array.isArray(rows) ? rows.map(adapt) : []
+  } catch (error) {
+    console.error("[careers] 응답을 읽지 못했습니다:", error)
+    return []
+  }
 }

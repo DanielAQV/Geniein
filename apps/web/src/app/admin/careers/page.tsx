@@ -63,7 +63,7 @@ type FormState = {
 
 const emptyForm = (): FormState => ({
   department_key: "",
-  location_key: "seongnam",
+  location_key: "korea",
   employment_type: "fulltime",
   publish_status: "draft",
   deadline: "",
@@ -75,7 +75,7 @@ const emptyForm = (): FormState => ({
 function formFromRow(row: JobPostingRow): FormState {
   const form = emptyForm()
   form.department_key = row.department_key ?? ""
-  form.location_key = row.location_key ?? "seongnam"
+  form.location_key = row.location_key ?? "korea"
   form.employment_type = row.employment_type ?? "fulltime"
   form.publish_status = row.publish_status ?? "draft"
   form.deadline = row.deadline ?? ""
@@ -415,8 +415,9 @@ export default function AdminCareersPage() {
                   onChange={(e) => setForm({ ...form, location_key: e.target.value })}
                   className={inputClass}
                 >
-                  <option value="seongnam">seongnam</option>
-                  <option value="hanoi">hanoi</option>
+                  <option value="korea">Korea</option>
+                  <option value="vietnam">Vietnam</option>
+                  <option value="philippines">Philippines</option>
                 </select>
               </label>
               <label className="flex flex-col gap-1.5 text-sm">
