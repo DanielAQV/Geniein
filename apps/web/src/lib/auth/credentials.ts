@@ -4,16 +4,22 @@ import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 const KEY_LENGTH = 64
 const SCRYPT_PARAMS = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 } as const
 
-/** `scrypt$N$r$p$salt$hash` — 파라미터를 같이 저장해야 나중에 세게 올릴 수 있다 */
+/**
+ * `scrypt:N:r:p:salt:hash` — 파라미터를 같이 저장해야 나중에 세게 올릴 수 있다.
+ *
+ * 구분자가 `:` 인 이유: dotenv 는 .env 값의 `$` 를 변수 참조로 보고 펼친다.
+ * 예전 `$` 형식을 넣으면 `scrypt$16384$...` 가 `scrypt6384` 로 잘려 들어와
+ * 비밀번호가 맞아도 로그인이 실패한다. 읽기는 두 형식 다 받는다.
+ */
 export function hashPassword(password: string): string {
   const salt = randomBytes(16)
   const derived = scryptSync(password, salt, KEY_LENGTH, SCRYPT_PARAMS)
   const { N, r, p } = SCRYPT_PARAMS
-  return `scrypt$${N}$${r}$${p}$${salt.toString('hex')}$${derived.toString('hex')}`
+  return `scrypt:${N}:${r}:${p}:${salt.toString('hex')}:${derived.toString('hex')}`
 }
 
 function verifyPassword(password: string, stored: string): boolean {
-  const parts = stored.split('$')
+  const parts = stored.split(stored.startsWith('scrypt:') ? ':' : '$')
   if (parts.length !== 6 || parts[0] !== 'scrypt') return false
 
   const [, n, r, p, saltHex, hashHex] = parts
