@@ -1,18 +1,19 @@
 "use client"
 
 /**
- * 채용 지원 폼 (목업).
+ * 채용 지원 폼.
  *
- * ⚠ TODO — 백엔드는 아직 붙이지 않는다. 여기서 다루는 값은 전부 개인정보이고,
- *   아래 항목은 대표 결정 사항이라 임의로 정할 수 없다:
- *     · 이력서 파일을 어디에 둘지 (S3/오브젝트 스토리지 · 접근권한 · 암호화)
- *     · 보관 기간과 파기 절차 (채용 종료 후 N개월)
- *     · 동의 문구 자체는 lib/legal/privacy.ts 의 consentNotice.careers 하나에서 온다.
- *       처리방침(제2·3조)과 폼의 문구가 어긋나면 받은 동의가 무효가 되므로
- *       여기에 문구를 직접 적지 말 것. 최종 문안은 법무 확인 대상이다.
- *     · 지원 내역을 볼 수 있는 사람 (admin 권한 분리)
- *   그 전까지 제출은 화면 상태만 바꾸고 아무 데도 보내지 않는다.
- *   실제 연동 시 이 컴포넌트에서 바꿀 곳은 handleSubmit 하나다.
+ * 제출하면 /api/careers/apply 로 multipart 전송되고, 서버는 **저장하지 않고**
+ * 담당자 메일로 넘긴다. 이력서를 서버에 쌓으려면 저장소 · 접근권한 · 보관기간 ·
+ * 파기 절차가 먼저 정해져야 하는데, 메일로만 흐르면 그 정책이 곧 사서함의
+ * 정책이 된다. 지원자 목록 화면이나 전형 상태 관리가 필요해지는 시점에
+ * 저장소를 붙이고 처리방침의 보유 기간 조항을 함께 고쳐야 한다.
+ *
+ * 동의 문구는 lib/legal/privacy.ts 의 consentNotice.careers 하나에서 온다.
+ * 처리방침(제2·3조)과 폼의 문구가 어긋나면 받은 동의가 무효가 되므로
+ * 여기에 문구를 직접 적지 말 것. 최종 문안은 법무 확인 대상이다.
+ *
+ * 남은 것: 지원 내역을 볼 수 있는 사람(admin 권한 분리).
  */
 
 import { useEffect, useRef, useState } from "react"
@@ -70,8 +71,6 @@ export function ApplyModal({
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [file, setFile] = useState<File | null>(null)
   const [consent, setConsent] = useState(false)
-  // 인재풀 등록은 "이번 전형" 과 목적이 다른 별도 동의라 선택 항목으로 분리한다.
-  const [talentPool, setTalentPool] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -86,7 +85,6 @@ export function ApplyModal({
     setForm({ ...EMPTY_FORM })
     setFile(null)
     setConsent(false)
-    setTalentPool(false)
     setErrors({})
     setSubmitting(false)
     setSubmitted(false)
@@ -158,19 +156,38 @@ export function ApplyModal({
     return Object.keys(next).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
 
     setSubmitting(true)
-    // TODO(백엔드): 여기서 multipart 로 지원서를 보낸다. 저장소·보관기간이
-    // 정해지기 전까지는 아무 데도 전송하지 않는다 (위 파일 상단 주석 참고).
-    // 전송할 때 talentPool 동의 여부도 같이 보내야 한다 — 이 값이 false 면
-    // 전형 종료 시 파기, true 면 1년 보관이라 보관 정책이 갈린다.
-    window.setTimeout(() => {
-      setSubmitting(false)
+    setErrors((prev) => {
+      const next = { ...prev }
+      delete next.submit
+      return next
+    })
+
+    // 서버는 지원서를 저장하지 않고 담당자 메일로 넘긴다.
+    const payload = new FormData()
+    payload.append("name", form.name)
+    payload.append("email", form.email)
+    payload.append("phone", form.phone)
+    payload.append("intro", form.intro)
+    payload.append("position", positionLabel)
+    payload.append("consent", String(consent))
+    if (file) payload.append("resume", file)
+
+    try {
+      const res = await fetch("/api/careers/apply", { method: "POST", body: payload })
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`)
       setSubmitted(true)
-    }, 600)
+    } catch (err) {
+      console.error("[careers] 지원서 전송 실패:", err)
+      // 입력은 지운다고 되찾을 수 없으니 폼을 그대로 두고 에러만 보여준다
+      setErrors((prev) => ({ ...prev, submit: t("careers.apply.errors.submit") }))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -366,8 +383,8 @@ export function ApplyModal({
                   <FieldError message={errors.resume} />
                 </div>
 
-                {/* 개인정보 동의 — 필수(전형 진행) / 선택(인재풀) 분리 */}
-                <div className="space-y-2">
+                {/* 개인정보 수집·이용 동의 (필수) */}
+                <div className="space-y-1">
                   <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-card)] bg-[var(--card-glass)] px-4 py-3">
                     <input
                       type="checkbox"
@@ -400,26 +417,9 @@ export function ApplyModal({
                     </span>
                   </label>
                   <FieldError message={errors.consent} />
-
-                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-card)] bg-[var(--card-glass)] px-4 py-3">
-                    <input
-                      type="checkbox"
-                      checked={talentPool}
-                      onChange={(e) => setTalentPool(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 shrink-0 accent-[#5874ea]"
-                    />
-                    <span className="flex flex-col gap-1">
-                      <span className="text-sm font-medium text-[var(--text-heading)]">
-                        {consentNotice.careers.talentPoolLabel[language]}
-                      </span>
-                      <span className="text-[11px] font-light leading-relaxed text-[var(--text-sub)] break-keep">
-                        {consentNotice.careers.talentPoolDetail[language]}
-                      </span>
-                    </span>
-                  </label>
                 </div>
 
-                <p className="text-[11px] font-light text-muted-foreground">{t("careers.apply.mock_notice")}</p>
+                <FieldError message={errors.submit} />
 
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                   <button

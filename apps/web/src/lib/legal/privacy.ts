@@ -36,7 +36,7 @@ export const EFFECTIVE_DATE = "2026-00-00"
 export const privacyOfficer = {
   name: { kr: "변범준", en: "Byun Beom Joon", vn: "Byun Beom Joon" },
   title: { kr: "대표", en: "CEO", vn: "Giám đốc" },
-  email: "support@geniein.com",
+  email: "bjbyun@geniein.com",
   /** 개인 휴대전화. 공개가 부담되면 이 줄만 지우면 페이지에서도 사라진다. */
   phone: "010-9024-8429",
 }
@@ -77,11 +77,6 @@ export const privacySections: PrivacySection[] = [
         "Tuyển dụng: xác minh ứng viên, sàng lọc hồ sơ và phỏng vấn, thông báo kết quả",
       ),
       L(
-        "인재풀 운영: 별도 동의를 받은 경우에 한하여, 향후 채용 기회 안내",
-        "Talent pool: informing candidates of future openings, only where separate consent has been obtained",
-        "Nguồn ứng viên: thông báo cơ hội tuyển dụng trong tương lai, chỉ khi đã có sự đồng ý riêng",
-      ),
-      L(
         "서비스 운영 및 보안: 접속 기록 보관을 통한 안정적인 서비스 운영과 부정 이용 방지",
         "Service operation and security: maintaining stable service and preventing abuse through retention of access logs",
         "Vận hành và bảo mật dịch vụ: duy trì dịch vụ ổn định và ngăn chặn lạm dụng thông qua lưu giữ nhật ký truy cập",
@@ -108,11 +103,6 @@ export const privacySections: PrivacySection[] = [
           L("웹사이트 지원 폼 및 첨부파일", "Website application form and attachments", "Biểu mẫu ứng tuyển và tệp đính kèm"),
         ],
         [
-          L("인재풀 등록 (선택)", "Talent pool (optional)", "Nguồn ứng viên (tùy chọn)"),
-          L("위 채용 지원 항목과 동일", "Same items as the job application above", "Giống các mục ứng tuyển nêu trên"),
-          L("지원 시 별도 동의", "Separate consent at the time of application", "Đồng ý riêng khi ứng tuyển"),
-        ],
-        [
           L("자동 수집", "Automatically collected", "Thu thập tự động"),
           L("접속 IP 주소, 브라우저·기기 정보, 방문 일시, 이용 페이지 기록", "IP address, browser and device information, visit timestamps, page view history", "Địa chỉ IP, thông tin trình duyệt và thiết bị, thời gian truy cập, lịch sử trang đã xem"),
           L("웹사이트 이용 과정에서 자동 생성", "Generated automatically while using the website", "Tự động tạo ra trong quá trình sử dụng trang web"),
@@ -126,9 +116,9 @@ export const privacySections: PrivacySection[] = [
         "Công ty không thu thập thông tin nhạy cảm (tín ngưỡng, tư cách thành viên công đoàn, sức khỏe, đời sống tình dục) hoặc số đăng ký cư trú. Vui lòng không tự nguyện đưa các thông tin này vào hồ sơ.",
       ),
       L(
-        "정보주체는 필수 항목의 수집·이용에 동의하지 않을 권리가 있으며, 이 경우 문의 접수 또는 채용 전형 진행이 제한될 수 있습니다. 선택 항목(인재풀 등록)에 동의하지 않더라도 지원한 채용 전형에는 어떠한 불이익도 없습니다.",
-        "Data subjects may decline to consent to the collection of required items; in that case, inquiry handling or participation in the recruitment process may be limited. Declining the optional item (talent pool) results in no disadvantage whatsoever in the recruitment process applied for.",
-        "Chủ thể dữ liệu có quyền từ chối đồng ý với các mục bắt buộc; khi đó việc tiếp nhận yêu cầu hoặc tham gia tuyển dụng có thể bị hạn chế. Việc từ chối mục tùy chọn (nguồn ứng viên) không gây bất kỳ bất lợi nào.",
+        "정보주체는 필수 항목의 수집·이용에 동의하지 않을 권리가 있으며, 이 경우 문의 접수 또는 채용 전형 진행이 제한될 수 있습니다.",
+        "Data subjects may decline to consent to the collection of required items; in that case, inquiry handling or participation in the recruitment process may be limited.",
+        "Chủ thể dữ liệu có quyền từ chối đồng ý với các mục bắt buộc; khi đó việc tiếp nhận yêu cầu hoặc tham gia tuyển dụng có thể bị hạn chế.",
       ),
     ],
   },
@@ -152,12 +142,8 @@ export const privacySections: PrivacySection[] = [
           L("문의 접수일로부터 3년", "3 years from the date the inquiry is received", "3 năm kể từ ngày tiếp nhận yêu cầu"),
         ],
         [
-          L("채용 지원 서류 (인재풀 미동의)", "Application documents (no talent-pool consent)", "Hồ sơ ứng tuyển (không đồng ý nguồn ứng viên)"),
+          L("채용 지원 서류", "Application documents", "Hồ sơ ứng tuyển"),
           L("해당 채용 전형 종료 후 지체 없이 파기", "Destroyed without delay once the relevant recruitment process ends", "Hủy ngay sau khi quy trình tuyển dụng kết thúc"),
-        ],
-        [
-          L("채용 지원 서류 (인재풀 동의)", "Application documents (talent-pool consent given)", "Hồ sơ ứng tuyển (đã đồng ý nguồn ứng viên)"),
-          L("동의일로부터 1년 (기간 만료 전 언제든 철회 가능)", "1 year from the date of consent; withdrawable at any time before expiry", "1 năm kể từ ngày đồng ý; có thể rút lại bất cứ lúc nào"),
         ],
         [
           L("자동 수집 정보", "Automatically collected information", "Thông tin thu thập tự động"),
@@ -359,9 +345,9 @@ export const consentNotice = {
     ),
   },
   /**
-   * 채용 지원 폼. 필수(전형 진행)와 선택(인재풀)을 나눈 이유는 목적이 다르기 때문이다.
-   * 필수 동의만으로는 전형이 끝나면 파기해야 하고, 보관하려면 별도 목적에 대한
-   * 선택 동의가 있어야 한다. 선택에 동의하지 않아도 전형에는 아무 영향이 없다.
+   * 채용 지원 폼. 이번 전형 진행이 유일한 목적이라 필수 동의 하나만 받는다.
+   * 전형이 끝나면 파기하므로 인재풀 같은 별도 보관 목적은 두지 않는다.
+   * 나중에 보관이 필요해지면 선택 동의를 추가하고 제2·3조도 함께 고쳐야 한다.
    */
   careers: {
     label: L(
@@ -378,16 +364,6 @@ export const consentNotice = {
       "개인정보 수집·이용에 동의해주세요",
       "Please consent to the collection and use of your personal information",
       "Vui lòng đồng ý với việc thu thập và sử dụng thông tin cá nhân",
-    ),
-    talentPoolLabel: L(
-      "인재풀 등록에 동의합니다. (선택)",
-      "I consent to being added to the talent pool. (Optional)",
-      "Tôi đồng ý được thêm vào nguồn ứng viên. (Tùy chọn)",
-    ),
-    talentPoolDetail: L(
-      "이번 전형이 끝난 뒤에도 지원 서류를 1년간 보관하고, 적합한 채용 기회가 있을 때 연락드립니다. 동의하지 않으셔도 이번 전형에는 어떠한 불이익도 없으며, 동의는 언제든 철회하실 수 있습니다.",
-      "We keep your application on file for one year after this process ends and contact you when a suitable opening arises. Declining causes no disadvantage in this process, and consent may be withdrawn at any time.",
-      "Chúng tôi lưu hồ sơ của bạn trong một năm sau khi quy trình này kết thúc và liên hệ khi có vị trí phù hợp. Việc từ chối không gây bất lợi nào và bạn có thể rút lại đồng ý bất cứ lúc nào.",
     ),
   },
   policyLink: L("개인정보 처리방침 전문 보기", "Read the full Privacy Policy", "Xem toàn văn Chính sách Bảo mật"),
