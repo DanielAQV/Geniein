@@ -1,22 +1,5 @@
 'use client'
 
-/**
- * 미리보기 알맹이.
- *
- * 기본은 **실제 검색 서비스에 질문한다** (`/api/teams/preview-search`, 개발 빌드 전용).
- * 어디로 갈지는 `RAG_SERVICE_URL` 이 정한다 — 로컬일 수도, 사내 서버일 수도 있다.
- * 그 경로가 없거나 설정이 안 됐으면 캔에 담긴 예시 응답으로 떨어진다.
- *
- * ★ 떨어졌다는 사실을 반드시 화면에 밝힌다. 처음엔 조용히 고정 응답만 내놨는데,
- *   무슨 질문을 해도 같은 답이 나오니 **에이전트가 질문을 무시하는 것처럼 보였다.**
- *   미리보기가 가짜라는 것을 미리보기가 스스로 말하지 않으면, 디자인을 보는 도구가
- *   제품이 고장 났다는 오해를 만든다.
- *
- * ★ **캔 응답도 스트리밍으로 흘린다.** 로컬에는 보통 뇌 설정이 없어서 캔으로 떨어지는데,
- *   그 경로가 답을 한 번에 뱉으면 미리보기로 스트리밍 화면을 **전혀** 확인할 수 없다.
- *   실제로 그랬다 — 탭 본체를 스트리밍으로 바꾼 직후, 로컬에서 볼 방법이 없었다.
- *   캔이 가짜인 것은 배너가 말하고, 움직임은 진짜와 같아야 한다.
- */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { FlaskConical, Info } from 'lucide-react'
@@ -64,13 +47,6 @@ const THEMES: { value: TeamsTheme; label: string }[] = [
 
 type Mode = 'unknown' | 'live' | 'canned'
 
-/**
- * 캔 응답을 진짜처럼 흘린다.
- *
- * 실제 스트림의 모양을 따라간다 — 생각 → 검색 → 근거 읽기 → 글자. 숫자는 눈에 자연스러운
- * 정도로만 잡았고, 실측을 모사하지 않는다 (뇌의 실제 지연은 40~60초다. 미리보기에서
- * 그만큼 기다리게 하면 화면을 못 본다).
- */
 async function streamCanned(
   text: string,
   handlers: { onPhase: (phase: Phase) => void; onText: (full: string) => void },
@@ -84,11 +60,8 @@ async function streamCanned(
   handlers.onPhase({ kind: 'reading' })
   await wait(600)
 
-  // ★ **고르게 흘리지 않는다.** 실제 델타는 뭉텅이로 온다 — 한 번에 40자가 오고
-  //   다음 300ms 는 아무것도 안 온다. 고르게 모사하면 화면이 실제보다 매끄러워 보여서,
-  //   운영에서 덜컹거리는 것을 미리 못 본다 (실제로 그렇게 놓쳤다).
-  //
-  //   숫자는 고정 주기로 돈다. 난수를 쓰면 볼 때마다 달라서 "고쳐졌는지"를 비교할 수 없다.
+  // 고르게 흘리지 않는다. 실제 델타는 뭉텅이로 오고, 고르게 모사하면 화면이 실제보다
+  // 매끄러워 보여서 운영의 덜컹거림을 미리 못 본다. 주기는 고정 — 난수면 비교가 안 된다.
   const BURSTS = [8, 2, 41, 1, 17, 63, 3, 11, 29, 5]
   const PAUSES = [40, 310, 25, 260, 60, 15, 340, 90, 20, 200]
 
@@ -107,7 +80,6 @@ function ThemeSwitcher({
   theme: TeamsTheme
   onChange: (next: TeamsTheme) => void
 }) {
-  // 아래쪽에 둔다. 위 오른쪽은 헤더의 "새 대화" 자리라 겹친다.
   return (
     <div className="fixed bottom-3 right-3 z-50 flex items-center gap-1 rounded-full border border-border bg-card/95 p-1 shadow-sm backdrop-blur">
       <span className="px-2 text-[11px] text-muted-foreground">미리보기</span>
@@ -173,7 +145,6 @@ function historyFor(turns: ChatTurn[]) {
 }
 
 export function PreviewClient() {
-  /** null = "아직 안 읽음". 인라인 스크립트(`?theme=`)가 세운 값을 덮지 않기 위해서다. */
   const [theme, setTheme] = useState<TeamsTheme | null>(null)
   const [lang, setLang] = useState<Lang>(DEFAULT_LANG)
   const [turns, setTurns] = useState<ChatTurn[]>([])
@@ -208,7 +179,6 @@ export function PreviewClient() {
     return () => clearInterval(timer)
   }, [pending])
 
-  /** 캔 응답으로 떨어진다. 탭 본체와 같은 렌더 경로를 타도록 흘려보낸다. */
   const pushCanned = useCallback(async (why: string) => {
     const isFollowUp = cannedCount.current > 0
     cannedCount.current += 1
@@ -250,8 +220,7 @@ export function PreviewClient() {
             return
           }
 
-          // 탭 본체와 **같은 파서**를 쓴다. 미리보기만의 해석 코드를 두면, 여기서 잘
-          //  보이는데 운영에서 깨지는 경우가 생긴다.
+          // 탭 본체와 같은 파서를 쓴다. 미리보기 전용 해석 코드를 두면 운영에서만 깨진다.
           const outcome = await readStream(response.body, {
             onPhase: setPhase,
             onText: setStreamingText,

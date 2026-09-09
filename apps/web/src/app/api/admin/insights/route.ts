@@ -1,14 +1,3 @@
-/**
- * 관리자 인사이트 BFF.
- *
- * 이전에는 브라우저가 NestJS 의 /insights/admin 을 직접 불렀다. 두 가지가 깨져 있었다:
- *   ① 그 엔드포인트에 인증이 없어 URL 만 알면 누구나 초안까지 읽었다
- *   ② 프로덕션 CSP 의 default-src 'self' 가 크로스오리진 호출을 막는다
- *
- * 이제 브라우저는 같은 오리진만 부르고, 세션 검증 후 서버가 서비스 토큰으로
- * NestJS 를 호출한다. NestJS 는 인터넷에서 직접 열리지 않는다.
- * (설계문서 3.6 "Next.js route handler = 얇은 BFF")
- */
 
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
@@ -21,8 +10,7 @@ const UPSTREAM =
   process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 export async function GET() {
-  // middleware 가 이미 막지만 여기서도 확인한다.
-  // matcher 를 잘못 건드리는 순간 조용히 열리는 게 이런 경로다.
+  // middleware 가 이미 막지만 여기서도 확인한다. matcher 를 잘못 건드리면 조용히 열린다.
   const session = await verifySessionToken((await cookies()).get(SESSION_COOKIE)?.value)
   if (!session) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
@@ -39,7 +27,6 @@ export async function GET() {
     upstream = await fetch(`${UPSTREAM}/insights/admin`, {
       headers: {
         'x-service-token': token,
-        // 감사 로그용. NestJS 가 "누구의 요청이었나"를 알 수 있어야 한다
         'x-acting-user': session.sub,
       },
       cache: 'no-store',
