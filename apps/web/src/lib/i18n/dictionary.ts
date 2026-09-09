@@ -353,9 +353,9 @@ export const dictionary = {
       label: { kr: "Open Positions", en: "Open Positions", vn: "Vị trí đang tuyển" },
       title: { kr: "채용 중인 포지션", en: "Positions We Are Hiring", vn: "Các vị trí đang tuyển dụng" },
       desc: {
-        kr: "관심 있는 부문과 근무지를 선택해 공고를 확인하세요.\n지원 절차와 상세 요건은 각 공고를 펼치면 볼 수 있습니다.",
-        en: "Pick a team and a location to narrow the list.\nExpand a posting to see the full requirements and how to apply.",
-        vn: "Chọn bộ phận và địa điểm bạn quan tâm để lọc danh sách.\nMở rộng tin tuyển dụng để xem yêu cầu chi tiết và cách ứng tuyển."
+        kr: "관심 있는 근무지를 선택해 공고를 확인하세요.\n지원 절차와 상세 요건은 각 공고를 펼치면 볼 수 있습니다.",
+        en: "Pick a location to narrow the list.\nExpand a posting to see the full requirements and how to apply.",
+        vn: "Chọn địa điểm bạn quan tâm để lọc danh sách.\nMở rộng tin tuyển dụng để xem yêu cầu chi tiết và cách ứng tuyển."
       },
       filter_all: { kr: "전체", en: "All", vn: "Tất cả" },
       filter_department: { kr: "부문", en: "Team", vn: "Bộ phận" },
@@ -397,8 +397,6 @@ export const dictionary = {
       resume_button: { kr: "파일 선택", en: "Choose file", vn: "Chọn tệp" },
       resume_none: { kr: "선택된 파일 없음", en: "No file selected", vn: "Chưa chọn tệp" },
       resume_clear: { kr: "첨부 취소", en: "Remove", vn: "Bỏ tệp" },
-      consent: { kr: "개인정보 수집·이용에 동의합니다 (필수)", en: "I agree to the collection and use of my personal data (required)", vn: "Tôi đồng ý cho thu thập và sử dụng dữ liệu cá nhân (bắt buộc)" },
-      consent_detail: { kr: "지원서 검토 목적으로 이름·연락처·이력서를 수집합니다. 보관 기간과 상세 동의 문구는 아직 확정 전입니다.", en: "We collect your name, contact details and resume to review your application. The retention period and full consent wording are not finalized yet.", vn: "Chúng tôi thu thập tên, thông tin liên hệ và hồ sơ của bạn để xem xét đơn ứng tuyển. Thời hạn lưu trữ và nội dung đồng ý chi tiết chưa được chốt." },
       submit: { kr: "지원서 제출", en: "Submit application", vn: "Gửi hồ sơ" },
       cancel: { kr: "취소", en: "Cancel", vn: "Hủy" },
       close: { kr: "닫기", en: "Close", vn: "Đóng" },
@@ -413,7 +411,6 @@ export const dictionary = {
         resume: { kr: "이력서 파일을 첨부해주세요", en: "Please attach your resume", vn: "Vui lòng đính kèm hồ sơ của bạn" },
         resume_type: { kr: "PDF, DOC, DOCX 파일만 첨부할 수 있습니다", en: "Only PDF, DOC and DOCX files are accepted", vn: "Chỉ chấp nhận tệp PDF, DOC và DOCX" },
         resume_size: { kr: "파일 용량은 10MB 를 넘을 수 없습니다", en: "The file must be 10MB or smaller", vn: "Tệp không được vượt quá 10MB" },
-        consent: { kr: "개인정보 수집·이용에 동의해주세요", en: "Please agree to the personal data notice", vn: "Vui lòng đồng ý với thông báo dữ liệu cá nhân" }
       }
     },
     items: [
@@ -425,7 +422,7 @@ export const dictionary = {
         deadline: "2026-10-31",
         title: { kr: "ODA 사업기획 PM", en: "ODA Program Planning PM", vn: "PM Quy hoạch dự án ODA" },
         department: { kr: "ODA 컨설팅", en: "ODA Consulting", vn: "Tư vấn ODA" },
-        location: { kr: "성남 본사", en: "Seongnam HQ", vn: "Trụ sở Seongnam" },
+        location: { kr: "한국 본사", en: "Korea HQ", vn: "Trụ sở chính Hàn Quốc" },
         employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
         experience: { kr: "경력 5년 이상", en: "5+ years", vn: "Trên 5 năm kinh nghiệm" },
         tags: [
@@ -459,7 +456,7 @@ export const dictionary = {
         deadline: "2026-10-15",
         title: { kr: "베트남 현지 운영 매니저", en: "Vietnam Operations Manager", vn: "Quản lý Vận hành tại Việt Nam" },
         department: { kr: "현지 운영", en: "Operations", vn: "Vận hành" },
-        location: { kr: "하노이 지사", en: "Hanoi Branch", vn: "Chi nhánh Hà Nội" },
+        location: { kr: "하노이 법인", en: "Hanoi Subsidiary", vn: "Công ty tại Hà Nội" },
         employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
         experience: { kr: "경력 3년 이상", en: "3+ years", vn: "Trên 3 năm kinh nghiệm" },
         tags: [
@@ -468,7 +465,7 @@ export const dictionary = {
           { kr: "파트너 관리", en: "Partner Management", vn: "Quản lý đối tác" }
         ],
         responsibilities: [
-          { kr: "하노이 지사의 일상 운영과 인사·총무 실무 관리", en: "Running day-to-day operations, HR and general affairs at the Hanoi branch", vn: "Quản lý vận hành hằng ngày, nhân sự và hành chính tại chi nhánh Hà Nội" },
+          { kr: "하노이 법인의 일상 운영과 인사·총무 실무 관리", en: "Running day-to-day operations, HR and general affairs at the Hanoi subsidiary", vn: "Quản lý vận hành hằng ngày, nhân sự và hành chính tại công ty Hà Nội" },
           { kr: "현지 고객사·파트너사와의 커뮤니케이션 창구 역할", en: "Acting as the communication channel with local clients and partners", vn: "Là đầu mối liên lạc với khách hàng và đối tác tại địa phương" },
           { kr: "한국 본사와 현지 팀 사이의 업무 조율 및 통번역 지원", en: "Coordinating between the Korean HQ and the local team, including interpretation", vn: "Điều phối giữa trụ sở Hàn Quốc và đội ngũ địa phương, hỗ trợ phiên dịch" },
           { kr: "현지 법인 행정·계약 관련 문서 관리", en: "Managing local entity administration and contract documentation", vn: "Quản lý hành chính pháp nhân địa phương và hồ sơ hợp đồng" }

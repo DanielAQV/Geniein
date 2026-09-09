@@ -129,7 +129,12 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
   )
 
   // 선택지가 하나뿐인 축은 필터가 아니다. 줄 전체를 감춘다.
-  const showDepartments = departments.length > 1
+  //
+  // 부문은 분류 체계가 확정되기 전까지 필터 축으로 쓰지 않는다. 지금 값들은
+  // 공고를 만들며 임시로 붙인 것이라 필터로 노출하면 "이게 우리 조직 부문" 처럼
+  // 읽힌다. 확정되면 SHOW_DEPARTMENT_FILTER 만 true 로 되돌리면 된다.
+  const SHOW_DEPARTMENT_FILTER = false
+  const showDepartments = SHOW_DEPARTMENT_FILTER && departments.length > 1
   const showLocations = locations.length > 1
 
   const filtered = useMemo(

@@ -7,7 +7,9 @@
  *   아래 항목은 대표 결정 사항이라 임의로 정할 수 없다:
  *     · 이력서 파일을 어디에 둘지 (S3/오브젝트 스토리지 · 접근권한 · 암호화)
  *     · 보관 기간과 파기 절차 (채용 종료 후 N개월)
- *     · 개인정보 수집·이용 동의 문구의 최종 문안 (법무 확인 필요)
+ *     · 동의 문구 자체는 lib/legal/privacy.ts 의 consentNotice.careers 하나에서 온다.
+ *       처리방침(제2·3조)과 폼의 문구가 어긋나면 받은 동의가 무효가 되므로
+ *       여기에 문구를 직접 적지 말 것. 최종 문안은 법무 확인 대상이다.
  *     · 지원 내역을 볼 수 있는 사람 (admin 권한 분리)
  *   그 전까지 제출은 화면 상태만 바꾸고 아무 데도 보내지 않는다.
  *   실제 연동 시 이 컴포넌트에서 바꿀 곳은 handleSubmit 하나다.
@@ -17,7 +19,9 @@ import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { AnimatePresence, motion } from "framer-motion"
 import { AlertCircle, CheckCircle2, Loader2, Paperclip, X } from "lucide-react"
+import Link from "next/link"
 import { useLanguage } from "@/lib/i18n/language-context"
+import { consentNotice } from "@/lib/legal/privacy"
 import { pick, type JobPosting } from "@/lib/careers/jobs"
 
 const ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx"]
@@ -66,6 +70,8 @@ export function ApplyModal({
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [file, setFile] = useState<File | null>(null)
   const [consent, setConsent] = useState(false)
+  // 인재풀 등록은 "이번 전형" 과 목적이 다른 별도 동의라 선택 항목으로 분리한다.
+  const [talentPool, setTalentPool] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -80,6 +86,7 @@ export function ApplyModal({
     setForm({ ...EMPTY_FORM })
     setFile(null)
     setConsent(false)
+    setTalentPool(false)
     setErrors({})
     setSubmitting(false)
     setSubmitted(false)
@@ -146,7 +153,7 @@ export function ApplyModal({
     if (!form.intro.trim()) next.intro = t("careers.apply.errors.intro")
     const fileError = validateFile(file)
     if (fileError) next.resume = fileError
-    if (!consent) next.consent = t("careers.apply.errors.consent")
+    if (!consent) next.consent = consentNotice.careers.error[language]
     setErrors(next)
     return Object.keys(next).length === 0
   }
@@ -156,8 +163,10 @@ export function ApplyModal({
     if (!validate()) return
 
     setSubmitting(true)
-    // TODO(백엔드): 여기서 multipart 로 지원서를 보낸다. 저장소·보관기간·동의문구가
+    // TODO(백엔드): 여기서 multipart 로 지원서를 보낸다. 저장소·보관기간이
     // 정해지기 전까지는 아무 데도 전송하지 않는다 (위 파일 상단 주석 참고).
+    // 전송할 때 talentPool 동의 여부도 같이 보내야 한다 — 이 값이 false 면
+    // 전형 종료 시 파기, true 면 1년 보관이라 보관 정책이 갈린다.
     window.setTimeout(() => {
       setSubmitting(false)
       setSubmitted(true)
@@ -357,8 +366,8 @@ export function ApplyModal({
                   <FieldError message={errors.resume} />
                 </div>
 
-                {/* 개인정보 동의 */}
-                <div className="space-y-1">
+                {/* 개인정보 동의 — 필수(전형 진행) / 선택(인재풀) 분리 */}
+                <div className="space-y-2">
                   <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-card)] bg-[var(--card-glass)] px-4 py-3">
                     <input
                       type="checkbox"
@@ -375,14 +384,39 @@ export function ApplyModal({
                     />
                     <span className="flex flex-col gap-1">
                       <span className="text-sm font-medium text-[var(--text-heading)]">
-                        {t("careers.apply.consent")}
+                        {consentNotice.careers.label[language]}
                       </span>
                       <span className="text-[11px] font-light leading-relaxed text-[var(--text-sub)] break-keep">
-                        {t("careers.apply.consent_detail")}
+                        {consentNotice.careers.detail[language]}{" "}
+                        <Link
+                          href="/privacy"
+                          target="_blank"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-[#5874ea] hover:underline"
+                        >
+                          {consentNotice.policyLink[language]}
+                        </Link>
                       </span>
                     </span>
                   </label>
                   <FieldError message={errors.consent} />
+
+                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-card)] bg-[var(--card-glass)] px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={talentPool}
+                      onChange={(e) => setTalentPool(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-[#5874ea]"
+                    />
+                    <span className="flex flex-col gap-1">
+                      <span className="text-sm font-medium text-[var(--text-heading)]">
+                        {consentNotice.careers.talentPoolLabel[language]}
+                      </span>
+                      <span className="text-[11px] font-light leading-relaxed text-[var(--text-sub)] break-keep">
+                        {consentNotice.careers.talentPoolDetail[language]}
+                      </span>
+                    </span>
+                  </label>
                 </div>
 
                 <p className="text-[11px] font-light text-muted-foreground">{t("careers.apply.mock_notice")}</p>
