@@ -549,11 +549,11 @@ export const dictionary = {
       estimator: {
         name: { kr: "Estimator", en: "Estimator", vn: "Estimator" },
         set: { kr: "아이디어를 입력하면", en: "Type your idea", vn: "Nhập ý tưởng của bạn" },
-        hit: { kr: "견적부터 개발사까지 정리됩니다", en: "You get an estimate and a team", vn: "Bạn nhận được báo giá và đội ngũ" }
+        hit: { kr: "견적부터 개발사가 정리됩니다", en: "You get an estimate and a dev partner", vn: "Bạn nhận được báo giá và đơn vị phát triển" }
       },
       studio: {
         name: { kr: "Studio", en: "Studio", vn: "Studio" },
-        set: { kr: "한 문장을 쓰면", en: "Write one sentence", vn: "Viết một câu" },
+        set: { kr: "한 문장으로", en: "From one sentence", vn: "Chỉ với một câu" },
         hit: { kr: "앱이 만들어집니다", en: "You get a working app", vn: "Bạn nhận được ứng dụng chạy được" }
       },
       fx: {
