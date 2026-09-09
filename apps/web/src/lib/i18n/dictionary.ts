@@ -163,7 +163,7 @@ export const dictionary = {
         {
           city: { kr: "한국 본사\nGeniein Co., Ltd", en: "KOREA HQ\nGeniein Co., Ltd", vn: "Trụ sở chính Hàn Quốc\nGeniein Co., Ltd" },
           role: { kr: "사업 수주 · 관리 허브", en: "Business Development & Management Hub", vn: "Trung tâm Phát triển & Quản lý Dự án" },
-          image: "/images/about/org-korea.png",
+          image: "/images/about/org-korea.jpg",
           address: { kr: "경기도 성남시 분당구 황새울로319번길 8-4, 7층", en: "7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Tầng 7, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
           specialization: [
             { kr: "해외사업 수주", en: "Overseas Business Development", vn: "Phát triển dự án nước ngoài" },
