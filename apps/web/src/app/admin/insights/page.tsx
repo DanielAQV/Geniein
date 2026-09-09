@@ -32,7 +32,7 @@ export default function AdminInsightsPage() {
         )
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/8 text-muted-foreground text-xs font-medium border border-white/15">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium border border-border">
             {status}
           </span>
         )
@@ -60,7 +60,7 @@ export default function AdminInsightsPage() {
           { label: "Published", value: insights?.filter((i: any) => i.publish_status === 'published').length || 0, color: "text-emerald-500" },
           { label: "Drafts", value: insights?.filter((i: any) => i.publish_status === 'draft').length || 0, color: "text-amber-500" },
         ].map((stat, i) => (
-          <div key={i} className="bg-[#1c2436] border border-white/10 p-6 rounded-2xl">
+          <div key={i} className="bg-card border border-border p-6 rounded-2xl">
             <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
             <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
@@ -68,11 +68,11 @@ export default function AdminInsightsPage() {
       </div>
 
       {/* Table Section */}
-      <div className="bg-[#1c2436] border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.02]">
+              <tr className="border-b border-border bg-muted/60">
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Title</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Category</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">Status</th>
@@ -80,13 +80,13 @@ export default function AdminInsightsPage() {
                 <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border">
               {isLoading ? (
                 Array(5).fill(0).map((_, i) => (
                   <tr key={i} className="animate-pulse">
                     <td colSpan={5} className="px-6 py-8">
-                      <div className="h-4 bg-white/8 rounded w-3/4 mb-2" />
-                      <div className="h-3 bg-white/8 rounded w-1/2" />
+                      <div className="h-4 bg-muted rounded w-3/4 mb-2" />
+                      <div className="h-3 bg-muted rounded w-1/2" />
                     </td>
                   </tr>
                 ))
@@ -98,7 +98,7 @@ export default function AdminInsightsPage() {
                 </tr>
               ) : (
                 insights?.map((insight: any) => (
-                  <tr key={insight.id} className="group hover:bg-white/[0.02] transition-colors">
+                  <tr key={insight.id} className="group hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-5">
                       <p className="font-semibold text-foreground line-clamp-1">{insight.title_kr}</p>
                       <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 uppercase tracking-tighter">
@@ -116,13 +116,13 @@ export default function AdminInsightsPage() {
                     </td>
                     <td className="px-6 py-5 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <button className="p-2 hover:bg-white/8 rounded-lg text-muted-foreground hover:text-foreground transition-colors">
+                        <button className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors">
                           <Edit3 className="h-4 w-4" />
                         </button>
                         <button className="p-2 hover:bg-red-500/10 rounded-lg text-muted-foreground hover:text-red-500 transition-colors">
                           <Trash2 className="h-4 w-4" />
                         </button>
-                        <button className="p-2 hover:bg-white/8 rounded-lg text-muted-foreground transition-colors">
+                        <button className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors">
                           <MoreVertical className="h-4 w-4" />
                         </button>
                       </div>
