@@ -1,0 +1,380 @@
+/* GNOM intro - an ~8s overlay on the landing page. The landing's own
+   background stays; this only dims it. The rest of the rhythm lives in
+   GnomIntro.tsx; this one is here because a rule below uses it. */
+:root {
+  --gi-up: 860; /* eye and copy rise, ms */
+}
+
+/* ============ 액자 안 랜딩 화면 ============ */
+/* 원본은 html[data-intro] 로 페이지 전체를 숨겼다. 액자 안에서 재생하므로
+   같은 규칙을 액자([data-intro])에만 건다 — 바깥 페이지는 건드리지 않는다. */
+
+[data-intro] [data-intro-rise] {
+  visibility: hidden;
+  opacity: 0;
+  transition: none;
+  transform: translateY(28px);
+}
+[data-intro] [data-intro-eye-slot] {
+  opacity: 0;
+}
+
+[data-intro="landing"] [data-intro-rise] {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 420ms ease,
+    transform calc(var(--gi-up) * 1ms) cubic-bezier(0.25, 0.9, 0.25, 1);
+}
+[data-intro="landing"] [data-intro-rise="2"] {
+  transition-delay: 90ms;
+}
+[data-intro="landing"] [data-intro-eye-slot] {
+  transition: opacity 200ms ease calc(var(--gi-up) * 1ms - 120ms);
+  opacity: 1;
+}
+
+.gi-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 100; /* above the header, which is z-50 */
+  pointer-events: none;
+  font-family: inherit;
+  color: #fff;
+}
+
+/* Dims the background; lifts on landing. */
+/* 액자 안이라 반투명일 이유가 없다. 뒤 화면이 비치면 인트로 카피와
+   랜딩 카피가 겹쳐 읽힌다. */
+.gi-scrim {
+  position: absolute;
+  inset: 0;
+  background: #03060f;
+  transition: opacity 700ms ease;
+}
+.gi-root[data-phase="landing"] .gi-scrim,
+.gi-root[data-phase="done"] .gi-scrim {
+  opacity: 0;
+}
+
+/* Glow behind the eye. */
+.gi-halo {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 900px;
+  height: 900px;
+  margin: -450px 0 0 -450px;
+  background: radial-gradient(
+    circle,
+    rgba(60, 150, 255, 0.42) 0%,
+    rgba(20, 90, 190, 0.16) 44%,
+    transparent 68%
+  );
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+.gi-root[data-phase="intro"] .gi-halo {
+  opacity: 1;
+}
+
+/* A fixed 204x154 box at the top left, moved only by transform, so its
+   centre is always (102,77) and the target maths stays simple. */
+.gi-eye {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 204px;
+  height: 154px;
+  overflow: visible;
+  transform-origin: center center;
+  will-change: transform;
+  opacity: 0;
+  /* Matches LogoGnom's filter0_d (dy 4.8, stdDeviation 6, alpha .35). */
+  filter: drop-shadow(0 4.8px 12px rgba(0, 0, 0, 0.35));
+}
+
+.gi-eye > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---- copy ---- */
+.gi-say {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  text-align: center;
+  padding: 0 24px;
+}
+.gi-say > * {
+  transition:
+    opacity 280ms ease,
+    transform 440ms cubic-bezier(0.18, 0.85, 0.25, 1);
+}
+
+.gi-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 14px rgba(0, 20, 60, 0.7);
+  opacity: 0;
+  transform: translateY(9px);
+}
+.gi-tag b {
+  font-weight: 600;
+  color: #9fc4ee;
+} /* "GNOM" sits a tone back */
+.gi-tico {
+  display: inline-flex;
+  width: 26px;
+  height: 19px;
+  flex: none;
+}
+.gi-tico > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Weight and colour already carry the hierarchy, so 2x size is enough. */
+.gi-set {
+  margin-top: 13px;
+  font-size: clamp(17px, 2.2vw, 25px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #cfe3fb;
+  opacity: 0;
+  transform: translateY(12px);
+}
+.gi-hit {
+  margin: 3px auto 0;
+  max-width: min(1080px, 94vw);
+  font-size: clamp(28px, 4vw, 50px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.14;
+  text-shadow: 0 4px 32px rgba(0, 20, 60, 0.65);
+  opacity: 0;
+  transform: translateY(18px) scale(1.05);
+}
+
+.gi-say[data-step="1"] .gi-tag,
+.gi-say[data-step="2"] .gi-tag,
+.gi-say[data-step="3"] .gi-tag {
+  opacity: 1;
+  transform: none;
+}
+.gi-say[data-step="2"] .gi-set,
+.gi-say[data-step="3"] .gi-set {
+  opacity: 1;
+  transform: none;
+}
+.gi-say[data-step="3"] .gi-hit {
+  opacity: 1;
+  transform: none;
+}
+
+/* Exits upward, and must finish inside the swap gap (380ms in GnomIntro);
+   the 440ms above would still be running when the next line replaces it. */
+.gi-say[data-step="out"] > * {
+  opacity: 0;
+  transform: translateY(-14px);
+  transition:
+    opacity 240ms ease,
+    transform 300ms cubic-bezier(0.4, 0, 1, 1);
+}
+/* One frame before the swap, to snap back to the start position unseen. */
+.gi-say[data-step="reset"] > * {
+  transition: none;
+}
+
+/* Output cards - a one-second gesture out of the eye. */
+.gi-fx {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0;
+  height: 0;
+  transition: opacity 320ms ease;
+}
+.gi-fx[data-gone="1"] {
+  opacity: 0;
+}
+.gi-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+/* One keyframe for every card; --tx/--ty differ per card. Starting from a
+   fraction of --tx means they always settle outward, whichever side they are on. */
+@keyframes gi-out {
+  0% {
+    opacity: 0;
+    transform: translate(calc(var(--tx) * 0.86), var(--ty));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(var(--tx), var(--ty));
+  }
+}
+.gi-fx[data-kind="est"] .gi-est,
+.gi-fx[data-kind="studio"] .gi-studio {
+  animation: gi-out 850ms cubic-bezier(0.2, 0.75, 0.3, 1) forwards;
+  animation-delay: var(--dl, 0ms);
+}
+
+/* Estimator: three figures stacked to the left of the eye, no card around
+   them - a white panel tilted out of an eyeball reads as a cartoon, and this
+   is put in front of people who procure software. */
+.gi-est {
+  width: 168px;
+  margin: -22px 0 0 -84px;
+  text-align: right;
+}
+.gi-est.gi-c1 {
+  --tx: calc(var(--gi-d) * -1);
+  --ty: -58px;
+  --dl: 0ms;
+}
+.gi-est.gi-c2 {
+  --tx: calc(var(--gi-d) * -1);
+  --ty: 0px;
+  --dl: 110ms;
+}
+.gi-est.gi-c3 {
+  --tx: calc(var(--gi-d) * -1);
+  --ty: 58px;
+  --dl: 220ms;
+}
+.gi-est span {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9fc4ee;
+  margin-bottom: 1px;
+  text-shadow: 0 1px 8px rgba(0, 20, 60, 0.8);
+}
+.gi-est b {
+  display: block;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-shadow: 0 2px 14px rgba(0, 20, 60, 0.9);
+}
+
+/* Studio: three screens of apps built from a sentence. */
+.gi-studio {
+  width: 132px;
+  margin: -48px 0 0 -66px;
+  padding: 6px 6px 7px;
+  border-radius: 9px;
+  background: #f3f4f8;
+  box-shadow:
+    0 6px 18px rgba(0, 20, 70, 0.26),
+    0 0 0 1px rgba(10, 40, 90, 0.08);
+}
+.gi-studio .gi-dots {
+  display: flex;
+  gap: 3px;
+  padding: 1px 2px 4px;
+}
+.gi-studio .gi-dots i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f04438;
+}
+.gi-studio .gi-dots i:nth-child(2) {
+  background: #fcd34d;
+}
+.gi-studio .gi-dots i:nth-child(3) {
+  background: #3bcd78;
+}
+/* width + height:auto, the form next/image asks for. The static import
+   carries the intrinsic size, so the card follows the source ratio. */
+.gi-studio img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+.gi-studio.gi-c1 {
+  --tx: var(--gi-d);
+  --ty: -104px;
+  --dl: 0ms;
+}
+.gi-studio.gi-c2 {
+  --tx: var(--gi-d);
+  --ty: 0px;
+  --dl: 110ms;
+}
+.gi-studio.gi-c3 {
+  --tx: var(--gi-d);
+  --ty: 104px;
+  --dl: 220ms;
+}
+
+/* ---- skip ---- */
+.gi-skip {
+  position: absolute;
+  right: 26px;
+  bottom: 24px;
+  pointer-events: auto;
+  border: 1px solid rgba(190, 225, 255, 0.35);
+  background: rgba(6, 30, 62, 0.5);
+  backdrop-filter: blur(6px);
+  color: #dbeafe;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 260ms ease;
+}
+.gi-skip:focus-visible {
+  outline: 2px solid #0dd1fb;
+  outline-offset: 3px;
+}
+.gi-root[data-phase="landing"] .gi-skip,
+.gi-root[data-phase="done"] .gi-skip {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The cards fall off narrow screens. They are decoration; dropping them
+   costs nothing. */
+@media (max-width: 820px) {
+  .gi-fx {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  .gi-halo {
+    width: 560px;
+    height: 560px;
+    margin: -280px 0 0 -280px;
+  }
+  .gi-tag {
+    font-size: 13.5px;
+  }
+  .gi-tico {
+    width: 22px;
+    height: 16px;
+  }
+}
+

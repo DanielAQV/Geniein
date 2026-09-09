@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer"
 import { BusinessNav } from "@/components/business/business-nav"
 import { OdaServices } from "@/components/business/oda-services"
 import { PlatformServices } from "@/components/business/platform-services"
+import { ConnextCta } from "@/components/business/connext-cta"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState, Suspense, useRef } from "react"
 import { useSearchParams } from "next/navigation"
@@ -68,6 +69,7 @@ function BusinessContent() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
             >
+              <ConnextCta />
               <PlatformServices />
             </motion.div>
           )}

@@ -103,6 +103,8 @@ export const dictionary = {
       seoul_addr: { kr: "경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호", en: "720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
       hanoi: { kr: "하노이 법인 (GENIE VINA)", en: "Hanoi Subsidiary (GENIE VINA)", vn: "Công ty tại Hà Nội (GENIE VINA)" },
       hanoi_addr: { kr: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", en: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", vn: "Phòng số 01-02, tầng 15, tòa nhà Pearl Tower, số 1 Châu Văn Liêm, Phường Từ Liêm, Thành phố Hà Nội, Việt Nam" },
+      manila: { kr: "필리핀 법인 (Genie PH Corporation)", en: "Philippines Subsidiary (Genie PH Corporation)", vn: "Công ty tại Philippines (Genie PH Corporation)" },
+      manila_addr: { kr: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
       form_name_ph: { kr: "성함 또는 기관명을 입력해주세요", en: "Enter your name or organization", vn: "Nhập tên hoặc tổ chức của bạn" },
       form_subject_ph: { kr: "어떤 도움이 필요하신가요?", en: "How can we help you?", vn: "Chúng tôi có thể giúp gì cho bạn?" },
       form_message_ph: { kr: "프로젝트 또는 솔루션과 관련하여 궁금한 점을 자세히 남겨주세요...", en: "Please leave details about your questions regarding projects or solutions...", vn: "Vui lòng để lại chi tiết về các câu hỏi của bạn liên quan đến dự án hoặc giải pháp..." },
@@ -181,12 +183,10 @@ export const dictionary = {
           ]
         },
         {
-          // 주소 미정 — 빈 문자열이면 카드에서 주소 줄이 렌더되지 않는다.
-          // image 가 비어 있으면 카드가 사진 대신 대체 패널을 그린다.
           city: { kr: "필리핀 법인\nGenie PH Corporation", en: "PHILIPPINES SUBSIDIARY\nGenie PH Corporation", vn: "Công ty tại Philippines\nGenie PH Corporation" },
           role: { kr: "현지 프로젝트 수행 허브", en: "Local Project Delivery Hub", vn: "Trung tâm Triển khai Dự án Tại chỗ" },
-          image: "",
-          address: { kr: "", en: "", vn: "" },
+          image: "/images/about/org-philippines.jpg",
+          address: { kr: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
           specialization: [
             { kr: "현장운영", en: "Field Operations", vn: "Vận hành hiện trường" },
             { kr: "기자재조달", en: "Equipment Procurement", vn: "Mua sắm thiết bị" },
@@ -493,12 +493,12 @@ export const dictionary = {
       apply: { kr: "이 포지션 지원하기", en: "Apply for this role", vn: "Ứng tuyển vị trí này" }
     },
     cta: {
-      label: { kr: "Join Us", en: "Join Us", vn: "Gia nhập" },
-      title: { kr: "맞는 공고가 없어도 괜찮습니다", en: "No Matching Role? Apply Anyway", vn: "Chưa có vị trí phù hợp? Cứ ứng tuyển" },
+      label: { kr: "Careers", en: "Careers", vn: "Careers" },
+      title: { kr: "지니인과 함께할 인재를 찾습니다", en: "We are looking for people to build Geniein with", vn: "Chúng tôi đang tìm những người cùng xây dựng Geniein" },
       desc: {
-        kr: "지금 열려 있는 공고가 아니더라도, 지니인과 함께하고 싶은 이유가 있다면 먼저 이야기해 주세요.\n지원서를 남겨 주시면 담당자가 검토 후 연락드립니다.",
-        en: "Even if none of the open roles fit, tell us why you want to work with Geniein.\nLeave an application and our team will review it and get back to you.",
-        vn: "Ngay cả khi chưa có vị trí phù hợp, hãy cho chúng tôi biết lý do bạn muốn làm việc cùng Geniein.\nHãy gửi hồ sơ và đội ngũ của chúng tôi sẽ xem xét rồi phản hồi bạn."
+        kr: "지니인에 관심이 있으시다면 지원서를 남겨 주십시오.\n담당자가 꼼꼼히 검토한 후 연락드리겠습니다.",
+        en: "If you're interested in joining Geniein, please submit your application.\nOur team will carefully review it and get back to you.",
+        vn: "Nếu bạn quan tâm đến việc gia nhập Geniein, vui lòng gửi hồ sơ ứng tuyển.\nĐội ngũ của chúng tôi sẽ xem xét kỹ lưỡng và phản hồi bạn."
       },
       button: { kr: "일반 지원하기", en: "Submit an open application", vn: "Ứng tuyển tự do" }
     },
@@ -523,9 +523,8 @@ export const dictionary = {
       submit: { kr: "지원서 제출", en: "Submit application", vn: "Gửi hồ sơ" },
       cancel: { kr: "취소", en: "Cancel", vn: "Hủy" },
       close: { kr: "닫기", en: "Close", vn: "Đóng" },
-      mock_notice: { kr: "※ 목업 화면입니다. 제출해도 실제로 전송·저장되지 않습니다.", en: "Note: this is a mockup. Nothing is actually sent or stored.", vn: "Lưu ý: đây là bản mô phỏng. Không có dữ liệu nào được gửi hay lưu." },
       success_title: { kr: "지원서가 접수되었습니다", en: "Application received", vn: "Đã nhận hồ sơ" },
-      success_desc: { kr: "검토 후 기재해 주신 연락처로 회신드리겠습니다.\n(현재는 목업이라 실제로 전송되지 않았습니다.)", en: "We will review it and reply to the contact you provided.\n(This is a mockup, so nothing was actually sent.)", vn: "Chúng tôi sẽ xem xét và phản hồi qua thông tin liên hệ bạn cung cấp.\n(Đây là bản mô phỏng nên không có gì được gửi đi.)" },
+      success_desc: { kr: "검토 후 기재해 주신 연락처로 회신드리겠습니다.", en: "We will review it and reply to the contact you provided.", vn: "Chúng tôi sẽ xem xét và phản hồi qua thông tin liên hệ bạn cung cấp." },
       errors: {
         name: { kr: "이름을 입력해주세요", en: "Please enter your name", vn: "Vui lòng nhập tên của bạn" },
         email: { kr: "올바른 이메일 주소를 입력해주세요", en: "Please enter a valid email address", vn: "Vui lòng nhập địa chỉ email hợp lệ" },
@@ -534,6 +533,7 @@ export const dictionary = {
         resume: { kr: "이력서 파일을 첨부해주세요", en: "Please attach your resume", vn: "Vui lòng đính kèm hồ sơ của bạn" },
         resume_type: { kr: "PDF, DOC, DOCX 파일만 첨부할 수 있습니다", en: "Only PDF, DOC and DOCX files are accepted", vn: "Chỉ chấp nhận tệp PDF, DOC và DOCX" },
         resume_size: { kr: "파일 용량은 10MB 를 넘을 수 없습니다", en: "The file must be 10MB or smaller", vn: "Tệp không được vượt quá 10MB" },
+        submit: { kr: "전송에 실패했습니다. 잠시 후 다시 시도해주세요.", en: "Sending failed. Please try again in a moment.", vn: "Gửi không thành công. Vui lòng thử lại sau." },
       }
     },
     items: [
@@ -605,5 +605,53 @@ export const dictionary = {
         ]
       }
     ]
+  },
+  /**
+   * Connext 인트로. 문구는 Connext 저장소(messages/*.json 의 gnom.intro)에서
+   * 그대로 가져왔다 — 같은 제품을 가리키므로 양쪽이 갈라지면 안 된다.
+   * 원본이 바뀌면 여기도 같이 고친다.
+   */
+  connext: {
+    intro: {
+      skip: { kr: "건너뛰기", en: "Skip", vn: "Bỏ qua" },
+      estimator: {
+        name: { kr: "Estimator", en: "Estimator", vn: "Estimator" },
+        set: { kr: "아이디어를 말하면", en: "Say your idea", vn: "Nói ý tưởng của bạn" },
+        hit: { kr: "견적부터 개발사까지 정리됩니다", en: "You get an estimate and a team", vn: "Bạn nhận được báo giá và đội ngũ" }
+      },
+      studio: {
+        name: { kr: "Studio", en: "Studio", vn: "Studio" },
+        set: { kr: "한 문장을 쓰면", en: "Write one sentence", vn: "Viết một câu" },
+        hit: { kr: "앱이 만들어집니다", en: "You get a working app", vn: "Bạn nhận được ứng dụng chạy được" }
+      },
+      fx: {
+        cost: {
+          label: { kr: "예상 개발비", en: "Estimated cost", vn: "Chi phí dự kiến" },
+          value: { kr: "₩ 188,100,000", en: "188M KRW", vn: "188 triệu KRW" }
+        },
+        effort: {
+          label: { kr: "투입 공수", en: "Effort", vn: "Nhân lực" },
+          value: { kr: "12.4 MM", en: "12.4 MM", vn: "12.4 MM" }
+        },
+        vendor: {
+          label: { kr: "현지 개발사", en: "Local vendors", vn: "Nhà thầu bản địa" },
+          value: { kr: "66곳", en: "66", vn: "66" }
+        }
+      }
+    },
+    /* 액자 안 랜딩 화면 문구. Connext 저장소 messages/*.json 의 gnom.content 원문. */
+    landing: {
+      title: { kr: "AI가 개발을 대신합니다", en: "AI builds it for you", vn: "AI phát triển thay bạn" },
+      desc: { kr: "아이디어를 입력하면, GNOM AI가 요구사항 분석부터 개발팀 선정, 코딩까지 자동으로 수행합니다.", en: "Describe your idea and GNOM AI handles requirements, team selection and coding.", vn: "Nhập ý tưởng, GNOM AI sẽ tự động phân tích yêu cầu, chọn đội ngũ và lập trình." },
+      placeholder: { kr: "어떤 프로젝트를 만들고 싶으신가요?", en: "What would you like to build?", vn: "Bạn muốn xây dựng dự án gì?" },
+      button: { kr: "무료 견적 받기", en: "Get an estimate", vn: "Nhận báo giá" }
+    },
+    cta: {
+      label: { kr: "Connext", en: "Connext", vn: "Connext" },
+      title: { kr: "Connext의 AI 에이전트, GNOM", en: "GNOM, the AI agents of Connext", vn: "GNOM, tác nhân AI của Connext" },
+      desc: { kr: "Estimator는 요구사항을 분석해 개발사를 추천하고,\nStudio는 아이디어만으로 앱을 만듭니다.", en: "Estimator analyses your requirements and recommends vendors,\nStudio turns an idea alone into a working app.", vn: "Estimator phân tích yêu cầu và giới thiệu nhà thầu,\nStudio biến ý tưởng thành ứng dụng." },
+      button: { kr: "Connext 둘러보기", en: "Explore Connext", vn: "Khám phá Connext" },
+      replay: { kr: "인트로 다시 보기", en: "Replay the intro", vn: "Xem lại phần giới thiệu" }
+    }
   }
 } as const
