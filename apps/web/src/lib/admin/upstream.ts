@@ -10,9 +10,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/auth/session'
-
-const UPSTREAM =
-  process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+import { apiUpstream } from '@/lib/api-upstream'
 
 type ForwardOptions = {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
@@ -42,7 +40,7 @@ export async function forwardToAdminApi(
 
   let upstream: Response
   try {
-    upstream = await fetch(`${UPSTREAM}${path}`, {
+    upstream = await fetch(`${apiUpstream()}${path}`, {
       method,
       headers: {
         'x-service-token': token,
