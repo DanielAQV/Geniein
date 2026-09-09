@@ -45,10 +45,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#02040a] text-foreground flex">
+    <div className="min-h-screen bg-[#121826] text-foreground flex">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 bg-[#050810] flex flex-col sticky top-0 h-screen">
-        <div className="p-6 border-b border-white/5">
+      <aside className="w-64 border-r border-white/10 bg-[#1c2436] flex flex-col sticky top-0 h-screen">
+        <div className="p-6 border-b border-white/10">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="text-white font-bold text-xl">G</span>
@@ -67,7 +67,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                   isActive 
                     ? "bg-primary/10 text-primary shadow-[0_0_20px_rgba(var(--primary-rgb),0.1)]" 
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-white/8 hover:text-foreground"
                 }`}
               >
                 <item.icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4 border-t border-white/10">
           <button 
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-all w-full text-left"
@@ -91,23 +91,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 border-b border-white/5 bg-[#02040a]/80 backdrop-blur-xl flex items-center justify-between px-8 z-20 sticky top-0">
+        <header className="h-16 border-b border-white/10 bg-[#121826]/80 backdrop-blur-xl flex items-center justify-between px-8 z-20 sticky top-0">
           <div className="relative w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Search anything..." 
-              className="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-colors"
+              className="w-full bg-white/8 border border-white/15 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-colors"
             />
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="h-10 w-10 rounded-full hover:bg-white/5 flex items-center justify-center relative transition-colors text-muted-foreground">
+            <button className="h-10 w-10 rounded-full hover:bg-white/8 flex items-center justify-center relative transition-colors text-muted-foreground">
               <Bell className="h-5 w-5" />
-              <span className="absolute top-2 right-2 h-2 w-2 bg-primary rounded-full border-2 border-[#02040a]" />
+              <span className="absolute top-2 right-2 h-2 w-2 bg-primary rounded-full border-2 border-[#121826]" />
             </button>
-            <div className="h-8 w-[1px] bg-white/5 mx-2" />
-            <button className="flex items-center gap-3 hover:bg-white/5 px-3 py-1.5 rounded-full transition-colors">
+            <div className="h-8 w-[1px] bg-white/8 mx-2" />
+            <button className="flex items-center gap-3 hover:bg-white/8 px-3 py-1.5 rounded-full transition-colors">
               <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-bold text-white uppercase">
                 AD
               </div>
