@@ -98,8 +98,15 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border/50 pt-6 text-center text-sm text-muted-foreground md:border-t-0 md:pt-0">
+        <div className="flex flex-col items-center gap-2 border-t border-border/50 pt-6 text-center text-sm text-muted-foreground sm:flex-row sm:justify-center sm:gap-4 md:border-t-0 md:pt-0">
           <p>{t("common.copyright")}</p>
+          <span className="hidden text-border sm:inline">|</span>
+          <Link
+            href="/privacy"
+            className="font-medium text-foreground/80 transition-colors hover:text-foreground"
+          >
+            {t("common.privacy")}
+          </Link>
         </div>
       </div>
     </footer>

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Noto_Sans_KR } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from 'next-themes'
 import './globals.css'
 
@@ -43,7 +42,6 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LanguageProvider>
             {children}
-            {process.env.NODE_ENV === 'production' && <Analytics />}
           </LanguageProvider>
         </ThemeProvider>
       </body>
