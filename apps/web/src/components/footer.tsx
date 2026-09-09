@@ -53,14 +53,14 @@ export function Footer() {
               <Link
                 href="/business?category=oda"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.oda")}
               </Link>
               <Link
                 href="/business?category=platform"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.platform")}
               </Link>
@@ -73,16 +73,25 @@ export function Footer() {
               <Link
                 href="/insights?category=oda"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.insights_oda")}
               </Link>
               <Link
                 href="/insights?category=it"
                 scroll={false}
-                className="font-light text-[#f7f7f7] transition-colors hover:text-white"
+                className="font-light text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.insights_it")}
+              </Link>
+            </div>
+
+            <div className="md:flex-1 lg:flex-none">
+              <Link
+                href="/careers"
+                className="font-semibold text-foreground transition-colors hover:text-foreground/70"
+              >
+                {t("common.careers")}
               </Link>
             </div>
 
@@ -98,8 +107,15 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border/50 pt-6 text-center text-sm text-muted-foreground md:border-t-0 md:pt-0">
+        <div className="flex flex-col items-center gap-2 border-t border-border/50 pt-6 text-center text-sm text-muted-foreground sm:flex-row sm:justify-center sm:gap-4 md:border-t-0 md:pt-0">
           <p>{t("common.copyright")}</p>
+          <span className="hidden text-border sm:inline">|</span>
+          <Link
+            href="/privacy"
+            className="font-medium text-foreground/80 transition-colors hover:text-foreground"
+          >
+            {t("common.privacy")}
+          </Link>
         </div>
       </div>
     </footer>

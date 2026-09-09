@@ -10,13 +10,15 @@ export const dictionary = {
     insights: { kr: "비즈니스 인사이트", en: "Business Insights", vn: "Góc nhìn Kinh doanh" },
     insights_oda: { kr: "글로벌 ODA", en: "Global ODA", vn: "ODA Toàn cầu" },
     insights_it: { kr: "IT 트렌드", en: "IT Trends", vn: "Xu hướng CNTT" },
+    careers: { kr: "채용", en: "Careers", vn: "Tuyển dụng" },
     contact: { kr: "문의하기", en: "Contact Us", vn: "Liên hệ" },
     consulting_btn: { kr: "파트너십 상담", en: "Partnership", vn: "Tư vấn" },
     language: { kr: "언어", en: "Language", vn: "Ngôn ngữ" },
     copyright: { kr: "© 2026 Geniein Co., Ltd. All rights reserved.", en: "© 2026 Geniein Co., Ltd. All rights reserved.", vn: "© 2026 Geniein Co., Ltd. All rights reserved." },
     more: { kr: "자세히 보기", en: "Read More", vn: "Xem thêm" },
     prev: { kr: "이전", en: "Previous", vn: "Trước" },
-    next: { kr: "다음", en: "Next", vn: "Tiếp" }
+    next: { kr: "다음", en: "Next", vn: "Tiếp" },
+    privacy: { kr: "개인정보 처리방침", en: "Privacy Policy", vn: "Chính sách Bảo mật" }
   },
   hero: {
     badge: { kr: "글로벌 성장을 가속하는 지능형 디지털 아키텍트", en: "Intelligent Digital Architect Accelerating Global Growth", vn: "Đối tác thiết lập tương lai số" },
@@ -99,8 +101,10 @@ export const dictionary = {
       desc: { kr: "현장 중심의 전략과 탄탄한 기술력으로 실질적인 비즈니스 가치를 창출합니다.\n글로벌 비즈니스의 성공을 위한 최적의 파트너십, 지니인과 함께 시작하세요.", en: "We create tangible business value through field-oriented strategies and solid technology.\nThe optimal partnership for your global business success starts with Geniein.", vn: "Chúng tôi tạo ra giá trị kinh doanh hữu hình thông qua các chiến lược hướng tới thực tế và công nghệ vững chắc.\nMối quan hệ đối tác tối ưu cho sự thành công trong kinh doanh toàn cầu của bạn bắt đầu với Geniein." },
       seoul: { kr: "한국 본사 (주)지니인", en: "Korea HQ (Geniein Inc.)", vn: "Trụ sở chính Hàn Quốc (Geniein Inc.)" },
       seoul_addr: { kr: "경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호", en: "720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
-      hanoi: { kr: "하노이 지사 (GENIE VINA)", en: "Hanoi Branch (GENIE VINA)", vn: "Chi nhánh Hà Nội (GENIE VINA)" },
-      hanoi_addr: { kr: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", en: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", vn: "Tầng 21, tòa nhà Capital Tower, 109 Trần Hưng Đạo, Hà Nội" },
+      hanoi: { kr: "하노이 법인 (GENIE VINA)", en: "Hanoi Subsidiary (GENIE VINA)", vn: "Công ty tại Hà Nội (GENIE VINA)" },
+      hanoi_addr: { kr: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", en: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", vn: "Phòng số 01-02, tầng 15, tòa nhà Pearl Tower, số 1 Châu Văn Liêm, Phường Từ Liêm, Thành phố Hà Nội, Việt Nam" },
+      manila: { kr: "필리핀 법인 (Genie PH Corporation)", en: "Philippines Subsidiary (Genie PH Corporation)", vn: "Công ty tại Philippines (Genie PH Corporation)" },
+      manila_addr: { kr: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
       form_name_ph: { kr: "성함 또는 기관명을 입력해주세요", en: "Enter your name or organization", vn: "Nhập tên hoặc tổ chức của bạn" },
       form_subject_ph: { kr: "어떤 도움이 필요하신가요?", en: "How can we help you?", vn: "Chúng tôi có thể giúp gì cho bạn?" },
       form_message_ph: { kr: "프로젝트 또는 솔루션과 관련하여 궁금한 점을 자세히 남겨주세요...", en: "Please leave details about your questions regarding projects or solutions...", vn: "Vui lòng để lại chi tiết về các câu hỏi của bạn liên quan đến dự án hoặc giải pháp..." },
@@ -158,40 +162,160 @@ export const dictionary = {
       hubs: [
         {
           city: { kr: "한국 본사\nGeniein Co., Ltd", en: "KOREA HQ\nGeniein Co., Ltd", vn: "Trụ sở chính Hàn Quốc\nGeniein Co., Ltd" },
-          role: { kr: "전략 및 서비스 디자인 허브", en: "Strategy & Service Design Hub", vn: "Trung tâm Chiến lược & Thiết kế Dịch vụ" },
+          role: { kr: "사업 수주 · 관리 허브", en: "Business Development & Management Hub", vn: "Trung tâm Phát triển & Quản lý Dự án" },
+          image: "/images/about/org-korea.png",
           address: { kr: "경기도 성남시 분당구 황새울로319번길 8-4, 7층", en: "7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Tầng 7, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
           specialization: [
-            { kr: "프로젝트 전략", en: "Project Strategy", vn: "Chiển lược dự án" },
-            { kr: "글로벌 파트너십", en: "Global Partnership", vn: "Hợp tác toàn cầu" },
-            { kr: "전략 및 서비스 디자인", en: "Strategy & Service Design", vn: "Chiến lược & Thiết kế dịch vụ" }
+            { kr: "해외사업 수주", en: "Overseas Business Development", vn: "Phát triển dự án nước ngoài" },
+            { kr: "사업기획", en: "Project Planning", vn: "Lập kế hoạch dự án" },
+            { kr: "사업관리", en: "Project Management", vn: "Quản lý dự án" }
           ]
         },
         {
-          city: { kr: "하노이 지사\nGENIE VINA", en: "HANOI BRANCH\nGENIE VINA", vn: "Chi nhánh Hà Nội\nGENIE VINA" },
-          role: { kr: "R&D 및 엔지니어링 허브", en: "R&D & Engineering Hub", vn: "Trung tâm R&D & Kỹ thuật" },
-          address: { kr: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", en: "21F, Capital Tower, 109 Tran Hung Dao, Hanoi", vn: "Tầng 21, tòa nhà Capital Tower, 109 Trần Hưng Đạo, Hà Nội" },
+          city: { kr: "하노이 법인\nGENIE VINA", en: "HANOI SUBSIDIARY\nGENIE VINA", vn: "Công ty tại Hà Nội\nGENIE VINA" },
+          role: { kr: "R&D 및 사업수행 허브", en: "R&D & Delivery Hub", vn: "Trung tâm R&D & Triển khai" },
+          image: "/images/about/org-hanoi-pearl.jpg",
+          address: { kr: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", en: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", vn: "Phòng số 01-02, tầng 15, tòa nhà Pearl Tower, số 1 Châu Văn Liêm, Phường Từ Liêm, Thành phố Hà Nội, Việt Nam" },
           specialization: [
-            { kr: "풀스택 개발", en: "Full-stack Development", vn: "Phát triển Full-stack" },
-            { kr: "AI/ML 연구", en: "AI/ML Research", vn: "Nghiên cứu AI/ML" },
-            { kr: "현지 운영 최적화", en: "Local Operations", vn: "Tối ưu hóa vận hành tại chỗ" }
+            { kr: "Connext", en: "Connext", vn: "Connext" },
+            { kr: "GNOM / HER", en: "GNOM / HER", vn: "GNOM / HER" },
+            { kr: "RWA / BCI", en: "RWA / BCI", vn: "RWA / BCI" }
+          ]
+        },
+        {
+          city: { kr: "필리핀 법인\nGenie PH Corporation", en: "PHILIPPINES SUBSIDIARY\nGenie PH Corporation", vn: "Công ty tại Philippines\nGenie PH Corporation" },
+          role: { kr: "현지 프로젝트 수행 허브", en: "Local Project Delivery Hub", vn: "Trung tâm Triển khai Dự án Tại chỗ" },
+          image: "/images/about/org-philippines.jpg",
+          address: { kr: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
+          specialization: [
+            { kr: "현장운영", en: "Field Operations", vn: "Vận hành hiện trường" },
+            { kr: "기자재조달", en: "Equipment Procurement", vn: "Mua sắm thiết bị" },
+            { kr: "공정관리", en: "Progress & Schedule Control", vn: "Quản lý tiến độ" }
           ]
         }
       ]
     },
     projects: {
-      label: { kr: "Case Studies", en: "Case Studies", vn: "Dự án tiêu biểu" },
+      label: { kr: "Track Record", en: "Track Record", vn: "Thành tích thực hiện" },
       title: { kr: "프로젝트 포트폴리오", en: "Project Portfolio", vn: "Danh mục dự án" },
       desc: { kr: "지니인은 현장 중심의 전문 기획과 탄탄한 기술력을 바탕으로\n실질적인 비즈니스 가치를 창출합니다.", en: "Geniein creates tangible business value through field-oriented planning\nand solid technical expertise.", vn: "Geniein tạo ra giá trị kinh doanh hữu hình thông qua quy hoạch hướng tới thực tế\nvà chuyên môn kỹ thuật vững chắc." },
       view_case: { kr: "상세 사례 보기", en: "View full case study", vn: "Xem chi tiết dự án" },
+      filter_all: { kr: "전체", en: "All", vn: "Tất cả" },
+      summary: { kr: "총 {count}건 · {countries}개국 수행", en: "{count} projects across {countries} countries", vn: "{count} dự án tại {countries} quốc gia" },
+      countries: {
+        ph: { kr: "필리핀", en: "Philippines", vn: "Philippines" },
+        vn: { kr: "베트남", en: "Vietnam", vn: "Việt Nam" },
+        bd: { kr: "방글라데시", en: "Bangladesh", vn: "Bangladesh" },
+        uz: { kr: "우즈베키스탄", en: "Uzbekistan", vn: "Uzbekistan" }
+      },
+      // 수행 사업 9건 (확정).
+      // 제목(국문·영문)과 사업목적은 대표가 준 원문 그대로다 — 다듬거나 문장으로
+      // 고쳐 쓰지 말 것. 영문 사업명은 공식 명칭이라 대소문자도 원문을 따른다.
+      // en/vn description 은 그 원문을 옮긴 번역이고, 국문 원문이 정본이다.
+      // country 는 flagcdn 국가 코드(카드 국기 배지), image 는 아직 자리표시자 사진이다.
       items: [
         {
-          title: { kr: "우즈베키스탄 문화유산 디지털 통합관리 및 활용 역량강화 사업", en: "Uzbekistan Cultural Heritage Digital Integrated Management Capacity Building", vn: "Dự án Nâng cao Năng lực Quản lý Tích hợp và Sử dụng Di sản Văn hóa Kỹ thuật số tại Uzbekistan" },
-          category: { kr: "Global ODA / DX", en: "Global ODA / DX", vn: "ODA Toàn cầu / DX" },
-          description: { kr: "문화유산 보존을 위한 기획조사부터 스캐닝 시스템, 상황실, 서버, 스토리지, 네트워크, 보안 등 핵심 ICT 인프라를 통합 구축하여 국가 표준 관리 체계의 기반을 마련합니다.", en: "Establishing the foundation for a national management system by integrating core ICT infrastructure, including scanning systems, control rooms, servers, storage, networks, and security.", vn: "Thiết lập nền tảng cho hệ thống quản lý quốc gia bằng cách tích hợp hạ tầng ICT cốt lõi, bao gồm hệ thống quét, phòng điều hành, máy chủ, lưu trữ, mạng và bảo mật." },
-          metrics: [
-            { label: { kr: "수행 역할", en: "Our Role", vn: "Vai trò" }, value: { kr: "전문 기획 및 구축", en: "Planning & Build", vn: "Quy hoạch & Xây dựng" } },
-            { label: { kr: "수행 범위", en: "Project Scope", vn: "Phạm vi" }, value: { kr: "ICT 인프라 전반", en: "Full ICT Infra", vn: "Toàn bộ hạ tầng ICT" } }
-          ]
+          country: "ph",
+          image: "/images/about/projects/ph-ews4.png",
+          title: { kr: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업", en: "THE PROJECT \"DEVELOPMENT OF FLOOD FORECASTING AND EARLY WARNING SYSTEM FOR THE GREATER METRO MANILA AND SURROUNDING PROVINCES OF LAGUNA LAKE COMPLEX FOR DISASTER MITIGATION (EWS 4)\"", vn: "필리핀 재해경감을 위한 메트로 마닐라 통합 홍수관리 체계 구축 사업" },
+          official: "THE PROJECT \"DEVELOPMENT OF FLOOD FORECASTING AND EARLY WARNING SYSTEM FOR THE GREATER METRO MANILA AND SURROUNDING PROVINCES OF LAGUNA LAKE COMPLEX FOR DISASTER MITIGATION (EWS 4)\"",
+          category: { kr: "ODA · 재해관리", en: "ODA · Disaster Management", vn: "ODA · Quản lý thiên tai" },
+          description: { kr: "(장기) 필리핀 지속가능한 개발을 위한 재해대비 복원력과 적응능력 강화\n(중기) 광역 메트로 마닐라의 홍수위험경감 및 재해관리 대응체계 강화\n(단기) 광역 메트로 마닐라의 홍수예경보 체계 구축 및 전문인력 양성", en: "(Long term) Strengthening disaster preparedness resilience and adaptive capacity for sustainable development in the Philippines\n(Medium term) Strengthening flood risk reduction and disaster management response systems in the Greater Metro Manila\n(Short term) Establishing a flood forecasting and early warning system and training specialists in the Greater Metro Manila", vn: "(Dài hạn) Tăng cường khả năng phục hồi và thích ứng với thiên tai vì sự phát triển bền vững của Philippines\n(Trung hạn) Tăng cường giảm nhẹ rủi ro lũ lụt và hệ thống ứng phó quản lý thiên tai tại Vùng Đô thị Manila mở rộng\n(Ngắn hạn) Xây dựng hệ thống dự báo, cảnh báo sớm lũ lụt và đào tạo nhân lực chuyên môn" }
+        },
+        {
+          country: "ph",
+          image: "/images/about/projects/ph-enris.jpg",
+          title: { kr: "필리핀 팔라완 지역 식량 안보 및 기후변화 대응을 위한 환경자원정보시스템(ENRIS) 개발 사업", en: "Environment and Natural Resources Information System (ENRIS) for Palawan towards Food Security and Response to Climate Change", vn: "필리핀 팔라완 지역 식량 안보 및 기후변화 대응을 위한 환경자원정보시스템(ENRIS) 개발 사업" },
+          official: "Environment and Natural Resources Information System (ENRIS) for Palawan towards Food Security and Response to Climate Change",
+          category: { kr: "ODA · 환경 · 기후", en: "ODA · Environment & Climate", vn: "ODA · Môi trường & Khí hậu" },
+          description: { kr: "팔라완 지역 내 수자원/기후/농업 정보의 디지털 관리 시스템 구축을 통해 식량 안보와 기후변화 대응 역량 강화", en: "Strengthening food security and climate change response capacity through the establishment of a digital management system for water, climate and agricultural information in the Palawan region", vn: "Tăng cường an ninh lương thực và năng lực ứng phó biến đổi khí hậu thông qua việc xây dựng hệ thống quản lý số hóa thông tin tài nguyên nước, khí hậu và nông nghiệp tại vùng Palawan" }
+        },
+        {
+          country: "ph",
+          image: "",
+          title: { kr: "필리핀 사이버 위기대응 역량강화를 위한 국가사이버안전센터 구축사업", en: "Establishment Project of National Cyber Security Center for Enhancing the Cyber Crisis Response Capabilities in the Philippines", vn: "필리핀 사이버 위기대응 역량강화를 위한 국가사이버안전센터 구축사업" },
+          official: "Establishment Project of National Cyber Security Center for Enhancing the Cyber Crisis Response Capabilities in the Philippines",
+          category: { kr: "ODA · 사이버보안", en: "ODA · Cybersecurity", vn: "ODA · An ninh mạng" },
+          description: { kr: "지능형 기술을 적용한 사이버위협 대응 기반 마련을 통해 필리핀 및 일반 국민에게 안전한 사이버환경 제공 및 국제적 신뢰 제고", en: "Providing a safe cyber environment for the Philippines and its citizens and raising international trust, through the establishment of a cyber threat response foundation applying intelligent technologies", vn: "Cung cấp môi trường mạng an toàn cho Philippines và người dân, đồng thời nâng cao niềm tin quốc tế, thông qua việc thiết lập nền tảng ứng phó mối đe dọa mạng ứng dụng công nghệ thông minh" }
+        },
+        {
+          country: "vn",
+          image: "",
+          title: { kr: "베트남 한베 ICT 대학교 교육역량 강화 지원사업", en: "Project for Strengthening Academic Development of the Vietnam-Korea University of Information and Communication Technology (VKU) with regard to ICT Education, Research, and Governance", vn: "베트남 한베 ICT 대학교 교육역량 강화 지원사업" },
+          official: "Project for Strengthening Academic Development of the Vietnam-Korea University of Information and Communication Technology (VKU) with regard to ICT Education, Research, and Governance",
+          category: { kr: "ODA · 고등교육 ICT", en: "ODA · Higher Education ICT", vn: "ODA · CNTT Giáo dục Đại học" },
+          description: { kr: "베트남 한베 ICT 대학교의 교육역량 강화를 통해 베트남 4차 산업혁명을 이끌어 갈 중부지역 고급 ICT 인력양성 기여", en: "Contributing to the training of advanced ICT personnel in the central region who will lead Vietnam's fourth industrial revolution, through strengthening the academic capacity of the Vietnam-Korea University of ICT", vn: "Góp phần đào tạo nhân lực CNTT trình độ cao tại khu vực miền Trung dẫn dắt cuộc cách mạng công nghiệp lần thứ tư của Việt Nam, thông qua việc tăng cường năng lực đào tạo của Trường Đại học CNTT-TT Việt-Hàn" }
+        },
+        {
+          country: "ph",
+          image: "",
+          title: { kr: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업('26-'31/1,450만불)", en: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts", vn: "필리핀 사법 효율성 및 접근성 개선을 위한 사법 정보 디지털화 및 역량강화사업('26-'31/1,450만불)" },
+          official: "Improving Judicial Efficiency and Accessibility by Innovating Philippine Courts",
+          category: { kr: "ODA · 사법 디지털화", en: "ODA · Judicial Digitalization", vn: "ODA · Số hóa Tư pháp" },
+          description: { kr: "필리핀 사법 시스템의 디지털 혁신을 통해 법원 서비스의 신속한 제공을 촉진하고, 사법 절차의 투명성 및 효율성을 강화하여 모든 시민이 공정하고 신속한 사법 서비스를 받을 수 있도록 함", en: "Promoting the prompt delivery of court services through digital innovation of the Philippine judicial system, and strengthening the transparency and efficiency of judicial procedures so that every citizen can receive fair and timely judicial services", vn: "Thúc đẩy việc cung cấp dịch vụ tòa án nhanh chóng thông qua đổi mới số hệ thống tư pháp Philippines, và tăng cường tính minh bạch, hiệu quả của thủ tục tư pháp để mọi công dân được hưởng dịch vụ tư pháp công bằng và kịp thời" }
+        },
+        {
+          country: "vn",
+          image: "",
+          title: { kr: "베트남 사이버보안 전문인력 양성을 위한 비전통보안연구소 지원 사업", en: "Support to Institute of Non-traditional Security of Viet Nam for cybersecurity Capacity building for professionals", vn: "베트남 사이버보안 전문인력 양성을 위한 비전통보안연구소 지원 사업" },
+          official: "Support to Institute of Non-traditional Security of Viet Nam for cybersecurity Capacity building for professionals",
+          category: { kr: "ODA · 사이버보안 인력양성", en: "ODA · Cyber Workforce", vn: "ODA · Nhân lực An ninh mạng" },
+          description: { kr: "베트남 비전통보안연구소 내 사이버보안 교육 실습실 구축, 전문가 양성을 위한 교육 커리큘럼 개발 및 교육 과정 설계를 지원하여 베트남의 사이버보안 연구 역량 및 사이버 위협 대응 역량 강화", en: "Strengthening Vietnam's cybersecurity research capacity and cyber threat response capacity by supporting the establishment of a cybersecurity training laboratory at the Institute of Non-traditional Security, the development of a training curriculum for professionals, and the design of the training courses", vn: "Tăng cường năng lực nghiên cứu an ninh mạng và năng lực ứng phó mối đe dọa mạng của Việt Nam bằng cách hỗ trợ xây dựng phòng thực hành đào tạo an ninh mạng tại Viện An ninh Phi truyền thống, phát triển chương trình đào tạo chuyên gia và thiết kế các khóa học" }
+        },
+        {
+          country: "bd",
+          image: "",
+          title: { kr: "방글라데시 차토그램 한·방직업훈련원 스마트·그린 선박해체 기술 산업인력 양성사업", en: "Project for Smart & Green Ship-Breaking Workforce Development at Bangladesh-Korea Technical Training Center (BKTTC), Chattogram in Bangladesh", vn: "방글라데시 차토그램 한·방직업훈련원 스마트·그린 선박해체 기술 산업인력 양성사업" },
+          official: "Project for Smart & Green Ship-Breaking Workforce Development at Bangladesh-Korea Technical Training Center (BKTTC), Chattogram in Bangladesh",
+          category: { kr: "ODA · 직업훈련", en: "ODA · Vocational Training", vn: "ODA · Đào tạo nghề" },
+          description: { kr: "방글라데시 선박해체 산업 종사자를 위한 스마트·그린 기반 기술교육 체계를 구축하여 HKC 기준 준수 가능 인력을 양성함으로써 양질의 일자리 창출과 지속가능한 산업 발전에 기여", en: "Contributing to the creation of decent jobs and sustainable industrial development by establishing a smart and green technical training system for workers in Bangladesh's ship-breaking industry and training a workforce capable of complying with HKC standards", vn: "Góp phần tạo việc làm chất lượng và phát triển công nghiệp bền vững bằng cách xây dựng hệ thống đào tạo kỹ thuật thông minh và xanh cho lao động ngành phá dỡ tàu biển Bangladesh, đào tạo nhân lực đáp ứng tiêu chuẩn HKC" }
+        },
+        {
+          country: "bd",
+          image: "",
+          title: { kr: "방글라데시 AI 혁신기술 전문인력 양성사업", en: "Project For Fostering Innovative Technology Experts with a Focus on AI in the People's republic of Bangladesh", vn: "방글라데시 AI 혁신기술 전문인력 양성사업" },
+          official: "Project For Fostering Innovative Technology Experts with a Focus on AI in the People's republic of Bangladesh",
+          category: { kr: "ODA · AI 인력양성", en: "ODA · AI Talent", vn: "ODA · Nhân lực AI" },
+          description: { kr: "AI-Hub 센터를 중심으로 방글라데시의 디지털 전환, AI 전문인력 양성, 및 4차 산업혁명 기반 생태계 구축을 통해 국가 경쟁력 강화, 산업 발전, 취창업 기회 창출을 지원", en: "Supporting national competitiveness, industrial development and the creation of employment and startup opportunities, through Bangladesh's digital transformation, AI expert training and the building of a fourth-industrial-revolution ecosystem centered on an AI Hub center", vn: "Hỗ trợ nâng cao năng lực cạnh tranh quốc gia, phát triển công nghiệp và tạo cơ hội việc làm, khởi nghiệp, thông qua chuyển đổi số, đào tạo chuyên gia AI và xây dựng hệ sinh thái cách mạng công nghiệp 4.0 lấy trung tâm AI-Hub làm trọng tâm" }
+        },
+        {
+          country: "uz",
+          image: "",
+          title: { kr: "우즈베키스탄 문화유산 디지털 통합 관리 및 활용 역량강화사업", en: "Integrated Digital Management and Utilization of Cultural Heritage and Capacity Building Project in Uzbekistan", vn: "우즈베키스탄 문화유산 디지털 통합 관리 및 활용 역량강화사업" },
+          official: "Integrated Digital Management and Utilization of Cultural Heritage and Capacity Building Project in Uzbekistan",
+          category: { kr: "ODA · 문화유산 DX", en: "ODA · Cultural Heritage DX", vn: "ODA · DX Di sản Văn hóa" },
+          description: { kr: "문화유산 디지털 통합 관리 및 활용을 위한 인적/물적/제도적 기반 구축을 통해 관리 역량을 강화하고, 우즈베키스탄 중장기 관광산업 활성화에 기여", en: "Strengthening management capacity through the establishment of human, physical and institutional foundations for the integrated digital management and utilization of cultural heritage, and contributing to the revitalization of Uzbekistan's tourism industry over the medium to long term", vn: "Tăng cường năng lực quản lý thông qua việc xây dựng nền tảng nhân lực, vật chất và thể chế cho quản lý tích hợp kỹ thuật số và sử dụng di sản văn hóa, góp phần thúc đẩy ngành du lịch Uzbekistan trung và dài hạn" }
+        }
+      ]
+    },
+    // 특허 3건. 출원번호·발명의명칭은 확정본이다.
+    // date 가 비어 있으면 페이지에서 출원일 행이 렌더되지 않는다.
+    patents: {
+      label: { kr: "Intellectual Property", en: "Intellectual Property", vn: "Sở hữu trí tuệ" },
+      title: { kr: "특허가 증명하는 기술력", en: "Technology Proven by Patents", vn: "Năng lực công nghệ được chứng minh qua bằng sáng chế" },
+      desc: { kr: "현장에서 검증한 방법론을 특허로 정리하며,\n지니인의 기술력을 하나씩 증명해가고 있습니다.", en: "We formalize field-proven methodologies as patents,\nproving Geniein's technical capability one at a time.", vn: "Chúng tôi hệ thống hóa các phương pháp đã được kiểm chứng thành bằng sáng chế,\nchứng minh năng lực công nghệ của Geniein từng bước một." },
+      status: { kr: "출원", en: "Filed", vn: "Đã nộp đơn" },
+      office: { kr: "특허청 (KIPO)", en: "KIPO, Republic of Korea", vn: "KIPO, Hàn Quốc" },
+      no_label: { kr: "출원번호", en: "Application No.", vn: "Số đơn" },
+      date_label: { kr: "출원일", en: "Filing Date", vn: "Ngày nộp" },
+      items: [
+        {
+          no: "10-2025-0217025",
+          date: "2025-12-31",
+          title: { kr: "기능 점수 기반 B2B 소프트웨어 개발 자동 매칭 및 계약, 지급 통합 시스템 및 그 방법", en: "Function Point-Based System and Method for Automated Matching, Contracting, and Payment Integration in B2B Software Development", vn: "Hệ thống và Phương pháp Tự động Kết nối, Ký kết Hợp đồng và Tích hợp Thanh toán trong Phát triển Phần mềm B2B dựa trên Điểm Chức năng" },
+          desc: { kr: "기능점수(FP)로 산정한 개발 규모를 기준으로 발주자와 개발자를 자동 매칭하고, 계약 체결에서 대금 지급까지를 하나의 흐름으로 묶는 기술입니다.", en: "Automatically matching clients and developers on the basis of development scale measured in function points, and binding contracting through payment into a single flow.", vn: "Tự động kết nối bên đặt hàng và nhà phát triển dựa trên quy mô phát triển đo bằng điểm chức năng, liên kết việc ký hợp đồng đến thanh toán thành một luồng duy nhất." }
+        },
+        {
+          no: "10-2025-0217026",
+          date: "2025-12-31",
+          title: { kr: "AI 기반 소프트웨어 개발 견적 자동화, 매칭 시스템 및 그 방법", en: "AI-Based System and Method for Automating Software Development Estimation and Matching", vn: "Hệ thống và Phương pháp Tự động hóa Báo giá và Kết nối Phát triển Phần mềm dựa trên AI" },
+          desc: { kr: "요구사항으로부터 개발 견적을 자동으로 산출하고, 산출된 견적을 기준으로 수행 주체를 매칭하는 기술입니다.", en: "Automatically deriving a development estimate from requirements and matching the party to perform the work on the basis of that estimate.", vn: "Tự động đưa ra báo giá phát triển từ các yêu cầu và kết nối bên thực hiện dựa trên báo giá đó." }
+        },
+        {
+          no: "10-2025-0217028",
+          date: "2025-12-31",
+          title: { kr: "Web3 기반 기능 단위 소프트웨어 계약 연동형 유틸리티 토큰 시스템 및 그 운영 방법", en: "Web3-Based Utility Token System Linked to Function-Unit Software Contracts and Method of Operating the Same", vn: "Hệ thống Token Tiện ích Liên kết Hợp đồng Phần mềm theo Đơn vị Chức năng dựa trên Web3 và Phương pháp Vận hành" },
+          desc: { kr: "기능 단위로 나눈 소프트웨어 계약을 Web3 상에서 연동하고, 이행과 정산에 사용되는 유틸리티 토큰을 운영하는 기술입니다.", en: "Linking software contracts divided into functional units on Web3, and operating a utility token used for performance and settlement.", vn: "Liên kết các hợp đồng phần mềm được chia theo đơn vị chức năng trên Web3, và vận hành token tiện ích dùng cho việc thực hiện và quyết toán." }
         }
       ]
     }
@@ -335,6 +459,199 @@ export const dictionary = {
           a: { kr: "네, 서울 본사와 하노이 R&D 센터 간의 유기적인 협업 시스템을 통해 글로벌 프로젝트를 지원합니다. 특히 베트남 현지 진출이나 네트워크가 필요한 사업의 경우 하노이 센터의 전문 인력을 통해 즉각적인 대응이 가능합니다.", en: "Yes, we support global projects through an organic collaboration system between our Seoul HQ and Hanoi R&D Center. Especially for businesses requiring entry into Vietnam or local networking, immediate response is possible through our expert staff in Hanoi.", vn: "Có, chúng tôi hỗ trợ các dự án toàn cầu thông qua hệ thống cộng tác hữu cơ giữa Trụ sở chính tại Seoul 및 Trung tâm R&D Hà Nội. Đặc biệt đối với các doanh nghiệp yêu cầu thâm nhập vào Việt Nam hoặc mạng lưới địa phương, phản hồi ngay lập tức là có thể thông qua đội ngũ chuyên gia của chúng tôi tại Hanoi." }
         }
       ]
+    }
+  },
+  careers: {
+    hero: {
+      label: { kr: "Careers at Geniein", en: "Careers at Geniein", vn: "Careers at Geniein" },
+      title_1: { kr: "BEYOND", en: "BEYOND", vn: "BEYOND" },
+      title_2: { kr: "BORDERS", en: "BORDERS", vn: "BORDERS" },
+      description: {
+        kr: "지역과 분야의 경계를 넘어, 현장과 기술을 함께 만들어갈 인재를 찾습니다.",
+        en: "Beyond the borders of geography and discipline — we are looking for people to build the field and the technology with us.",
+        vn: "Vượt qua ranh giới của địa lý và lĩnh vực, chúng tôi tìm kiếm những người cùng xây dựng hiện trường và công nghệ."
+      }
+    },
+    jobs: {
+      label: { kr: "Open Positions", en: "Open Positions", vn: "Vị trí đang tuyển" },
+      title: { kr: "채용 중인 포지션", en: "Positions We Are Hiring", vn: "Các vị trí đang tuyển dụng" },
+      desc: {
+        kr: "관심 있는 근무지를 선택해 공고를 확인하세요.\n지원 절차와 상세 요건은 각 공고를 펼치면 볼 수 있습니다.",
+        en: "Pick a location to narrow the list.\nExpand a posting to see the full requirements and how to apply.",
+        vn: "Chọn địa điểm bạn quan tâm để lọc danh sách.\nMở rộng tin tuyển dụng để xem yêu cầu chi tiết và cách ứng tuyển."
+      },
+      filter_all: { kr: "전체", en: "All", vn: "Tất cả" },
+      filter_department: { kr: "부문", en: "Team", vn: "Bộ phận" },
+      filter_location: { kr: "근무지", en: "Location", vn: "Địa điểm" },
+      filter_reset: { kr: "필터 초기화", en: "Reset filters", vn: "Đặt lại bộ lọc" },
+      count_template: { kr: "총 {count}건의 공고", en: "{count} open positions", vn: "{count} vị trí đang tuyển" },
+      deadline_label: { kr: "마감일", en: "Deadline", vn: "Hạn nộp" },
+      rolling: { kr: "상시 채용", en: "Rolling", vn: "Tuyển liên tục" },
+      responsibilities: { kr: "주요 업무", en: "What You Will Do", vn: "Nhiệm vụ chính" },
+      requirements: { kr: "자격 요건", en: "Requirements", vn: "Yêu cầu" },
+      preferred: { kr: "우대 사항", en: "Nice to Have", vn: "Ưu tiên" },
+      apply: { kr: "이 포지션 지원하기", en: "Apply for this role", vn: "Ứng tuyển vị trí này" }
+    },
+    cta: {
+      label: { kr: "Careers", en: "Careers", vn: "Careers" },
+      title: { kr: "지니인과 함께할 인재를 찾습니다", en: "We are looking for people to build Geniein with", vn: "Chúng tôi đang tìm những người cùng xây dựng Geniein" },
+      desc: {
+        kr: "지니인에 관심이 있으시다면 지원서를 남겨 주십시오.\n담당자가 꼼꼼히 검토한 후 연락드리겠습니다.",
+        en: "If you're interested in joining Geniein, please submit your application.\nOur team will carefully review it and get back to you.",
+        vn: "Nếu bạn quan tâm đến việc gia nhập Geniein, vui lòng gửi hồ sơ ứng tuyển.\nĐội ngũ của chúng tôi sẽ xem xét kỹ lưỡng và phản hồi bạn."
+      },
+      button: { kr: "일반 지원하기", en: "Submit an open application", vn: "Ứng tuyển tự do" }
+    },
+    apply: {
+      title: { kr: "지원서 작성", en: "Apply", vn: "Đơn ứng tuyển" },
+      subtitle: { kr: "아래 정보를 남겨 주시면 담당자가 검토 후 연락드립니다.", en: "Leave your details and our team will review and get back to you.", vn: "Để lại thông tin của bạn, đội ngũ của chúng tôi sẽ xem xét và phản hồi." },
+      position: { kr: "지원 포지션", en: "Position", vn: "Vị trí ứng tuyển" },
+      general: { kr: "일반 지원 (포지션 미지정)", en: "Open application (no specific role)", vn: "Ứng tuyển tự do (không chỉ định vị trí)" },
+      name: { kr: "이름", en: "Name", vn: "Họ và tên" },
+      name_ph: { kr: "홍길동", en: "Your name", vn: "Họ và tên của bạn" },
+      email: { kr: "이메일", en: "Email", vn: "Email" },
+      email_ph: { kr: "email@example.com", en: "email@example.com", vn: "email@example.com" },
+      phone: { kr: "연락처", en: "Phone", vn: "Số điện thoại" },
+      phone_ph: { kr: "010-0000-0000", en: "Phone number", vn: "Số điện thoại" },
+      intro: { kr: "간단한 자기소개", en: "Short introduction", vn: "Giới thiệu ngắn" },
+      intro_ph: { kr: "지원 동기와 관련 경험을 간단히 적어 주세요.", en: "Briefly tell us why you are applying and what you have done.", vn: "Hãy cho chúng tôi biết lý do ứng tuyển và kinh nghiệm của bạn." },
+      resume: { kr: "이력서 첨부", en: "Resume", vn: "Hồ sơ" },
+      resume_hint: { kr: "PDF · DOC · DOCX, 10MB 이하", en: "PDF, DOC or DOCX, up to 10MB", vn: "PDF, DOC hoặc DOCX, tối đa 10MB" },
+      resume_button: { kr: "파일 선택", en: "Choose file", vn: "Chọn tệp" },
+      resume_none: { kr: "선택된 파일 없음", en: "No file selected", vn: "Chưa chọn tệp" },
+      resume_clear: { kr: "첨부 취소", en: "Remove", vn: "Bỏ tệp" },
+      submit: { kr: "지원서 제출", en: "Submit application", vn: "Gửi hồ sơ" },
+      cancel: { kr: "취소", en: "Cancel", vn: "Hủy" },
+      close: { kr: "닫기", en: "Close", vn: "Đóng" },
+      success_title: { kr: "지원서가 접수되었습니다", en: "Application received", vn: "Đã nhận hồ sơ" },
+      success_desc: { kr: "검토 후 기재해 주신 연락처로 회신드리겠습니다.", en: "We will review it and reply to the contact you provided.", vn: "Chúng tôi sẽ xem xét và phản hồi qua thông tin liên hệ bạn cung cấp." },
+      errors: {
+        name: { kr: "이름을 입력해주세요", en: "Please enter your name", vn: "Vui lòng nhập tên của bạn" },
+        email: { kr: "올바른 이메일 주소를 입력해주세요", en: "Please enter a valid email address", vn: "Vui lòng nhập địa chỉ email hợp lệ" },
+        phone: { kr: "연락처를 입력해주세요", en: "Please enter your phone number", vn: "Vui lòng nhập số điện thoại của bạn" },
+        intro: { kr: "간단한 자기소개를 입력해주세요", en: "Please write a short introduction", vn: "Vui lòng viết giới thiệu ngắn" },
+        resume: { kr: "이력서 파일을 첨부해주세요", en: "Please attach your resume", vn: "Vui lòng đính kèm hồ sơ của bạn" },
+        resume_type: { kr: "PDF, DOC, DOCX 파일만 첨부할 수 있습니다", en: "Only PDF, DOC and DOCX files are accepted", vn: "Chỉ chấp nhận tệp PDF, DOC và DOCX" },
+        resume_size: { kr: "파일 용량은 10MB 를 넘을 수 없습니다", en: "The file must be 10MB or smaller", vn: "Tệp không được vượt quá 10MB" },
+        submit: { kr: "전송에 실패했습니다. 잠시 후 다시 시도해주세요.", en: "Sending failed. Please try again in a moment.", vn: "Gửi không thành công. Vui lòng thử lại sau." },
+      }
+    },
+    items: [
+      {
+        id: "oda-planning-pm",
+        department_key: "oda",
+        location_key: "seongnam",
+        employment_key: "fulltime",
+        deadline: "2026-10-31",
+        title: { kr: "ODA 사업기획 PM", en: "ODA Program Planning PM", vn: "PM Quy hoạch dự án ODA" },
+        department: { kr: "ODA 컨설팅", en: "ODA Consulting", vn: "Tư vấn ODA" },
+        location: { kr: "한국 본사", en: "Korea HQ", vn: "Trụ sở chính Hàn Quốc" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 5년 이상", en: "5+ years", vn: "Trên 5 năm kinh nghiệm" },
+        tags: [
+          { kr: "사업 기획", en: "Program Planning", vn: "Quy hoạch dự án" },
+          { kr: "타당성 조사", en: "Feasibility Study", vn: "Nghiên cứu khả thi" },
+          { kr: "해외 출장", en: "Overseas Travel", vn: "Công tác nước ngoài" }
+        ],
+        responsibilities: [
+          { kr: "KOICA·EDCF 등 공적개발원조 사업의 제안서 작성과 수주 전략 수립", en: "Writing proposals and shaping win strategies for KOICA/EDCF and other ODA programs", vn: "Soạn đề xuất và xây dựng chiến lược đấu thầu cho các dự án ODA như KOICA, EDCF" },
+          { kr: "사업 타당성 조사(F/S)와 기본 설계 단계의 현지 조사 수행", en: "Running feasibility studies and on-site surveys through the basic design phase", vn: "Thực hiện nghiên cứu khả thi (F/S) và khảo sát hiện trường ở giai đoạn thiết kế cơ bản" },
+          { kr: "발주처·현지 정부 기관과의 협의 및 이해관계자 관리", en: "Coordinating with client agencies and local governments, and managing stakeholders", vn: "Phối hợp với chủ đầu tư, cơ quan chính phủ địa phương và quản lý các bên liên quan" },
+          { kr: "프로젝트 일정·예산·산출물 관리와 사후 평가 대응", en: "Managing schedule, budget and deliverables, and handling post-project evaluation", vn: "Quản lý tiến độ, ngân sách, sản phẩm bàn giao và xử lý đánh giá sau dự án" }
+        ],
+        requirements: [
+          { kr: "ODA 또는 공공 SI 사업 기획·수행 경력 5년 이상", en: "5+ years planning or delivering ODA or public sector SI projects", vn: "Trên 5 năm kinh nghiệm quy hoạch hoặc triển khai dự án ODA / SI khu vực công" },
+          { kr: "제안서 및 사업계획서 작성 경험", en: "Experience writing proposals and business plans", vn: "Kinh nghiệm soạn đề xuất và kế hoạch kinh doanh" },
+          { kr: "영어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in English", vn: "Có khả năng giao tiếp công việc bằng tiếng Anh" },
+          { kr: "연 2~3회 해외 출장이 가능한 분", en: "Able to travel overseas two to three times a year", vn: "Có thể công tác nước ngoài 2-3 lần mỗi năm" }
+        ],
+        preferred: [
+          { kr: "동남아시아·중앙아시아 지역 사업 수행 경험", en: "Experience delivering projects in Southeast or Central Asia", vn: "Kinh nghiệm triển khai dự án tại Đông Nam Á hoặc Trung Á" },
+          { kr: "전자정부·정보화 사업 이해도", en: "Understanding of e-government and public digitalization programs", vn: "Hiểu biết về chính phủ điện tử và các dự án số hóa công" },
+          { kr: "PMP 등 프로젝트 관리 자격 보유", en: "PMP or an equivalent project management certification", vn: "Có chứng chỉ quản lý dự án như PMP" }
+        ]
+      },
+      {
+        id: "vn-operations-manager",
+        department_key: "operations",
+        location_key: "hanoi",
+        employment_key: "fulltime",
+        deadline: "2026-10-15",
+        title: { kr: "베트남 현지 운영 매니저", en: "Vietnam Operations Manager", vn: "Quản lý Vận hành tại Việt Nam" },
+        department: { kr: "현지 운영", en: "Operations", vn: "Vận hành" },
+        location: { kr: "하노이 법인", en: "Hanoi Subsidiary", vn: "Công ty tại Hà Nội" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 3년 이상", en: "3+ years", vn: "Trên 3 năm kinh nghiệm" },
+        tags: [
+          { kr: "현지 운영", en: "Local Operations", vn: "Vận hành địa phương" },
+          { kr: "한국어·베트남어", en: "KR / VN Bilingual", vn: "Song ngữ Hàn - Việt" },
+          { kr: "파트너 관리", en: "Partner Management", vn: "Quản lý đối tác" }
+        ],
+        responsibilities: [
+          { kr: "하노이 법인의 일상 운영과 인사·총무 실무 관리", en: "Running day-to-day operations, HR and general affairs at the Hanoi subsidiary", vn: "Quản lý vận hành hằng ngày, nhân sự và hành chính tại công ty Hà Nội" },
+          { kr: "현지 고객사·파트너사와의 커뮤니케이션 창구 역할", en: "Acting as the communication channel with local clients and partners", vn: "Là đầu mối liên lạc với khách hàng và đối tác tại địa phương" },
+          { kr: "한국 본사와 현지 팀 사이의 업무 조율 및 통번역 지원", en: "Coordinating between the Korean HQ and the local team, including interpretation", vn: "Điều phối giữa trụ sở Hàn Quốc và đội ngũ địa phương, hỗ trợ phiên dịch" },
+          { kr: "현지 법인 행정·계약 관련 문서 관리", en: "Managing local entity administration and contract documentation", vn: "Quản lý hành chính pháp nhân địa phương và hồ sơ hợp đồng" }
+        ],
+        requirements: [
+          { kr: "베트남 현지 기업 또는 한국계 법인에서의 운영·관리 경력 3년 이상", en: "3+ years in operations or management at a Vietnamese or Korean-owned company", vn: "Trên 3 năm kinh nghiệm vận hành hoặc quản lý tại doanh nghiệp Việt Nam hoặc công ty Hàn Quốc" },
+          { kr: "한국어와 베트남어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in both Korean and Vietnamese", vn: "Có thể làm việc bằng cả tiếng Hàn và tiếng Việt" },
+          { kr: "하노이 근무가 가능한 분", en: "Able to work from Hanoi", vn: "Có thể làm việc tại Hà Nội" }
+        ],
+        preferred: [
+          { kr: "IT·엔지니어링 조직에서의 근무 경험", en: "Experience working in an IT or engineering organization", vn: "Kinh nghiệm làm việc trong tổ chức CNTT hoặc kỹ thuật" },
+          { kr: "베트남 노무·세무 행정 실무 이해", en: "Familiarity with Vietnamese labor and tax administration", vn: "Hiểu biết thực tế về hành chính lao động và thuế tại Việt Nam" },
+          { kr: "영어 커뮤니케이션 가능", en: "Able to communicate in English", vn: "Có thể giao tiếp bằng tiếng Anh" }
+        ]
+      }
+    ]
+  },
+  /**
+   * Connext 인트로. 문구는 Connext 저장소(messages/*.json 의 gnom.intro)에서
+   * 그대로 가져왔다 — 같은 제품을 가리키므로 양쪽이 갈라지면 안 된다.
+   * 원본이 바뀌면 여기도 같이 고친다.
+   */
+  connext: {
+    intro: {
+      skip: { kr: "건너뛰기", en: "Skip", vn: "Bỏ qua" },
+      estimator: {
+        name: { kr: "Estimator", en: "Estimator", vn: "Estimator" },
+        set: { kr: "아이디어를 말하면", en: "Say your idea", vn: "Nói ý tưởng của bạn" },
+        hit: { kr: "견적부터 개발사까지 정리됩니다", en: "You get an estimate and a team", vn: "Bạn nhận được báo giá và đội ngũ" }
+      },
+      studio: {
+        name: { kr: "Studio", en: "Studio", vn: "Studio" },
+        set: { kr: "한 문장을 쓰면", en: "Write one sentence", vn: "Viết một câu" },
+        hit: { kr: "앱이 만들어집니다", en: "You get a working app", vn: "Bạn nhận được ứng dụng chạy được" }
+      },
+      fx: {
+        cost: {
+          label: { kr: "예상 개발비", en: "Estimated cost", vn: "Chi phí dự kiến" },
+          value: { kr: "₩ 188,100,000", en: "188M KRW", vn: "188 triệu KRW" }
+        },
+        effort: {
+          label: { kr: "투입 공수", en: "Effort", vn: "Nhân lực" },
+          value: { kr: "12.4 MM", en: "12.4 MM", vn: "12.4 MM" }
+        },
+        vendor: {
+          label: { kr: "현지 개발사", en: "Local vendors", vn: "Nhà thầu bản địa" },
+          value: { kr: "66곳", en: "66", vn: "66" }
+        }
+      }
+    },
+    /* 액자 안 랜딩 화면 문구. Connext 저장소 messages/*.json 의 gnom.content 원문. */
+    landing: {
+      title: { kr: "AI가 개발을 대신합니다", en: "AI builds it for you", vn: "AI phát triển thay bạn" },
+      desc: { kr: "아이디어를 입력하면, GNOM AI가 요구사항 분석부터 개발팀 선정, 코딩까지 자동으로 수행합니다.", en: "Describe your idea and GNOM AI handles requirements, team selection and coding.", vn: "Nhập ý tưởng, GNOM AI sẽ tự động phân tích yêu cầu, chọn đội ngũ và lập trình." },
+      placeholder: { kr: "어떤 프로젝트를 만들고 싶으신가요?", en: "What would you like to build?", vn: "Bạn muốn xây dựng dự án gì?" },
+      button: { kr: "무료 견적 받기", en: "Get an estimate", vn: "Nhận báo giá" }
+    },
+    cta: {
+      label: { kr: "Connext", en: "Connext", vn: "Connext" },
+      title: { kr: "Connext의 AI 에이전트, GNOM", en: "GNOM, the AI agents of Connext", vn: "GNOM, tác nhân AI của Connext" },
+      desc: { kr: "Estimator는 요구사항을 분석해 개발사를 추천하고,\nStudio는 아이디어만으로 앱을 만듭니다.", en: "Estimator analyses your requirements and recommends vendors,\nStudio turns an idea alone into a working app.", vn: "Estimator phân tích yêu cầu và giới thiệu nhà thầu,\nStudio biến ý tưởng thành ứng dụng." },
+      button: { kr: "Connext 둘러보기", en: "Explore Connext", vn: "Khám phá Connext" },
+      replay: { kr: "인트로 다시 보기", en: "Replay the intro", vn: "Xem lại phần giới thiệu" }
     }
   }
 } as const

@@ -18,8 +18,12 @@ export default function ContactPage() {
       src: "https://www.google.com/maps?q=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%99%A9%EC%83%88%EC%9A%B8%EB%A1%9C319%EB%B2%88%EA%B8%B8%208-4&hl=ko&z=17&output=embed",
     },
     {
-      title: "Geniein Hanoi Location (Capital Tower)",
-      src: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.227834783214!2d105.8395386103612!3d21.023567880543606!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab90949fd5f7%3A0x25802ec5e94a3668!2sCapital%20Tower!5e0!3m2!1sko!2s!4v1780469286345!5m2!1sko!2s",
+      title: "Geniein Hanoi Location (Pearl Tower, 1 Chau Van Liem)",
+      src: "https://www.google.com/maps?q=Pearl%20Tower%2C%201%20Ch%C3%A2u%20V%C4%83n%20Li%C3%AAm%2C%20T%E1%BB%AB%20Li%C3%AAm%2C%20H%C3%A0%20N%E1%BB%99i%2C%20Vi%E1%BB%87t%20Nam&hl=ko&z=17&output=embed",
+    },
+    {
+      title: "Geniein Manila Location (Marvin Plaza Bldg.)",
+      src: "https://www.google.com/maps?q=Marvin%20Plaza%20Building%2C%202153%20Chino%20Roces%20Ave%2C%20Makati%2C%20Metro%20Manila%2C%20Philippines&hl=ko&z=17&output=embed",
     },
   ];
 

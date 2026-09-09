@@ -63,7 +63,7 @@ export function Header() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 cursor-pointer group"
+              className="flex items-center gap-2 cursor-pointer group lg:flex-1"
             >
               <div className="relative h-8 w-8 overflow-hidden rounded-lg transition-transform group-hover:scale-110">
                 <img
@@ -78,7 +78,8 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex lg:items-center lg:gap-16">
+            {/* 채용 추가로 항목이 5개가 됐다. lg 폭에서 넘치지 않도록 간격을 단계화한다. */}
+            <div className="hidden lg:flex lg:items-center lg:justify-center lg:gap-6 xl:gap-12">
               <Link
                 href="/about"
                 className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
@@ -216,6 +217,14 @@ export function Header() {
               </DropdownMenu>
 
               <Link
+                href="/careers"
+                className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
+              >
+                <span>{t("common.careers")}</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+              </Link>
+
+              <Link
                 href="/contact"
                 className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
               >
@@ -225,7 +234,7 @@ export function Header() {
             </div>
 
             {/* Right Side Actions */}
-            <div className="hidden lg:flex lg:items-center lg:gap-4">
+            <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:gap-4">
               <DropdownMenu
                 open={langOpen}
                 onOpenChange={setLangOpen}
@@ -486,6 +495,14 @@ export function Header() {
                     )}
                   </AnimatePresence>
                 </div>
+
+                <Link
+                  href="/careers"
+                  onClick={closeMobile}
+                  className="px-6 py-3 text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  {t("common.careers")}
+                </Link>
 
                 <Link
                   href="/contact"

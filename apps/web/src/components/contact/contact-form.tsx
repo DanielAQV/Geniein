@@ -6,7 +6,9 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { XCircle, Loader2, ChevronDown, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { consentNotice } from "@/lib/legal/privacy";
 
 const EMPTY_FORM = {
   name: "",
@@ -17,12 +19,15 @@ const EMPTY_FORM = {
 };
 
 export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [inquiryType, setInquiryType] = useState("oda");
+  // 개인정보 수집·이용 동의. 개인정보보호법 제15조상 필수 항목이라
+  // 체크되지 않으면 제출 자체를 막는다.
+  const [consent, setConsent] = useState(false);
 
   const [formData, setFormData] = useState({ ...EMPTY_FORM });
 
@@ -58,6 +63,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
     if (!formData.org.trim()) newErrors.org = t("contact.form.errors.org");
     if (!formData.message.trim())
       newErrors.message = t("contact.form.errors.message");
+    if (!consent) newErrors.consent = consentNotice.contact.error[language];
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -98,6 +104,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
       setIsSuccess(true);
       setFormData({ ...EMPTY_FORM });
       setInquiryType("oda");
+      setConsent(false);
       setErrors({});
     } catch {
       // Failure: show the toast but keep the user's input.
@@ -307,6 +314,48 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
                   className="text-[11px] text-red-400/80 flex items-center gap-1 -mt-0.5 ml-1 font-medium"
                 >
                   <AlertCircle className="h-3.5 w-3.5" /> {errors.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* 개인정보 수집·이용 동의 (필수) */}
+          <div className="flex flex-col gap-2">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => {
+                  setConsent(e.target.checked);
+                  if (e.target.checked) {
+                    setErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.consent;
+                      return next;
+                    });
+                  }
+                }}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+              />
+              <span className="text-sm font-medium text-foreground">
+                {consentNotice.contact.label[language]}
+              </span>
+            </label>
+            <p className="pl-7 text-[11px] leading-relaxed text-muted-foreground font-light break-keep">
+              {consentNotice.contact.detail[language]}{" "}
+              <Link href="/privacy" className="text-primary hover:underline">
+                {consentNotice.policyLink[language]}
+              </Link>
+            </p>
+            <AnimatePresence>
+              {errors.consent && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="ml-1 flex items-center gap-1 text-[11px] font-medium text-red-400/80"
+                >
+                  <AlertCircle className="h-3.5 w-3.5" /> {errors.consent}
                 </motion.p>
               )}
             </AnimatePresence>

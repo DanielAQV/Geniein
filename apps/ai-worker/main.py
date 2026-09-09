@@ -58,25 +58,41 @@ def main():
             
             # 6. 자동 발행 결정 및 이미지 생성
             if relevance >= 75:
-                processed_data['publish_status'] = 'published'
-                processed_data['published_at'] = 'NOW()'
                 print(f"🚀 High relevance ({relevance}) - Auto Publishing!")
-                
+
+                # 이미지 생성 및 다운로드
                 image_url = processor.generate_image(
-                    processed_data['title_kr'], 
+                    processed_data['title_kr'],
                     processed_data.get('category', 'it')
                 )
+                thumbnail_url = None
                 if image_url:
                     try:
                         img_filename = f"{uuid.uuid4()}.png"
                         img_path = upload_dir / img_filename
-                        img_data = requests.get(image_url).content
+                        # 타임아웃이 없으면 응답이 안 오는 동안 크론이 그대로 매달린다
+                        resp = requests.get(image_url, timeout=60)
+                        resp.raise_for_status()
                         with open(img_path, 'wb') as f:
-                            f.write(img_data)
-                        processed_data['thumbnail_url'] = f"/uploads/insights/{img_filename}"
-                        print(f"📸 Image saved: {processed_data['thumbnail_url']}")
+                            f.write(resp.content)
+                        thumbnail_url = f"/uploads/insights/{img_filename}"
+                        print(f"📸 Image saved: {thumbnail_url}")
                     except Exception as e:
                         print(f"❌ Failed to download image: {e}")
+
+                # 썸네일 없이 발행하지 않는다.
+                #
+                # 2026-08-20 에 Together 가 FLUX.1-schnell 서버리스 제공을 중단한 뒤
+                # 이미지 생성이 매일 실패했는데, 발행이 그대로 진행되는 바람에
+                # 썸네일 NULL 인 글이 계속 공개됐고 20일간 아무도 눈치채지 못했다.
+                # 발행을 막으면 관리자 목록에 draft 로 쌓여 바로 드러난다.
+                if thumbnail_url:
+                    processed_data['thumbnail_url'] = thumbnail_url
+                    processed_data['publish_status'] = 'published'
+                    processed_data['published_at'] = 'NOW()'
+                else:
+                    processed_data['publish_status'] = 'draft'
+                    print("⚠️  이미지가 없어 draft 로 저장한다 — 확인 후 수동 발행 필요")
             else:
                 processed_data['publish_status'] = 'draft'
                 print(f"📝 Medium relevance ({relevance}) - Saved as Draft.")

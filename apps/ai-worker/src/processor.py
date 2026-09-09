@@ -114,14 +114,19 @@ class AIProcessor:
             optimized_prompt = prompt_response.choices[0].message.content.strip()
             print(f"📝 Optimized Prompt: {optimized_prompt[:100]}...")
 
-            # 2. Together AI (FLUX.1 [schnell])를 사용하여 이미지 생성
+            # 2. Together AI 를 사용하여 이미지 생성
+            # Together AI는 OpenAI SDK와 호환되므로 base_url만 바꿔서 사용 가능합니다.
+            #
+            # 모델명을 env 로 뺀 이유: 2026-08-20 에 Together 가 FLUX.1-schnell 의
+            # 서버리스 제공을 중단하면서(400 model_not_available) 20일간 썸네일이
+            # 전량 NULL 로 발행됐다. 다음번 모델 퇴출 때는 .env 만 고쳐서 넘긴다.
             together_client = OpenAI(
                 api_key=together_api_key,
                 base_url="https://api.together.xyz/v1",
             )
 
             response = together_client.images.generate(
-                model="black-forest-labs/FLUX.1-schnell",
+                model=os.getenv("TOGETHER_IMAGE_MODEL", "Rundiffusion/Juggernaut-Lightning-Flux"),
                 prompt=optimized_prompt,
                 size="1024x1024",
                 n=1,

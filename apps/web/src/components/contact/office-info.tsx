@@ -27,6 +27,12 @@ export function OfficeInfo({
       address: t("landing.contact.hanoi_addr"),
       location: "HANOI, VIETNAM",
     },
+    {
+      title: t("about.organization.hubs.2.city"),
+      role: t("about.organization.hubs.2.role"),
+      address: t("landing.contact.manila_addr"),
+      location: "MANILA, PHILIPPINES",
+    },
   ];
 
   return (
