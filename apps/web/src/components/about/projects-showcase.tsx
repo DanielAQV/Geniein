@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useMemo, useState } from "react"
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { useLanguage } from "@/lib/i18n/language-context"
-import { dictionary } from "@/lib/i18n/dictionary"
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/i18n/language-context";
+import { dictionary } from "@/lib/i18n/dictionary";
 
 /**
  * 프로젝트 포트폴리오 — 국가 탭 + 2단 컴팩트 카드.
@@ -21,40 +21,38 @@ import { dictionary } from "@/lib/i18n/dictionary"
  * 사업목적은 접지 않고 카드에 그대로 노출한다. 한 번 더 클릭해야 보이면
  * 사실상 안 읽히고, 이 문구가 실적을 판단하는 근거라 감출 이유가 없다.
  */
-const ALL = "__all__"
+const ALL = "__all__";
 
 export function ProjectsShowcase() {
-  const { t, language } = useLanguage()
-  const projects = dictionary.about.projects.items
-  const countryNames = dictionary.about.projects.countries
+  const { t, language } = useLanguage();
+  const projects = dictionary.about.projects.items;
+  const countryNames = dictionary.about.projects.countries;
 
   // 탭 계산이 아래에 있어 초기값을 여기서 못 정한다. null 은 "아직 안 정함" 이고,
   // 실제 기본값은 tabs 가 정해진 뒤 defaultCountry 로 결정한다.
-  const [activeCountry, setActiveCountry] = useState<string | null>(null)
+  const [activeCountry, setActiveCountry] = useState<string | null>(null);
 
   // 탭은 데이터에서 뽑는다 — 사업이 추가돼도 따라온다.
   // 건수 많은 국가부터, 같으면 먼저 등장한 순서.
   const tabs = useMemo(() => {
-    const counts = new Map<string, { count: number; firstIndex: number }>()
+    const counts = new Map<string, { count: number; firstIndex: number }>();
     projects.forEach((project, index) => {
-      const entry = counts.get(project.country)
-      if (entry) entry.count += 1
-      else counts.set(project.country, { count: 1, firstIndex: index })
-    })
+      const entry = counts.get(project.country);
+      if (entry) entry.count += 1;
+      else counts.set(project.country, { count: 1, firstIndex: index });
+    });
     return [...counts.entries()]
       .sort((a, b) => b[1].count - a[1].count || a[1].firstIndex - b[1].firstIndex)
-      .map(([code, { count }]) => ({ code, count }))
-  }, [projects])
+      .map(([code, { count }]) => ({ code, count }));
+  }, [projects]);
 
-  const selected = activeCountry ?? tabs[0]?.code ?? ALL
+  const selected = activeCountry ?? tabs[0]?.code ?? ALL;
   const visible =
-    selected === ALL
-      ? projects
-      : projects.filter((project) => project.country === selected)
+    selected === ALL ? projects : projects.filter((project) => project.country === selected);
 
-  const summary = t('about.projects.summary')
-    .replace('{count}', String(projects.length))
-    .replace('{countries}', String(tabs.length))
+  const summary = t("about.projects.summary")
+    .replace("{count}", String(projects.length))
+    .replace("{countries}", String(tabs.length));
 
   return (
     <section id="projects" className="py-14 md:py-20 lg:py-28 relative bg-background">
@@ -68,14 +66,14 @@ export function ProjectsShowcase() {
             className="inline-flex items-center justify-center rounded-full border border-primary/30 bg-primary/5 px-[17px] py-[5px]"
           >
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-primary">
-              {t('about.projects.label')}
+              {t("about.projects.label")}
             </span>
           </motion.div>
           <h2 className="mt-4 md:mt-6 text-[28px] tracking-[-0.6px] md:text-4xl lg:text-5xl md:tracking-tight font-bold text-foreground leading-tight">
-            {t('about.projects.title')}
+            {t("about.projects.title")}
           </h2>
           <p className="mt-4 md:mt-6 text-sm md:text-base lg:text-lg text-muted-foreground font-light leading-relaxed break-keep whitespace-pre-line">
-            {t('about.projects.desc')}
+            {t("about.projects.desc")}
           </p>
           <p className="mt-4 text-xs font-bold uppercase tracking-[0.15em] text-primary">
             {summary}
@@ -97,7 +95,7 @@ export function ProjectsShowcase() {
           <FilterChip
             active={selected === ALL}
             onClick={() => setActiveCountry(ALL)}
-            label={t('about.projects.filter_all')}
+            label={t("about.projects.filter_all")}
             count={projects.length}
           />
         </div>
@@ -156,7 +154,7 @@ export function ProjectsShowcase() {
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 /**
@@ -169,7 +167,10 @@ export function FallbackPanel() {
     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[var(--card-glass)] to-[var(--card-dark)]">
       <div
         className="absolute inset-0 opacity-[0.35]"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg, var(--border-card-strong) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, var(--border-card-strong) 0 1px, transparent 1px 40px)" }}
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, var(--border-card-strong) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, var(--border-card-strong) 0 1px, transparent 1px 40px)",
+        }}
       />
       <img
         src="/logo.png"
@@ -177,7 +178,7 @@ export function FallbackPanel() {
         className="relative h-9 w-9 rounded-lg opacity-30 transition-transform duration-700 group-hover:scale-110"
       />
     </div>
-  )
+  );
 }
 
 function FilterChip({
@@ -187,11 +188,11 @@ function FilterChip({
   count,
   flag,
 }: {
-  active: boolean
-  onClick: () => void
-  label: string
-  count: number
-  flag?: string
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+  flag?: string;
 }) {
   return (
     <button
@@ -217,5 +218,5 @@ function FilterChip({
         {count}
       </span>
     </button>
-  )
+  );
 }
