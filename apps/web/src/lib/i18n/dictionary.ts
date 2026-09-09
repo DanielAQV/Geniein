@@ -535,8 +535,7 @@ export const dictionary = {
         resume_size: { kr: "파일 용량은 10MB 를 넘을 수 없습니다", en: "The file must be 10MB or smaller", vn: "Tệp không được vượt quá 10MB" },
         submit: { kr: "전송에 실패했습니다. 잠시 후 다시 시도해주세요.", en: "Sending failed. Please try again in a moment.", vn: "Gửi không thành công. Vui lòng thử lại sau." },
       }
-    },
-    items: []
+    }
   },
   /**
    * Connext 인트로. 문구는 Connext 저장소(messages/*.json 의 gnom.intro)에서

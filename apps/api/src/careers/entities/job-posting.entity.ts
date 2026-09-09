@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+/** 근무지는 국가 단위다. 도시로 두면 같은 나라에 사무실이 늘 때마다 enum 을 고쳐야 한다. */
 export enum JobLocation {
-  SEONGNAM = 'seongnam',
-  HANOI = 'hanoi',
+  KOREA = 'korea',
+  VIETNAM = 'vietnam',
+  PHILIPPINES = 'philippines',
 }
 
 export enum EmploymentType {
@@ -45,7 +47,7 @@ export class JobPosting {
   @Column({ type: 'text' })
   department_key: string;
 
-  @Column({ type: 'enum', enum: JobLocation, default: JobLocation.SEONGNAM })
+  @Column({ type: 'enum', enum: JobLocation, default: JobLocation.KOREA })
   location_key: JobLocation;
 
   /** 컬럼은 유지하되 프론트 필터 축으로는 쓰지 않는다. 카드 뱃지 표시용. */
