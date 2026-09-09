@@ -4,12 +4,14 @@
  * 예전에는 dictionary 의 더미 공고를 읽었다. 그래서 어드민에서 등록해도
  * 공개 페이지에는 아무것도 안 떴다 — 쓰는 곳과 읽는 곳이 달랐다.
  *
- * ★ 서버에서만 부른다. UPSTREAM 이 내부 주소(127.0.0.1:3001)라 브라우저에서는
+ * ★ 서버에서만 부른다. 내부 주소(127.0.0.1:3001)라 브라우저에서는
  *   닿지 않고, nginx 의 /api/ 규칙에 얽히지 않는 것도 이 편이 낫다.
  *
  * ★ 실패하면 빈 배열을 준다. 회사 소개 사이트의 채용 섹션이 API 사정으로
  *   500 을 내면 안 된다. JobBoard 가 공고 0건이면 섹션을 통째로 감춘다.
  */
+
+import { apiUpstream } from "@/lib/api-upstream"
 
 export type Lang = "kr" | "en" | "vn"
 
@@ -61,9 +63,6 @@ export const LOCATION_FLAGS: Record<string, string> = {
 }
 
 const localized = (value: Localized): Localized => ({ ...value })
-
-const UPSTREAM =
-  process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
 
 /**
  * NestJS 가 돌려주는 공고 한 건. 엔티티를 그대로 직렬화한 모양이라
@@ -142,7 +141,7 @@ export async function fetchJobPostings(): Promise<JobPosting[]> {
   let response: Response
   try {
     // 어드민에서 등록한 공고가 바로 보여야 한다 — 캐시하지 않는다.
-    response = await fetch(`${UPSTREAM}/careers`, { cache: "no-store" })
+    response = await fetch(`${apiUpstream()}/careers`, { cache: "no-store" })
   } catch (error) {
     console.error("[careers] NestJS 호출 실패:", error)
     return []
