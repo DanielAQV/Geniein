@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // ADMIN_PASSWORD_HASH 생성기. 인자 없이 실행하면 입력이 화면에 안 보인다 (TTY 필요).
 // 출력값을 apps/web/.env 에 넣는다. credentials.ts 의 hashPassword 와 같은 파라미터다.
+// 구분자는 `:` 다 — dotenv 가 `$` 를 변수 참조로 펼쳐 값을 망가뜨리기 때문이다.
 
 import { randomBytes, scryptSync } from 'node:crypto'
 
@@ -116,7 +117,7 @@ const salt = randomBytes(16)
 const derived = scryptSync(password, salt, KEY_LENGTH, { N, r, p, maxmem: 64 * 1024 * 1024 })
 
 console.log('\n아래 두 줄을 apps/web/.env 에 넣으세요:\n')
-console.log(`ADMIN_PASSWORD_HASH=scrypt$${N}$${r}$${p}$${salt.toString('hex')}$${derived.toString('hex')}`)
+console.log(`ADMIN_PASSWORD_HASH=scrypt:${N}:${r}:${p}:${salt.toString('hex')}:${derived.toString('hex')}`)
 console.log(`AUTH_SECRET=${randomBytes(48).toString('base64')}`)
 console.log('\n서비스 토큰도 필요합니다 (apps/web/.env 와 apps/api/.env 에 같은 값):\n')
 console.log(`ADMIN_SERVICE_TOKEN=${randomBytes(32).toString('base64')}`)

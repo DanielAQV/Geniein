@@ -58,8 +58,31 @@ export const LOCATION_FLAGS: Record<string, string> = {
 
 const localized = (value: Localized): Localized => ({ ...value })
 
+/**
+ * dictionary 쪽 공고의 생김새. 사전은 `as const` 라서 공고가 하나도 없으면
+ * 원소 타입이 `never` 로 좁혀진다 — 그 상태로 map 을 돌면 필드마다 타입 에러가 난다.
+ * 형태를 여기 적어두고 읽는 쪽에서 맞춰본다.
+ */
+type DictionaryJob = {
+  id: string
+  department_key: string
+  location_key: string
+  employment_key: string
+  deadline: string
+  title: Localized
+  department: Localized
+  location: Localized
+  employment: Localized
+  experience: Localized
+  tags: readonly Localized[]
+  responsibilities: readonly Localized[]
+  requirements: readonly Localized[]
+  preferred: readonly Localized[]
+}
+
 export function getJobPostings(): JobPosting[] {
-  return dictionary.careers.items.map((item) => ({
+  const items = dictionary.careers.items as readonly DictionaryJob[]
+  return items.map((item) => ({
     id: item.id,
     departmentKey: item.department_key,
     locationKey: item.location_key,
