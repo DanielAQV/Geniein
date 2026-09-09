@@ -10,6 +10,7 @@ export const dictionary = {
     insights: { kr: "비즈니스 인사이트", en: "Business Insights", vn: "Góc nhìn Kinh doanh" },
     insights_oda: { kr: "글로벌 ODA", en: "Global ODA", vn: "ODA Toàn cầu" },
     insights_it: { kr: "IT 트렌드", en: "IT Trends", vn: "Xu hướng CNTT" },
+    careers: { kr: "채용", en: "Careers", vn: "Tuyển dụng" },
     contact: { kr: "문의하기", en: "Contact Us", vn: "Liên hệ" },
     consulting_btn: { kr: "파트너십 상담", en: "Partnership", vn: "Tư vấn" },
     language: { kr: "언어", en: "Language", vn: "Ngôn ngữ" },
@@ -336,5 +337,244 @@ export const dictionary = {
         }
       ]
     }
+  },
+  careers: {
+    hero: {
+      label: { kr: "Careers at Geniein", en: "Careers at Geniein", vn: "Careers at Geniein" },
+      title_1: { kr: "함께 설계할", en: "BUILD THE NEXT", vn: "CÙNG KIẾN TẠO" },
+      title_2: { kr: "다음 연결", en: "CONNECTION", vn: "KẾT NỐI TIẾP THEO" },
+      description: {
+        kr: "성남과 하노이 두 거점에서, ODA 컨설팅과 AI 플랫폼을 함께 만들 동료를 찾습니다.\n경계를 넘어 연결을 설계하는 일에 합류하세요.",
+        en: "From our Seongnam and Hanoi hubs, we are looking for people to build ODA consulting and AI platforms with us.\nJoin us in designing connections across borders.",
+        vn: "Từ hai trung tâm Seongnam và Hà Nội, chúng tôi tìm kiếm những đồng nghiệp cùng xây dựng tư vấn ODA và nền tảng AI.\nHãy cùng chúng tôi thiết kế những kết nối vượt biên giới."
+      }
+    },
+    culture: {
+      label: { kr: "How We Work", en: "How We Work", vn: "Cách chúng tôi làm việc" },
+      title: { kr: "지니인이 함께 일하는 방식", en: "The Way Geniein Works", vn: "Cách Geniein làm việc" },
+      desc: {
+        kr: "우리는 현장에서 답을 찾고, 기록으로 합의하며,\n두 나라의 시차를 하나의 팀으로 이어 붙입니다.",
+        en: "We find answers in the field, agree through documentation,\nand stitch two time zones into one team.",
+        vn: "Chúng tôi tìm câu trả lời tại hiện trường, thống nhất bằng tài liệu,\nvà kết nối hai múi giờ thành một đội ngũ."
+      },
+      items: [
+        {
+          title: { kr: "현장에서 시작한다", en: "Start in the Field", vn: "Bắt đầu từ thực địa" },
+          desc: { kr: "책상 위 가설보다 현지의 제약 조건을 먼저 봅니다. 사업의 성패는 대부분 현장의 디테일에서 갈립니다.", en: "We look at local constraints before desk hypotheses. Most projects succeed or fail on details found in the field.", vn: "Chúng tôi xem xét các ràng buộc thực tế trước khi đưa ra giả thuyết trên bàn giấy. Thành bại của dự án phần lớn nằm ở chi tiết thực địa." }
+        },
+        {
+          title: { kr: "기록으로 합의한다", en: "Agree in Writing", vn: "Thống nhất bằng tài liệu" },
+          desc: { kr: "결정의 근거를 남깁니다. 문서로 남은 합의는 언어와 시차를 넘어 팀 전체가 같은 곳을 보게 합니다.", en: "We record the reasoning behind decisions. Written agreements let the whole team look at the same target across languages and time zones.", vn: "Chúng tôi ghi lại cơ sở của mỗi quyết định. Thỏa thuận bằng văn bản giúp cả đội cùng nhìn về một hướng, vượt qua rào cản ngôn ngữ và múi giờ." }
+        },
+        {
+          title: { kr: "두 거점이 한 팀이다", en: "Two Hubs, One Team", vn: "Hai trung tâm, một đội ngũ" },
+          desc: { kr: "성남의 기획과 하노이의 엔지니어링은 분리된 조직이 아닙니다. 같은 프로젝트를 함께 끝까지 책임집니다.", en: "Planning in Seongnam and engineering in Hanoi are not separate organizations. We own the same project together, end to end.", vn: "Bộ phận quy hoạch tại Seongnam và kỹ thuật tại Hà Nội không phải là hai tổ chức tách biệt. Chúng tôi cùng chịu trách nhiệm cho một dự án từ đầu đến cuối." }
+        }
+      ]
+    },
+    jobs: {
+      label: { kr: "Open Positions", en: "Open Positions", vn: "Vị trí đang tuyển" },
+      title: { kr: "채용 중인 포지션", en: "Positions We Are Hiring", vn: "Các vị trí đang tuyển dụng" },
+      desc: {
+        kr: "관심 있는 부문과 근무지를 선택해 공고를 확인하세요.\n지원 절차와 상세 요건은 각 공고를 펼치면 볼 수 있습니다.",
+        en: "Pick a team and a location to narrow the list.\nExpand a posting to see the full requirements and how to apply.",
+        vn: "Chọn bộ phận và địa điểm bạn quan tâm để lọc danh sách.\nMở rộng tin tuyển dụng để xem yêu cầu chi tiết và cách ứng tuyển."
+      },
+      filter_all: { kr: "전체", en: "All", vn: "Tất cả" },
+      filter_department: { kr: "부문", en: "Team", vn: "Bộ phận" },
+      filter_location: { kr: "근무지", en: "Location", vn: "Địa điểm" },
+      filter_employment: { kr: "고용형태", en: "Type", vn: "Hình thức" },
+      filter_reset: { kr: "필터 초기화", en: "Reset filters", vn: "Đặt lại bộ lọc" },
+      count_template: { kr: "총 {count}건의 공고", en: "{count} open positions", vn: "{count} vị trí đang tuyển" },
+      empty: { kr: "선택한 조건에 맞는 공고가 없습니다.", en: "No positions match the selected filters.", vn: "Không có vị trí nào phù hợp với bộ lọc đã chọn." },
+      experience_label: { kr: "경력", en: "Experience", vn: "Kinh nghiệm" },
+      deadline_label: { kr: "마감일", en: "Deadline", vn: "Hạn nộp" },
+      rolling: { kr: "상시 채용", en: "Rolling", vn: "Tuyển liên tục" },
+      detail_open: { kr: "상세 보기", en: "View details", vn: "Xem chi tiết" },
+      detail_close: { kr: "접기", en: "Close", vn: "Thu gọn" },
+      responsibilities: { kr: "주요 업무", en: "What You Will Do", vn: "Nhiệm vụ chính" },
+      requirements: { kr: "자격 요건", en: "Requirements", vn: "Yêu cầu" },
+      preferred: { kr: "우대 사항", en: "Nice to Have", vn: "Ưu tiên" },
+      apply: { kr: "이 포지션 지원하기", en: "Apply for this role", vn: "Ứng tuyển vị trí này" }
+    },
+    cta: {
+      label: { kr: "Join Us", en: "Join Us", vn: "Gia nhập" },
+      title: { kr: "맞는 공고가 없어도 괜찮습니다", en: "No Matching Role? Still Talk to Us", vn: "Chưa có vị trí phù hợp? Hãy cứ liên hệ" },
+      desc: {
+        kr: "지금 열려 있는 공고가 아니더라도, 지니인과 함께하고 싶은 이유가 있다면 먼저 이야기해 주세요.\n문의 폼으로 보내 주시면 담당자가 확인 후 연락드립니다.",
+        en: "Even if none of the open roles fit, tell us why you want to work with Geniein.\nSend it through the inquiry form and our team will get back to you.",
+        vn: "Ngay cả khi chưa có vị trí phù hợp, hãy cho chúng tôi biết lý do bạn muốn làm việc cùng Geniein.\nGửi qua mẫu liên hệ và đội ngũ của chúng tôi sẽ phản hồi bạn."
+      },
+      button: { kr: "지원 · 문의하기", en: "Apply / Contact", vn: "Ứng tuyển / Liên hệ" },
+      note: { kr: "지원서는 문의 폼의 '기타 문의' 유형으로 접수됩니다.", en: "Applications are received through the inquiry form under 'Other Inquiry'.", vn: "Hồ sơ ứng tuyển được tiếp nhận qua mẫu liên hệ, mục 'Yêu cầu khác'." }
+    },
+    items: [
+      {
+        id: "oda-planning-pm",
+        department_key: "oda",
+        location_key: "seongnam",
+        employment_key: "fulltime",
+        deadline: "2026-10-31",
+        title: { kr: "ODA 사업기획 PM", en: "ODA Program Planning PM", vn: "PM Quy hoạch dự án ODA" },
+        department: { kr: "ODA 컨설팅", en: "ODA Consulting", vn: "Tư vấn ODA" },
+        location: { kr: "성남 본사", en: "Seongnam HQ", vn: "Trụ sở Seongnam" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 5년 이상", en: "5+ years", vn: "Trên 5 năm kinh nghiệm" },
+        tags: [
+          { kr: "사업 기획", en: "Program Planning", vn: "Quy hoạch dự án" },
+          { kr: "타당성 조사", en: "Feasibility Study", vn: "Nghiên cứu khả thi" },
+          { kr: "해외 출장", en: "Overseas Travel", vn: "Công tác nước ngoài" }
+        ],
+        responsibilities: [
+          { kr: "KOICA·EDCF 등 공적개발원조 사업의 제안서 작성과 수주 전략 수립", en: "Writing proposals and shaping win strategies for KOICA/EDCF and other ODA programs", vn: "Soạn đề xuất và xây dựng chiến lược đấu thầu cho các dự án ODA như KOICA, EDCF" },
+          { kr: "사업 타당성 조사(F/S)와 기본 설계 단계의 현지 조사 수행", en: "Running feasibility studies and on-site surveys through the basic design phase", vn: "Thực hiện nghiên cứu khả thi (F/S) và khảo sát hiện trường ở giai đoạn thiết kế cơ bản" },
+          { kr: "발주처·현지 정부 기관과의 협의 및 이해관계자 관리", en: "Coordinating with client agencies and local governments, and managing stakeholders", vn: "Phối hợp với chủ đầu tư, cơ quan chính phủ địa phương và quản lý các bên liên quan" },
+          { kr: "프로젝트 일정·예산·산출물 관리와 사후 평가 대응", en: "Managing schedule, budget and deliverables, and handling post-project evaluation", vn: "Quản lý tiến độ, ngân sách, sản phẩm bàn giao và xử lý đánh giá sau dự án" }
+        ],
+        requirements: [
+          { kr: "ODA 또는 공공 SI 사업 기획·수행 경력 5년 이상", en: "5+ years planning or delivering ODA or public sector SI projects", vn: "Trên 5 năm kinh nghiệm quy hoạch hoặc triển khai dự án ODA / SI khu vực công" },
+          { kr: "제안서 및 사업계획서 작성 경험", en: "Experience writing proposals and business plans", vn: "Kinh nghiệm soạn đề xuất và kế hoạch kinh doanh" },
+          { kr: "영어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in English", vn: "Có khả năng giao tiếp công việc bằng tiếng Anh" },
+          { kr: "연 2~3회 해외 출장이 가능한 분", en: "Able to travel overseas two to three times a year", vn: "Có thể công tác nước ngoài 2-3 lần mỗi năm" }
+        ],
+        preferred: [
+          { kr: "동남아시아·중앙아시아 지역 사업 수행 경험", en: "Experience delivering projects in Southeast or Central Asia", vn: "Kinh nghiệm triển khai dự án tại Đông Nam Á hoặc Trung Á" },
+          { kr: "전자정부·정보화 사업 이해도", en: "Understanding of e-government and public digitalization programs", vn: "Hiểu biết về chính phủ điện tử và các dự án số hóa công" },
+          { kr: "PMP 등 프로젝트 관리 자격 보유", en: "PMP or an equivalent project management certification", vn: "Có chứng chỉ quản lý dự án như PMP" }
+        ]
+      },
+      {
+        id: "frontend-engineer",
+        department_key: "engineering",
+        location_key: "seongnam",
+        employment_key: "fulltime",
+        deadline: "rolling",
+        title: { kr: "프론트엔드 엔지니어", en: "Frontend Engineer", vn: "Kỹ sư Frontend" },
+        department: { kr: "엔지니어링", en: "Engineering", vn: "Kỹ thuật" },
+        location: { kr: "성남 본사", en: "Seongnam HQ", vn: "Trụ sở Seongnam" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 3년 이상", en: "3+ years", vn: "Trên 3 năm kinh nghiệm" },
+        tags: [
+          { kr: "React", en: "React", vn: "React" },
+          { kr: "TypeScript", en: "TypeScript", vn: "TypeScript" },
+          { kr: "Next.js", en: "Next.js", vn: "Next.js" }
+        ],
+        responsibilities: [
+          { kr: "AI Studio 및 FP 산정 플랫폼의 웹 프론트엔드 개발", en: "Building the web frontend for AI Studio and the FP estimation platform", vn: "Phát triển giao diện web cho AI Studio và nền tảng ước tính FP" },
+          { kr: "디자인 시스템 기반의 재사용 가능한 컴포넌트 설계와 유지보수", en: "Designing and maintaining reusable components on top of the design system", vn: "Thiết kế và bảo trì các component tái sử dụng dựa trên hệ thống thiết kế" },
+          { kr: "다국어·다크모드·반응형을 고려한 UI 구현", en: "Implementing UI that handles multiple languages, dark mode and responsive layouts", vn: "Xây dựng giao diện hỗ trợ đa ngôn ngữ, chế độ tối và bố cục đáp ứng" },
+          { kr: "하노이 엔지니어링 팀과의 코드 리뷰 및 협업", en: "Reviewing code and collaborating with the Hanoi engineering team", vn: "Review code và cộng tác với đội kỹ thuật tại Hà Nội" }
+        ],
+        requirements: [
+          { kr: "React 기반 웹 서비스 개발 경력 3년 이상", en: "3+ years building web services with React", vn: "Trên 3 năm phát triển dịch vụ web với React" },
+          { kr: "TypeScript 로 실서비스를 개발·운영해 본 경험", en: "Experience shipping and operating production TypeScript code", vn: "Kinh nghiệm phát triển và vận hành sản phẩm thực tế bằng TypeScript" },
+          { kr: "HTML·CSS 표준과 웹 접근성에 대한 기본 이해", en: "Solid grounding in HTML/CSS standards and web accessibility", vn: "Nắm vững chuẩn HTML/CSS và khả năng tiếp cận web" }
+        ],
+        preferred: [
+          { kr: "Next.js App Router 사용 경험", en: "Experience with the Next.js App Router", vn: "Kinh nghiệm với Next.js App Router" },
+          { kr: "디자인 시스템 구축 또는 운영 경험", en: "Experience building or maintaining a design system", vn: "Kinh nghiệm xây dựng hoặc vận hành hệ thống thiết kế" },
+          { kr: "영어 또는 베트남어로 협업이 가능한 분", en: "Able to collaborate in English or Vietnamese", vn: "Có thể cộng tác bằng tiếng Anh hoặc tiếng Việt" }
+        ]
+      },
+      {
+        id: "vn-operations-manager",
+        department_key: "operations",
+        location_key: "hanoi",
+        employment_key: "fulltime",
+        deadline: "2026-10-15",
+        title: { kr: "베트남 현지 운영 매니저", en: "Vietnam Operations Manager", vn: "Quản lý Vận hành tại Việt Nam" },
+        department: { kr: "현지 운영", en: "Operations", vn: "Vận hành" },
+        location: { kr: "하노이 지사", en: "Hanoi Branch", vn: "Chi nhánh Hà Nội" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 3년 이상", en: "3+ years", vn: "Trên 3 năm kinh nghiệm" },
+        tags: [
+          { kr: "현지 운영", en: "Local Operations", vn: "Vận hành địa phương" },
+          { kr: "한국어·베트남어", en: "KR / VN Bilingual", vn: "Song ngữ Hàn - Việt" },
+          { kr: "파트너 관리", en: "Partner Management", vn: "Quản lý đối tác" }
+        ],
+        responsibilities: [
+          { kr: "하노이 지사의 일상 운영과 인사·총무 실무 관리", en: "Running day-to-day operations, HR and general affairs at the Hanoi branch", vn: "Quản lý vận hành hằng ngày, nhân sự và hành chính tại chi nhánh Hà Nội" },
+          { kr: "현지 고객사·파트너사와의 커뮤니케이션 창구 역할", en: "Acting as the communication channel with local clients and partners", vn: "Là đầu mối liên lạc với khách hàng và đối tác tại địa phương" },
+          { kr: "한국 본사와 현지 팀 사이의 업무 조율 및 통번역 지원", en: "Coordinating between the Korean HQ and the local team, including interpretation", vn: "Điều phối giữa trụ sở Hàn Quốc và đội ngũ địa phương, hỗ trợ phiên dịch" },
+          { kr: "현지 법인 행정·계약 관련 문서 관리", en: "Managing local entity administration and contract documentation", vn: "Quản lý hành chính pháp nhân địa phương và hồ sơ hợp đồng" }
+        ],
+        requirements: [
+          { kr: "베트남 현지 기업 또는 한국계 법인에서의 운영·관리 경력 3년 이상", en: "3+ years in operations or management at a Vietnamese or Korean-owned company", vn: "Trên 3 năm kinh nghiệm vận hành hoặc quản lý tại doanh nghiệp Việt Nam hoặc công ty Hàn Quốc" },
+          { kr: "한국어와 베트남어로 업무 커뮤니케이션이 가능한 분", en: "Able to work in both Korean and Vietnamese", vn: "Có thể làm việc bằng cả tiếng Hàn và tiếng Việt" },
+          { kr: "하노이 근무가 가능한 분", en: "Able to work from Hanoi", vn: "Có thể làm việc tại Hà Nội" }
+        ],
+        preferred: [
+          { kr: "IT·엔지니어링 조직에서의 근무 경험", en: "Experience working in an IT or engineering organization", vn: "Kinh nghiệm làm việc trong tổ chức CNTT hoặc kỹ thuật" },
+          { kr: "베트남 노무·세무 행정 실무 이해", en: "Familiarity with Vietnamese labor and tax administration", vn: "Hiểu biết thực tế về hành chính lao động và thuế tại Việt Nam" },
+          { kr: "영어 커뮤니케이션 가능", en: "Able to communicate in English", vn: "Có thể giao tiếp bằng tiếng Anh" }
+        ]
+      },
+      {
+        id: "ai-engineer",
+        department_key: "engineering",
+        location_key: "hanoi",
+        employment_key: "fulltime",
+        deadline: "rolling",
+        title: { kr: "AI 엔지니어", en: "AI Engineer", vn: "Kỹ sư AI" },
+        department: { kr: "엔지니어링", en: "Engineering", vn: "Kỹ thuật" },
+        location: { kr: "하노이 지사", en: "Hanoi Branch", vn: "Chi nhánh Hà Nội" },
+        employment: { kr: "정규직", en: "Full-time", vn: "Toàn thời gian" },
+        experience: { kr: "경력 무관 (신입 지원 가능)", en: "Open to all levels", vn: "Không yêu cầu kinh nghiệm" },
+        tags: [
+          { kr: "LLM", en: "LLM", vn: "LLM" },
+          { kr: "RAG", en: "RAG", vn: "RAG" },
+          { kr: "Python", en: "Python", vn: "Python" }
+        ],
+        responsibilities: [
+          { kr: "사내 지식베이스 검색(RAG) 파이프라인 개발과 품질 개선", en: "Building and improving the internal knowledge base retrieval (RAG) pipeline", vn: "Xây dựng và cải thiện pipeline truy xuất tri thức nội bộ (RAG)" },
+          { kr: "LLM 기반 문서 분석·요약 기능의 프로토타이핑과 평가", en: "Prototyping and evaluating LLM-based document analysis and summarization", vn: "Tạo nguyên mẫu và đánh giá các tính năng phân tích, tóm tắt tài liệu dựa trên LLM" },
+          { kr: "FP 산정 엔진의 데이터 전처리 및 모델 실험", en: "Data preprocessing and model experiments for the FP estimation engine", vn: "Tiền xử lý dữ liệu và thử nghiệm mô hình cho công cụ ước tính FP" },
+          { kr: "실험 결과를 재현 가능한 형태로 기록하고 공유", en: "Recording and sharing experiment results so they can be reproduced", vn: "Ghi lại và chia sẻ kết quả thử nghiệm theo cách có thể tái lập" }
+        ],
+        requirements: [
+          { kr: "Python 으로 데이터 처리 코드를 작성할 수 있는 분", en: "Able to write data processing code in Python", vn: "Có thể viết mã xử lý dữ liệu bằng Python" },
+          { kr: "LLM API 를 사용해 무언가를 만들어 본 경험 (개인 프로젝트 포함)", en: "Has built something with an LLM API, personal projects included", vn: "Đã từng xây dựng sản phẩm với LLM API, kể cả dự án cá nhân" },
+          { kr: "영어 기술 문서를 읽고 이해할 수 있는 분", en: "Able to read and understand technical documentation in English", vn: "Có thể đọc và hiểu tài liệu kỹ thuật tiếng Anh" }
+        ],
+        preferred: [
+          { kr: "벡터 검색·임베딩 관련 실무 또는 연구 경험", en: "Hands-on or research experience with vector search and embeddings", vn: "Kinh nghiệm thực tế hoặc nghiên cứu về tìm kiếm vector và embedding" },
+          { kr: "검색 품질 평가 지표를 설계해 본 경험", en: "Experience designing retrieval quality metrics", vn: "Kinh nghiệm thiết kế chỉ số đánh giá chất lượng truy xuất" },
+          { kr: "컴퓨터공학 또는 관련 분야 전공", en: "Degree in computer science or a related field", vn: "Tốt nghiệp ngành khoa học máy tính hoặc lĩnh vực liên quan" }
+        ]
+      },
+      {
+        id: "business-administration",
+        department_key: "management",
+        location_key: "seongnam",
+        employment_key: "contract",
+        deadline: "2026-09-30",
+        title: { kr: "경영관리 담당", en: "Business Administration Associate", vn: "Chuyên viên Quản trị Kinh doanh" },
+        department: { kr: "경영관리", en: "Management", vn: "Quản trị" },
+        location: { kr: "성남 본사", en: "Seongnam HQ", vn: "Trụ sở Seongnam" },
+        employment: { kr: "계약직", en: "Contract", vn: "Hợp đồng" },
+        experience: { kr: "경력 2년 이상", en: "2+ years", vn: "Trên 2 năm kinh nghiệm" },
+        tags: [
+          { kr: "회계·정산", en: "Accounting", vn: "Kế toán" },
+          { kr: "계약 관리", en: "Contract Admin", vn: "Quản lý hợp đồng" },
+          { kr: "인사 지원", en: "HR Support", vn: "Hỗ trợ nhân sự" }
+        ],
+        responsibilities: [
+          { kr: "프로젝트별 비용 정산과 증빙 관리", en: "Handling per-project cost settlement and supporting documentation", vn: "Quyết toán chi phí theo dự án và quản lý chứng từ" },
+          { kr: "계약서 검토 요청 접수 및 계약 이력 관리", en: "Intake of contract review requests and maintaining contract records", vn: "Tiếp nhận yêu cầu rà soát hợp đồng và quản lý hồ sơ hợp đồng" },
+          { kr: "채용·근태 등 인사 운영 실무 지원", en: "Supporting HR operations such as hiring and attendance", vn: "Hỗ trợ vận hành nhân sự như tuyển dụng và chấm công" },
+          { kr: "본사 총무 및 사무 환경 운영", en: "General affairs and office operations at HQ", vn: "Công tác hành chính và vận hành văn phòng tại trụ sở" }
+        ],
+        requirements: [
+          { kr: "회계·총무·인사 등 경영관리 실무 경력 2년 이상", en: "2+ years in accounting, general affairs or HR operations", vn: "Trên 2 năm kinh nghiệm kế toán, hành chính hoặc nhân sự" },
+          { kr: "엑셀 등 문서 도구를 능숙하게 다루는 분", en: "Comfortable with spreadsheets and office document tools", vn: "Thành thạo Excel và các công cụ văn phòng" },
+          { kr: "꼼꼼하게 기록을 남기는 업무 습관", en: "A habit of keeping careful records", vn: "Thói quen ghi chép cẩn thận" }
+        ],
+        preferred: [
+          { kr: "공공 사업 정산 또는 국고보조금 정산 경험", en: "Experience settling public sector projects or government subsidies", vn: "Kinh nghiệm quyết toán dự án công hoặc trợ cấp nhà nước" },
+          { kr: "중소기업 경영관리 전반을 경험해 본 분", en: "Broad exposure to management operations at a small or mid-sized company", vn: "Từng phụ trách nhiều mảng quản trị tại doanh nghiệp vừa và nhỏ" },
+          { kr: "정규직 전환 후 장기 근무를 희망하는 분", en: "Interested in converting to a permanent role and staying long term", vn: "Mong muốn chuyển sang hợp đồng chính thức và gắn bó lâu dài" }
+        ]
+      }
+    ]
   }
 } as const

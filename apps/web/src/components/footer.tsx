@@ -88,6 +88,15 @@ export function Footer() {
 
             <div className="md:flex-1 lg:flex-none">
               <Link
+                href="/careers"
+                className="font-semibold text-foreground transition-colors hover:text-foreground/70"
+              >
+                {t("common.careers")}
+              </Link>
+            </div>
+
+            <div className="md:flex-1 lg:flex-none">
+              <Link
                 href="/contact"
                 className="font-semibold text-foreground transition-colors hover:text-foreground/70"
               >
