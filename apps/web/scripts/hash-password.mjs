@@ -9,7 +9,7 @@ const KEY_LENGTH = 64
 const N = 16384
 const r = 8
 const p = 1
-const MIN_LENGTH = 12
+const MIN_LENGTH = 8
 
 // 제어문자는 반드시 이스케이프로 쓴다. 소스에 리터럴로 넣으면
 // 편집·복사 과정에서 조용히 사라지고, 그러면 비교가 전부 빗나간다.
