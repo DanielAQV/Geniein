@@ -327,21 +327,24 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
                         className="overflow-hidden"
                       >
                         <div className="border-t border-border/30 px-5 py-6 md:px-8 md:py-8">
-                          {/* 공고 본문. 줄바꿈을 살리고(`whitespace-pre-line`) 읽는
-                              폭을 묶는다 — 넓은 화면에서 한 줄이 1,000px 넘게
-                              늘어나면 산문은 못 읽는다.
-
-                              ★ `ch` 를 쓰지 마라. `ch` 는 숫자 `0` 의 글자 폭이라
-                                한글에는 절반짜리 자다. 처음에 `max-w-[70ch]` 로
-                                뒀더니 524px 이 나와서 담는 폭 1214px 의 43% 만
-                                차지했고, 줄이 한글 35자에서 꺾여 안 넣은 줄바꿈이
-                                들어간 것처럼 보였다(2026-09-10). `3xl`(768px)은
-                                16px 한글로 한 줄 약 48자다.
-
+                          {/* 공고 본문. 줄바꿈은 쓴 그대로 살린다(`whitespace-pre-line`).
                               글자는 아래 3열 불릿(14px)보다 크게 둔다 — 본문이고
-                              보조 목록이 아니다. */}
+                              보조 목록이 아니다.
+
+                              ★ **읽는 폭을 묶지 마라.** 두 번 틀렸다(2026-09-10).
+                                처음 `max-w-[70ch]` 는 524px 이 나왔다 — `ch` 는
+                                숫자 `0` 의 글자 폭이라 한글에는 절반짜리 자다.
+                                다음 `max-w-3xl`(768px)도 좁았다. 담는 폭이
+                                1214px 인데 둘 다 절반 남짓만 차지했다.
+
+                                여기 글은 어드민 textarea 에 손으로 쓴 것이라
+                                줄이 이미 짧게 끊겨 있다. 거기에 폭 제한을 걸면
+                                **긴 첫 단락만** 꺾여서 안 넣은 줄바꿈이 들어간
+                                것처럼 보인다. 실제로 잰 값: 제일 긴 줄 1168px,
+                                담는 폭 1214px — 풀면 자동 줄바꿈이 0이다.
+                                산문이 너무 길어지는 걱정은 여기 안 맞는다. */}
                           {job.description && (
-                            <p className="mb-8 max-w-3xl whitespace-pre-line text-[15px] md:text-base font-light leading-[1.8] text-[var(--text-sub)] break-keep">
+                            <p className="mb-8 whitespace-pre-line text-[15px] md:text-base font-light leading-[1.8] text-[var(--text-sub)] break-keep">
                               {pick(job.description, language)}
                             </p>
                           )}
