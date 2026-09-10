@@ -18,7 +18,7 @@ export default function AboutPage() {
       <Header />
       
       {/* About Hero Section: The Manifesto */}
-      <section className="relative pt-28 pb-16 min-h-[320px] md:pt-32 md:pb-24 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
+      <section className="relative pt-30 pb-14 min-h-[320px] md:pt-36 md:pb-20 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
           <img 

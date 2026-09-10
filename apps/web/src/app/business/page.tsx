@@ -90,7 +90,9 @@ export default function BusinessPage() {
       <Header />
       
       {/* Business Hero */}
-      <section className="relative pt-28 pb-16 min-h-[320px] md:pt-32 md:pb-24 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
+      {/* 위 여백이 헤더(h-15 + 1px) 아래에서 시작하는 걸 감안해 아래 여백보다
+          그만큼 크게 잡는다. 같은 값으로 두면 내용이 위로 붙어 보인다. */}
+      <section className="relative pt-30 pb-14 min-h-[320px] md:pt-36 md:pb-20 md:min-h-[400px] flex flex-col justify-center overflow-hidden border-b border-border/50">
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/heroes/business.png" 
