@@ -328,10 +328,17 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
                       >
                         <div className="border-t border-border/30 px-5 py-6 md:px-8 md:py-8">
                           {/* 공고 본문. 줄바꿈을 살리고(`whitespace-pre-line`) 읽는
-                              폭을 70글자로 묶는다 — 넓은 화면에서 한 줄이 1,000px
-                              넘게 늘어나면 산문은 못 읽는다. */}
+                              폭을 묶는다 — 넓은 화면에서 한 줄이 1,000px 넘게
+                              늘어나면 산문은 못 읽는다.
+
+                              ★ `ch` 를 쓰지 마라. `ch` 는 숫자 `0` 의 글자 폭이라
+                                한글에는 절반짜리 자다. 처음에 `max-w-[70ch]` 로
+                                뒀더니 524px 이 나와서 담는 폭 1214px 의 43% 만
+                                차지했고, 줄이 한글 35자에서 꺾여 안 넣은 줄바꿈이
+                                들어간 것처럼 보였다(2026-09-10). `3xl`(768px)은
+                                14px 한글로 한 줄 약 55자다. */}
                           {job.description && (
-                            <p className="mb-8 max-w-[70ch] whitespace-pre-line text-sm font-light leading-relaxed text-[var(--text-sub)] break-keep">
+                            <p className="mb-8 max-w-3xl whitespace-pre-line text-sm font-light leading-relaxed text-[var(--text-sub)] break-keep">
                               {pick(job.description, language)}
                             </p>
                           )}
