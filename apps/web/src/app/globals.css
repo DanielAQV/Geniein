@@ -75,7 +75,9 @@
   --secondary: oklch(0.20 0.02 270);
   --secondary-foreground: oklch(0.98 0.01 270);
   --muted: oklch(0.20 0.02 270);
-  --muted-foreground: oklch(0.70 0.02 270);
+  /* 라이트(0.45)보다 밝은 쪽으로 더 밀어둔다. 배경(#03081c)이 거의 검정이라
+     수치상 대비는 넉넉해도 얇은 본문이 흐리게 읽힌다는 피드백이 있었다. */
+  --muted-foreground: oklch(0.78 0.02 270);
   --accent: oklch(0.60 0.18 270);
   --accent-foreground: oklch(0.98 0.01 270);
   --destructive: oklch(0.4 0.15 25);

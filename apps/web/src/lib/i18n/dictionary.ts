@@ -240,7 +240,7 @@ export const dictionary = {
         },
         {
           country: "vn",
-          image: "/images/about/projects/vn-vku-ict.jpg",
+          image: "/images/about/projects/vn-vku-ict-focus.jpg",
           title: { kr: "베트남 한베 ICT 대학교 교육역량 강화 지원사업", en: "Project for Strengthening Academic Development of the Vietnam-Korea University of Information and Communication Technology (VKU) with regard to ICT Education, Research, and Governance", vn: "베트남 한베 ICT 대학교 교육역량 강화 지원사업" },
           official: "Project for Strengthening Academic Development of the Vietnam-Korea University of Information and Communication Technology (VKU) with regard to ICT Education, Research, and Governance",
           category: { kr: "ODA · 고등교육 ICT", en: "ODA · Higher Education ICT", vn: "ODA · CNTT Giáo dục Đại học" },
