@@ -39,15 +39,19 @@ export function AIInsights({
     insights && insights.length > 0
       ? insights.map((item: any) => ({
           id: item.id,
+          /* 번역이 아직 없는 글은 국문으로 폴백한다. 상세 페이지가 이미 그렇게
+             동작하는데 목록만 "Insight title coming soon" 같은 자리표시 문구를
+             띄워, 영어·베트남어로 보면 목록 전체가 그 문구였다. 원문을 보여주는
+             편이 낫다. */
           title: {
             kr: item.title_kr || "인사이트 제목 준비 중",
-            en: item.title_en || "Insight title coming soon",
-            vn: item.title_vn || "Tiêu đề nội dung sắp ra mắt",
+            en: item.title_en || item.title_kr || "Insight title coming soon",
+            vn: item.title_vn || item.title_kr || "Tiêu đề nội dung sắp ra mắt",
           },
           summary: {
             kr: item.summary_kr || "내용을 분석하고 있습니다.",
-            en: item.summary_en || "Analyzing content...",
-            vn: item.summary_vn || "Đang phân tích nội dung...",
+            en: item.summary_en || item.summary_kr || "Analyzing content...",
+            vn: item.summary_vn || item.summary_kr || "Đang phân tích nội dung...",
           },
           perspective: {
             kr: item.perspective_kr,
