@@ -40,7 +40,11 @@
   inset: 0;
   overflow: hidden;
   border-radius: inherit;
-  z-index: 100; /* above the header, which is z-50 */
+  /* 액자(aspect-video 컨테이너) 안에서 랜딩 화면 위에만 얹히면 된다. 랜딩에는
+     z-index 가 없으니 1 로 충분하다. 헤더(z-50)·탭 네비(z-40)보다 낮게 둔다 —
+     예전에 전체 화면 인트로였을 때 100 이었고, 액자 안으로 들어온 뒤에도 그
+     값이 남아 있었다. */
+  z-index: 1;
   pointer-events: none;
   font-family: inherit;
   color: #fff;
