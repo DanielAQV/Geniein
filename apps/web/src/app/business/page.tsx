@@ -4,18 +4,18 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SectionDivider } from "@/components/section-divider"
 import { BusinessNav } from "@/components/business/business-nav"
+import { scrollToTabRow } from "@/lib/layout"
 import { OdaServices } from "@/components/business/oda-services"
 import { PlatformServices } from "@/components/business/platform-services"
 import { ConnextCta } from "@/components/business/connext-cta"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState, Suspense, useRef } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 function BusinessContent() {
   const [activeTab, setActiveTab] = useState("platform")
   const searchParams = useSearchParams()
-  const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const category = searchParams.get('category')
@@ -27,18 +27,10 @@ function BusinessContent() {
       setActiveTab("platform")
     }
 
-    // Handle scrolling if there's a category
-    if (category) {
-      setTimeout(() => {
-        if (navRef.current) {
-          const navTop = navRef.current.getBoundingClientRect().top + window.pageYOffset
-          window.scrollTo({
-            top: navTop - 72,
-            behavior: "smooth"
-          })
-        }
-      }, 100)
-    }
+    /* 카테고리를 지정해 온 클릭(드롭다운 메뉴, 화면 안 탭)은 탭 줄까지만 올린다.
+       카테고리 없이 /business 로 들어오는 상위 메뉴 클릭은 Next 기본 동작대로
+       맨 위에서 시작하므로 여기서 손대지 않는다. */
+    if (category) scrollToTabRow()
   }, [searchParams])
 
   return (
@@ -46,7 +38,7 @@ function BusinessContent() {
       {/* 스크롤 기준점만 잡는 0px 마커.
           네비를 감싸면 sticky 가 죽는다 — 래퍼 높이가 네비와 같아서 빠져나갈
           공간이 없다. 그리고 네비 자체를 재면 상단에 붙은 뒤 위치가 틀어진다. */}
-      <div ref={navRef} aria-hidden className="h-0" />
+      <div data-tab-anchor aria-hidden className="h-0" />
       <BusinessNav />
 
       {/* Mutually Exclusive Content with Animation */}

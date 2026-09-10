@@ -7,8 +7,9 @@ import { Footer } from "@/components/footer"
 import { SectionDivider } from "@/components/section-divider"
 import { AIInsights } from "@/components/ai-insights"
 import { InsightsNav } from "@/components/insights/insights-nav"
+import { scrollToTabRow } from "@/lib/layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState, Suspense, useRef } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useLanguage } from "@/lib/i18n/language-context"
 import { useSearchParams } from "next/navigation"
 
@@ -16,7 +17,6 @@ function InsightsContent() {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState("it")
   const searchParams = useSearchParams()
-  const navRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const category = searchParams.get('category')
@@ -27,17 +27,10 @@ function InsightsContent() {
       setActiveTab("it")
     }
 
-    if (category) {
-      setTimeout(() => {
-        if (navRef.current) {
-          const navTop = navRef.current.getBoundingClientRect().top + window.pageYOffset
-          window.scrollTo({
-            top: navTop - 64,
-            behavior: "smooth"
-          })
-        }
-      }, 100)
-    }
+    /* 카테고리를 지정해 온 클릭(드롭다운 메뉴, 화면 안 탭)은 탭 줄까지만 올린다.
+       카테고리 없이 /business 로 들어오는 상위 메뉴 클릭은 Next 기본 동작대로
+       맨 위에서 시작하므로 여기서 손대지 않는다. */
+    if (category) scrollToTabRow()
   }, [searchParams])
 
   return (
@@ -45,7 +38,7 @@ function InsightsContent() {
       {/* 스크롤 기준점만 잡는 0px 마커.
           네비를 감싸면 sticky 가 죽는다 — 래퍼 높이가 네비와 같아서 빠져나갈
           공간이 없다. 그리고 네비 자체를 재면 상단에 붙은 뒤 위치가 틀어진다. */}
-      <div ref={navRef} aria-hidden className="h-0" />
+      <div data-tab-anchor aria-hidden className="h-0" />
       <InsightsNav />
       
       <section className="pt-14 pb-10 md:pt-20 md:pb-12 lg:pt-28 lg:pb-16 bg-background">
