@@ -28,7 +28,7 @@ export function Footer() {
                 Geniein
               </span>
             </Link>
-            <div className="space-y-1 text-[13px] font-light leading-relaxed tracking-wide text-muted-foreground/80 md:text-sm">
+            <div className="space-y-1 text-[13px] font-normal leading-relaxed tracking-wide text-muted-foreground md:text-sm">
               <p>{t("landing.footer.reg_no")}</p>
               <p>{t("landing.footer.ceo")}</p>
               <p>{t("landing.footer.address")}</p>
@@ -51,18 +51,18 @@ export function Footer() {
                 {t("common.business")}
               </span>
               <Link
-                href="/business?category=oda"
-                scroll={false}
-                className="font-light text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {t("common.oda")}
-              </Link>
-              <Link
                 href="/business?category=platform"
                 scroll={false}
-                className="font-light text-muted-foreground transition-colors hover:text-foreground"
+                className="font-normal text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.platform")}
+              </Link>
+              <Link
+                href="/business?category=oda"
+                scroll={false}
+                className="font-normal text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {t("common.oda")}
               </Link>
             </div>
 
@@ -71,18 +71,18 @@ export function Footer() {
                 {t("common.insights")}
               </span>
               <Link
-                href="/insights?category=oda"
-                scroll={false}
-                className="font-light text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {t("common.insights_oda")}
-              </Link>
-              <Link
                 href="/insights?category=it"
                 scroll={false}
-                className="font-light text-muted-foreground transition-colors hover:text-foreground"
+                className="font-normal text-muted-foreground transition-colors hover:text-foreground"
               >
                 {t("common.insights_it")}
+              </Link>
+              <Link
+                href="/insights?category=oda"
+                scroll={false}
+                className="font-normal text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {t("common.insights_oda")}
               </Link>
             </div>
 
@@ -109,7 +109,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col items-center gap-2 border-t border-border/50 pt-6 text-center text-sm text-muted-foreground sm:flex-row sm:justify-center sm:gap-4 md:border-t-0 md:pt-0">
           <p>{t("common.copyright")}</p>
-          <span className="hidden text-border sm:inline">|</span>
+          <span className="hidden text-muted-foreground/40 sm:inline">|</span>
           <Link
             href="/privacy"
             className="font-medium text-foreground/80 transition-colors hover:text-foreground"
