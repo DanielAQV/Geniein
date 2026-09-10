@@ -16,6 +16,34 @@ import requests
 import uuid
 from pathlib import Path
 
+def backfill_missing_translations(db, processor, limit=25):
+    """발행 상태인데 번역이 빠진 글을 채운다.
+
+    초안을 수동으로 발행 상태로 바꾼 경우처럼, 워커의 발행 경로를 타지 않고
+    공개된 글을 여기서 주워 담는다. 한 회차에 처리량을 제한해 크롤링이 밀리지
+    않게 한다 — 남은 건 다음 회차가 이어서 한다.
+    """
+    try:
+        rows = db.find_published_missing_translations(limit)
+    except Exception as e:
+        print(f"⚠️  번역 보충 대상 조회 실패: {e}")
+        return
+
+    if not rows:
+        return
+
+    print(f"🌏 번역이 빠진 발행글 {len(rows)}건 보충")
+    for row in rows:
+        try:
+            db.update_translations(
+                row['id'],
+                processor.translate_to_en_vn(row['title_kr'], row['summary_kr']),
+            )
+            print(f"   ok  {row['title_kr'][:30]}")
+        except Exception as e:
+            print(f"   FAIL {row['id']} :: {e}")
+
+
 def main():
     print("🚀 Geniein Strategic AI Worker Started!")
     
@@ -33,6 +61,9 @@ def main():
     processor = AIProcessor()
 
     try:
+        # 0. 지난 회차에서 번역이 빠진 발행글 보충 (수동 발행분 포함)
+        backfill_missing_translations(db, processor)
+
         # 1. RSS 피드 가져오기
         news_list = crawler.fetch_latest_news()
         print(f"✅ Found {len(news_list)} potential strategic items.")
@@ -90,6 +121,18 @@ def main():
                     processed_data['thumbnail_url'] = thumbnail_url
                     processed_data['publish_status'] = 'published'
                     processed_data['published_at'] = 'NOW()'
+                    # 발행이 확정된 지금 번역한다. 초안으로 남는 글은 번역하지 않는다 —
+                    # 노출되지 않는 글이고, 초안이 발행글보다 많아서 대부분 버려진다.
+                    try:
+                        processed_data.update(processor.translate_to_en_vn(
+                            processed_data['title_kr'],
+                            processed_data['summary_kr'],
+                        ))
+                        print("🌏 영문·베트남어 번역 완료")
+                    except Exception as e:
+                        # 번역 실패로 발행을 막지는 않는다. 국문으로 폴백해 보이고,
+                        # 다음 회차의 보충 단계가 다시 집어간다.
+                        print(f"⚠️  번역 실패 — 국문만 저장한다: {e}")
                 else:
                     processed_data['publish_status'] = 'draft'
                     print("⚠️  이미지가 없어 draft 로 저장한다 — 확인 후 수동 발행 필요")

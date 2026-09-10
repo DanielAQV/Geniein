@@ -56,6 +56,39 @@ class Database:
                 data.get('published_at', 'NOW()')
             ))
 
+    # 발행 상태인데 번역이 빠진 글. 초안은 대상이 아니다 — 노출되지 않는 글을
+    # 번역해두면 대부분 버려진다(초안은 발행글보다 많다). 수동으로 발행 상태를
+    # 바꾼 글은 워커가 다음 회차에 이걸로 주워서 채운다.
+    def find_published_missing_translations(self, limit=25):
+        query = """
+        SELECT id, title_kr, summary_kr
+          FROM ai_posts
+         WHERE publish_status = 'published'
+           AND title_kr IS NOT NULL AND summary_kr IS NOT NULL
+           AND (title_en IS NULL OR title_vn IS NULL
+                OR summary_en IS NULL OR summary_vn IS NULL)
+         ORDER BY published_at DESC NULLS LAST, created_at DESC
+         LIMIT %s
+        """
+        with self.get_cursor() as cur:
+            cur.execute(query, (limit,))
+            return cur.fetchall()
+
+    def update_translations(self, post_id, t):
+        query = """
+        UPDATE ai_posts
+           SET title_en = %s, title_vn = %s,
+               summary_en = %s, summary_vn = %s,
+               updated_at = NOW()
+         WHERE id = %s
+        """
+        with self.get_cursor() as cur:
+            cur.execute(query, (
+                t['title_en'], t['title_vn'],
+                t['summary_en'], t['summary_vn'],
+                post_id,
+            ))
+
     def is_duplicate(self, source_url):
         query = "SELECT id FROM ai_posts WHERE source_document_id = %s LIMIT 1"
         with self.get_cursor() as cur:
