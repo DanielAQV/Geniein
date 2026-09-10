@@ -327,6 +327,15 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
                         className="overflow-hidden"
                       >
                         <div className="border-t border-border/30 px-5 py-6 md:px-8 md:py-8">
+                          {/* 공고 본문. 줄바꿈을 살리고(`whitespace-pre-line`) 읽는
+                              폭을 70글자로 묶는다 — 넓은 화면에서 한 줄이 1,000px
+                              넘게 늘어나면 산문은 못 읽는다. */}
+                          {job.description && (
+                            <p className="mb-8 max-w-[70ch] whitespace-pre-line text-sm font-light leading-relaxed text-[var(--text-sub)] break-keep">
+                              {pick(job.description, language)}
+                            </p>
+                          )}
+
                           <div className="grid gap-8 lg:grid-cols-3">
                             <DetailList
                               title={t("careers.jobs.responsibilities")}

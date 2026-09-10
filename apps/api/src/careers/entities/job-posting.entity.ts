@@ -100,6 +100,29 @@ export class JobPosting {
   @Column({ type: 'text', nullable: true })
   experience_vn: string | null;
 
+  // ── 자유 서술 ────────────────────────────────────────────────
+  /**
+   * 공고 본문. 줄바꿈을 그대로 살려 보여준다.
+   *
+   * ★ **여기만 KR 도 nullable 이다** — 위의 "KR 만 NOT NULL" 정책에서 벗어난
+   *   유일한 칸이다. 이 칸이 없던 시절 올린 공고가 이미 게시 중이라 NOT NULL
+   *   을 걸면 마이그레이션이 그 행들에서 떨어진다. 비어 있으면 프론트가
+   *   그 블록을 아예 안 그린다.
+   *
+   * 왜 배열이 아닌가: 실제 공고문에는 회사·사업 설명, 급여·근무조건
+   * (NET 1300만동/월 · 4대 보험 · 연간계약), 문의 전화처럼 줄로 쪼개면 뜻이
+   * 깨지는 산문이 들어온다. 기존 칸은 전부 키워드·불릿이라 담을 자리가
+   * 없었다(2026-09-10).
+   */
+  @Column({ type: 'text', nullable: true })
+  description_kr: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  description_en: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  description_vn: string | null;
+
   // ── 목록 필드 ────────────────────────────────────────────────
   @Column('text', { array: true, default: () => "'{}'" })
   tags_kr: string[];

@@ -9,29 +9,22 @@ import { AIInsights } from "@/components/ai-insights"
 import { InsightsNav } from "@/components/insights/insights-nav"
 import { scrollToTabRow } from "@/lib/layout"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState, Suspense } from "react"
+import { useEffect, Suspense } from "react"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { useSearchParams } from "next/navigation"
+import { useCategory } from "@/lib/use-category"
 
 function InsightsContent() {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState("it")
-  const searchParams = useSearchParams()
+  /* 탭은 주소에서 나오는 파생값이다 — `useCategory` 주석 참고. */
+  const category = useCategory()
+  const activeTab = category === "oda" ? "oda" : "it"
 
   useEffect(() => {
-    const category = searchParams.get('category')
-
-    if (category === "oda") {
-      setActiveTab("oda")
-    } else {
-      setActiveTab("it")
-    }
-
     /* 카테고리를 지정해 온 클릭(드롭다운 메뉴, 화면 안 탭)은 탭 줄까지만 올린다.
-       카테고리 없이 /business 로 들어오는 상위 메뉴 클릭은 Next 기본 동작대로
+       카테고리 없이 /insights 로 들어오는 상위 메뉴 클릭은 Next 기본 동작대로
        맨 위에서 시작하므로 여기서 손대지 않는다. */
     if (category) scrollToTabRow()
-  }, [searchParams])
+  }, [category])
 
   return (
     <>

@@ -6,32 +6,30 @@ import { SectionDivider } from "@/components/section-divider"
 import { BusinessNav } from "@/components/business/business-nav"
 import { scrollToTabRow } from "@/lib/layout"
 import { OdaServices } from "@/components/business/oda-services"
+/* 프로젝트 포트폴리오. **회사정보(`/about`)에 있던 섹션을 여기로 옮겼다**
+   (2026-09-10). 파일 자리는 `components/about/` 그대로다 — 그 파일이
+   조직도 섹션에 `FallbackPanel` 을 내주고 있어서 옮기면 회사정보 쪽이 남의
+   폴더를 import 하게 된다. 글도 `about.projects.*` 키를 그대로 쓴다. */
+import { ProjectsShowcase } from "@/components/about/projects-showcase"
 import { PlatformServices } from "@/components/business/platform-services"
 import { ConnextCta } from "@/components/business/connext-cta"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { useEffect, Suspense } from "react"
+import { useCategory } from "@/lib/use-category"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 function BusinessContent() {
-  const [activeTab, setActiveTab] = useState("platform")
-  const searchParams = useSearchParams()
+  /* 탭은 주소에서 나오는 파생값이다. useState 에 담아 효과로 맞추면
+     `?category=oda` 로 직접 들어올 때 안 열린다 — `useCategory` 주석 참고. */
+  const category = useCategory()
+  const activeTab = category === "oda" ? "oda" : "platform"
 
   useEffect(() => {
-    const category = searchParams.get('category')
-
-    // Determine active tab (default to platform / IT-first)
-    if (category === "oda") {
-      setActiveTab("oda")
-    } else {
-      setActiveTab("platform")
-    }
-
     /* 카테고리를 지정해 온 클릭(드롭다운 메뉴, 화면 안 탭)은 탭 줄까지만 올린다.
        카테고리 없이 /business 로 들어오는 상위 메뉴 클릭은 Next 기본 동작대로
        맨 위에서 시작하므로 여기서 손대지 않는다. */
     if (category) scrollToTabRow()
-  }, [searchParams])
+  }, [category])
 
   return (
     <>
@@ -54,6 +52,7 @@ function BusinessContent() {
               transition={{ duration: 0.4 }}
             >
               <OdaServices />
+              <ProjectsShowcase />
             </motion.div>
           ) : (
             <motion.div

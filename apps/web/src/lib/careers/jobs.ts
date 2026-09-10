@@ -46,6 +46,8 @@ export type JobPosting = {
   location: Localized
   employment: Localized
   experience: Localized
+  /** 공고 본문(산문). 비어 있으면 null — 화면에서 블록을 안 그린다. */
+  description: Localized | null
   tags: Localized[]
   responsibilities: Localized[]
   requirements: Localized[]
@@ -90,6 +92,9 @@ type ApiJobPosting = {
   experience_kr: string
   experience_en: string | null
   experience_vn: string | null
+  description_kr: string | null
+  description_en: string | null
+  description_vn: string | null
   tags_kr: string[]
   tags_en: string[] | null
   tags_vn: string[] | null
@@ -105,6 +110,16 @@ type ApiJobPosting = {
 }
 
 const text = (kr: string, en: string | null, vn: string | null): Localized => ({ kr, en, vn })
+
+/**
+ * 자유 서술 칸. `text()` 와 갈라 둔 이유는 **여기만 KR 이 NULL 일 수 있다**는
+ * 것이다(엔티티 주석 참고). 비면 null 을 줘서 JobBoard 가 블록을 통째로 뺀다.
+ *
+ * KR 이 비었으면 EN/VN 이 있어도 null 로 접는다 — `pick` 이 KR 우선 폴백이라,
+ * 한국어로 보는 사람에게 영어 본문만 뜨는 쪽이 안 뜨는 쪽보다 나쁘다.
+ */
+const prose = (kr: string | null, en: string | null, vn: string | null): Localized | null =>
+  kr && kr.trim() ? { kr, en, vn } : null
 
 /**
  * 언어별 병렬 배열을 인덱스로 묶는다. KR 이 기준이다 — DB 에서 KR 만
@@ -130,6 +145,7 @@ function adapt(row: ApiJobPosting): JobPosting {
     location: text(row.location_kr, row.location_en, row.location_vn),
     employment: text(row.employment_kr, row.employment_en, row.employment_vn),
     experience: text(row.experience_kr, row.experience_en, row.experience_vn),
+    description: prose(row.description_kr, row.description_en, row.description_vn),
     tags: list(row.tags_kr, row.tags_en, row.tags_vn),
     responsibilities: list(row.responsibilities_kr, row.responsibilities_en, row.responsibilities_vn),
     requirements: list(row.requirements_kr, row.requirements_en, row.requirements_vn),
