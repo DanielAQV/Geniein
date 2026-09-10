@@ -19,8 +19,12 @@ export default function ContactPage() {
       src: "https://www.google.com/maps?q=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%84%B1%EB%82%A8%EC%8B%9C%20%EB%B6%84%EB%8B%B9%EA%B5%AC%20%ED%99%A9%EC%83%88%EC%9A%B8%EB%A1%9C319%EB%B2%88%EA%B8%B8%208-4&hl=ko&z=17&output=embed",
     },
     {
-      title: "Geniein Hanoi Location (Pearl Tower, 1 Chau Van Liem)",
-      src: "https://www.google.com/maps?q=Pearl%20Tower%2C%201%20Ch%C3%A2u%20V%C4%83n%20Li%C3%AAm%2C%20T%E1%BB%AB%20Li%C3%AAm%2C%20H%C3%A0%20N%E1%BB%99i%2C%20Vi%E1%BB%87t%20Nam&hl=ko&z=17&output=embed",
+      /* 질의를 짧게 '건물명 + 현행 구' 로 둔다. 번지까지 붙이거나 `Từ Liêm`
+         (2013년에 남/북으로 분리되며 폐지된 구 이름)을 쓰면 구글이 한 지점으로
+         확정하지 못해, 주소 카드 대신 핀과 "지도에서 열기" 만 떴다.
+         후보를 하나씩 띄워 비교해서 고른 값이다. */
+      title: "Geniein Hanoi Location (Pearl Tower, Nam Tu Liem)",
+      src: "https://www.google.com/maps?q=Pearl%20Tower%2C%20Nam%20T%E1%BB%AB%20Li%C3%AAm%2C%20H%C3%A0%20N%E1%BB%99i&hl=ko&z=17&output=embed",
     },
     {
       title: "Geniein Manila Location (Marvin Plaza Bldg.)",
