@@ -2,23 +2,13 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useEffect, useState, Suspense } from "react"
+import { Suspense } from "react"
 import { useLanguage } from "@/lib/i18n/language-context"
-import { useSearchParams } from "next/navigation"
+import { useCategory } from "@/lib/use-category"
 
 function BusinessNavContent() {
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState("platform")
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    const category = searchParams.get('category')
-    if (category === "oda") {
-      setActiveTab("oda")
-    } else {
-      setActiveTab("platform")
-    }
-  }, [searchParams])
+  const activeTab = useCategory() === "oda" ? "oda" : "platform"
 
   const tabs = [
     { id: "platform", label: t('common.platform'), href: "/business?category=platform" },

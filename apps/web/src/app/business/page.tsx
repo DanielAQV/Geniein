@@ -14,29 +14,22 @@ import { ProjectsShowcase } from "@/components/about/projects-showcase"
 import { PlatformServices } from "@/components/business/platform-services"
 import { ConnextCta } from "@/components/business/connext-cta"
 import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useState, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { useEffect, Suspense } from "react"
+import { useCategory } from "@/lib/use-category"
 import { useLanguage } from "@/lib/i18n/language-context"
 
 function BusinessContent() {
-  const [activeTab, setActiveTab] = useState("platform")
-  const searchParams = useSearchParams()
+  /* 탭은 주소에서 나오는 파생값이다. useState 에 담아 효과로 맞추면
+     `?category=oda` 로 직접 들어올 때 안 열린다 — `useCategory` 주석 참고. */
+  const category = useCategory()
+  const activeTab = category === "oda" ? "oda" : "platform"
 
   useEffect(() => {
-    const category = searchParams.get('category')
-
-    // Determine active tab (default to platform / IT-first)
-    if (category === "oda") {
-      setActiveTab("oda")
-    } else {
-      setActiveTab("platform")
-    }
-
     /* 카테고리를 지정해 온 클릭(드롭다운 메뉴, 화면 안 탭)은 탭 줄까지만 올린다.
        카테고리 없이 /business 로 들어오는 상위 메뉴 클릭은 Next 기본 동작대로
        맨 위에서 시작하므로 여기서 손대지 않는다. */
     if (category) scrollToTabRow()
-  }, [searchParams])
+  }, [category])
 
   return (
     <>
