@@ -56,7 +56,10 @@
   --card-glass: rgba(255, 255, 255, 0.7);
   --card-glass-hover: rgba(255, 255, 255, 0.9);
   --text-heading: #12161f;
-  --text-sub: #64748b;
+  /* 본문 보조 텍스트는 --muted-foreground 하나만 쓴다. 값을 따로 적어두면
+     한쪽만 조정했을 때 같은 섹션 안에서 두 가지 회색이 나온다 (실제로 그랬다).
+     커스텀 프로퍼티는 사용 지점에서 풀리므로 .dark / Teams 팔레트도 따라온다. */
+  --text-sub: var(--muted-foreground);
   --border-card: rgba(0, 0, 0, 0.08);
   --border-card-strong: rgba(0, 0, 0, 0.12);
   --section-contact-bg: #f1f5f9;
@@ -111,7 +114,6 @@
   --card-glass: rgba(9, 11, 15, 0.5);
   --card-glass-hover: rgba(9, 11, 15, 0.7);
   --text-heading: #f6f8ff;
-  --text-sub: #999eab;
   --border-card: rgba(153, 158, 171, 0.3);
   --border-card-strong: rgba(153, 158, 171, 0.6);
   --section-contact-bg: #03081c;

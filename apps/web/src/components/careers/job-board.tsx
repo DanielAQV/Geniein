@@ -66,7 +66,7 @@ function FilterRow({
                 active
                   ? "border-[#5874ea] bg-[#5874ea] text-white"
                   : option.disabled
-                    ? "cursor-not-allowed border-[var(--border-card)] bg-transparent text-[var(--text-sub)]/40"
+                    ? "cursor-not-allowed border-[var(--border-card)] bg-transparent text-[var(--text-sub)]/60"
                     : "border-[var(--border-card-strong)] bg-[var(--card-glass)] text-[var(--text-heading)] hover:border-primary/40",
               )}
             >

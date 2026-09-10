@@ -141,7 +141,7 @@ export function ProjectsShowcase() {
                   {project.title[language]}
                 </h3>
                 {language !== "en" && (
-                  <p className="text-[11px] font-light leading-relaxed text-[var(--text-sub)]/60">
+                  <p className="text-[11px] font-normal leading-relaxed text-[var(--text-sub)]/80">
                     {project.official}
                   </p>
                 )}

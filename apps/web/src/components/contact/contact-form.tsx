@@ -252,7 +252,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
               className={`w-full h-12 px-4 rounded-2xl bg-card/50 border ${isOpen ? "border-primary ring-4 ring-primary/10 bg-card" : "border-border hover:border-primary/40 hover:bg-card/70"} flex items-center justify-between cursor-pointer transition-all`}
             >
               <span
-                className={`text-sm ${inquiryType ? "text-foreground" : "text-muted-foreground/30"}`}
+                className={`text-sm ${inquiryType ? "text-foreground" : "text-muted-foreground/70"}`}
               >
                 {currentTypeLabel}
               </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { NavLink } from "@/components/nav-link";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/language-context";
@@ -63,7 +63,7 @@ export function Header() {
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-15 items-center justify-between">
             {/* Logo */}
-            <Link
+            <NavLink
               href="/"
               className="flex items-center gap-2 cursor-pointer group lg:flex-1"
             >
@@ -77,18 +77,18 @@ export function Header() {
               <span className="text-xl font-bold tracking-tight text-foreground">
                 Geniein
               </span>
-            </Link>
+            </NavLink>
 
             {/* Desktop Navigation */}
             {/* 채용 추가로 항목이 5개가 됐다. lg 폭에서 넘치지 않도록 간격을 단계화한다. */}
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:gap-6 xl:gap-12">
-              <Link
+              <NavLink
                 href="/about"
                 className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
               >
                 <span>{t("common.about")}</span>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-              </Link>
+              </NavLink>
 
               <DropdownMenu
                 open={business.open}
@@ -101,7 +101,7 @@ export function Header() {
                   onMouseLeave={business.onLeave}
                 >
                   <DropdownMenuTrigger asChild>
-                    <Link
+                    <NavLink
                       href="/business"
                       className="flex items-center gap-1 text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none group relative py-2"
                     >
@@ -114,7 +114,7 @@ export function Header() {
                       <span
                         className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${business.open ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
                       />
-                    </Link>
+                    </NavLink>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="center"
@@ -126,7 +126,7 @@ export function Header() {
                       asChild
                       className="focus:bg-transparent p-0"
                     >
-                      <Link
+                      <NavLink
                         href="/business?category=platform"
                         scroll={false}
                         className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
@@ -134,13 +134,13 @@ export function Header() {
                         <span className="relative group-hover/item:text-foreground transition-colors">
                           {t("common.platform")}
                         </span>
-                      </Link>
+                      </NavLink>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
                       className="focus:bg-transparent p-0"
                     >
-                      <Link
+                      <NavLink
                         href="/business?category=oda"
                         scroll={false}
                         className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
@@ -148,7 +148,7 @@ export function Header() {
                         <span className="relative group-hover/item:text-foreground transition-colors">
                           {t("common.oda")}
                         </span>
-                      </Link>
+                      </NavLink>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </div>
@@ -165,7 +165,7 @@ export function Header() {
                   onMouseLeave={insights.onLeave}
                 >
                   <DropdownMenuTrigger asChild>
-                    <Link
+                    <NavLink
                       href="/insights"
                       className="flex items-center gap-1 text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer outline-none group relative py-2"
                     >
@@ -178,7 +178,7 @@ export function Header() {
                       <span
                         className={`absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center transition-transform duration-300 ${insights.open ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
                       />
-                    </Link>
+                    </NavLink>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="center"
@@ -190,7 +190,7 @@ export function Header() {
                       asChild
                       className="focus:bg-transparent p-0"
                     >
-                      <Link
+                      <NavLink
                         href="/insights?category=it"
                         scroll={false}
                         className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
@@ -198,13 +198,13 @@ export function Header() {
                         <span className="relative group-hover/item:text-foreground transition-colors">
                           {t("common.insights_it")}
                         </span>
-                      </Link>
+                      </NavLink>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       asChild
                       className="focus:bg-transparent p-0"
                     >
-                      <Link
+                      <NavLink
                         href="/insights?category=oda"
                         scroll={false}
                         className="cursor-pointer w-full text-base font-medium py-3 px-5 hover:bg-primary/5 transition-all group/item text-muted-foreground whitespace-nowrap"
@@ -212,27 +212,27 @@ export function Header() {
                         <span className="relative group-hover/item:text-foreground transition-colors">
                           {t("common.insights_oda")}
                         </span>
-                      </Link>
+                      </NavLink>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </div>
               </DropdownMenu>
 
-              <Link
+              <NavLink
                 href="/careers"
                 className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
               >
                 <span>{t("common.careers")}</span>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-              </Link>
+              </NavLink>
 
-              <Link
+              <NavLink
                 href="/contact"
                 className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group relative py-2"
               >
                 <span>{t("common.contact")}</span>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-center scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-              </Link>
+              </NavLink>
             </div>
 
             {/* Right Side Actions */}
@@ -307,7 +307,7 @@ export function Header() {
               <ThemeToggle />
 
               <Button asChild size="sm" className="rounded-full px-5">
-                <Link href="/contact">{t("common.consulting_btn")}</Link>
+                <NavLink href="/contact">{t("common.consulting_btn")}</NavLink>
               </Button>
             </div>
 
@@ -319,7 +319,7 @@ export function Header() {
                 size="sm"
                 className="hidden md:inline-flex rounded-full px-5"
               >
-                <Link href="/contact">{t("common.consulting_btn")}</Link>
+                <NavLink href="/contact">{t("common.consulting_btn")}</NavLink>
               </Button>
               <button
                 type="button"
@@ -348,7 +348,7 @@ export function Header() {
             <div className="flex flex-col">
               {/* Sidebar Header */}
               <div className="flex items-center justify-between px-6 pt-6 pb-3">
-                <Link
+                <NavLink
                   href="/"
                   onClick={closeMobile}
                   className="flex items-center gap-2"
@@ -363,7 +363,7 @@ export function Header() {
                   <span className="text-xl font-bold tracking-tight text-foreground">
                     Geniein
                   </span>
-                </Link>
+                </NavLink>
                 <button
                   type="button"
                   onClick={closeMobile}
@@ -376,21 +376,21 @@ export function Header() {
 
               {/* Tabs */}
               <nav className="flex flex-col">
-                <Link
+                <NavLink
                   href="/"
                   onClick={closeMobile}
                   className="px-6 py-3 text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                 >
                   {t("common.home")}
-                </Link>
+                </NavLink>
 
-                <Link
+                <NavLink
                   href="/about"
                   onClick={closeMobile}
                   className="px-6 py-3 text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                 >
                   {t("common.about")}
-                </Link>
+                </NavLink>
 
                 {/* Business accordion */}
                 <div className="flex flex-col">
@@ -424,22 +424,22 @@ export function Header() {
                         transition={{ duration: 0.25, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <Link
+                        <NavLink
                           href="/business?category=platform"
                           scroll={false}
                           onClick={closeMobile}
                           className="block pl-10 pr-6 py-3 text-base text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {t("common.platform")}
-                        </Link>
-                        <Link
+                        </NavLink>
+                        <NavLink
                           href="/business?category=oda"
                           scroll={false}
                           onClick={closeMobile}
                           className="block pl-10 pr-6 py-3 text-base text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {t("common.oda")}
-                        </Link>
+                        </NavLink>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -477,42 +477,42 @@ export function Header() {
                         transition={{ duration: 0.25, ease: "easeInOut" }}
                         className="overflow-hidden"
                       >
-                        <Link
+                        <NavLink
                           href="/insights?category=it"
                           scroll={false}
                           onClick={closeMobile}
                           className="block pl-10 pr-6 py-3 text-base text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {t("common.insights_it")}
-                        </Link>
-                        <Link
+                        </NavLink>
+                        <NavLink
                           href="/insights?category=oda"
                           scroll={false}
                           onClick={closeMobile}
                           className="block pl-10 pr-6 py-3 text-base text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {t("common.insights_oda")}
-                        </Link>
+                        </NavLink>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
 
-                <Link
+                <NavLink
                   href="/careers"
                   onClick={closeMobile}
                   className="px-6 py-3 text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                 >
                   {t("common.careers")}
-                </Link>
+                </NavLink>
 
-                <Link
+                <NavLink
                   href="/contact"
                   onClick={closeMobile}
                   className="px-6 py-3 text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                 >
                   {t("common.contact")}
-                </Link>
+                </NavLink>
               </nav>
             </div>
 
