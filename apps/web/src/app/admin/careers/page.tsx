@@ -41,9 +41,13 @@ type JobPostingRow = {
 }
 
 const TEXT_GROUPS = ["title", "department", "location", "employment", "experience"] as const
+/* 산문 칸. TEXT_GROUPS(한 줄 입력)·LIST_GROUPS(줄마다 항목)와 셋째로 갈라 둔다 —
+   줄바꿈을 그대로 저장해야 하므로 toLines 를 태우면 안 된다. */
+const PROSE_GROUPS = ["description"] as const
 const LIST_GROUPS = ["tags", "responsibilities", "requirements", "preferred"] as const
 
 type TextGroup = (typeof TEXT_GROUPS)[number]
+type ProseGroup = (typeof PROSE_GROUPS)[number]
 type ListGroup = (typeof LIST_GROUPS)[number]
 
 type PerLang = Record<Lang, string>
@@ -58,6 +62,7 @@ type FormState = {
   deadline: string
   sort_order: string
   text: Record<TextGroup, PerLang>
+  prose: Record<ProseGroup, PerLang>
   list: Record<ListGroup, PerLang>
 }
 
@@ -69,6 +74,7 @@ const emptyForm = (): FormState => ({
   deadline: "",
   sort_order: "0",
   text: Object.fromEntries(TEXT_GROUPS.map((g) => [g, emptyPerLang()])) as Record<TextGroup, PerLang>,
+  prose: Object.fromEntries(PROSE_GROUPS.map((g) => [g, emptyPerLang()])) as Record<ProseGroup, PerLang>,
   list: Object.fromEntries(LIST_GROUPS.map((g) => [g, emptyPerLang()])) as Record<ListGroup, PerLang>,
 })
 
@@ -84,6 +90,11 @@ function formFromRow(row: JobPostingRow): FormState {
   for (const group of TEXT_GROUPS) {
     for (const lang of LANGS) {
       form.text[group][lang] = (row[`${group}_${lang}`] as string | null) ?? ""
+    }
+  }
+  for (const group of PROSE_GROUPS) {
+    for (const lang of LANGS) {
+      form.prose[group][lang] = (row[`${group}_${lang}`] as string | null) ?? ""
     }
   }
   for (const group of LIST_GROUPS) {
@@ -117,6 +128,12 @@ function payloadFromForm(form: FormState) {
       payload[`${group}_${lang}`] = form.text[group][lang].trim() || null
     }
   }
+  for (const group of PROSE_GROUPS) {
+    for (const lang of LANGS) {
+      // 줄바꿈은 살린다. 양끝 공백만 떼고, 비면 NULL — KR 도 비워둘 수 있다.
+      payload[`${group}_${lang}`] = form.prose[group][lang].trim() || null
+    }
+  }
   for (const group of LIST_GROUPS) {
     for (const lang of LANGS) {
       const lines = toLines(form.list[group][lang])
@@ -126,12 +143,13 @@ function payloadFromForm(form: FormState) {
   return payload
 }
 
-const GROUP_LABEL: Record<TextGroup | ListGroup, string> = {
+const GROUP_LABEL: Record<TextGroup | ProseGroup | ListGroup, string> = {
   title: "Title",
   department: "Team label",
   location: "Location label",
   employment: "Employment label",
   experience: "Experience",
+  description: "Description",
   tags: "Tags",
   responsibilities: "Responsibilities",
   requirements: "Requirements",
@@ -497,6 +515,25 @@ export default function AdminCareersPage() {
                       })
                     }
                     className={inputClass}
+                  />
+                </label>
+              ))}
+
+              {PROSE_GROUPS.map((group) => (
+                <label key={group} className="flex flex-col gap-1.5 text-sm">
+                  <span className="text-muted-foreground">
+                    {GROUP_LABEL[group]} ({lang}) — 줄바꿈 그대로 나갑니다
+                  </span>
+                  <textarea
+                    rows={12}
+                    value={form.prose[group][lang]}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        prose: { ...form.prose, [group]: { ...form.prose[group], [lang]: e.target.value } },
+                      })
+                    }
+                    className={`${inputClass} resize-y`}
                   />
                 </label>
               ))}

@@ -39,6 +39,10 @@ const TEXT_FIELDS = [
   'experience_kr',
   'experience_en',
   'experience_vn',
+  // description 은 required 목록에 없다 — KR 도 비워둘 수 있는 칸이다.
+  'description_kr',
+  'description_en',
+  'description_vn',
 ] as const;
 
 const ARRAY_FIELDS = [
