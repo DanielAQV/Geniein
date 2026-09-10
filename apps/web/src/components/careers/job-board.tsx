@@ -341,10 +341,18 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
                                 줄이 이미 짧게 끊겨 있다. 거기에 폭 제한을 걸면
                                 **긴 첫 단락만** 꺾여서 안 넣은 줄바꿈이 들어간
                                 것처럼 보인다. 실제로 잰 값: 제일 긴 줄 1168px,
-                                담는 폭 1214px — 풀면 자동 줄바꿈이 0이다.
-                                산문이 너무 길어지는 걱정은 여기 안 맞는다. */}
+                                쓸 수 있는 폭 1150px(카드 좌우 패딩 32px 씩을
+                                뺀 값이다 — 처음엔 이걸 빼먹고 1214px 으로 재서
+                                "자동 줄바꿈 0" 이라고 잘못 말했다).
+                                산문이 너무 길어지는 걱정은 여기 안 맞는다.
+
+                              ★ `text-pretty` 는 그 18px 때문이다. 제일 긴 줄이
+                                1168px 이라 딱 한 줄이 꺾이는데, 그냥 두면
+                                `있습니다.` 한 낱말만 다음 줄에 떨어져서 안 넣은
+                                줄바꿈처럼 보인다. `text-wrap: pretty` 가 앞 줄에서
+                                낱말을 끌어내려 그 고아를 없앤다. */}
                           {job.description && (
-                            <p className="mb-8 whitespace-pre-line text-[15px] md:text-base font-light leading-[1.8] text-[var(--text-sub)] break-keep">
+                            <p className="mb-8 whitespace-pre-line text-pretty text-[15px] md:text-base font-light leading-[1.8] text-[var(--text-sub)] break-keep">
                               {pick(job.description, language)}
                             </p>
                           )}
