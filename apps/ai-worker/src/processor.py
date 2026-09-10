@@ -38,20 +38,9 @@ class AIProcessor:
           * 'oda': 정부 예산이 투입되거나 공공 기관(KOICA, EDCF, UN, World Bank, 정부 부처 등)이 직접 참여하는 공적 개발 원조/협력 사업인 경우.
           * 'it': 민간 기업의 투자(FDI), 순수 기술 트렌드, 일반적인 비즈니스 확장인 경우. (예: SK/삼성의 투자는 'it', KOICA의 지원 사업은 'oda')
 
-        - 제목과 요약은 국문(kr) · 영문(en) · 베트남어(vn) 세 가지로 모두 작성하세요.
-          사이트가 3개 언어를 제공하는데 국문만 채우면 나머지 언어로 보는 사람에게는
-          한국어가 그대로 노출된다.
-          * 영문·베트남어도 국문과 같은 전문 보고서체를 유지하세요.
-          * 기관명·사업명은 현지에서 통용되는 공식 명칭을 쓰고, 없으면 원어를 병기하세요.
-          * 요약의 문단 구분(빈 줄)은 세 언어에서 동일하게 유지하세요.
-
         {{
             "title_kr": "전문적이고 전략적인 국문 제목",
-            "title_en": "same headline in English",
-            "title_vn": "cùng tiêu đề bằng tiếng Việt",
             "summary_kr": "7-10문장 분량의 딥다이브 요약 (기사의 핵심 맥락, 주요 데이터, 시사점 포함). 가독성을 위해 2-3개의 문단으로 나누어 작성하고, 문단 사이에는 줄바꿈(빈 줄)을 반드시 포함하세요.",
-            "summary_en": "the same summary in English, same paragraph breaks",
-            "summary_vn": "cùng bản tóm tắt bằng tiếng Việt, giữ nguyên cách chia đoạn",
             "category": "oda 또는 it",
             "tags": ["카테고리에 특화된 태그 3-4개"],
             "relevance_score": 점수(숫자)
@@ -79,6 +68,64 @@ class AIProcessor:
             import traceback
             traceback.print_exc()
             return None
+
+    # 번역은 분석과 분리한다. 초안으로 남는 글(관련도 60~74, 또는 이미지 실패)은
+    # 노출되지 않으니 번역하지 않고, 발행이 확정된 순간에만 이 메서드를 부른다.
+    TRANSLATE_SYSTEM = (
+        "You are a professional translator for a Korean consulting firm that works on "
+        "public-sector digital transformation (ODA) and IT platform projects. You translate "
+        "Korean analyst briefs into English and Vietnamese."
+    )
+
+    TRANSLATE_PROMPT = """아래는 한국어로 작성된 인사이트 글의 제목과 요약이다. 영문과 베트남어로 번역하라.
+
+[요구사항]
+- 원문의 전문 보고서체를 유지한다. 요약하거나 덧붙이지 않는다.
+- 기관명·사업명은 현지에서 통용되는 공식 명칭을 쓰고, 없으면 원어를 괄호로 병기한다.
+  (예: KOICA, EDCF, 한국수출입은행 → Korea Eximbank)
+- 요약의 문단 구분(빈 줄)을 그대로 유지한다.
+- 숫자·연도·금액·단위는 원문 그대로 둔다.
+- 결과는 아래 JSON 형식으로만 답한다.
+
+[제목]
+{title}
+
+[요약]
+{summary}
+
+{{
+  "title_en": "...",
+  "title_vn": "...",
+  "summary_en": "...",
+  "summary_vn": "..."
+}}
+"""
+
+    FIELDS = ("title_en", "title_vn", "summary_en", "summary_vn")
+
+    def translate_to_en_vn(self, title_kr, summary_kr):
+        """국문 제목·요약을 영문·베트남어로 번역해 dict 로 돌려준다.
+
+        영문과 베트남어를 한 응답에서 함께 받는다 — 따로 부르면 문단 구분과
+        기관명 표기가 언어별로 어긋난다. 빈 필드가 오면 예외를 던져서 호출한
+        쪽이 재시도하거나 건너뛸 수 있게 한다.
+        """
+        response = self.client.chat.completions.create(
+            model=os.getenv("TRANSLATE_MODEL", "gpt-5.4-nano"),
+            messages=[
+                {"role": "system", "content": self.TRANSLATE_SYSTEM},
+                {
+                    "role": "user",
+                    "content": self.TRANSLATE_PROMPT.format(title=title_kr, summary=summary_kr),
+                },
+            ],
+            response_format={"type": "json_object"},
+        )
+        out = json.loads(response.choices[0].message.content)
+        missing = [f for f in self.FIELDS if not out.get(f)]
+        if missing:
+            raise ValueError(f"빈 필드: {', '.join(missing)}")
+        return {f: out[f] for f in self.FIELDS}
 
     def generate_image(self, title, category="it"):
         print(f"🎨 Generating {category.upper()} Realistic Image (FLUX.1) for: {title[:30]}...")

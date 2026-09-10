@@ -1,8 +1,11 @@
-"""ai_posts 의 국문 제목·요약을 영문·베트남어로 채우는 일회성 백필.
+"""ai_posts 의 국문 제목·요약을 영문·베트남어로 몰아서 채우는 수동 도구.
 
-배경: 스키마에는 title/summary 의 en·vn 컬럼이 처음부터 있었지만 생성
-파이프라인이 국문만 넣어서, 발행글 274건 전부 en·vn 이 NULL 이었다. 파이프라인은
-이제 세 언어를 함께 만든다(processor.py) — 이 스크립트는 그 전에 쌓인 글을 메운다.
+배경: 스키마에는 title/summary 의 en·vn 컬럼이 처음부터 있었지만 생성 파이프라인이
+국문만 넣어서, 발행글 274건 전부 en·vn 이 NULL 이었다.
+
+평소에는 이 스크립트가 필요 없다 — 워커가 발행이 확정되는 순간 번역하고, 회차마다
+번역이 빠진 발행글을 보충한다(main.py). 이 스크립트는 한 번에 많은 양을 몰아서
+처리해야 할 때(초기 백필, 초안 대량 발행 예정 등) 쓰는 수동 도구다.
 
 설계 메모
 - 한 글당 한 번만 호출한다. 영문·베트남어를 같은 응답에서 받아 문단 구분과 용어가
@@ -19,7 +22,6 @@
 """
 
 import argparse
-import json
 import os
 import sys
 import threading
@@ -27,42 +29,15 @@ from concurrent.futures import ThreadPoolExecutor
 
 import psycopg
 from dotenv import load_dotenv
-from openai import OpenAI
 from psycopg.rows import dict_row
 
+# apps/ai-worker 를 import 경로에 넣어 워커와 같은 번역 프롬프트를 쓴다.
+# 프롬프트를 복사해두면 한쪽만 손봤을 때 언어별 표기가 갈린다.
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from src.processor import AIProcessor  # noqa: E402
+
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
-
-MODEL = os.getenv("TRANSLATE_MODEL", "gpt-5.4-nano")
-
-SYSTEM = (
-    "You are a professional translator for a Korean consulting firm that works on "
-    "public-sector digital transformation (ODA) and IT platform projects. You translate "
-    "Korean analyst briefs into English and Vietnamese."
-)
-
-PROMPT = """아래는 한국어로 작성된 인사이트 글의 제목과 요약이다. 영문과 베트남어로 번역하라.
-
-[요구사항]
-- 원문의 전문 보고서체를 유지한다. 요약하거나 덧붙이지 않는다.
-- 기관명·사업명은 현지에서 통용되는 공식 명칭을 쓰고, 없으면 원어를 괄호로 병기한다.
-  (예: KOICA, EDCF, 한국수출입은행 → Korea Eximbank)
-- 요약의 문단 구분(빈 줄)을 그대로 유지한다.
-- 숫자·연도·금액·단위는 원문 그대로 둔다.
-- 결과는 아래 JSON 형식으로만 답한다.
-
-[제목]
-{title}
-
-[요약]
-{summary}
-
-{{
-  "title_en": "...",
-  "title_vn": "...",
-  "summary_en": "...",
-  "summary_vn": "..."
-}}
-"""
 
 print_lock = threading.Lock()
 
@@ -104,25 +79,6 @@ def fetch_targets(conn, include_drafts, limit):
         return cur.fetchall()
 
 
-def translate(client, row):
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": SYSTEM},
-            {
-                "role": "user",
-                "content": PROMPT.format(title=row["title_kr"], summary=row["summary_kr"]),
-            },
-        ],
-        response_format={"type": "json_object"},
-    )
-    out = json.loads(response.choices[0].message.content)
-    missing = [k for k in ("title_en", "title_vn", "summary_en", "summary_vn") if not out.get(k)]
-    if missing:
-        raise ValueError(f"빈 필드: {', '.join(missing)}")
-    return out
-
-
 def save(conn, post_id, out):
     with conn.cursor() as cur:
         cur.execute(
@@ -148,11 +104,11 @@ def main():
     if not os.getenv("OPENAI_API_KEY"):
         sys.exit("OPENAI_API_KEY 가 없다 (.env 확인)")
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    processor = AIProcessor()
     conn = connect()
     rows = fetch_targets(conn, args.include_drafts, args.limit)
     total = len(rows)
-    log(f"대상 {total}건 · 모델 {MODEL} · 워커 {args.workers}"
+    log(f"대상 {total}건 · 모델 {os.getenv('TRANSLATE_MODEL', 'gpt-5.4-nano')} · 워커 {args.workers}"
         + (" · DRY RUN" if args.dry_run else ""))
     if not total:
         return
@@ -162,7 +118,7 @@ def main():
     def work(index_row):
         i, row = index_row
         try:
-            out = translate(client, row)
+            out = processor.translate_to_en_vn(row["title_kr"], row["summary_kr"])
             if not args.dry_run:
                 save(conn, row["id"], out)
             with print_lock:
