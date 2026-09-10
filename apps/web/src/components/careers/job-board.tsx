@@ -336,9 +336,12 @@ export function JobBoard({ jobs, onApply }: { jobs: JobPosting[]; onApply: (job:
                                 뒀더니 524px 이 나와서 담는 폭 1214px 의 43% 만
                                 차지했고, 줄이 한글 35자에서 꺾여 안 넣은 줄바꿈이
                                 들어간 것처럼 보였다(2026-09-10). `3xl`(768px)은
-                                14px 한글로 한 줄 약 55자다. */}
+                                16px 한글로 한 줄 약 48자다.
+
+                              글자는 아래 3열 불릿(14px)보다 크게 둔다 — 본문이고
+                              보조 목록이 아니다. */}
                           {job.description && (
-                            <p className="mb-8 max-w-3xl whitespace-pre-line text-sm font-light leading-relaxed text-[var(--text-sub)] break-keep">
+                            <p className="mb-8 max-w-3xl whitespace-pre-line text-[15px] md:text-base font-light leading-[1.8] text-[var(--text-sub)] break-keep">
                               {pick(job.description, language)}
                             </p>
                           )}
