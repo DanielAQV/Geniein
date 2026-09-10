@@ -6,6 +6,11 @@ import { SectionDivider } from "@/components/section-divider"
 import { BusinessNav } from "@/components/business/business-nav"
 import { scrollToTabRow } from "@/lib/layout"
 import { OdaServices } from "@/components/business/oda-services"
+/* 프로젝트 포트폴리오. **회사정보(`/about`)에 있던 섹션을 여기로 옮겼다**
+   (2026-09-10). 파일 자리는 `components/about/` 그대로다 — 그 파일이
+   조직도 섹션에 `FallbackPanel` 을 내주고 있어서 옮기면 회사정보 쪽이 남의
+   폴더를 import 하게 된다. 글도 `about.projects.*` 키를 그대로 쓴다. */
+import { ProjectsShowcase } from "@/components/about/projects-showcase"
 import { PlatformServices } from "@/components/business/platform-services"
 import { ConnextCta } from "@/components/business/connext-cta"
 import { motion, AnimatePresence } from "framer-motion"
@@ -54,6 +59,7 @@ function BusinessContent() {
               transition={{ duration: 0.4 }}
             >
               <OdaServices />
+              <ProjectsShowcase />
             </motion.div>
           ) : (
             <motion.div

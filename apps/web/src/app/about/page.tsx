@@ -5,7 +5,6 @@ import { Footer } from "@/components/footer"
 import { SectionDivider } from "@/components/section-divider"
 import { IdentitySection } from "@/components/about/identity-section"
 import { OrganizationSection } from "@/components/about/organization-section"
-import { ProjectsShowcase } from "@/components/about/projects-showcase"
 import { PatentsSection } from "@/components/about/patents-section"
 import { motion } from "framer-motion"
 import { useLanguage } from "@/lib/i18n/language-context"
@@ -74,7 +73,6 @@ export default function AboutPage() {
       <OrganizationSection />
 
       {/* Projects Showcase Section */}
-      <ProjectsShowcase />
 
       {/* Patents Section */}
       <PatentsSection />
