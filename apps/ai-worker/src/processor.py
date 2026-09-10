@@ -38,9 +38,20 @@ class AIProcessor:
           * 'oda': 정부 예산이 투입되거나 공공 기관(KOICA, EDCF, UN, World Bank, 정부 부처 등)이 직접 참여하는 공적 개발 원조/협력 사업인 경우.
           * 'it': 민간 기업의 투자(FDI), 순수 기술 트렌드, 일반적인 비즈니스 확장인 경우. (예: SK/삼성의 투자는 'it', KOICA의 지원 사업은 'oda')
 
+        - 제목과 요약은 국문(kr) · 영문(en) · 베트남어(vn) 세 가지로 모두 작성하세요.
+          사이트가 3개 언어를 제공하는데 국문만 채우면 나머지 언어로 보는 사람에게는
+          한국어가 그대로 노출된다.
+          * 영문·베트남어도 국문과 같은 전문 보고서체를 유지하세요.
+          * 기관명·사업명은 현지에서 통용되는 공식 명칭을 쓰고, 없으면 원어를 병기하세요.
+          * 요약의 문단 구분(빈 줄)은 세 언어에서 동일하게 유지하세요.
+
         {{
             "title_kr": "전문적이고 전략적인 국문 제목",
+            "title_en": "same headline in English",
+            "title_vn": "cùng tiêu đề bằng tiếng Việt",
             "summary_kr": "7-10문장 분량의 딥다이브 요약 (기사의 핵심 맥락, 주요 데이터, 시사점 포함). 가독성을 위해 2-3개의 문단으로 나누어 작성하고, 문단 사이에는 줄바꿈(빈 줄)을 반드시 포함하세요.",
+            "summary_en": "the same summary in English, same paragraph breaks",
+            "summary_vn": "cùng bản tóm tắt bằng tiếng Việt, giữ nguyên cách chia đoạn",
             "category": "oda 또는 it",
             "tags": ["카테고리에 특화된 태그 3-4개"],
             "relevance_score": 점수(숫자)

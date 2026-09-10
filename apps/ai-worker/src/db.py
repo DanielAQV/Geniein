@@ -22,11 +22,17 @@ class Database:
     def insert_insight(self, data):
         query = """
         INSERT INTO ai_posts (
-            id, source_document_id, title_kr, summary_kr, perspective_kr, 
+            id, source_document_id,
+            title_kr, title_en, title_vn,
+            summary_kr, summary_en, summary_vn,
+            perspective_kr,
             category, tags, confidence_score, relevance_score, thumbnail_url,
             publish_status, published_at, created_at, updated_at
         ) VALUES (
-            gen_random_uuid(), %s, %s, %s, %s, 
+            gen_random_uuid(), %s,
+            %s, %s, %s,
+            %s, %s, %s,
+            %s,
             %s, %s, %s, %s, %s,
             %s, %s, NOW(), NOW()
         )
@@ -35,7 +41,11 @@ class Database:
             cur.execute(query, (
                 data.get('source_document_id'),
                 data.get('title_kr'),
+                data.get('title_en'),
+                data.get('title_vn'),
                 data.get('summary_kr'),
+                data.get('summary_en'),
+                data.get('summary_vn'),
                 data.get('perspective_kr'),
                 data.get('category', 'oda'),
                 data.get('tags', []),
