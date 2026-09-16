@@ -31,7 +31,7 @@ export type PrivacySection = {
 }
 
 /** 공개 시점에 맞춰 수정할 것. */
-export const EFFECTIVE_DATE = "2026-00-00"
+export const EFFECTIVE_DATE = "2026-09-15"
 
 export const privacyOfficer = {
   name: { kr: "변범준", en: "Byun Beom Joon", vn: "Byun Beom Joon" },
