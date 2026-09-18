@@ -117,7 +117,9 @@ export const dictionary = {
       desc: { kr: "디지털 ODA 컨설팅 및 혁신적인 IT 플랫폼 분야의 글로벌 리더. 전 세계 국가들을 디지털로 하나 되게 연결하고, 모두의 지속 가능한 성장을 위한 인프라 구축을 주도합니다.", en: "A global leader in digital ODA consulting and innovative IT platforms. Connecting countries worldwide through digital and leading the building of infrastructure for sustainable growth for all.", vn: "Nhà lãnh đạo toàn cầu trong lĩnh vực tư vấn ODA kỹ thuật số và các nền tảng CNTT đổi mới. Kết nối các quốc gia trên toàn thế giới thông qua kỹ thuật số và dẫn đầu việc xây dựng cơ sở hạ tầng để tăng trưởng bền vững cho tất cả mọi người." },
       reg_no: { kr: "사업자등록번호: 645-81-03508", en: "Registration No: 645-81-03508", vn: "Mã số thuế: 645-81-03508" },
       ceo: { kr: "대표: 변범준", en: "CEO: Byun Beom Joon", vn: "Đại diện: Byun Beom Joon" },
-      address: { kr: "주소: 경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호", en: "Address: 720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Địa chỉ: Phòng 720, Tầng 7, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" }
+      address: { kr: "주소: 경기도 성남시 분당구 황새울로319번길 8-4, 7층 720호", en: "Address: 720, 7F, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do", vn: "Địa chỉ: Phòng 720, Tầng 7, 8-4 Hwangsaeul-ro 319beon-gil, Bundang-gu, Seongnam-si, Gyeonggi-do" },
+      phone: { kr: "전화번호: 070-7954-8429", en: "Phone: 070-7954-8429", vn: "Số điện thoại: 070-7954-8429" },
+      mail_order: { kr: "통신판매업신고번호: 2026-성남분당B-0831", en: "Mail-Order Sales Registration No.: 2026-성남분당B-0831", vn: "Số đăng ký KDBH qua mạng: 2026-성남분당B-0831" }
     }
   },
   about: {

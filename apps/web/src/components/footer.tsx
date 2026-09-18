@@ -32,6 +32,8 @@ export function Footer() {
               <p>{t("landing.footer.reg_no")}</p>
               <p>{t("landing.footer.ceo")}</p>
               <p>{t("landing.footer.address")}</p>
+              <p>{t("landing.footer.phone")}</p>
+              <p>{t("landing.footer.mail_order")}</p>
             </div>
           </div>
 
