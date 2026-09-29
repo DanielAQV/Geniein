@@ -2,16 +2,19 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
+from pathlib import Path
 
 load_dotenv()
 
 class AIProcessor:
     def __init__(self):
         self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        # 작업 폴더 기준 경로면 크론이 다른 곳에서 돌 때 조용히 한 줄짜리 폴백으로 분석한다
+        persona_path = Path(__file__).resolve().parents[1] / 'PERSONA.md'
         try:
-            with open('apps/ai-worker/PERSONA.md', 'r', encoding='utf-8') as f:
-                self.persona = f.read()
-        except:
+            self.persona = persona_path.read_text(encoding='utf-8')
+        except OSError:
+            print(f"⚠️  페르소나 파일을 못 읽음 ({persona_path}) — 기본 문구로 분석한다")
             self.persona = "Geniein is a Digital Transformation and AI company."
 
     def process_news(self, title, content, feed_category="IT"):

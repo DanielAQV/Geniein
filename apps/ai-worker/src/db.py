@@ -34,7 +34,7 @@ class Database:
             %s, %s, %s,
             %s,
             %s, %s, %s, %s, %s,
-            %s, %s, NOW(), NOW()
+            %s, COALESCE(%s, NOW()), NOW(), NOW()
         )
         """
         with self.get_cursor() as cur:
@@ -53,7 +53,8 @@ class Database:
                 data.get('relevance_score', 0),
                 data.get('thumbnail_url'),
                 data.get('publish_status', 'draft'),
-                data.get('published_at', 'NOW()')
+                # 초안도 NOW() 를 받는다 — 관리자가 발행으로 바꿀 때 API 가 published_at 을 찍지 않는다
+                data.get('published_at')
             ))
 
     # 발행 상태인데 번역이 빠진 글. 초안은 대상이 아니다 — 노출되지 않는 글을
