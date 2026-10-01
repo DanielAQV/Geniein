@@ -11,6 +11,7 @@ if sys.stdout.encoding != 'utf-8':
 
 from src.processor import AIProcessor
 from src.db import Database
+from src.alert import notify
 import time
 import requests
 import uuid
@@ -59,6 +60,7 @@ def main():
     db = Database()
     crawler = RSSCrawler()
     processor = AIProcessor()
+    held_for_image = []
 
     try:
         # 0. 지난 회차에서 번역이 빠진 발행글 보충 (수동 발행분 포함)
@@ -120,7 +122,6 @@ def main():
                 if thumbnail_url:
                     processed_data['thumbnail_url'] = thumbnail_url
                     processed_data['publish_status'] = 'published'
-                    processed_data['published_at'] = 'NOW()'
                     # 발행이 확정된 지금 번역한다. 초안으로 남는 글은 번역하지 않는다 —
                     # 노출되지 않는 글이고, 초안이 발행글보다 많아서 대부분 버려진다.
                     try:
@@ -135,6 +136,7 @@ def main():
                         print(f"⚠️  번역 실패 — 국문만 저장한다: {e}")
                 else:
                     processed_data['publish_status'] = 'draft'
+                    held_for_image.append(processed_data['title_kr'])
                     print("⚠️  이미지가 없어 draft 로 저장한다 — 확인 후 수동 발행 필요")
             else:
                 processed_data['publish_status'] = 'draft'
@@ -149,8 +151,16 @@ def main():
 
     except Exception as e:
         print(f"❌ Critical Error: {e}")
+        notify(f"[ai-worker] 회차 중단: {e!r}")
     finally:
         db.close()
+        # draft 로 떨어진 것만으로는 관리자 목록을 열어봐야 안다. 썸네일이 20일간 조용히
+        # 실패한 적이 있어서, 이미지 때문에 발행을 못 한 글이 있으면 알린다.
+        if held_for_image:
+            notify(
+                f"[ai-worker] 이미지 생성 실패로 {len(held_for_image)}건을 draft 로 저장\n"
+                + "\n".join(f"- {t}" for t in held_for_image)
+            )
         print("🏁 AI Worker Finished!")
 
 if __name__ == "__main__":
