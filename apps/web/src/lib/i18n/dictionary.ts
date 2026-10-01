@@ -104,7 +104,7 @@ export const dictionary = {
       hanoi: { kr: "하노이 법인 (GENIE VINA)", en: "Hanoi Subsidiary (GENIE VINA)", vn: "Công ty tại Hà Nội (GENIE VINA)" },
       hanoi_addr: { kr: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", en: "Room 01-02, 15F, Pearl Tower, 1 Chau Van Liem, Tu Liem, Hanoi, Vietnam", vn: "Phòng số 01-02, tầng 15, tòa nhà Pearl Tower, số 1 Châu Văn Liêm, Phường Từ Liêm, Thành phố Hà Nội, Việt Nam" },
       manila: { kr: "필리핀 법인 (Genie PH Corporation)", en: "Philippines Subsidiary (Genie PH Corporation)", vn: "Công ty tại Philippines (Genie PH Corporation)" },
-      manila_addr: { kr: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
+      manila_addr: { kr: "4J-B, 4F Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4J-B, 4F Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4J-B, 4F Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
       form_name_ph: { kr: "성함 또는 기관명을 입력해주세요", en: "Enter your name or organization", vn: "Nhập tên hoặc tổ chức của bạn" },
       form_subject_ph: { kr: "어떤 도움이 필요하신가요?", en: "How can we help you?", vn: "Chúng tôi có thể giúp gì cho bạn?" },
       form_message_ph: { kr: "프로젝트 또는 솔루션과 관련하여 궁금한 점을 자세히 남겨주세요...", en: "Please leave details about your questions regarding projects or solutions...", vn: "Vui lòng để lại chi tiết về các câu hỏi của bạn liên quan đến dự án hoặc giải pháp..." },
@@ -188,7 +188,7 @@ export const dictionary = {
           city: { kr: "필리핀 법인\nGenie PH Corporation", en: "PHILIPPINES SUBSIDIARY\nGenie PH Corporation", vn: "Công ty tại Philippines\nGenie PH Corporation" },
           role: { kr: "현지 프로젝트 수행 허브", en: "Local Project Delivery Hub", vn: "Trung tâm Triển khai Dự án Tại chỗ" },
           image: "/images/about/org-philippines.jpg",
-          address: { kr: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4F, Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
+          address: { kr: "4J-B, 4F Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", en: "4J-B, 4F Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila", vn: "4J-B, 4F Marvin Plaza Bldg., 2153 Chino Roces Ave, Makati City, 1230 Metro Manila" },
           specialization: [
             { kr: "현장운영", en: "Field Operations", vn: "Vận hành hiện trường" },
             { kr: "기자재조달", en: "Equipment Procurement", vn: "Mua sắm thiết bị" },
