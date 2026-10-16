@@ -16,20 +16,25 @@ import { apiUpstream } from "@/lib/api-upstream"
 export type Lang = "kr" | "en" | "vn"
 
 /**
- * 채용 텍스트. KR 만 필수고 EN/VN 은 비어 있을 수 있다 —
- * admin 에서 한국어만 쓰고 올리는 경우가 정상 경로다.
+ * 채용 텍스트. 어느 언어든 비어 있을 수 있다. DB 는 제목·라벨의 KR 만
+ * 강제하고, 본문·목록은 한 언어만 채워 올리는 공고가 있다 — 베트남 현지
+ * 채용은 VN 만 쓴다(2026-10-16).
  */
 export type Localized = { kr: string; en?: string | null; vn?: string | null }
 
 /**
- * 언어 선택 + KR 폴백.
+ * 보는 언어 → KR → EN → VN 순으로 처음 채워진 것을 고른다.
+ *
+ * 한국어로 보는 사람에게 베트남어 본문이 뜨는 쪽이 아무것도 안 뜨는 쪽보다
+ * 낫다고 결정했다(2026-10-16). 그 전에는 KR 이 비면 본문을 통째로 숨겼는데,
+ * VN 만 쓴 공고가 베트남어로 봐도 빈 카드로 나왔다.
  *
  * ★ 전역 `t()` 를 고치지 않는다. 폴백은 채용 데이터에만 적용되는 규칙이고,
  *   사이트 전체 사전은 3개 언어가 다 채워져 있는 걸 전제로 하기 때문에
  *   거기에 폴백을 넣으면 빠진 번역이 조용히 한국어로 나가버린다.
  */
 export function pick(field: Localized, lang: Lang): string {
-  return field[lang] || field.kr
+  return field[lang] || field.kr || field.en || field.vn || ""
 }
 
 export type JobPosting = {
@@ -111,27 +116,28 @@ type ApiJobPosting = {
 
 const text = (kr: string, en: string | null, vn: string | null): Localized => ({ kr, en, vn })
 
-/**
- * 자유 서술 칸. `text()` 와 갈라 둔 이유는 **여기만 KR 이 NULL 일 수 있다**는
- * 것이다(엔티티 주석 참고). 비면 null 을 줘서 JobBoard 가 블록을 통째로 뺀다.
- *
- * KR 이 비었으면 EN/VN 이 있어도 null 로 접는다 — `pick` 이 KR 우선 폴백이라,
- * 한국어로 보는 사람에게 영어 본문만 뜨는 쪽이 안 뜨는 쪽보다 나쁘다.
- */
-const prose = (kr: string | null, en: string | null, vn: string | null): Localized | null =>
-  kr && kr.trim() ? { kr, en, vn } : null
+const filled = (value: string | null | undefined) => Boolean(value && value.trim())
 
 /**
- * 언어별 병렬 배열을 인덱스로 묶는다. KR 이 기준이다 — DB 에서 KR 만
- * NOT NULL 이고, 어드민이 언어별 textarea 를 줄 단위로 나눠 보낸다.
- * EN/VN 이 짧으면 그 줄만 KR 로 폴백된다(`pick`).
+ * 자유 서술 칸. `text()` 와 갈라 둔 이유는 세 언어 모두 NULL 일 수 있다는
+ * 것이다(엔티티 주석 참고). 전부 비면 null 을 줘서 JobBoard 가 블록을 통째로 뺀다.
  */
-const list = (kr: string[], en: string[] | null, vn: string[] | null): Localized[] =>
-  (kr ?? []).map((value, index) => ({
-    kr: value,
+const prose = (kr: string | null, en: string | null, vn: string | null): Localized | null =>
+  filled(kr) || filled(en) || filled(vn) ? { kr: kr ?? "", en, vn } : null
+
+/**
+ * 언어별 병렬 배열을 인덱스로 묶는다. 어드민이 언어별 textarea 를 줄 단위로
+ * 나눠 보내므로 같은 번째 줄이 같은 항목이다. 가장 긴 언어 기준으로 돌고,
+ * 짧은 언어의 빠진 줄은 `pick` 이 다른 언어로 채운다.
+ */
+const list = (kr: string[] | null, en: string[] | null, vn: string[] | null): Localized[] => {
+  const length = Math.max(kr?.length ?? 0, en?.length ?? 0, vn?.length ?? 0)
+  return Array.from({ length }, (_, index) => ({
+    kr: kr?.[index] ?? "",
     en: en?.[index] ?? null,
     vn: vn?.[index] ?? null,
   }))
+}
 
 function adapt(row: ApiJobPosting): JobPosting {
   return {
