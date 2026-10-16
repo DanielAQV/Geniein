@@ -24,7 +24,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [inquiryType, setInquiryType] = useState("oda");
+  const [inquiryType, setInquiryType] = useState("platform");
   // 개인정보 수집·이용 동의. 개인정보보호법 제15조상 필수 항목이라
   // 체크되지 않으면 제출 자체를 막는다.
   const [consent, setConsent] = useState(false);
@@ -39,9 +39,9 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
   useEffect(() => setMounted(true), []);
 
   const inquiryTypes = [
-    { id: "oda", label: t("contact.form.type_oda") },
     { id: "platform", label: t("contact.form.type_platform") },
     { id: "tech", label: t("contact.form.type_tech") },
+    { id: "oda", label: t("contact.form.type_oda") },
     { id: "etc", label: t("contact.form.type_etc") },
   ];
 
@@ -103,7 +103,7 @@ export function ContactForm({ showIntro = true }: { showIntro?: boolean }) {
       // Success: show the modal and clear the form.
       setIsSuccess(true);
       setFormData({ ...EMPTY_FORM });
-      setInquiryType("oda");
+      setInquiryType("platform");
       setConsent(false);
       setErrors({});
     } catch {
