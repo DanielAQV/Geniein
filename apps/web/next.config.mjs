@@ -54,7 +54,10 @@ const TEAMS_FRAME_ANCESTORS = [
  * CSP 는 `frame-ancestors` 하나만 경로별로 다르다. 두 벌을 따로 적어두면 한쪽만
  * 고치는 사고가 나므로 조립해서 쓴다.
  */
-function contentSecurityPolicy(frameAncestors) {
+function contentSecurityPolicy(frameAncestors, { googleFonts = false } = {}) {
+  // 로드맵은 Google Fonts 를 쓴다. 그 경로에서만 연다
+  const fontStyle = googleFonts ? ' https://fonts.googleapis.com' : '';
+  const fontFile = googleFonts ? ' https://fonts.gstatic.com' : '';
   // connect-src 가 없으면 default-src 'self' 가 적용돼 fetch/SSE 가 같은 오리진으로 제한된다.
   // 관리자 데이터와 Teams 검색은 BFF(/api/*)를 타므로 'self' 로 충분하다 —
   // NEXT_PUBLIC_API_URL 이 다른 오리진이면 그 값을 여기 추가해야 공개 인사이트 호출이 산다.
@@ -62,9 +65,9 @@ function contentSecurityPolicy(frameAncestors) {
     ? [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-        "style-src 'self' 'unsafe-inline'",
+        `style-src 'self' 'unsafe-inline'${fontStyle}`,
         "img-src 'self' blob: data: https://flagcdn.com",
-        "font-src 'self'",
+        `font-src 'self'${fontFile}`,
         `connect-src 'self'${publicApiOrigin ? ` ${publicApiOrigin}` : ''}`,
         "object-src 'none'",
         "base-uri 'self'",
@@ -76,9 +79,9 @@ function contentSecurityPolicy(frameAncestors) {
     : [
         "default-src 'self' https://mcp.figma.com",
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mcp.figma.com",
-        "style-src 'self' 'unsafe-inline'",
+        `style-src 'self' 'unsafe-inline'${fontStyle}`,
         "img-src 'self' blob: data: https://flagcdn.com https://mcp.figma.com",
-        "font-src 'self' data:",
+        `font-src 'self' data:${fontFile}`,
         "connect-src 'self' https://mcp.figma.com ws: wss:",
         "object-src 'none'",
         "base-uri 'self'",
@@ -139,11 +142,20 @@ const nextConfig = {
       {
         // `/teams` 와 그 하위를 제외한 전 경로. `(?:/|$)` 가 있어야 `/teamsomething`
         // 같은 무관한 경로까지 예외로 새지 않는다.
-        source: '/((?!teams(?:/|$)).*)',
+        source: '/((?!teams(?:/|$)|roadmap(?:/|$)).*)',
         headers: [
           ...BASE_SECURITY_HEADERS,
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'Content-Security-Policy', value: contentSecurityPolicy("'self'") },
+        ],
+      },
+      {
+        // 로드맵. 일반 블록과 같고 Google Fonts 만 더 연다 (CSP 가 두 벌이면 교집합이라 블록을 나눈다)
+        source: '/roadmap',
+        headers: [
+          ...BASE_SECURITY_HEADERS,
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Content-Security-Policy', value: contentSecurityPolicy("'self'", { googleFonts: true }) },
         ],
       },
       {
