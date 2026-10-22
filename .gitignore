@@ -12,6 +12,8 @@ secrets/
 # 사규·가이드 원본. RAG ingest 입력이지 소스코드가 아니다.
 regulations/
 uploads/
+# 경영진 로드맵 본문 (토큰·투자 일정)
+apps/web/content/private/
 
 # ── 의존성 ──────────────────────────────────────
 node_modules/
