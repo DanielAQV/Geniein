@@ -90,8 +90,19 @@ def _load() -> Any:
         return _model
 
 
+def _backend() -> str:
+    """local(기본, sentence-transformers) | http(같은 상자의 BGE-M3 서버, embed_http.py).
+
+    ★ 색인과 질의가 같은 백엔드여야 한다. 바꾸면 전체 재색인이 함께 간다.
+    """
+    return os.environ.get("EMBED_BACKEND", "local").strip().lower()
+
+
 def encode(texts: Sequence[str], *, is_query: bool = False) -> list[list[float]]:
     """텍스트를 1024차원 벡터로.
+
+    EMBED_BACKEND=http 면 torch 를 올리지 않고 embed_http 로 넘긴다 (EC2 처럼
+    메모리가 좁은 곳). 오류 타입은 호출부가 하나만 알게 여기 것으로 바꿔 던진다.
 
     코사인 유사도로 검색하므로 정규화해서 내보낸다 — pgvector 의
     `vector_cosine_ops` 인덱스와 짝이 맞는다.
@@ -103,6 +114,13 @@ def encode(texts: Sequence[str], *, is_query: bool = False) -> list[list[float]]
     """
     if not texts:
         return []
+    if _backend() == "http":
+        from . import embed_http
+
+        try:
+            return embed_http.encode(texts, is_query=is_query)
+        except embed_http.EmbeddingUnavailable as exc:
+            raise EmbeddingUnavailable(str(exc)) from exc
     model = _load()
     vectors = model.encode(list(texts), normalize_embeddings=True)
     return [[float(x) for x in row] for row in vectors]
@@ -112,6 +130,10 @@ def count_tokens(texts: Sequence[str]) -> list[int]:
     """청크 토큰 수. kb_chunks.token_count 용이고 실패해도 색인을 막지 않는다."""
     if not texts:
         return []
+    if _backend() == "http":
+        from . import embed_http
+
+        return embed_http.count_tokens(texts)
     try:
         tokenizer = _load().tokenizer
         return [len(tokenizer.encode(t, add_special_tokens=False)) for t in texts]
