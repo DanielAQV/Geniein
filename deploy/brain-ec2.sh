@@ -77,8 +77,8 @@ AGENT_SERVICE_TOKEN=$(val AGENT_SERVICE_TOKEN)
 # 같은 상자의 princess BGE-M3(int8 ONNX)를 빌린다. 바꾸면 전체 재색인.
 EMBED_BACKEND=http
 EMBED_HTTP_URL=$EMBED_URL
-# AQV 테넌트는 마이키 인격. 나머지는 지니(코어).
-PERSONA_ORG_MAP=$AQV_TID:aqv
+# 비워 둔다 — 모든 테넌트가 Genie(코어 인격). AQV/마이키는 옛 회사 이름이라 매핑하지 않는다.
+PERSONA_ORG_MAP=
 LOG_LEVEL=INFO
 EOF
     echo "   만들었습니다"
