@@ -64,6 +64,16 @@ describe('parseIncoming', () => {
     });
   });
 
+  it('실측 모양(result 없이 맨 바깥에 event_name)도 받는다', () => {
+    const flat = update().result;
+    expect(parseIncoming(flat)).toEqual({
+      messageId: 'm-1',
+      chatId: 'c-100',
+      fromId: 'u-100',
+      text: 'Phụ cấp công tác là bao nhiêu?',
+    });
+  });
+
   it('그룹·봇·비텍스트는 버린다', () => {
     expect(
       parseIncoming(update({ chat: { id: 'g-1', chat_type: 'GROUP' } })),

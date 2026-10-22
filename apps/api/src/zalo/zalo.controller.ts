@@ -28,7 +28,10 @@ interface ZaloWebhookBody {
 }
 
 export function parseIncoming(body: unknown): ZaloIncoming | null {
-  const result = (body as ZaloWebhookBody | null)?.result;
+  // 문서는 `{ok, result:{…}}` 로 싸여 온다고 하지만 실측(2026-10-22)은
+  // `{event_name, message}` 가 맨 바깥이다. 둘 다 받는다.
+  const outer = body as (ZaloWebhookBody & ZaloWebhookBody['result']) | null;
+  const result = outer?.result ?? outer;
   if (!result || result.event_name !== 'message.text.received') return null;
 
   const message = result.message;
