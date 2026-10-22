@@ -11,6 +11,9 @@
 //   node scripts/zalo-bot.mjs contacts                           # 말 걸 수 있는 사람
 //   node scripts/zalo-bot.mjs notify <zalo_user_id|all> "텍스트"  # 먼저 말 걸기
 //   node scripts/zalo-bot.mjs notify <zalo_user_id|all> --photo https://… "캡션"
+//   node scripts/zalo-bot.mjs onboard add "Nguyen Van A" 2026-11-03 Platform   # 신입 등록 → 코드
+//   node scripts/zalo-bot.mjs onboard list
+//   node scripts/zalo-bot.mjs onboard tick                                    # cron 이 매일 부름
 //
 // API 모양은 텔레그램 Bot API 와 같다: POST <base>/bot<TOKEN>/<method> (JSON).
 // 공식 문서: https://bot.zapps.me/docs
@@ -37,6 +40,20 @@ switch (command) {
   case 'contacts':
     await gateway('GET', '/zalo/contacts');
     break;
+  case 'onboard': {
+    // onboard add "이름" YYYY-MM-DD [팀] | onboard list | onboard tick
+    const [sub, ...r] = args;
+    if (sub === 'add') {
+      const [name, startDate, ...team] = r;
+      if (!name || !startDate) fail('사용법: onboard add "이름" YYYY-MM-DD [팀]');
+      await gateway('POST', '/zalo/onboarding', { name, start_date: startDate, team: team.join(' ') || undefined });
+    } else if (sub === 'list') {
+      await gateway('GET', '/zalo/onboarding');
+    } else if (sub === 'tick') {
+      await gateway('POST', '/zalo/onboarding/tick');
+    } else fail('사용법: onboard add | list | tick');
+    break;
+  }
   case 'notify': {
     const [to, ...rest] = args;
     if (!to) fail('사용법: notify <zalo_user_id|all> "텍스트" | --photo <https URL> "캡션"');

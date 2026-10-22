@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import type { Repository } from 'typeorm';
 import { AgentService } from '../agent/agent.service';
 import { ZaloContact } from './zalo-contact.entity';
+import type { OnboardingService } from './onboarding/onboarding.service';
 import { ZaloController, parseIncoming } from './zalo.controller';
 import { ZaloService, clipForZalo, ZALO_TEXT_LIMIT } from './zalo.service';
 
@@ -59,7 +60,10 @@ function build(env: Record<string, string> = ENV) {
   const agent = { ask } as unknown as AgentService;
   const { repo, rows } = memoryRepo();
   const service = new ZaloService(config, agent, repo);
-  return { service, controller: new ZaloController(service), rows };
+  const onboarding = {
+    tryLink: () => Promise.resolve(false),
+  } as unknown as OnboardingService;
+  return { service, controller: new ZaloController(service, onboarding), rows };
 }
 
 function zaloOk() {

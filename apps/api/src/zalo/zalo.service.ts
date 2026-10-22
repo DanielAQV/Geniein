@@ -291,7 +291,8 @@ export class ZaloService {
     return out;
   }
 
-  private async touch(incoming: ZaloIncoming): Promise<ZaloContact> {
+  /** 말 걸어온 사람의 손잡이를 저장·갱신한다. 온보딩 연결도 이걸 쓴다. */
+  async touch(incoming: ZaloIncoming): Promise<ZaloContact> {
     const existing = await this.contacts.findOne({
       where: { zaloUserId: incoming.fromId },
     });

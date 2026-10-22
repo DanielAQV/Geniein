@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ServiceTokenGuard } from '../common/guards/service-token.guard';
+import { OnboardingService } from './onboarding/onboarding.service';
 import {
   ZaloService,
   type ZaloDelivery,
@@ -112,7 +113,10 @@ function parseNotify(body: NotifyBody | null | undefined): {
 export class ZaloController {
   private readonly logger = new Logger(ZaloController.name);
 
-  constructor(private readonly zalo: ZaloService) {}
+  constructor(
+    private readonly zalo: ZaloService,
+    private readonly onboarding: OnboardingService,
+  ) {}
 
   /**
    * 들어옴. 가드 없음 — 호출자는 Zalo 서버이고 검증은 Zalo 가 보내는 시크릿 헤더로 한다.
@@ -141,7 +145,11 @@ export class ZaloController {
 
     // 200 을 먼저 돌려주고 처리는 뒤에서 한다. 실패는 로그로만 남긴다 —
     // 여기서 던지면 Zalo 가 재전송하고 같은 질문이 또 과금된다.
-    void this.zalo.handle(incoming).catch((err: unknown) => {
+    // 온보딩 코드면 연결만 하고 끝 (LLM 호출 없음). 아니면 평소처럼 뇌로.
+    void (async () => {
+      if (await this.onboarding.tryLink(incoming)) return;
+      await this.zalo.handle(incoming);
+    })().catch((err: unknown) => {
       this.logger.error(
         `Zalo 처리 실패 chat=${incoming.chatId}: ${err instanceof Error ? err.message : String(err)}`,
       );
@@ -173,5 +181,52 @@ export class ZaloController {
   @UseGuards(ServiceTokenGuard)
   contacts() {
     return this.zalo.listContacts();
+  }
+
+  /** 신입 등록 → 코드. HR 이 그 코드를 신입에게 건넨다. */
+  @Post('onboarding')
+  @UseGuards(ServiceTokenGuard)
+  async registerOnboarding(
+    @Body() body: { name?: unknown; team?: unknown; start_date?: unknown },
+  ) {
+    const name = typeof body?.name === 'string' ? body.name.trim() : '';
+    const team = typeof body?.team === 'string' ? body.team.trim() : '';
+    const startDate =
+      typeof body?.start_date === 'string' ? body.start_date.trim() : '';
+    if (!name) throw new BadRequestException('name is required');
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(startDate) ||
+      Number.isNaN(Date.parse(startDate))
+    )
+      throw new BadRequestException('start_date must be YYYY-MM-DD');
+    const row = await this.onboarding.register({
+      name,
+      team: team || null,
+      startDate,
+    });
+    return {
+      code: row.code,
+      name: row.name,
+      team: row.team,
+      start_date: row.startDate,
+      // HR 이 신입에게 그대로 붙여 보낼 안내문
+      handout:
+        `Chào mừng ${row.name}! Mở Zalo, tìm "Bot Genie Agent" và gửi mã: ${row.code}
+` +
+        `Welcome ${row.name}! Open Zalo, find "Bot Genie Agent" and send: ${row.code}`,
+    };
+  }
+
+  @Get('onboarding')
+  @UseGuards(ServiceTokenGuard)
+  listOnboarding() {
+    return this.onboarding.list();
+  }
+
+  /** 매일 한 번 cron 이 부른다. */
+  @Post('onboarding/tick')
+  @UseGuards(ServiceTokenGuard)
+  tick() {
+    return this.onboarding.tick();
   }
 }
