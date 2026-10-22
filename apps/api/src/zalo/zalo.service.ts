@@ -4,29 +4,35 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 import { timingSafeEqual } from 'node:crypto';
-import { AgentService, type ChatTurn } from '../agent/agent.service';
+import { Repository } from 'typeorm';
+import { AgentService } from '../agent/agent.service';
+import {
+  MAX_ZALO_TURNS,
+  ZaloContact,
+  type ZaloTurn,
+} from './zalo-contact.entity';
 
 /**
- * Zalo Bot Platform 으로 들어오는 DM 을 뇌에 넘기고 답을 돌려보내는 몸(입).
+ * Zalo Bot Platform 몸(입). 두 방향이다.
  *
- * 설계 원칙은 Teams 탭과 같다 — 몸은 얇게, 뇌는 두껍게. 여기에는 라우팅 판단이
- * 없고, 신원 확정 · 이력 보관 · 글자수 제한 · 전송만 있다.
+ *   들어옴  사용자 DM → 뇌 → 답장                      handle()
+ *   나감    뒷단이 먼저 말을 건다 (사람·사진·전체)       notify()
  *
- * API 는 텔레그램 Bot API 를 본뜬 모양이다:
+ * 설계 원칙은 Teams 탭·봇과 같다 — 몸은 얇게, 뇌는 두껍게. 여기에는 라우팅 판단이
+ * 없고, 신원 확정 · 손잡이 저장 · 이력 · 글자수 제한 · 전송만 있다.
+ *
+ * API 는 텔레그램 Bot API 를 본뜬 모양이다 (bot.zapps.me/docs):
  *   POST https://bot-api.zapps.me/bot<TOKEN>/sendMessage  {chat_id, text}
- * 웹훅은 헤더 `X-Bot-Api-Secret-Token` 으로 검증한다 (bot.zapps.me/docs/webhook).
+ *   POST https://bot-api.zapps.me/bot<TOKEN>/sendPhoto    {chat_id, photo(URL), caption}
+ * 웹훅은 헤더 `X-Bot-Api-Secret-Token` 으로 검증한다.
  */
 
 // Zalo 가 받는 한 메시지 상한. 넘으면 잘라 보내고 콘솔 링크는 다음 단계에서 붙인다.
 export const ZALO_TEXT_LIMIT = 2000;
 
-// 이력은 메모리에만 둔다 — 스파이크다. 재기동하면 잊는다. 뇌는 20턴까지 받지만
-// Zalo 는 짧은 문답이라 10턴이면 충분하고, 턴마다 재청구되는 토큰도 줄인다.
-const MAX_HISTORY_TURNS = 10;
-const MAX_TRACKED_CHATS = 500;
 const MAX_SEEN_MESSAGE_IDS = 2000;
-
 const DEFAULT_API_BASE = 'https://bot-api.zapps.me';
 
 // 뇌가 못 답했을 때 보내는 한 줄. 직원 대부분이 베트남어라 베트남어가 앞이다.
@@ -38,7 +44,21 @@ export interface ZaloIncoming {
   messageId: string;
   chatId: string;
   fromId: string;
+  displayName: string | null;
   text: string;
+}
+
+export interface ZaloOutgoing {
+  text?: string;
+  photoUrl?: string;
+  caption?: string;
+}
+
+export interface ZaloDelivery {
+  to: string;
+  displayName: string | null;
+  delivered: boolean;
+  error?: string;
 }
 
 interface ZaloEnvelope<T> {
@@ -51,15 +71,14 @@ interface ZaloEnvelope<T> {
 export class ZaloService {
   private readonly logger = new Logger(ZaloService.name);
 
-  // chat.id → 평문 이력. 가장 오래 안 쓴 채팅부터 버린다 (Map 은 삽입 순서를 지킨다).
-  private readonly histories = new Map<string, ChatTurn[]>();
-
   // Zalo 가 웹훅을 재전송해도 같은 질문을 두 번 뇌에 넣지 않는다 (= 두 번 과금하지 않는다).
   private readonly seen = new Set<string>();
 
   constructor(
     private readonly config: ConfigService,
     private readonly agent: AgentService,
+    @InjectRepository(ZaloContact)
+    private readonly contacts: Repository<ZaloContact>,
   ) {}
 
   /** 웹훅 호출자가 우리 봇에 등록한 Zalo 인가. 설정이 없으면 열어두지 않고 막는다. */
@@ -81,7 +100,7 @@ export class ZaloService {
   }
 
   /**
-   * 한 메시지를 끝까지 처리한다: 뇌에 묻고 → Zalo 로 답한다.
+   * 한 메시지를 끝까지 처리한다: 손잡이 저장 → 뇌에 묻고 → Zalo 로 답한다.
    * 웹훅 응답과는 분리해서 돈다 — Zalo 는 빠른 200 을 원하고 뇌는 수 초를 쓴다.
    */
   async handle(incoming: ZaloIncoming): Promise<void> {
@@ -90,15 +109,17 @@ export class ZaloService {
       return;
     }
 
+    // 말을 걸어온 순간이 손잡이를 얻는 유일한 순간이다. 뇌 호출보다 먼저 저장한다.
+    const contact = await this.touch(incoming);
+
     const orgId = (this.config.get<string>('ZALO_ORG_ID') ?? '').trim();
     if (!orgId) {
       // org 없이 뇌를 부르면 KB 필터가 사라진다. 조용히 넘기지 않고 사람에게 알린다.
       this.logger.error('ZALO_ORG_ID 가 설정되지 않아 뇌를 부를 수 없습니다');
-      await this.sendSafely(incoming.chatId, FALLBACK_TEXT);
+      await this.sendSafely(incoming.chatId, { text: FALLBACK_TEXT });
       return;
     }
 
-    const history = this.historyOf(incoming.chatId);
     let answer: string;
     try {
       const result = await this.agent.ask(
@@ -110,11 +131,11 @@ export class ZaloService {
           orgId,
           locale: null,
         },
-        history,
+        contact.recentTurns,
         null,
       );
       answer = result.text;
-      this.remember(incoming.chatId, incoming.text, answer);
+      await this.remember(contact, incoming.text, answer);
     } catch (err) {
       this.logger.error(
         `뇌 호출 실패 chat=${incoming.chatId}: ${err instanceof Error ? err.message : String(err)}`,
@@ -122,48 +143,189 @@ export class ZaloService {
       answer = FALLBACK_TEXT;
     }
 
-    await this.sendSafely(incoming.chatId, answer);
+    await this.sendSafely(incoming.chatId, { text: answer });
   }
 
-  async sendMessage(chatId: string, text: string): Promise<void> {
+  /**
+   * 먼저 말을 건다. `to` 는 zalo_user_id 하나, 여럿, 또는 'all'(말 걸어온 전원).
+   * 모르는 사람에게는 보낼 수 없다 — 손잡이가 없는 id 는 결과에 delivered=false 로 남긴다.
+   */
+  async notify(
+    to: string | string[],
+    message: ZaloOutgoing,
+  ): Promise<ZaloDelivery[]> {
+    const targets = await this.resolve(to);
+    const out: ZaloDelivery[] = [];
+    for (const t of targets) {
+      if (!t.contact) {
+        out.push({
+          to: t.id,
+          displayName: null,
+          delivered: false,
+          error: '손잡이 없음 — 이 사람이 먼저 봇에게 말을 건 적이 없습니다',
+        });
+        continue;
+      }
+      try {
+        await this.send(t.contact.chatId, message);
+        if (message.text) {
+          // 먼저 건 말도 대화의 일부다. 다음 질문에서 뇌가 그 맥락을 안다.
+          await this.remember(t.contact, null, message.text);
+        }
+        out.push({
+          to: t.id,
+          displayName: t.contact.displayName,
+          delivered: true,
+        });
+      } catch (err) {
+        out.push({
+          to: t.id,
+          displayName: t.contact.displayName,
+          delivered: false,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
+    this.logger.log(
+      `선제 발신 ${out.filter((d) => d.delivered).length}/${out.length} 건 (text=${message.text ? message.text.length : 0}자${message.photoUrl ? ', photo' : ''})`,
+    );
+    return out;
+  }
+
+  async listContacts(): Promise<
+    { zaloUserId: string; displayName: string | null; lastSeenAt: Date }[]
+  > {
+    const rows = await this.contacts.find({ order: { lastSeenAt: 'DESC' } });
+    return rows.map((r) => ({
+      zaloUserId: r.zaloUserId,
+      displayName: r.displayName,
+      lastSeenAt: r.lastSeenAt,
+    }));
+  }
+
+  /** 텍스트·사진 중 있는 것을 보낸다. 둘 다 있으면 사진(캡션) 뒤에 텍스트. */
+  async send(chatId: string, message: ZaloOutgoing): Promise<void> {
+    if (!message.text && !message.photoUrl) {
+      throw new Error('보낼 내용이 없습니다 (text 또는 photoUrl)');
+    }
+    if (message.photoUrl) {
+      await this.call('sendPhoto', {
+        chat_id: chatId,
+        photo: message.photoUrl,
+        caption: message.caption ? clipForZalo(message.caption) : undefined,
+      });
+    }
+    if (message.text) {
+      await this.call('sendMessage', {
+        chat_id: chatId,
+        text: clipForZalo(message.text),
+      });
+    }
+  }
+
+  private async call(
+    method: 'sendMessage' | 'sendPhoto',
+    body: Record<string, unknown>,
+  ): Promise<void> {
     const { base, token } = this.requireBotConfig();
-    const clipped = clipForZalo(text);
 
     let response: Response;
     try {
-      response = await fetch(`${base}/bot${token}/sendMessage`, {
+      response = await fetch(`${base}/bot${token}/${method}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: clipped }),
-        signal: AbortSignal.timeout(10_000),
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15_000),
       });
     } catch (err) {
       throw new Error(
-        `Zalo sendMessage 연결 실패: ${err instanceof Error ? err.message : String(err)}`,
+        `Zalo ${method} 연결 실패: ${err instanceof Error ? err.message : String(err)}`,
       );
     }
 
-    let body: ZaloEnvelope<unknown> | null = null;
+    let parsed: ZaloEnvelope<unknown> | null = null;
     try {
-      body = (await response.json()) as ZaloEnvelope<unknown>;
+      parsed = (await response.json()) as ZaloEnvelope<unknown>;
     } catch {
       // 본문이 JSON 이 아니면 상태 코드로만 판단한다
     }
 
-    if (!response.ok || body?.ok === false) {
+    if (!response.ok || parsed?.ok === false) {
       // 토큰은 URL 에 있으므로 오류 문구에 URL 을 절대 싣지 않는다
       throw new Error(
-        `Zalo sendMessage ${response.status}: ${body?.description ?? '(설명 없음)'}`,
+        `Zalo ${method} ${response.status}: ${parsed?.description ?? '(설명 없음)'}`,
       );
     }
   }
 
-  private async sendSafely(chatId: string, text: string): Promise<void> {
+  private async sendSafely(
+    chatId: string,
+    message: ZaloOutgoing,
+  ): Promise<void> {
     try {
-      await this.sendMessage(chatId, text);
+      await this.send(chatId, message);
     } catch (err) {
       this.logger.error(err instanceof Error ? err.message : String(err));
     }
+  }
+
+  private async resolve(
+    to: string | string[],
+  ): Promise<{ id: string; contact: ZaloContact | null }[]> {
+    if (to === 'all') {
+      const all = await this.contacts.find();
+      return all.map((c) => ({ id: c.zaloUserId, contact: c }));
+    }
+    const ids = Array.from(
+      new Set(
+        (Array.isArray(to) ? to : [to]).map((s) => s.trim()).filter(Boolean),
+      ),
+    );
+    const out: { id: string; contact: ZaloContact | null }[] = [];
+    for (const id of ids) {
+      out.push({
+        id,
+        contact: await this.contacts.findOne({ where: { zaloUserId: id } }),
+      });
+    }
+    return out;
+  }
+
+  private async touch(incoming: ZaloIncoming): Promise<ZaloContact> {
+    const existing = await this.contacts.findOne({
+      where: { zaloUserId: incoming.fromId },
+    });
+    if (existing) {
+      existing.chatId = incoming.chatId;
+      if (incoming.displayName) existing.displayName = incoming.displayName;
+      existing.lastSeenAt = new Date();
+      return this.contacts.save(existing);
+    }
+    this.logger.log(
+      `새 손잡이 zalo=${incoming.fromId} name=${incoming.displayName ?? '-'}`,
+    );
+    return this.contacts.save(
+      this.contacts.create({
+        zaloUserId: incoming.fromId,
+        chatId: incoming.chatId,
+        displayName: incoming.displayName,
+        recentTurns: [],
+        lastSeenAt: new Date(),
+      }),
+    );
+  }
+
+  private async remember(
+    contact: ZaloContact,
+    question: string | null,
+    answer: string,
+  ): Promise<void> {
+    const turns: ZaloTurn[] = [...(contact.recentTurns ?? [])];
+    if (question) turns.push({ role: 'user', text: question });
+    turns.push({ role: 'assistant', text: answer });
+    while (turns.length > MAX_ZALO_TURNS) turns.shift();
+    contact.recentTurns = turns;
+    await this.contacts.save(contact);
   }
 
   private requireBotConfig(): { base: string; token: string } {
@@ -192,35 +354,6 @@ export class ZaloService {
       }
     }
     return false;
-  }
-
-  private historyOf(chatId: string): ChatTurn[] {
-    const turns = this.histories.get(chatId);
-    if (!turns) return [];
-    // 최근 사용으로 올린다 — Map 삽입 순서가 곧 LRU 순서다
-    this.histories.delete(chatId);
-    this.histories.set(chatId, turns);
-    return [...turns];
-  }
-
-  private remember(chatId: string, question: string, answer: string): void {
-    const turns = this.historyOf(chatId);
-    turns.push(
-      { role: 'user', text: question },
-      { role: 'assistant', text: answer },
-    );
-    while (turns.length > MAX_HISTORY_TURNS) turns.shift();
-    this.histories.set(chatId, turns);
-
-    while (this.histories.size > MAX_TRACKED_CHATS) {
-      let evicted = false;
-      for (const oldest of this.histories.keys()) {
-        this.histories.delete(oldest);
-        evicted = true;
-        break;
-      }
-      if (!evicted) break;
-    }
   }
 }
 
