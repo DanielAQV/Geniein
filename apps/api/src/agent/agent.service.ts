@@ -46,6 +46,15 @@ export interface AgentSearchResult {
   tools: { name: string; outcome: string }[];
 }
 
+// 뇌에 넘기는 신원. 몸(Teams 탭·Zalo DM)마다 출처는 달라도 뇌가 받는 모양은 하나다.
+// 서버가 확정한 값만 담는다 — 클라이언트가 주장한 값은 여기 오면 안 된다.
+export interface BrainIdentity {
+  internalUserId: string;
+  // 어느 법인의 문서를 볼 수 있는가. 뇌의 KB 필터가 이 값으로 갈린다.
+  orgId: string;
+  locale?: string | null;
+}
+
 /**
  * 뇌는 도구 연쇄 + LLM 이라 수 초에서 수십 초가 걸린다 (설계문서 3.4).
  * 무한정 기다리면 우리 워커가 묶이므로 상한을 둔다.
@@ -58,9 +67,27 @@ export class AgentService {
 
   constructor(private readonly config: ConfigService) {}
 
-  async search(
+  search(
     question: string,
     user: EntraUser,
+    history: ChatTurn[] = [],
+    chosenLang: string | null = null,
+  ): Promise<AgentSearchResult> {
+    return this.ask(
+      question,
+      {
+        internalUserId: user.internalUserId,
+        orgId: user.tenantId,
+        locale: user.preferredLanguage ?? null,
+      },
+      history,
+      chosenLang,
+    );
+  }
+
+  async ask(
+    question: string,
+    identity: BrainIdentity,
     history: ChatTurn[] = [],
     chosenLang: string | null = null,
   ): Promise<AgentSearchResult> {
@@ -77,11 +104,11 @@ export class AgentService {
         // 신원·권한 판단에는 관여하지 않는다 — 그 출처는 아래 두 줄뿐이다.
         history,
         // ★ 서버가 확정한 신원. 클라이언트가 주장한 값이 아니다.
-        internal_user_id: user.internalUserId,
-        org_id: user.tenantId,
+        internal_user_id: identity.internalUserId,
+        org_id: identity.orgId,
         // 계정 언어. 답변 언어를 강제하지 않고, 질문만으로 언어를 알기 어려울 때의
         // 기준으로만 쓰인다 (뇌의 _language_hint 참조). 없으면 그냥 빠진다.
-        locale: user.preferredLanguage ?? null,
+        locale: identity.locale ?? null,
         // 사용자가 탭에서 직접 고른 언어. 계정 설정보다 나중에, 화면을 보면서 내린
         // 결정이므로 `locale` 보다 강한 근거로 쓰인다. 컨트롤러가 허용 목록으로 걸렀다.
         chosen_lang: chosenLang,
@@ -97,7 +124,7 @@ export class AgentService {
     //   언어가 없으면 켜도 비어 있고, 그러면 언어 판단을 다른 근거로 해야 한다.
     //   언어 태그는 개인을 식별하지 않으므로 로그에 남겨도 된다.
     this.logger.log(
-      `검색 완료 user=${user.internalUserId} lang=${user.preferredLanguage ?? '-'} ` +
+      `검색 완료 user=${identity.internalUserId} lang=${identity.locale ?? '-'} ` +
         `${Date.now() - startedAt}ms ` +
         `iterations=${body.iterations} tools=[${body.tool_trace
           .map((t) => `${t.name}:${t.outcome}`)

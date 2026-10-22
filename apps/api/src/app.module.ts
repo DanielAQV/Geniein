@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { InsightsModule } from './insights/insights.module';
 import { AgentModule } from './agent/agent.module';
 import { BotModule } from './bot/bot.module';
+import { ZaloModule } from './zalo/zalo.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { BotModule } from './bot/bot.module';
     InsightsModule,
     AgentModule,
     BotModule,
+    ZaloModule,
   ],
   controllers: [AppController],
   providers: [AppService],
