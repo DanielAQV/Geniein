@@ -69,9 +69,15 @@ export class ZaloController {
 
     const incoming = parseIncoming(body);
     if (!incoming) {
-      // 사진·스티커·그룹 메시지는 조용히 200. 재전송을 유발하지 않는다
+      // 사진·스티커·그룹 메시지는 200 으로 받되, 무엇을 걸렀는지는 남긴다 —
+      // 페이로드 모양이 문서와 다를 때 여기 말고는 볼 곳이 없다. 본문은 잘라서.
+      this.logger.warn(`Zalo 웹훅 무시: ${JSON.stringify(body).slice(0, 800)}`);
       return { ok: true };
     }
+
+    this.logger.log(
+      `Zalo DM 수신 chat=${incoming.chatId} from=${incoming.fromId} len=${incoming.text.length}`,
+    );
 
     // 200 을 먼저 돌려주고 처리는 뒤에서 한다. 실패는 로그로만 남긴다 —
     // 여기서 던지면 Zalo 가 재전송하고 같은 질문이 또 과금된다.
