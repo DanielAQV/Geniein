@@ -22,7 +22,8 @@ BRAIN_ENV=$ROOT/.env                 # config.py 가 저장소 루트 .env 를 �
 EMBED_URL=http://127.0.0.1:8090/v1/embeddings
 BRAIN_PORT=8001
 
-val() { grep -E "^$1=" "$API_ENV" | head -1 | cut -d= -f2- | tr -d '\r'; }
+# 없는 키는 빈 값으로 돌려준다. `|| true` 가 없으면 grep 의 1 이 set -e 를 죽인다 (실제로 당했다).
+val() { grep -E "^$1=" "$API_ENV" | head -1 | cut -d= -f2- | tr -d '\r' || true; }
 need() { [ -n "$(val "$1")" ] || { echo "✗ $API_ENV 에 $1 이 없습니다"; exit 1; }; }
 
 phase=${1:-}
